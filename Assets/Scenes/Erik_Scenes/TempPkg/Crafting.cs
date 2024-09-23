@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Crafting : MonoBehaviour
 {
 	[SerializeField] private GameObject left, right, up, block, final;
-	[SerializeField] private List<recipe> recipes;
+	[SerializeField] private List<consumable> consumables;
 
 	public void AttemptCraft()
 	{
@@ -27,26 +27,16 @@ public class Crafting : MonoBehaviour
 			var b = Instantiate(block, final.transform.position, final.transform.rotation, final.transform);  // create new inventory item
 			b.GetComponent<DragDropUI>().ingredient = Enum.Parse<Items>(rec.title); // set the new object's item to correct ingredient
 			b.GetComponentInChildren<TextMeshProUGUI>().text = rec.title;
-			
-			/*
-			foreach (var s in b.GetComponent<DragDropUI>().sprites)
-			{
-				if (s.name == b.GetComponent<DragDropUI>().ingredient.ToString())
-				{
-					b.GetComponentInChildren<Image>().sprite = s;
-				}
-			}
-			*/
 		}
 	}
 
-	private recipe CompareToRecipe(DragDropUI l, DragDropUI r, DragDropUI u)
+	private consumable CompareToRecipe(DragDropUI l, DragDropUI r, DragDropUI u)
 	{
-		foreach (var rec in recipes)
+		foreach (var con in consumables)
 		{
-			if (rec.ingredients.Contains(l.ingredient) && rec.ingredients.Contains(r.ingredient) && rec.ingredients.Contains(u.ingredient))
+			if (con.properties.Contains(l.ingredient) && con.properties.Contains(r.ingredient) && con.properties.Contains(u.ingredient))
 			{
-				return rec;
+				return con;
 			}
 		}
 		
