@@ -5,14 +5,14 @@ using UnityEngine;
 public class RoomInfo : MonoBehaviour
 {
     public Transform wallL, wallR, wallB, wallT;
-    public bool hasLeftRoom, hasRightRoom, hasTopRoom, hasBottomRoom;
+    public bool canHaveLeftRoom, canHaveRightRoom, canHaveTopRoom, canHaveBottomRoom;
     public Vector3 distToRoomCentre;
     public List<GameObject> allWalls;
     void Awake()
     {
         foreach (var walls in gameObject.GetComponentsInChildren<Transform>())
         {
-            if (walls.name.Contains("Wall"))
+            if (walls.name.Contains("Wall")) 
             {
                 allWalls.Add(walls.gameObject);
             }
@@ -40,7 +40,7 @@ public class RoomInfo : MonoBehaviour
         }
 
         distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x)/2;
-        Debug.Log(gameObject + "Distance between left/right walls and centre: " + distToRoomCentre.x);
+        Debug.Log(gameObject + " Distance between left/right walls and centre: " + distToRoomCentre.x);
         distToRoomCentre.y = (wallT.transform.localPosition.y - wallB.transform.localPosition.y)/2;
         Debug.Log(gameObject + "Distance between top/bottom walls and centre: " + distToRoomCentre.y);
     }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5217339618209246238}
   m_Layer: 0
   m_Name: LeftWall
-  m_TagString: Untagged
+  m_TagString: Left Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -217,6 +217,11 @@ MonoBehaviour:
   wallR: {fileID: 0}
   wallB: {fileID: 0}
   wallT: {fileID: 0}
+  canHaveLeftRoom: 0
+  canHaveRightRoom: 0
+  canHaveTopRoom: 0
+  canHaveBottomRoom: 0
+  distToRoomCentre: {x: 0, y: 0, z: 0}
   allWalls: []
 --- !u!1 &993027796485591508
 GameObject:
@@ -757,7 +762,7 @@ GameObject:
   - component: {fileID: 1827744896433124569}
   m_Layer: 0
   m_Name: RightWall
-  m_TagString: Untagged
+  m_TagString: Right Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -967,7 +972,7 @@ GameObject:
   - component: {fileID: 2969709776594823934}
   m_Layer: 0
   m_Name: BottomWall
-  m_TagString: Untagged
+  m_TagString: Bottom Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1282,7 +1287,7 @@ GameObject:
   - component: {fileID: 1641627814089809975}
   m_Layer: 0
   m_Name: TopWall
-  m_TagString: Untagged
+  m_TagString: Top Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
