@@ -1,12 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class RoomInfo : MonoBehaviour
 {
-    public Transform wallL, wallR, wallB, wallT;
+    [field: Header("Configuration")]
+    public float ratioMultiplier;
     public bool canHaveLeftRoom, canHaveRightRoom, canHaveTopRoom, canHaveBottomRoom;
+    [field: Header("Debugging")]
     public Vector3 distToRoomCentre;
+    public Transform wallL, wallR, wallB, wallT;
     public List<GameObject> allWalls;
     void Awake()
     {
@@ -38,13 +42,17 @@ public class RoomInfo : MonoBehaviour
                     break;
             }
         }
+        
+    }
 
-        distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x)/2;
+    void Start()
+    {
+        distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
         Debug.Log(gameObject + " Distance between left/right walls and centre: " + distToRoomCentre.x);
-        distToRoomCentre.y = (wallT.transform.localPosition.y - wallB.transform.localPosition.y)/2;
+        distToRoomCentre.y = (wallT.transform.localPosition.y - wallB.transform.localPosition.y);
         Debug.Log(gameObject + "Distance between top/bottom walls and centre: " + distToRoomCentre.y);
     }
-    
+
     void Update()
     {
         
