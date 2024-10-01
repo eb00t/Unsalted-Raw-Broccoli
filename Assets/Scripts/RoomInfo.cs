@@ -12,6 +12,7 @@ public class RoomInfo : MonoBehaviour
     public Vector3 distToRoomCentre;
     public Transform wallL, wallR, wallB, wallT;
     public List<GameObject> allWalls;
+    public string spawnedOnSide;
     void Awake()
     {
         foreach (var walls in gameObject.GetComponentsInChildren<Transform>())
@@ -24,19 +25,31 @@ public class RoomInfo : MonoBehaviour
 
         foreach (var walls in allWalls)
         {
-            switch (walls.name)
+            switch (walls.tag)
             {
-                case "LeftWall":
-                    wallL = walls.transform;
+                case "Left Wall":
+                    if (wallL == null)
+                    {
+                        wallL = walls.transform;
+                    }
                     break;
-                case "RightWall":
-                    wallR = walls.transform;
+                case "Right Wall":
+                    if (wallT == null)
+                    {
+                        wallT = walls.transform;
+                    }
                     break;
-                case "TopWall":
-                    wallT = walls.transform;
+                case "Top Wall":
+                    if (wallT == null)
+                    {
+                        wallT = walls.transform;
+                    }
                     break;
-                case "BottomWall":
-                    wallB = walls.transform;
+                case "Bottom Wall":
+                    if (wallB == null)
+                    {
+                        wallB = walls.transform;
+                    }
                     break;
                 default:
                     break;

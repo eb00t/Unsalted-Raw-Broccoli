@@ -26,14 +26,7 @@ public class LevelBuilder : MonoBehaviour
     public List<GameObject> spawnedRooms; //Rooms that have ALREADY spawned.
     public List<Transform> spawnPoints;
     private List<Vector3>_spawnPointPositions;
-    public enum SpawnSide
-    {
-        Left,
-        Right,
-        Top,
-        Bottom,
-    }
-    public SpawnSide sideSpawned;
+    public RoomInfo roomInfo;
     
     public Transform spawnWallL, spawnWallR, spawnWallT, spawnWallB;
 
@@ -115,39 +108,40 @@ public class LevelBuilder : MonoBehaviour
             Debug.Log(spawnPoints[spawnRandomNumber]);
             Vector3 spawnPointPosition = spawnPoint.position; 
             Debug.Log("Before: " + spawnPointPosition.x + ", " + spawnPointPosition.y);
+            roomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
             switch (spawnPoints[spawnRandomNumber].gameObject.tag) //Move the room based on the distance between its centre and the wall it will spawn on
             {      
                 case "Left Wall":
-                    Debug.Log("Left Wall: " + possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().distToRoomCentre.x);
-                    newSpawnPoint.x = (spawnPointPosition.x - possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().distToRoomCentre.x) * 2;
-                    sideSpawned = SpawnSide.Left;
+                    newSpawnPoint.x = (spawnPointPosition.x -
+                                       possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().wallR.localPosition.x);
+                    roomInfo.spawnedOnSide = "Left";
                     break; 
                 case "Right Wall":
-                    Debug.Log("Right Wall: " + possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().distToRoomCentre.x);
-                    newSpawnPoint.x = (spawnPointPosition.x + possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().distToRoomCentre.x) * 2;
-                    sideSpawned = SpawnSide.Right;
+                    newSpawnPoint.x = (spawnPointPosition.x -
+                                       possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().wallL.localPosition.x);
+                    roomInfo.spawnedOnSide = "Right";
                     break; 
                 case "Bottom Wall":
-                    Debug.Log("Bottom Wall: " + possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().distToRoomCentre.y);
-                    newSpawnPoint.y =  (spawnPointPosition.y - possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().distToRoomCentre.y)* 2;
-                    sideSpawned = SpawnSide.Bottom;
+                    newSpawnPoint.y = (spawnPointPosition.y -
+                                       possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().wallT.localPosition.y);
+                    roomInfo.spawnedOnSide = "Bottom";
                     break; 
                 case "Top Wall":
-                    Debug.Log("Top Wall: " + possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().distToRoomCentre.y);
-                    newSpawnPoint.y = (spawnPointPosition.y + possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().distToRoomCentre.y) * 2;
-                    sideSpawned = SpawnSide.Top;
+                    newSpawnPoint.y = (spawnPointPosition.y -
+                                       possibleRooms[roomRandomNumber].GetComponent<RoomInfo>().wallB.localPosition.y);
+                    roomInfo.spawnedOnSide = "Top";
                    break;
             }
             Debug.Log("After: " + newSpawnPoint.x + ", " + newSpawnPoint.y);
             roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], newSpawnPoint, Quaternion.identity); //Instantiate the room at the spawnpoint's position
             Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + newSpawnPoint);
-            UpdateSpawnWalls(roomToSpawn, roomRandomNumber, spawnRandomNumber);
+            StartCoroutine(WaitToUpdate(roomToSpawn, roomRandomNumber, spawnRandomNumber));
+            //UpdateSpawnWalls(roomToSpawn, roomRandomNumber, spawnRandomNumber);
         }
     }
 
     void UpdateSpawnWalls(GameObject spawnedRoom, int roomRandomNumber, int spawnRandomNumber)
     {
-        RoomInfo roomInfo = spawnedRoom.GetComponent<RoomInfo>();
         spawnPoints.Add(roomInfo.wallT.transform); //
         spawnPoints.Add(roomInfo.wallB.transform); //
         spawnPoints.Add(roomInfo.wallL.transform); //
@@ -158,35 +152,40 @@ public class LevelBuilder : MonoBehaviour
        _spawnPointPositions.Add(roomInfo.wallB.transform.position); //
        _spawnPointPositions.Add(roomInfo.wallL.transform.position); //
        _spawnPointPositions.Add(roomInfo.wallR.transform.position);
-       possibleRooms.Remove(possibleRooms[roomRandomNumber]); //Remove the room from the list of rooms that can spawn
+       //possibleRooms.Remove(possibleRooms[roomRandomNumber]); //Remove the room from the list of rooms that can spawn
        spawnPoints.Remove(spawnPoints[spawnRandomNumber]); //Remove the wall the room spawned on from the spawn point list.
-       switch (sideSpawned)
+       switch (roomInfo.spawnedOnSide)
        {
-           case SpawnSide.Left:
+           case "Left":
+               Debug.Log("HI LEFT");
                spawnPoints.Remove(roomInfo.wallR.transform);
               _spawnPointPositions.Remove(roomInfo.wallR.transform.position);
                roomInfo.canHaveRightRoom = false;
                break;
-           case SpawnSide.Right:
+           case "Right":
+               Debug.Log("HI RIGHT");
                spawnPoints.Remove(roomInfo.wallL.transform);
               _spawnPointPositions.Remove(roomInfo.wallL.transform.position);
                roomInfo.canHaveLeftRoom = false;
                break;
-           case SpawnSide.Top:
+           case "Top":
+               Debug.Log("HI TOP");
                spawnPoints.Remove(roomInfo.wallB.transform);
               _spawnPointPositions.Remove(roomInfo.wallB.transform.position);
                roomInfo.canHaveBottomRoom = false;
                break;
-           case SpawnSide.Bottom:
+           case "Bottom":
+               Debug.Log("HI BOTTOM");
                spawnPoints.Remove(roomInfo.wallT.transform);
               _spawnPointPositions.Remove(roomInfo.wallT.transform.position);
                roomInfo.canHaveTopRoom = false;
                break;
        }
     }
-    
-    void Update()
+
+    IEnumerator WaitToUpdate(GameObject spawnedRoom, int roomRandomNumber, int spawnRandomNumber)
     {
-        
+        yield return new WaitForSecondsRealtime(.1f);
+        UpdateSpawnWalls(spawnedRoom, roomRandomNumber, spawnRandomNumber);
     }
 }
