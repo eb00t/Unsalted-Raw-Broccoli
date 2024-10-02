@@ -11,3 +11,12 @@ public enum Weapons
 	Spear,
 	Swordfish
 }
+
+public enum Consumables
+{
+	MysterySlop,
+	EmergencyRock,
+	JarScienceJuice,
+	Food,
+	SLAMSandwich
+}

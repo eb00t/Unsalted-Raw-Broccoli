@@ -7,4 +7,6 @@ using UnityEngine;
 	{
 		public string title;
 		public List<Weapons> properties;
+		public int maxHold;
+		public int totalStored;
 	}
