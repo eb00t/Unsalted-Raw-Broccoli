@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Consumable", menuName = "ScriptableObjects/consumables", order = 1)]
-	public class consumable : ScriptableObject
+[CreateAssetMenu(fileName = "Weapon", menuName = "ScriptableObjects/weapons", order = 1)]
+	public class WeaponType : ScriptableObject
 	{
 		public string title;
-		public List<Items> properties;
+		public List<Weapons> properties;
 	}

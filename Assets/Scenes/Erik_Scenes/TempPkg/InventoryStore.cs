@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,9 +15,7 @@ public class InventoryStore : MonoBehaviour
     private void Start()
     {
         RefreshList();
-        AddNewItem(Items.Raisins);
-        AddNewItem(Items.Flour);
-        AddNewItem(Items.Ring);
+        AddNewItem(Weapons.Sword);
     }
 
     private void RefreshList()
@@ -39,15 +38,15 @@ public class InventoryStore : MonoBehaviour
         */
     }
 
-    public void AddNewItem(Items item)
+    public void AddNewItem(Weapons item)
     {
         Debug.Log(item);
         var b = Instantiate(block, block.position, block.rotation, grid); // create new inventory item
-        b.GetComponent<DragDropUI>().ingredient = item; // set the new object's item to correct ingredient
+        b.GetComponent<DragDropUI>().weapons = item; // set the new object's item to correct weapon
         b.GetComponentInChildren<TextMeshProUGUI>().text = item.ToString();
         foreach (var s in sprites)
         {
-            if (s.name == b.GetComponent<DragDropUI>().ingredient.ToString())
+            if (s.name == b.GetComponent<DragDropUI>().weapons.ToString())
             {
                 var i = b.GetComponentsInChildren<Image>();
         

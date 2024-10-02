@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class IndexObj : MonoBehaviour
 {
-    public Items kind;
+    public Weapons kind;
     [SerializeField] private GameObject popUp;
     [SerializeField] private float range;
     [SerializeField] private Transform player;

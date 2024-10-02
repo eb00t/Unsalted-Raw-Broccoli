@@ -12,7 +12,7 @@ public class DragDropUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
 	private Canvas _canvas;
 	private Transform _overLayer;
     private CanvasGroup _canvasGroup;
-    public Items ingredient;
+    public Weapons weapons;
     
     private void Start()
     {
