@@ -6,7 +6,6 @@ using UnityEngine;
 public class RoomInfo : MonoBehaviour
 {
     [field: Header("Configuration")]
-    public float ratioMultiplier;
     public bool canHaveLeftRoom, canHaveRightRoom, canHaveTopRoom, canHaveBottomRoom;
     [field: Header("Debugging")]
     public Vector3 distToRoomCentre;
