@@ -123,7 +123,7 @@ public class LevelBuilder : MonoBehaviour
                     break; 
                 case "Right Wall":
                     newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallL.localPosition.x);
-                    newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallR.localPosition.x);
+                    newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallL.localPosition.y);
                     spawnedRoomInfo.spawnedOnSide = "Right";
                     break; 
                 case "Bottom Wall":
@@ -133,7 +133,7 @@ public class LevelBuilder : MonoBehaviour
                     break; 
                 case "Top Wall":
                     newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallB.localPosition.y);
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallB.localPosition.y);
+                    newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallB.localPosition.x);
                     spawnedRoomInfo.spawnedOnSide = "Top";
                    break;
             }
