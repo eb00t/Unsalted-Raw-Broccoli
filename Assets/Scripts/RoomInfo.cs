@@ -5,8 +5,11 @@ using UnityEngine;
 
 public class RoomInfo : MonoBehaviour
 {
-    [field: Header("Configuration")]
-    public bool canHaveLeftRoom, canHaveRightRoom, canHaveTopRoom, canHaveBottomRoom;
+    [field: Header("Configuration")] 
+    public bool canHaveLeftRoom;
+    public bool canHaveRightRoom;
+    public bool canHaveTopRoom;
+    public bool canHaveBottomRoom;
     [field: Header("Debugging")]
     public Vector3 distToRoomCentre;
     public Transform wallL, wallR, wallB, wallT;
