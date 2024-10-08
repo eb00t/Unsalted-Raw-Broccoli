@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.Processors;
+using UnityEngine.Serialization;
 
 public class QuickMenuHandler : MonoBehaviour
 {
     private bool _invOpen;
-    [SerializeField] private InventoryStore _inventoryStore; // to remove items used from index
-    
+    [SerializeField] private InventoryStore inventoryStore; // to remove items used from index
+    [SerializeField] private consumable consumables;
 
     /*
      TODO:
