@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class IndexObj : MonoBehaviour
 {
-    public Weapons kind;
     [SerializeField] private GameObject popUp;
     [SerializeField] private float range;
     [SerializeField] private Transform player;
@@ -21,7 +20,7 @@ public class IndexObj : MonoBehaviour
             popUp.SetActive(true);
             if (Input.GetKeyDown(KeyCode.E))
             {
-                inventoryStore.AddNewItem(kind);
+                //inventoryStore.AddNewItem(kind);
                 gameObject.SetActive(false);
             }
         }

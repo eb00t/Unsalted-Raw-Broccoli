@@ -12,10 +12,11 @@ public class InventoryStore : MonoBehaviour
     [SerializeField] private Transform block;
     [SerializeField] private Transform grid;
     public List<Sprite> sprites;
+    public List<ScriptableObject> items;
     private void Start()
     {
         RefreshList();
-        AddNewItem(Weapons.Sword);
+        //AddNewItem(Weapons.Sword);
     }
 
     private void RefreshList()
@@ -38,9 +39,9 @@ public class InventoryStore : MonoBehaviour
         */
     }
 
-    public void AddNewItem(Weapons item)
+    /*
+    public void AddNewItem()
     {
-        Debug.Log(item);
         var b = Instantiate(block, block.position, block.rotation, grid); // create new inventory item
         b.GetComponent<DragDropUI>().weapons = item; // set the new object's item to correct weapon
         b.GetComponentInChildren<TextMeshProUGUI>().text = item.ToString();
@@ -60,4 +61,5 @@ public class InventoryStore : MonoBehaviour
             }
         }
     }
+    */
 }

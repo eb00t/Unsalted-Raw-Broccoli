@@ -6,7 +6,7 @@ using UnityEngine;
 public class consumable : ScriptableObject
 {
     public string title;
-    public List<Weapons> properties;
+    //public List<Weapons> properties;
     public int maxHold;
     public int totalStored;
 }

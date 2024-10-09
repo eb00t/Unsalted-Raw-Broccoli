@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028301, g: 0.22571309, b: 0.30692127, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -136,6 +136,17 @@ PrefabInstance:
       propertyPath: grid
       value: 
       objectReference: {fileID: 839891705797304270}
+    - target: {fileID: 7824760558499084688, guid: 56dae3232d11f6e4582fa80a670c1fd3,
+        type: 3}
+      propertyPath: items.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7824760558499084688, guid: 56dae3232d11f6e4582fa80a670c1fd3,
+        type: 3}
+      propertyPath: items.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 6209400cd3f30400c97ae734ffd4446d,
+        type: 2}
     - target: {fileID: 7824760558499084689, guid: 56dae3232d11f6e4582fa80a670c1fd3,
         type: 3}
       propertyPath: m_Name
@@ -2260,10 +2271,10 @@ RectTransform:
   - {fileID: 8172844786623428102}
   m_Father: {fileID: 839891705797304270}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 85, y: -90}
+  m_SizeDelta: {x: 150, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1201187781
 GameObject:
@@ -3975,7 +3986,7 @@ GameObject:
   - component: {fileID: 839891704042414667}
   - component: {fileID: 839891704042414666}
   m_Layer: 5
-  m_Name: inventory
+  m_Name: HUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4094,7 +4105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &839891704099030158
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4714,7 +4725,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c964f1e6a596f464eace7bdc5f06c54a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weapons: 0
 --- !u!224 &2094298189448218054
 RectTransform:
   m_ObjectHideFlags: 0

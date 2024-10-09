@@ -7,9 +7,8 @@ using UnityEngine.Serialization;
 
 public class QuickMenuHandler : MonoBehaviour
 {
-    private bool _invOpen;
+	private bool _invOpen;
     [SerializeField] private InventoryStore inventoryStore; // to remove items used from index
-    [SerializeField] private consumable consumables;
 
     /*
      TODO:
@@ -24,6 +23,7 @@ public class QuickMenuHandler : MonoBehaviour
 	    if (_invOpen)
 	    {
 		    // allow changes to .this
+		    
 	    }
     }
 
