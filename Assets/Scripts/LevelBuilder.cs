@@ -19,6 +19,7 @@ public class LevelBuilder : MonoBehaviour
     }
     [field: Header("Configuration")]
     public int numberOfRooms;
+    public int numberOfConnectors;
     public LevelMode currentFloor;
     private GameObject _startingRoom;
     [field: Header("Debugging")]
