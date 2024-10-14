@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -11,12 +9,12 @@ public class InventoryStore : MonoBehaviour
     //[SerializeField] private List<GameObject> inventory;
     [SerializeField] private Transform block;
     [SerializeField] private Transform grid;
-    public List<Sprite> sprites;
-    public List<ScriptableObject> items;
+    //public List<Sprite> sprites;
+    public List<GameObject> items;
     private void Start()
     {
         RefreshList();
-        //AddNewItem(Weapons.Sword);
+        AddNewItem(items[0]);
     }
 
     private void RefreshList()
@@ -39,27 +37,32 @@ public class InventoryStore : MonoBehaviour
         */
     }
 
-    /*
-    public void AddNewItem()
+
+    private void AddNewItem(GameObject itemA)
     {
-        var b = Instantiate(block, block.position, block.rotation, grid); // create new inventory item
-        b.GetComponent<DragDropUI>().weapons = item; // set the new object's item to correct weapon
-        b.GetComponentInChildren<TextMeshProUGUI>().text = item.ToString();
+        var s = itemA.GetComponent<WeaponHandler>();
+        var sprite = s.GetComponent<SpriteRenderer>().sprite;
+        
+        var b = Instantiate(block, block.position, block.rotation, grid);
+        b.GetComponentInChildren<Image>().sprite = sprite;
+        b.GetComponentInChildren<TextMeshProUGUI>().text = s.title;
+
+        /*
         foreach (var s in sprites)
         {
             if (s.name == b.GetComponent<DragDropUI>().weapons.ToString())
             {
                 var i = b.GetComponentsInChildren<Image>();
-        
-                foreach(var img in i)
+
+                foreach (var img in i)
                 {
-                    if(!img.GetComponent<DragDropUI>())
+                    if (!img.GetComponent<DragDropUI>())
                     {
                         img.sprite = s;
                     }
                 }
             }
         }
+        */
     }
-    */
 }
