@@ -104,14 +104,27 @@ public class LevelBuilder : MonoBehaviour
         Debug.Log(floorSpecificRoomPath + " " + multiFloorRoomPath);
     }
 
-    void SpawnConnector()
+    void SpawnConnector(Vector3 newSpawnPoint, bool xAxis)
     {
-        
+        GameObject connectorToSpawn = null;
+        switch (xAxis)
+        {
+            case true:
+                connectorToSpawn = Resources.Load<GameObject>("Room Layouts/Connectors/ConnectorShortHoriz");
+                break;
+            
+            case false: 
+                connectorToSpawn = Resources.Load<GameObject>("Room Layouts/Connectors/ConnectorShortVerti");
+                break;
+        }
+
+        connectorToSpawn = Instantiate(connectorToSpawn, newSpawnPoint, quaternion.identity);
     }
     
     void SpawnRooms()
     {
         int roomRandomNumber, spawnRandomNumber; //RNG 1 and 2
+        bool xAxis = true;
         GameObject roomToSpawn; //Room that will be spawned
         GameObject roomSpawnedOn; //Room that the spawned room is spawned on top of
         for (int i = 0; i < numberOfRooms; i++) //Spawn amount of rooms
@@ -130,26 +143,30 @@ public class LevelBuilder : MonoBehaviour
                 case "Left Wall":
                     newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallR.localPosition.x);
                     newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallR.localPosition.y);
+                    xAxis = true;
                     spawnedRoomInfo.spawnedOnSide = "Left";
                     break; 
                 case "Right Wall":
                     newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallL.localPosition.x);
                     newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallL.localPosition.y);
+                    xAxis = true;
                     spawnedRoomInfo.spawnedOnSide = "Right";
                     break; 
                 case "Bottom Wall":
                     newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallT.localPosition.y);
                     newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallT.localPosition.x);
+                    xAxis = false;
                     spawnedRoomInfo.spawnedOnSide = "Bottom";
                     break; 
                 case "Top Wall":
                     newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallB.localPosition.y);
                     newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallB.localPosition.x);
+                    xAxis = false;
                     spawnedRoomInfo.spawnedOnSide = "Top";
                    break;
             }
             //Debug.Log("After: " + newSpawnPoint.x + ", " + newSpawnPoint.y);
-            SpawnConnector();
+            SpawnConnector(newSpawnPoint, xAxis);
             roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], newSpawnPoint, Quaternion.identity); //Instantiate the room at the spawnpoint's position
             Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + newSpawnPoint);
             StartCoroutine(WaitToUpdate(roomToSpawn, roomSpawnedOn, roomRandomNumber, spawnRandomNumber));
