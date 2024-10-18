@@ -9,6 +9,7 @@ public class dialogueControllerScript : MonoBehaviour
     public string[] Sentences;
     private int Index = 0;
     public float DialogueSpeed;
+    public float fasterSpeed;
     public GameObject dialogueCanvas;
 
     // Start is called before the first frame update
@@ -24,13 +25,23 @@ public class dialogueControllerScript : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space))
         {
             NextSentence();
+            DialogueSpeed = 0.05f;
         }
 
+        /*
         //Skip Dialogue
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             SkipDialogue();
         }
+        */
+
+        //Speed up dialogue
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            speedUptext();
+        }
+        
     }
 
     void NextSentence()
@@ -42,6 +53,12 @@ public class dialogueControllerScript : MonoBehaviour
         }
     }
 
+    void speedUptext()
+    {
+        DialogueSpeed = fasterSpeed;
+    }
+
+    /*
     void SkipDialogue()
     {
         //Turns off canvas
@@ -49,6 +66,7 @@ public class dialogueControllerScript : MonoBehaviour
 
        //Debug.Log("Text Skipped!");
     }
+    */
 
     IEnumerator WriteSentence()
     {
