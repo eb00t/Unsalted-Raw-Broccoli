@@ -1,12 +1,12 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "consumable", menuName = "ScriptableObjects/consumables", order = 1)]
-public class consumable : ScriptableObject
+public class Consumable : MonoBehaviour
 {
-    public string title;
-    //public List<Weapons> properties;
-    public int maxHold;
-    public int totalStored;
+	[Header("Base Stats")]
+	public string title;
+	public int maxHold;
+	public int totalStored;
+	public Sprite uiIcon;
 }
