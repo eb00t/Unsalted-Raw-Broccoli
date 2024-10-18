@@ -25,6 +25,7 @@ public class LevelBuilder : MonoBehaviour
     [field: Header("Debugging")]
     private GameObject _roomToSpawnOn; //The room containing the wall this room used as its spawn position.
     public List<GameObject> possibleRooms; //Rooms that CAN spawn.
+    public List<GameObject> possibleConnectors; //Connectors that can spawn.
     public List<GameObject> spawnedRooms; //Rooms that have ALREADY spawned.
     public List<Transform> spawnPoints;
     private List<Vector3>_spawnPointPositions;
@@ -76,7 +77,7 @@ public class LevelBuilder : MonoBehaviour
     {
         string floorSpecificRoomPath = "YOU SHOULDN'T SEE THIS"; //Path for floor exclusive rooms
         string multiFloorRoomPath = "YOU SHOULDN'T SEE THIS EITHER"; //TODO: Path for rooms used in multiple floors 
-        //TODO: Add string for connecting rooms.
+        string connectorPath = "Room Layouts/Connectors";
         switch (currentFloor)
         {
             case LevelMode.TEST:
@@ -96,9 +97,18 @@ public class LevelBuilder : MonoBehaviour
         {
             possibleRooms.Add(rooms);
         }
+        foreach (var rooms in Resources.LoadAll<GameObject>(connectorPath))
+        {
+            possibleConnectors.Add(rooms);
+        }
         Debug.Log(floorSpecificRoomPath + " " + multiFloorRoomPath);
     }
 
+    void SpawnConnector()
+    {
+        
+    }
+    
     void SpawnRooms()
     {
         int roomRandomNumber, spawnRandomNumber; //RNG 1 and 2
@@ -139,12 +149,15 @@ public class LevelBuilder : MonoBehaviour
                    break;
             }
             //Debug.Log("After: " + newSpawnPoint.x + ", " + newSpawnPoint.y);
+            SpawnConnector();
             roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], newSpawnPoint, Quaternion.identity); //Instantiate the room at the spawnpoint's position
             Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + newSpawnPoint);
             StartCoroutine(WaitToUpdate(roomToSpawn, roomSpawnedOn, roomRandomNumber, spawnRandomNumber));
             //UpdateSpawnWalls(roomToSpawn, roomRandomNumber, spawnRandomNumber);
         }
     }
+
+  
 
     void UpdateSpawnWalls(GameObject spawnedRoom, GameObject roomSpawnedOn, int roomRandomNumber, int spawnRandomNumber)
     {
