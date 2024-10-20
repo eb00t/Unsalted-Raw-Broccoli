@@ -19,11 +19,13 @@ public class LevelBuilder : MonoBehaviour
     }
     [field: Header("Configuration")]
     public int numberOfRooms;
+    public int numberOfConnectors;
     public LevelMode currentFloor;
     private GameObject _startingRoom;
     [field: Header("Debugging")]
     private GameObject _roomToSpawnOn; //The room containing the wall this room used as its spawn position.
     public List<GameObject> possibleRooms; //Rooms that CAN spawn.
+    public List<GameObject> possibleConnectors; //Connectors that can spawn.
     public List<GameObject> spawnedRooms; //Rooms that have ALREADY spawned.
     public List<Transform> spawnPoints;
     private List<Vector3>_spawnPointPositions;
@@ -75,7 +77,7 @@ public class LevelBuilder : MonoBehaviour
     {
         string floorSpecificRoomPath = "YOU SHOULDN'T SEE THIS"; //Path for floor exclusive rooms
         string multiFloorRoomPath = "YOU SHOULDN'T SEE THIS EITHER"; //TODO: Path for rooms used in multiple floors 
-        //TODO: Add string for connecting rooms.
+        string connectorPath = "Room Layouts/Connectors";
         switch (currentFloor)
         {
             case LevelMode.TEST:
@@ -95,12 +97,34 @@ public class LevelBuilder : MonoBehaviour
         {
             possibleRooms.Add(rooms);
         }
+        foreach (var rooms in Resources.LoadAll<GameObject>(connectorPath))
+        {
+            possibleConnectors.Add(rooms);
+        }
         Debug.Log(floorSpecificRoomPath + " " + multiFloorRoomPath);
     }
 
+    void SpawnConnector(Vector3 newSpawnPoint, bool xAxis)
+    {
+        GameObject connectorToSpawn = null;
+        switch (xAxis)
+        {
+            case true:
+                connectorToSpawn = Resources.Load<GameObject>("Room Layouts/Connectors/ConnectorShortHoriz");
+                break;
+            
+            case false: 
+                connectorToSpawn = Resources.Load<GameObject>("Room Layouts/Connectors/ConnectorShortVerti");
+                break;
+        }
+
+        connectorToSpawn = Instantiate(connectorToSpawn, newSpawnPoint, quaternion.identity);
+    }
+    
     void SpawnRooms()
     {
         int roomRandomNumber, spawnRandomNumber; //RNG 1 and 2
+        bool xAxis = true;
         GameObject roomToSpawn; //Room that will be spawned
         GameObject roomSpawnedOn; //Room that the spawned room is spawned on top of
         for (int i = 0; i < numberOfRooms; i++) //Spawn amount of rooms
@@ -119,31 +143,38 @@ public class LevelBuilder : MonoBehaviour
                 case "Left Wall":
                     newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallR.localPosition.x);
                     newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallR.localPosition.y);
+                    xAxis = true;
                     spawnedRoomInfo.spawnedOnSide = "Left";
                     break; 
                 case "Right Wall":
                     newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallL.localPosition.x);
                     newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallL.localPosition.y);
+                    xAxis = true;
                     spawnedRoomInfo.spawnedOnSide = "Right";
                     break; 
                 case "Bottom Wall":
                     newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallT.localPosition.y);
                     newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallT.localPosition.x);
+                    xAxis = false;
                     spawnedRoomInfo.spawnedOnSide = "Bottom";
                     break; 
                 case "Top Wall":
                     newSpawnPoint.y = (spawnPointPosition.y - spawnedRoomInfo.wallB.localPosition.y);
                     newSpawnPoint.x = (spawnPointPosition.x - spawnedRoomInfo.wallB.localPosition.x);
+                    xAxis = false;
                     spawnedRoomInfo.spawnedOnSide = "Top";
                    break;
             }
             //Debug.Log("After: " + newSpawnPoint.x + ", " + newSpawnPoint.y);
+            SpawnConnector(newSpawnPoint, xAxis);
             roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], newSpawnPoint, Quaternion.identity); //Instantiate the room at the spawnpoint's position
             Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + newSpawnPoint);
             StartCoroutine(WaitToUpdate(roomToSpawn, roomSpawnedOn, roomRandomNumber, spawnRandomNumber));
             //UpdateSpawnWalls(roomToSpawn, roomRandomNumber, spawnRandomNumber);
         }
     }
+
+  
 
     void UpdateSpawnWalls(GameObject spawnedRoom, GameObject roomSpawnedOn, int roomRandomNumber, int spawnRandomNumber)
     {

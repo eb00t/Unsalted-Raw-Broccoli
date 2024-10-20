@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RoomInfo : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class RoomInfo : MonoBehaviour
     public bool canHaveRightRoom;
     public bool canHaveTopRoom;
     public bool canHaveBottomRoom;
+    public int connectorsToSpawn;
     [field: Header("Debugging")]
     public Vector3 distToRoomCentre;
     public Transform wallL, wallR, wallB, wallT;
@@ -61,6 +63,7 @@ public class RoomInfo : MonoBehaviour
             canHaveRightRoom = true;
             canHaveTopRoom = true;
             canHaveBottomRoom = true;
+            connectorsToSpawn = Random.Range(0, 4);
         }
         
     }
