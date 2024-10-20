@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 46238883}
   m_Layer: 0
   m_Name: ENEMY
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -222,7 +222,7 @@ Transform:
   m_GameObject: {fileID: 46238882}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -25.986233, y: 79.67195, z: 311.76413}
+  m_LocalPosition: {x: -25.986233, y: 78.68, z: 313.367}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -584,7 +584,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &869671783
 Transform:
   m_ObjectHideFlags: 0
@@ -614,9 +614,10 @@ GameObject:
   - component: {fileID: 1036353674}
   - component: {fileID: 1036353673}
   - component: {fileID: 1036353672}
+  - component: {fileID: 1036353676}
   m_Layer: 0
   m_Name: Player test
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -702,13 +703,29 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1036353671}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -13.576233, y: 78.50195, z: 315.05414}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -16.64, y: 78.50195, z: 315.05414}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1403024756}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1036353676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036353671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2b1804d739b2d4286a0c23b68e081a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueBox: {fileID: 1148015724}
+  playerChar: {fileID: 1036353671}
+  npcChar: {fileID: 2139461706}
+  enemyChar: {fileID: 46238882}
 --- !u!1 &1113380751
 GameObject:
   m_ObjectHideFlags: 0
@@ -861,7 +878,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1148015725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083,9 +1100,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DialogueText: {fileID: 2063179214}
   Sentences:
-  - Hi (Press 'SPACE' to skip/'CTRL' to speed up)
-  - Hello (Press 'SPACE' to skip/'CTRL' to speed up)
-  - How are you? (Press 'SPACE' to skip/'CTRL' to speed up)
+  - 1. Hi ('SPACE' to continue/'CTRL' to speed up)
+  - 2. Hello (Press 'SPACE' to skip/'CTRL' to speed up)
+  - 3. How are you? (Press 'SPACE' to skip/'CTRL' to speed up)
   DialogueSpeed: 0.05
   fasterSpeed: 0
   dialogueCanvas: {fileID: 1148015724}
@@ -1507,7 +1524,7 @@ GameObject:
   - component: {fileID: 2139461708}
   m_Layer: 0
   m_Name: NPC
-  m_TagString: Untagged
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

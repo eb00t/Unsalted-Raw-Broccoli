@@ -16,16 +16,18 @@ public class dialogueControllerScript : MonoBehaviour
     void Start()
     {
         NextSentence();
+       // Debug.Log("Sentence started");
     }
 
     // Update is called once per frame
     void Update()
     {
         //Move to next sentence
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && dialogueCanvas.activeInHierarchy == true)
         {
             NextSentence();
             DialogueSpeed = 0.05f;
+           // Debug.Log("Next sentence started");
         }
 
         /*
@@ -37,11 +39,12 @@ public class dialogueControllerScript : MonoBehaviour
         */
 
         //Speed up dialogue
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.LeftControl) && dialogueCanvas.activeInHierarchy == true)
         {
             speedUptext();
         }
-        
+
+        dialogueFinished();
     }
 
     void NextSentence()
@@ -67,6 +70,16 @@ public class dialogueControllerScript : MonoBehaviour
        //Debug.Log("Text Skipped!");
     }
     */
+
+    
+    void dialogueFinished()
+    {
+        if (Index == Sentences.Length )
+        {
+            dialogueCanvas.SetActive(false);
+            Debug.Log("Text Done!");
+        }
+    }
 
     IEnumerator WriteSentence()
     {
