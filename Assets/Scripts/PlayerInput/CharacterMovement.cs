@@ -10,6 +10,8 @@ public class CharacterMovement : MonoBehaviour
     Animator PlayerAnimator;
     bool walkAllowed = true;
 
+    public bool allowMovement = true;
+
     public float acceleration = 1f;
     public float maxSpeed = 10f;
     public float jumpForce = 1f;
@@ -55,6 +57,8 @@ public class CharacterMovement : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext ctx)
     {
+        if(!allowMovement) { }
+            else
         if (ctx.performed && !doubleJumpPerformed && !startSlideTimer && !sliding)
         {
             Debug.Log("Jump");
@@ -138,6 +142,8 @@ public class CharacterMovement : MonoBehaviour
 
     public void FixedUpdate()
     {
+        if (!allowMovement) { }
+        else
         if (walkAllowed && !isWallJumping)
         {
             if ((rb.velocity.x <= maxSpeed && Mathf.Sign(rb.velocity.x) == 1) || (rb.velocity.x >= -maxSpeed && Mathf.Sign(rb.velocity.x) == -1) || (Mathf.Sign(rb.velocity.x) != input))
