@@ -7,6 +7,7 @@ public class CharacterMovement : MonoBehaviour
 {
     Rigidbody rb;
     BoxCollider groundCheck;
+    Animator PlayerAnimator;
     bool walkAllowed = true;
 
     public float acceleration = 1f;
@@ -23,13 +24,21 @@ public class CharacterMovement : MonoBehaviour
     private float input;
     private bool startSlide;
     private bool startSlideTimer;
+    private bool sliding = false;
     public bool slideAllowed = false;
     private float timer = 0f;
+
+    [SerializeField] bool isWallJumping = false;
+    [SerializeField] private float wallJumpingCounter;
+    [SerializeField] private float wallJumpingTime = 0.2f;
+    [SerializeField] private Vector2 wallJumpForce = new Vector2(300f, 300f);
+    [SerializeField] private float wallJumpingDuration = 0.4f;
 
     public void Awake()
     {
         rb = GetComponent<Rigidbody>();
         groundCheck = GetComponent<BoxCollider>();
+        PlayerAnimator = GetComponentInChildren<Animator>();
     }
 
     public void Crouch(InputAction.CallbackContext ctx)
@@ -39,26 +48,53 @@ public class CharacterMovement : MonoBehaviour
 
     public void XAxis(InputAction.CallbackContext ctx)
     {
+        input = ctx.ReadValue<float>();
+        PlayerAnimator.SetFloat("Input", input);
         
-            input = ctx.ReadValue<float>();
-
-
-            //Debug.Log(input);
     }
 
     public void Jump(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed && !doubleJumpPerformed)
+        if (ctx.performed && !doubleJumpPerformed && !startSlideTimer && !sliding)
         {
             Debug.Log("Jump");
             Vector3 jump = new Vector3(0f, jumpForce, 0f);
             rb.AddForce(jump);
+            PlayerAnimator.SetBool("Jump", true);
         }
 
-        if(ctx.performed && !grounded)
+        if (ctx.performed && wallJumpingCounter > 0f)
+        {
+            isWallJumping = true;
+            Vector3 wallJump = new Vector3(-input * wallJumpForce.x, wallJumpForce.y, 0f);
+            wallJumpingCounter = 0f;
+            rb.AddForce(wallJump);
+            Invoke(nameof(stopWallJump), wallJumpingDuration);
+        }
+
+        if(ctx.performed && !grounded && !startSlideTimer && !sliding)
         {
             doubleJumpPerformed = true;
         }
+    }
+
+    private void wallJump()
+    {
+        if (sliding)
+        {
+            isWallJumping = false;
+            wallJumpingCounter = wallJumpingTime;
+            CancelInvoke(nameof(stopWallJump));
+        }
+        else
+        {
+            wallJumpingCounter -= Time.deltaTime;
+        }
+    }
+
+    private void stopWallJump()
+    {
+        isWallJumping = false;
     }
 
     public void Dash(InputAction.CallbackContext ctx)
@@ -66,32 +102,26 @@ public class CharacterMovement : MonoBehaviour
         if (ctx.performed)
         {
             Vector3 dashDir = new Vector3(input, 0f, 0f);
-            rb.AddForce(dashDir * dashSpeed, ForceMode.Impulse);
+            rb.AddForce(dashDir * dashSpeed * Time.deltaTime, ForceMode.Impulse);
         }
     }
 
     public void Update()
     {
         Velocity = rb.velocity;
+        PlayerAnimator.SetFloat("XVelocity", rb.velocity.x);
+        PlayerAnimator.SetFloat("YVelocity", rb.velocity.y);
 
+        wallJump();
 
-        Vector3 inputDir = new Vector3(input, 0f, 0f);
-
-        if (walkAllowed)
+        if (input != 0 && Mathf.Sign(transform.localScale.x) != Mathf.Sign(rb.velocity.x))
         {
-            if ((rb.velocity.x <= maxSpeed && Mathf.Sign(rb.velocity.x) == 1) || (rb.velocity.x >= -maxSpeed && Mathf.Sign(rb.velocity.x) == -1) || (Mathf.Sign(rb.velocity.x) != input))
-            {
-                rb.AddForce((inputDir * acceleration * 1000f) * Time.deltaTime, ForceMode.Force);
-            }
+            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
 
-        if (slideAllowed && !grounded)
-        {
-            Vector3 wallSlide = new Vector3(0f, -slideSpeed, 0f);
-            rb.AddForce(wallSlide);
-                //rb.AddForce(-rb.velocity.x, 0f, 0f);
-            Debug.Log("StartSlide");
-        }
+        
+
+        
 
         if (startSlideTimer)
         {
@@ -104,6 +134,28 @@ public class CharacterMovement : MonoBehaviour
                 startSlideTimer = false;
             }
         }
+    }
+
+    public void FixedUpdate()
+    {
+        if (walkAllowed && !isWallJumping)
+        {
+            if ((rb.velocity.x <= maxSpeed && Mathf.Sign(rb.velocity.x) == 1) || (rb.velocity.x >= -maxSpeed && Mathf.Sign(rb.velocity.x) == -1) || (Mathf.Sign(rb.velocity.x) != input))
+            {
+                //rb.AddForce((inputDir * acceleration * 1000f) * Time.deltaTime, ForceMode.Force);
+                Vector3 walk = new Vector3(input * acceleration, rb.velocity.y, rb.velocity.z);
+                rb.velocity = walk;
+            }
+        }
+
+        if (slideAllowed && !grounded)
+        {
+            Vector3 wallSlide = new Vector3(0f, -slideSpeed, 0f);
+            rb.velocity = wallSlide;
+            sliding = true;
+            Debug.Log("StartSlide");
+        }
+        else sliding = false;
     }
 
     private void OnTriggerStay(Collider other)
@@ -133,6 +185,7 @@ public class CharacterMovement : MonoBehaviour
                 rb.useGravity = false;
                 rb.velocity = new Vector3(0f, Velocity.x, 0f);
                 startSlideTimer = true;
+                PlayerAnimator.SetBool("WallCling", true);
             }
         }
     }
@@ -160,6 +213,8 @@ public class CharacterMovement : MonoBehaviour
             rb.useGravity = true;
             startSlide = false;
             slideAllowed = false;
+            sliding = false;
+            PlayerAnimator.SetBool("WallCling", false);
         }
     }
 }
