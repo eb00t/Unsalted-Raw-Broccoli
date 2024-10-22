@@ -6,15 +6,13 @@ using UnityEngine.UI;
 
 public class InventoryStore : MonoBehaviour
 {
-    //[SerializeField] private List<GameObject> inventory;
     [SerializeField] private Transform block;
     [SerializeField] private Transform grid;
-    //public List<Sprite> sprites;
     public List<GameObject> items;
+    [SerializeField] private GameObject info;
     private void Start()
     {
         RefreshList();
-        AddNewItem(items[0]);
     }
 
     private void RefreshList()
@@ -28,41 +26,26 @@ public class InventoryStore : MonoBehaviour
             }
         }
         
-        // adds new button in inventory menu for each item in list inventory
-        /*
-        foreach (var g in inventory)
+        foreach (var g in items)
         {
-	        var c = Instantiate(block, block.position, block.rotation, grid);
+	        AddNewItem(g);
         }
-        */
     }
 
 
-    private void AddNewItem(GameObject itemA)
+    private void AddNewItem(GameObject item)
     {
-        var s = itemA.GetComponent<WeaponHandler>();
-        var sprite = s.GetComponent<SpriteRenderer>().sprite;
+        var consumable = item.GetComponent<Consumable>();
+
+        var newBlock = Instantiate(block, block.position, block.rotation, grid);
+        newBlock.GetComponentInChildren<TextMeshProUGUI>().text = consumable.title;
         
-        var b = Instantiate(block, block.position, block.rotation, grid);
-        b.GetComponentInChildren<Image>().sprite = sprite;
-        b.GetComponentInChildren<TextMeshProUGUI>().text = s.title;
-
-        /*
-        foreach (var s in sprites)
+        foreach (var s in newBlock.GetComponentsInChildren<Image>())
         {
-            if (s.name == b.GetComponent<DragDropUI>().weapons.ToString())
+            if (s.name == "Image")
             {
-                var i = b.GetComponentsInChildren<Image>();
-
-                foreach (var img in i)
-                {
-                    if (!img.GetComponent<DragDropUI>())
-                    {
-                        img.sprite = s;
-                    }
-                }
+                s.sprite = consumable.uiIcon;
             }
         }
-        */
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.Processors;
 using UnityEngine.Serialization;
@@ -27,8 +29,21 @@ public class QuickMenuHandler : MonoBehaviour
 	    }
     }
 
-    public void AddToQuickMenu()
+    private void AddToMenu(GameObject item)
     {
-	    
+	    /*
+	    var consumable = item.GetComponent<Consumable>();
+
+	    var newBlock = Instantiate(block, block.position, block.rotation, grid);
+	    newBlock.GetComponentInChildren<TextMeshProUGUI>().text = consumable.title;
+        
+	    foreach (var s in newBlock.GetComponentsInChildren<Image>())
+	    {
+		    if (s.name == "Image")
+		    {
+			    s.sprite = consumable.uiIcon;
+		    }
+	    }
+	    */
     }
 }
