@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class RoomInfo : MonoBehaviour
@@ -12,47 +13,47 @@ public class RoomInfo : MonoBehaviour
     public bool canHaveTopRoom;
     public bool canHaveBottomRoom;
     public int connectorsToSpawn;
-    [field: Header("Debugging")]
-    public Vector3 distToRoomCentre;
-    public Transform wallL, wallR, wallB, wallT;
-    public List<GameObject> allWalls;
+
+    [field: Header("Debugging")] 
+    public List<GameObject> allDoors;
+    public Transform doorL, doorR, doorB, doorT;
     public string spawnedOnSide;
     void Awake()
     {
-        foreach (var walls in gameObject.GetComponentsInChildren<Transform>())
+        foreach (var doors in gameObject.GetComponentsInChildren<Transform>())
         {
-            if (walls.name.Contains("Wall")) 
+            if (doors.name.Contains("Door")) 
             {
-                allWalls.Add(walls.gameObject);
+                allDoors.Add(doors.gameObject);
             }
         }
 
-        foreach (var walls in allWalls)
+        foreach (var doors in allDoors)
         {
-            switch (walls.tag)
+            switch (doors.tag)
             {
-                case "Left Wall":
-                    if (wallL == null)
+                case "Left Door":
+                    if (doorL == null)
                     {
-                        wallL = walls.transform;
+                        doorL = doors.transform;
                     }
                     break;
-                case "Right Wall":
-                    if (wallT == null)
+                case "Right Door":
+                    if (doorR == null)
                     {
-                        wallT = walls.transform;
+                        doorR = doors.transform;
                     }
                     break;
-                case "Top Wall":
-                    if (wallT == null)
+                case "Top Door":
+                    if (doorT == null)
                     {
-                        wallT = walls.transform;
+                        doorT = doors.transform;
                     }
                     break;
-                case "Bottom Wall":
-                    if (wallB == null)
+                case "Bottom Door":
+                    if (doorB == null)
                     {
-                        wallB = walls.transform;
+                        doorB = doors.transform;
                     }
                     break;
                 default:
@@ -63,6 +64,24 @@ public class RoomInfo : MonoBehaviour
             canHaveRightRoom = true;
             canHaveTopRoom = true;
             canHaveBottomRoom = true;
+
+            if (doorL == null)
+            {
+                canHaveLeftRoom = false;
+            } 
+            if (doorR == null)
+            {
+                canHaveRightRoom = false;
+            } 
+            if (doorB == null)
+            {
+                canHaveBottomRoom = false;
+            } 
+            if (doorT == null)
+            {
+                canHaveTopRoom = false;
+            }
+            
             connectorsToSpawn = Random.Range(0, 4);
         }
         
