@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: 539237578866668555}
   m_Layer: 0
   m_Name: DoorB
-  m_TagString: Door
+  m_TagString: BottomDoor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -968,7 +968,7 @@ GameObject:
   - component: {fileID: 7024752918567546941}
   m_Layer: 0
   m_Name: DoorR
-  m_TagString: Door
+  m_TagString: Right Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1073,7 +1073,7 @@ GameObject:
   - component: {fileID: 559107097624540070}
   m_Layer: 0
   m_Name: DoorT
-  m_TagString: Door
+  m_TagString: Top Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1273,16 +1273,11 @@ MonoBehaviour:
   canHaveTopRoom: 0
   canHaveBottomRoom: 0
   connectorsToSpawn: 0
-  distToRoomCentre: {x: 0, y: 0, z: 0}
-  wallL: {fileID: 3532775916798363356}
-  wallR: {fileID: 1352246426052548772}
-  wallB: {fileID: 3802418610673186277}
-  wallT: {fileID: 7530657637843288474}
+  allDoors: []
   doorL: {fileID: 6386151051226836032}
   doorR: {fileID: 8637073572864247568}
   doorB: {fileID: 5020253502049732077}
   doorT: {fileID: 2258259892870836183}
-  allWalls: []
   spawnedOnSide: 
 --- !u!1 &6340678690926225691
 GameObject:
@@ -1613,7 +1608,7 @@ GameObject:
   - component: {fileID: 312820488809884299}
   m_Layer: 0
   m_Name: DoorL
-  m_TagString: Door
+  m_TagString: Left Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
