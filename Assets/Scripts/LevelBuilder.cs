@@ -22,10 +22,9 @@ public class LevelBuilder : MonoBehaviour
     public int numberOfConnectors;
     public LevelMode currentFloor;
     private GameObject _startingRoom;
-
-    [field: Header("Debugging")]
+    
     private GameObject _roomToSpawnOn; //The room containing the wall this room used as its spawn position.
-
+    [field: Header("Debugging")]
     public List<GameObject> possibleRooms; //Rooms that CAN spawn.
     public List<GameObject> possibleConnectors; //Connectors that can spawn.
     public List<GameObject> spawnedRooms; //Rooms that have ALREADY spawned.
@@ -33,7 +32,6 @@ public class LevelBuilder : MonoBehaviour
     private List<Vector3> _spawnPointPositions;
     public RoomInfo spawnedRoomInfo;
     public RoomInfo roomSpawnedOnInfo;
-
     public Transform spawnRoomDoorL;
     public Transform spawnRoomDoorR;
     public Transform spawnRoomDoorT;
@@ -63,7 +61,7 @@ public class LevelBuilder : MonoBehaviour
         spawnRoomDoorL = _startingRoom.GetComponent<RoomInfo>().doorL;
         spawnRoomDoorR = _startingRoom.GetComponent<RoomInfo>().doorR;
         spawnRoomDoorB = _startingRoom.GetComponent<RoomInfo>().doorB;
-        spawnRoomDoorL = _startingRoom.GetComponent<RoomInfo>().doorT;
+        spawnRoomDoorT = _startingRoom.GetComponent<RoomInfo>().doorT;
         spawnPoints = new List<Transform>()
         {
             spawnRoomDoorL.transform,
@@ -105,6 +103,11 @@ public class LevelBuilder : MonoBehaviour
         {
             possibleRooms.Add(rooms);
         }
+        
+        foreach (var rooms in Resources.LoadAll<GameObject>(multiFloorRoomPath))
+        {
+            possibleRooms.Add(rooms);
+        }
 
         foreach (var rooms in Resources.LoadAll<GameObject>(connectorPath))
         {
@@ -116,7 +119,7 @@ public class LevelBuilder : MonoBehaviour
 
     void SpawnConnector()
     {
-        var spawnRandomNumber = RandomiseNumber(spawnPoints.Count); //RNG for where to spawn connectors
+        int spawnRandomNumber = RandomiseNumber(spawnPoints.Count); //RNG for where to spawn connectors
         Vector3 spawnPointPosition = spawnPoints[spawnRandomNumber].position; //Position that the room will use to spawn on
         Vector3 newSpawnPoint = Vector3.zero; //Where the connecting room will spawn
 
@@ -126,41 +129,40 @@ public class LevelBuilder : MonoBehaviour
         bool xAxis = true; //Whether the room spawned on the x-axis or y-axis
         GameObject connectorToSpawn = null; //The type of connector to spawn
         
-        string path = "NOTHING..."; //Path for the connector#
-        bool connectorIsShort = true;
+        //bool connectorIsShort = true;
         ConnectorRoomInfo spawnedConnectorInfo;
         Vector3 connectorNewSpawnPoint; //Where the room will spawn as a result of the connector
       
-        
+        Debug.Log(spawnPoints[spawnRandomNumber]);
         switch (spawnPoints[spawnRandomNumber].gameObject.tag) //Move the room based on the distance between where it was going to spawn minus the position of the wall it will spawn on
         {
             case "Left Door":
-                connectorToSpawn = ConnectorPathSetup("Left");
                 Debug.Log("LEFT");
+                connectorToSpawn = ConnectorPathSetup("Left");
                 spawnedConnectorInfo = connectorToSpawn.GetComponent<ConnectorRoomInfo>();
-                newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallR.transform.localPosition.x);
+                newSpawnPoint.x = (spawnPointPosition.x + spawnedConnectorInfo.wallR.transform.localPosition.x);
                 newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallR.transform.localPosition.y);
                 spawnedConnectorInfo.spawnedOnSide = "Left";
                 break;
             case "Right Door":
-                connectorToSpawn = ConnectorPathSetup("Right");
                 Debug.Log("RIGHT");
+                connectorToSpawn = ConnectorPathSetup("Right");
                 spawnedConnectorInfo = connectorToSpawn.GetComponent<ConnectorRoomInfo>();
                 newSpawnPoint.x = (spawnPointPosition.x + spawnedConnectorInfo.wallL.transform.localPosition.x);
                 newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallL.transform.localPosition.y);
                 spawnedConnectorInfo.spawnedOnSide = "Right";
                 break;
             case "Bottom Door":
-                connectorToSpawn = ConnectorPathSetup("Bottom");
                 Debug.Log("BOTTOM");
+                connectorToSpawn = ConnectorPathSetup("Bottom");
                 spawnedConnectorInfo = connectorToSpawn.GetComponent<ConnectorRoomInfo>();
                 newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallT.transform.localPosition.y);
                 newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallT.transform.localPosition.x);
                 spawnedConnectorInfo.spawnedOnSide = "Bottom";
                 break;
             case "Top Door":
-                connectorToSpawn = ConnectorPathSetup("Top");
                 Debug.Log("TOP");
+                connectorToSpawn = ConnectorPathSetup("Top");
                 spawnedConnectorInfo = connectorToSpawn.GetComponent<ConnectorRoomInfo>();
                 newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallB.transform.localPosition.y);
                 newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallB.transform.localPosition.x);
@@ -299,17 +301,28 @@ public class LevelBuilder : MonoBehaviour
 
     return path;
     }
+    
     GameObject ConnectorPathSetup(string side)
     {
         string path = "";
+        Debug.Log(side);
         switch (side)
         {
-            case "Left" or "Right":
+            case "Left":
                 path = "Room Layouts/Connectors/ConnectorShortHoriz"; //TEMP CODE: MAY BE REPLACED
                 break;
-            case "Top" or "Bottom": 
+             case "Right":
+                path = "Room Layouts/Connectors/ConnectorShortHoriz"; //TEMP CODE: MAY BE REPLACED
+                break;
+            case "Top": 
                 path = "Room Layouts/Connectors/ConnectorShortVerti"; //TEMP CODE: MAY BE REPLACED
                 break;
+           case "Bottom":
+                path = "Room Layouts/Connectors/ConnectorShortVerti"; //TEMP CODE: MAY BE REPLACED
+                break;
+           default:
+               path = "Room Layouts/Connectors/ConnectorShortHoriz";
+               break;
         }
         GameObject connectorToSpawn = Resources.Load<GameObject>(path);
         return connectorToSpawn;
