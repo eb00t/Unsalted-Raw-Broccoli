@@ -8,6 +8,7 @@ public class ConnectorRoomInfo : MonoBehaviour
     public List<GameObject> spawnWalls;
     public GameObject wallL, wallR, wallT, wallB;
     public string spawnedOnSide;
+
     void Awake()
     {
         switch (horizontal)
