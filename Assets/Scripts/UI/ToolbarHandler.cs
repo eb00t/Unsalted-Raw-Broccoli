@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.Processors;
 using UnityEngine.Serialization;
 
-public class QuickMenuHandler : MonoBehaviour
+public class ToolbarHandler : MonoBehaviour
 {
 	// equip selected
 	// select toolbar item (1-4)
