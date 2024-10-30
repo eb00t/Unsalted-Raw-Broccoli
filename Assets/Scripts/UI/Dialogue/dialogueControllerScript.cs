@@ -23,7 +23,7 @@ public class dialogueControllerScript : MonoBehaviour
     void Update()
     {
         //Move to next sentence
-        if(Input.GetKeyDown(KeyCode.Space) && dialogueCanvas.activeInHierarchy == true)
+        if(Input.GetKeyDown(KeyCode.Tab) && dialogueCanvas.activeInHierarchy == true)
         {
             NextSentence();
             DialogueSpeed = 0.05f;
