@@ -170,7 +170,7 @@ public class LevelBuilder : MonoBehaviour
                     Debug.Log("TOP");
                     connectorToSpawn = ConnectorPathSetup("Top");
                     spawnedConnectorInfo = connectorToSpawn.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.y = (spawnPointPosition.y + spawnedConnectorInfo.wallB.transform.localPosition.y);
+                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallB.transform.localPosition.y);
                     newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallB.transform.localPosition.x);
                     spawnedConnectorInfo.spawnedOnSide = "Top";
                     connectorNewSpawnPoint = spawnedConnectorInfo.wallT.transform.localPosition;
@@ -195,26 +195,28 @@ public class LevelBuilder : MonoBehaviour
        
         //Debug.Log("Before: " + spawnPointPosition.x + ", " + spawnPointPosition.y);
         spawnedRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
+        int totalLength = spawnedRoomInfo.roomLength + spawnedConnectorInfo.connectorSize;
+        int totalHeight = spawnedRoomInfo.roomHeight + spawnedConnectorInfo.connectorSize;
         switch (spawnedConnectorInfo.spawnedOnSide) //Move the room based on the distance between where it was going to spawn minus the position of the wall it will spawn on
             {
                 case "Left":
                     Debug.Log("LEFT");
-                    realSpawnPosition.x = (newSpawnPoint.x - spawnedRoomInfo.doorL.transform.localPosition.x);
+                    realSpawnPosition.x = (newSpawnPoint.x - (totalLength));
                     realSpawnPosition.y = (newSpawnPoint.y);
                     break;
                 case "Right":
                     Debug.Log("RIGHT");
-                    realSpawnPosition.x = (newSpawnPoint.x + spawnedRoomInfo.doorR.transform.localPosition.x);
+                    realSpawnPosition.x = (newSpawnPoint.x + (totalLength));
                     realSpawnPosition.y = (newSpawnPoint.y);
                     break;
                 case "Bottom":
                     Debug.Log("BOTTOM");
-                    realSpawnPosition.y = (newSpawnPoint.y - spawnedRoomInfo.doorB.transform.localPosition.x);
+                    realSpawnPosition.y = (newSpawnPoint.y - totalHeight);
                     realSpawnPosition.x = (newSpawnPoint.x);
                     break;
                 case "Top":
                     Debug.Log("TOP");
-                    realSpawnPosition.y = (newSpawnPoint.y + spawnedRoomInfo.doorT.transform.localPosition.y);
+                    realSpawnPosition.y = (newSpawnPoint.y + totalHeight);
                     realSpawnPosition.x = (newSpawnPoint.x);
                     break;
             }

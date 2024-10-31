@@ -13,6 +13,8 @@ public class RoomInfo : MonoBehaviour
     public bool canHaveTopRoom;
     public bool canHaveBottomRoom;
     public int connectorsToSpawn;
+    public int roomLength; //
+    public int roomHeight; //YOU MUST ASSIGN THESE MANUALLY FOR THINGS TO WORK
 
     [field: Header("Debugging")] 
     public List<GameObject> allDoors;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ConnectorRoomInfo : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class ConnectorRoomInfo : MonoBehaviour
     public List<GameObject> spawnWalls;
     public GameObject wallL, wallR, wallT, wallB;
     public string spawnedOnSide;
+    public int connectorSize;
 
     void Awake()
     {
