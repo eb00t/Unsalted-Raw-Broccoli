@@ -195,28 +195,28 @@ public class LevelBuilder : MonoBehaviour
        
         //Debug.Log("Before: " + spawnPointPosition.x + ", " + spawnPointPosition.y);
         spawnedRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
-        int totalLength = spawnedRoomInfo.roomLength + spawnedConnectorInfo.connectorSize;
-        int totalHeight = spawnedRoomInfo.roomHeight + spawnedConnectorInfo.connectorSize;
+        int totalLength = spawnedRoomInfo.roomLength/2 + spawnedConnectorInfo.connectorSize/2;
+        int totalHeight = spawnedRoomInfo.roomHeight/2 + spawnedConnectorInfo.connectorSize/2;
         switch (spawnedConnectorInfo.spawnedOnSide) //Move the room based on the distance between where it was going to spawn minus the position of the wall it will spawn on
             {
                 case "Left":
                     Debug.Log("LEFT");
-                    realSpawnPosition.x = (newSpawnPoint.x - (totalLength));
+                    realSpawnPosition.x = (newSpawnPoint.x - totalLength - 1);
                     realSpawnPosition.y = (newSpawnPoint.y);
                     break;
                 case "Right":
                     Debug.Log("RIGHT");
-                    realSpawnPosition.x = (newSpawnPoint.x + (totalLength));
+                    realSpawnPosition.x = (newSpawnPoint.x + totalLength + 1);
                     realSpawnPosition.y = (newSpawnPoint.y);
                     break;
                 case "Bottom":
                     Debug.Log("BOTTOM");
-                    realSpawnPosition.y = (newSpawnPoint.y - totalHeight);
+                    realSpawnPosition.y = (newSpawnPoint.y - totalHeight - 1);
                     realSpawnPosition.x = (newSpawnPoint.x);
                     break;
                 case "Top":
                     Debug.Log("TOP");
-                    realSpawnPosition.y = (newSpawnPoint.y + totalHeight);
+                    realSpawnPosition.y = (newSpawnPoint.y + totalHeight + 1);
                     realSpawnPosition.x = (newSpawnPoint.x);
                     break;
             }
