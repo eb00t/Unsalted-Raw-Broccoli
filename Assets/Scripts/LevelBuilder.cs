@@ -202,12 +202,12 @@ public class LevelBuilder : MonoBehaviour
                 case "Left":
                     Debug.Log("LEFT");
                     realSpawnPosition.x = (newSpawnPoint.x - totalLength - 1);
-                    realSpawnPosition.y = (newSpawnPoint.y);
+                    realSpawnPosition.y = (newSpawnPoint.y -(spawnedRoomInfo.doorR.transform.localPosition.y * 20));
                     break;
                 case "Right":
                     Debug.Log("RIGHT");
                     realSpawnPosition.x = (newSpawnPoint.x + totalLength + 1);
-                    realSpawnPosition.y = (newSpawnPoint.y);
+                    realSpawnPosition.y = (newSpawnPoint.y - (spawnedRoomInfo.doorL.transform.localPosition.y * 20));
                     break;
                 case "Bottom":
                     Debug.Log("BOTTOM");
