@@ -24,11 +24,11 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private Vector3 Velocity;
 
     private float input;
-    private bool startSlide;
-    private bool startSlideTimer;
-    private bool sliding = false;
+    [SerializeField] private bool startSlide;
+    [SerializeField] private bool startSlideTimer;
+    [SerializeField] private bool sliding = false;
     public bool slideAllowed = false;
-    private float timer = 0f;
+    [SerializeField] private float timer = 0f;
 
     [SerializeField] bool isWallJumping = false;
     [SerializeField] private float wallJumpingCounter;
@@ -69,6 +69,8 @@ public class CharacterMovement : MonoBehaviour
 
         if (ctx.performed && wallJumpingCounter > 0f)
         {
+            slideAllowed = false;
+            startSlideTimer = false;
             isWallJumping = true;
             Vector3 wallJump = new Vector3(-input * wallJumpForce.x, wallJumpForce.y, 0f);
             wallJumpingCounter = 0f;
@@ -76,7 +78,7 @@ public class CharacterMovement : MonoBehaviour
             Invoke(nameof(stopWallJump), wallJumpingDuration);
         }
 
-        if(ctx.performed && !grounded && !startSlideTimer && !sliding)
+        if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter < 0f)
         {
             doubleJumpPerformed = true;
         }
@@ -84,7 +86,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void wallJump()
     {
-        if (sliding)
+        if (slideAllowed || startSlideTimer)
         {
             isWallJumping = false;
             wallJumpingCounter = wallJumpingTime;
@@ -103,7 +105,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void Dash(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed)
+        if (ctx.performed && grounded)
         {
             Vector3 dashDir = new Vector3(input, 0f, 0f);
             rb.AddForce(dashDir * dashSpeed * Time.deltaTime, ForceMode.Impulse);
@@ -169,6 +171,7 @@ public class CharacterMovement : MonoBehaviour
         if (other.CompareTag("Bottom Wall"))
         {
             grounded = true;
+            startSlide = false;
             doubleJumpPerformed = false;
             slideAllowed = false;
         }

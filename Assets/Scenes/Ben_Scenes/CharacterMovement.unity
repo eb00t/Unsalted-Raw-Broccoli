@@ -281,10 +281,75 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 246541865281580069, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 312820488809884299, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 325090710512383139, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 539237578866668555, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1882214844998057788, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2794294576588898487, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3815067989629713324, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4604143208116343273, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692759776676768977, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4887061742372881280, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5479053291480077666, guid: 941a9af0699c05344ba70ed8898ac7c5,
         type: 3}
       propertyPath: m_Name
       value: TestRoom1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778745218958799628, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6210192107478978729, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7024752918567546941, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7169563527229664998, guid: 941a9af0699c05344ba70ed8898ac7c5,
         type: 3}
@@ -387,7 +452,7 @@ GameObject:
   - component: {fileID: 1287486178}
   m_Layer: 0
   m_Name: PlayerCharacter
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -470,21 +535,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3fd3e67c191a224ab3e01639d2ef7b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allowMovement: 1
   acceleration: 10
   maxSpeed: 10
-  jumpForce: 500
+  jumpForce: 600
   dashSpeed: 1500
   slideSpeed: 10
   holdTime: 10
   grounded: 0
   doubleJumpPerformed: 0
   Velocity: {x: 0, y: 0, z: 0}
+  startSlide: 0
+  startSlideTimer: 0
+  sliding: 0
   slideAllowed: 0
+  timer: 0
   isWallJumping: 0
   wallJumpingCounter: 0
-  wallJumpingTime: 0.4
-  wallJumpForce: {x: 300, y: 300}
-  wallJumpingDuration: 0.4
+  wallJumpingTime: 0.2
+  wallJumpForce: {x: 450, y: 500}
+  wallJumpingDuration: 0.2
 --- !u!65 &1287486178
 BoxCollider:
   m_ObjectHideFlags: 0
