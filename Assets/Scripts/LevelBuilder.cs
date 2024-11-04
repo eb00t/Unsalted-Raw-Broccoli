@@ -212,12 +212,12 @@ public class LevelBuilder : MonoBehaviour
                 case "Bottom":
                     Debug.Log("BOTTOM");
                     realSpawnPosition.y = (newSpawnPoint.y - totalHeight - 1);
-                    realSpawnPosition.x = (newSpawnPoint.x - spawnedRoomInfo.doorT.transform.localPosition.x * spawnedRoomInfo.roomLength);
+                    realSpawnPosition.x = (newSpawnPoint.x - (spawnedRoomInfo.doorT.transform.localPosition.x * spawnedRoomInfo.roomLength));
                     break;
                 case "Top":
                     Debug.Log("TOP");
                     realSpawnPosition.y = (newSpawnPoint.y + totalHeight + 1);
-                    realSpawnPosition.x = (newSpawnPoint.x - spawnedRoomInfo.doorB.transform.localPosition.x * spawnedRoomInfo.roomLength);
+                    realSpawnPosition.x = (newSpawnPoint.x - (spawnedRoomInfo.doorB.transform.localPosition.x * spawnedRoomInfo.roomLength));
                     break;
             }
         Debug.Log("Room should spawn at: " + realSpawnPosition);
@@ -230,7 +230,9 @@ public class LevelBuilder : MonoBehaviour
     void UpdateSpawnWalls(GameObject spawnedRoom, GameObject roomSpawnedOn, int roomRandomNumber, int spawnRandomNumber)
     {
         spawnedRoomInfo = spawnedRoom.GetComponent<RoomInfo>();
+        Debug.Log("Spawned room: " + spawnedRoomInfo.gameObject);
         roomSpawnedOnInfo = roomSpawnedOn.GetComponent<RoomInfo>();
+        Debug.Log("and it spawned on: " + roomSpawnedOnInfo.gameObject);
         foreach (var doors in spawnedRoomInfo.allDoors)
         {
             spawnPoints.Add(doors.transform);
