@@ -1,26 +1,52 @@
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class MenuHandler : MonoBehaviour
+// TODO: selectedInv needs to be set by another script as inventory is generated at runtime
 {
 	[SerializeField] private GameObject inventoryGui, menu, selectedMenu, equip, selectedEquip;
 	[SerializeField] private EventSystem eventSystem;
 	private bool isEquip, isInventory;
-	[SerializeField] private PlayerInput playerInput;
+	private InventoryStore _inventoryStore;
+
+	private void Start()
+	{
+		_inventoryStore = GetComponent<InventoryStore>();
+	}
 
 	public void ToggleInventory()
 	{
 		inventoryGui.SetActive(!inventoryGui.activeSelf);
 		isInventory = inventoryGui.activeSelf;
 	}
-	
-	public void ToggleEquip()
+
+	private void ToggleEquip()
 	{
-		SwitchSelected(selectedEquip);
-		isEquip = true;
+		if (isEquip)
+		{
+			SwitchSelected(null);
+			isEquip = false;
+
+			foreach (var b in equip.GetComponentsInChildren<Button>())
+			{
+				b.interactable = true;
+				b.GetComponentInChildren<TextMeshProUGUI>().text = "";
+			}
+		}
+		else
+		{
+			SwitchSelected(selectedEquip);
+			isEquip = true;
+
+			foreach (var b in equip.GetComponentsInChildren<Button>())
+			{
+				b.interactable = true;
+				b.GetComponentInChildren<TextMeshProUGUI>().text = "+";
+			}
+		}
 	}
 
 	public void Back(InputAction.CallbackContext context)
@@ -54,11 +80,33 @@ public class MenuHandler : MonoBehaviour
 			SwitchSelected(selectedMenu);
 		}
 	}
-
-
+	
 	private void SwitchSelected(GameObject g)
 	{
 		eventSystem.SetSelectedGameObject(null);
 		eventSystem.SetSelectedGameObject(g);
+	}
+
+	public void SlotSelected(int slot)
+	{
+		if (_inventoryStore.items[0] != null)
+		{
+			SwitchSelected(_inventoryStore.items[0]);
+		}
+		
+		ToggleEquip();
+		ToggleInventory();
+
+		switch (slot)
+		{
+			case 0:
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+		}
 	}
 }
