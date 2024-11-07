@@ -11,6 +11,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private EventSystem eventSystem;
 	private bool isEquip, isInventory;
 	private InventoryStore _inventoryStore;
+	[SerializeField] private GameObject grid;
 
 	private void Start()
 	{
@@ -21,6 +22,11 @@ public class MenuHandler : MonoBehaviour
 	{
 		inventoryGui.SetActive(!inventoryGui.activeSelf);
 		isInventory = inventoryGui.activeSelf;
+		
+		foreach (var b in grid.GetComponentsInChildren<Button>())
+		{
+			b.interactable = false;
+		}
 	}
 
 	private void ToggleEquip()
@@ -51,23 +57,21 @@ public class MenuHandler : MonoBehaviour
 
 	public void Back(InputAction.CallbackContext context)
 	{
-		if (context.performed)
+		if (!context.performed) return;
+		
+		if (isEquip && !isInventory)
 		{
-			if (isInventory)
-			{
-				ToggleInventory();
-				ToggleEquip();
-			}
-			else if (isEquip)
-			{
-				SwitchSelected(selectedMenu);
-				isEquip = false;
-			}
-			else if (!isEquip && !isInventory)
-			{
-				menu.SetActive(false);
-				eventSystem.SetSelectedGameObject(null);
-			}
+			SwitchSelected(selectedMenu);
+			ToggleEquip();
+		}
+		else if (isInventory)
+		{
+			ToggleInventory();
+		}
+		else if (!isEquip && !isInventory && menu.activeSelf)
+		{
+			menu.SetActive(false);
+			SwitchSelected(selectedMenu);
 		}
 	}
 
@@ -89,14 +93,19 @@ public class MenuHandler : MonoBehaviour
 
 	public void SlotSelected(int slot)
 	{
+		if (inventoryGui.activeSelf) return;
+		ToggleInventory();
+		
 		if (_inventoryStore.items[0] != null)
 		{
-			SwitchSelected(_inventoryStore.items[0]);
+			SwitchSelected(grid.GetComponentInChildren<Button>().gameObject);
+			
+			foreach (var b in grid.GetComponentsInChildren<Button>())
+			{
+				b.interactable = true;
+			}
 		}
 		
-		ToggleEquip();
-		ToggleInventory();
-
 		switch (slot)
 		{
 			case 0:
