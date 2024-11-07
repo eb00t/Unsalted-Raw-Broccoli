@@ -9,7 +9,7 @@ public class InventoryStore : MonoBehaviour
     [SerializeField] private Transform block;
     [SerializeField] private Transform grid;
     public List<GameObject> items;
-    [SerializeField] private GameObject info;
+    
     private void Start()
     {
         RefreshList();
@@ -17,7 +17,6 @@ public class InventoryStore : MonoBehaviour
 
     private void RefreshList()
     {
-        // clear existing grid TODO: this isn't very efficient but it works fine for now
         foreach (var n in grid.GetComponentsInChildren<Transform>())
         {
             if (n != grid)
