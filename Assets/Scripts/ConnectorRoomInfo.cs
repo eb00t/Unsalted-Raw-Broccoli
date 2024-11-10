@@ -11,7 +11,7 @@ public class ConnectorRoomInfo : MonoBehaviour
     public string spawnedOnSide;
     public int connectorSize;
 
-    void Awake()
+    void Start()
     {
         switch (horizontal)
         {
@@ -20,11 +20,9 @@ public class ConnectorRoomInfo : MonoBehaviour
                 spawnWalls.Add(wallR);
                 break;
             case false:
-            {
                 spawnWalls.Add(wallB);
                 spawnWalls.Add(wallT);
                 break;
-            }
         }
     }
     

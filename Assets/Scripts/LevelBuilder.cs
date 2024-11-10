@@ -18,24 +18,27 @@ public class LevelBuilder : MonoBehaviour
         Floor3,
     }
 
-    [field: Header("Configuration")] public int numberOfRooms;
+    [field: Header("Configuration")] 
+    public int numberOfRooms;
+
+    public int roomsRemaining;
     public int numberOfConnectors;
     public LevelMode currentFloor;
     private GameObject _startingRoom;
-    
+
     private GameObject _roomToSpawnOn; //The room containing the wall this room used as its spawn position.
-    [field: Header("Debugging")]
-    public List<GameObject> possibleRooms; //Rooms that CAN spawn.
+    [field: Header("Debugging")] public List<GameObject> possibleRooms; //Rooms that CAN spawn.
     public List<GameObject> possibleConnectors; //Connectors that can spawn.
     public List<GameObject> spawnedRooms; //Rooms that have ALREADY spawned.
     public List<Transform> spawnPoints;
-    private List<Vector3> _spawnPointPositions;
-    public RoomInfo spawnedRoomInfo;
-    public RoomInfo roomSpawnedOnInfo;
+    public RoomInfo spawningRoomInfo;
+    public RoomInfo previouslySpawnedRoomInfo;
+    private ConnectorRoomInfo _spawnedConnectorInfo;
     public Transform spawnRoomDoorL;
     public Transform spawnRoomDoorR;
     public Transform spawnRoomDoorT;
     public Transform spawnRoomDoorB;
+    private GameObject _connectorToSpawn;
 
     private void Awake()
     {
@@ -49,6 +52,7 @@ public class LevelBuilder : MonoBehaviour
 
     void Start()
     {
+        roomsRemaining = numberOfRooms;
         _startingRoom = GameObject.FindWithTag("StartingRoom");
         GetStartingRoomWalls();
         possibleRooms = new List<GameObject>();
@@ -68,13 +72,6 @@ public class LevelBuilder : MonoBehaviour
             spawnRoomDoorR.transform,
             spawnRoomDoorB.transform,
             spawnRoomDoorT.transform
-        };
-        _spawnPointPositions = new List<Vector3>()
-        {
-            spawnRoomDoorL.transform.position,
-            spawnRoomDoorR.transform.position,
-            spawnRoomDoorB.transform.position,
-            spawnRoomDoorT.transform.position
         };
     }
 
@@ -103,7 +100,7 @@ public class LevelBuilder : MonoBehaviour
         {
             possibleRooms.Add(rooms);
         }
-        
+
         foreach (var rooms in Resources.LoadAll<GameObject>(multiFloorRoomPath))
         {
             possibleRooms.Add(rooms);
@@ -120,177 +117,162 @@ public class LevelBuilder : MonoBehaviour
     void SpawnConnector()
     {
         for (int i = 0; i < numberOfRooms; i++) //Spawn amount of rooms
-        { 
-            int spawnRandomNumber = RandomiseNumber(spawnPoints.Count); //RNG for where to spawn connectors
-            Vector3 spawnPointPosition =
-                spawnPoints[spawnRandomNumber].position; //Position that the room will use to spawn on
-            Vector3 newSpawnPoint = Vector3.zero; //Where the connecting room will spawn
+        {
+            int spawnRandomNumber = RandomiseNumber(spawnPoints.Count); //  RNG for where to spawn connectors
+            Vector3 spawnPointPosition = spawnPoints[spawnRandomNumber].position; //    Position that the room will use to spawn on
+            Vector3 newSpawnPoint = Vector3.zero; //    Where the connecting room will spawn
 
-            GameObject roomSpawnedOn = spawnPoints[spawnRandomNumber].root.gameObject; //
-            roomSpawnedOnInfo = roomSpawnedOn.GetComponent<RoomInfo>(); //Getting the roomInfo components;
-        
-            GameObject connectorToSpawn = null; //The type of connector to spawn
+            GameObject previouslySpawnedRoom = spawnPoints[spawnRandomNumber].root.gameObject; //
+            previouslySpawnedRoomInfo = previouslySpawnedRoom.GetComponent<RoomInfo>(); //    Getting the roomInfo components;
 
-            //bool connectorIsShort = true;
-            ConnectorRoomInfo spawnedConnectorInfo = null;
-            Vector3 connectorNewSpawnPoint = Vector3.zero; //Where the room will spawn as a result of the connector
-
-            
-       
-            switch (spawnPoints[spawnRandomNumber].gameObject.tag) //Move the room based on the distance between where it was going to spawn minus the position of the wall it will spawn on
+            switch (spawnPoints[spawnRandomNumber].gameObject.tag) //  Get the tag of the randomly generated spawn point.
             {
                 case "Left Door":
                     Debug.Log("LEFT");
-                    connectorToSpawn = ConnectorPathSetup("Left");
-                    spawnedConnectorInfo = connectorToSpawn.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.x = (spawnPointPosition.x + spawnedConnectorInfo.wallR.transform.localPosition.x);
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallR.transform.localPosition.y);
-                    spawnedConnectorInfo.spawnedOnSide = "Left";
-                    connectorNewSpawnPoint = spawnedConnectorInfo.wallL.transform.localPosition;
+                    _connectorToSpawn = ConnectorPathSetup("Left"); 
+                    _spawnedConnectorInfo = _connectorToSpawn.GetComponent<ConnectorRoomInfo>();
+                    newSpawnPoint.x = (spawnPointPosition.x + _spawnedConnectorInfo.wallR.transform.localPosition.x);
+                    newSpawnPoint.y = (spawnPointPosition.y - _spawnedConnectorInfo.wallR.transform.localPosition.y);
+                    _spawnedConnectorInfo.spawnedOnSide = "Left";
                     break;
                 case "Right Door":
                     Debug.Log("RIGHT");
-                    connectorToSpawn = ConnectorPathSetup("Right");
-                    spawnedConnectorInfo = connectorToSpawn.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.x = (spawnPointPosition.x + spawnedConnectorInfo.wallL.transform.localPosition.x);
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallL.transform.localPosition.y);
-                    spawnedConnectorInfo.spawnedOnSide = "Right";
-                    connectorNewSpawnPoint = spawnedConnectorInfo.wallR.transform.localPosition;
+                    _connectorToSpawn = ConnectorPathSetup("Right");
+                    _spawnedConnectorInfo = _connectorToSpawn.GetComponent<ConnectorRoomInfo>();
+                    newSpawnPoint.x = (spawnPointPosition.x + _spawnedConnectorInfo.wallL.transform.localPosition.x);
+                    newSpawnPoint.y = (spawnPointPosition.y - _spawnedConnectorInfo.wallL.transform.localPosition.y);
+                    _spawnedConnectorInfo.spawnedOnSide = "Right";
                     break;
                 case "Bottom Door":
                     Debug.Log("BOTTOM");
-                    connectorToSpawn = ConnectorPathSetup("Bottom");
-                    spawnedConnectorInfo = connectorToSpawn.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallT.transform.localPosition.y);
-                    newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallT.transform.localPosition.x);
-                    spawnedConnectorInfo.spawnedOnSide = "Bottom";
-                    connectorNewSpawnPoint = spawnedConnectorInfo.wallB.transform.localPosition;
+                    _connectorToSpawn = ConnectorPathSetup("Bottom");
+                    _spawnedConnectorInfo = _connectorToSpawn.GetComponent<ConnectorRoomInfo>();
+                    newSpawnPoint.y = (spawnPointPosition.y - _spawnedConnectorInfo.wallT.transform.localPosition.y);
+                    newSpawnPoint.x = (spawnPointPosition.x - _spawnedConnectorInfo.wallT.transform.localPosition.x);
+                    _spawnedConnectorInfo.spawnedOnSide = "Bottom";
                     break;
                 case "Top Door":
                     Debug.Log("TOP");
-                    connectorToSpawn = ConnectorPathSetup("Top");
-                    spawnedConnectorInfo = connectorToSpawn.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallB.transform.localPosition.y);
-                    newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallB.transform.localPosition.x);
-                    spawnedConnectorInfo.spawnedOnSide = "Top";
-                    connectorNewSpawnPoint = spawnedConnectorInfo.wallT.transform.localPosition;
+                    _connectorToSpawn = ConnectorPathSetup("Top");
+                    _spawnedConnectorInfo = _connectorToSpawn.GetComponent<ConnectorRoomInfo>();
+                    newSpawnPoint.y = (spawnPointPosition.y - _spawnedConnectorInfo.wallB.transform.localPosition.y);
+                    newSpawnPoint.x = (spawnPointPosition.x - _spawnedConnectorInfo.wallB.transform.localPosition.x);
+                    _spawnedConnectorInfo.spawnedOnSide = "Top";
                     break;
             }
+
+            //Debug.Log("Connector should spawn at: " + spawnPoints[spawnRandomNumber] + newSpawnPoint);
+            _connectorToSpawn = Instantiate(_connectorToSpawn, newSpawnPoint, quaternion.identity); //  Spawn the connector at the adjusted spawn point.
             
-            Debug.Log("Connector should spawn at: " + spawnPoints[spawnRandomNumber] + newSpawnPoint);
-            connectorToSpawn = Instantiate(connectorToSpawn, newSpawnPoint, quaternion.identity);
-
-            //newSpawnPoint = connectorNewSpawnPoint; //WHERE the new room will spawn
-            SpawnRooms(roomSpawnedOn, spawnRandomNumber, newSpawnPoint, spawnedConnectorInfo);
+            SpawnRooms(spawnRandomNumber, newSpawnPoint); // Spawn the room on the connector
         }
+
+        MapTargetGroup.Instance.AddRoomsToTargetGroup();
+    }
+
+    void SpawnRooms(int spawnRandomNumber, Vector3 newSpawnPoint)
+    {
+        int roomRandomNumber = RandomiseNumber(possibleRooms.Count); // Spawn a random room from the list of possible rooms
+        GameObject roomToSpawn; //  Room that will be spawned
+        Vector3 realSpawnPosition = Vector3.zero; //    The room's spawn position
         
-    }
-
-    void SpawnRooms(GameObject roomSpawnedOn, int spawnRandomNumber, Vector3 newSpawnPoint, ConnectorRoomInfo spawnedConnectorInfo)
-    {
-        Debug.Log("New spawn point: " + newSpawnPoint);
-        int  roomRandomNumber = RandomiseNumber(possibleRooms.Count); //Spawn a random room from the list of possible rooms
-        GameObject roomToSpawn; //Room that will be spawned
-        Vector3 realSpawnPosition = Vector3.zero;
-       
-        //Debug.Log("Before: " + spawnPointPosition.x + ", " + spawnPointPosition.y);
-        spawnedRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
-        int totalLength = spawnedRoomInfo.roomLength/2 + spawnedConnectorInfo.connectorSize/2;
-        int totalHeight = spawnedRoomInfo.roomHeight/2 + spawnedConnectorInfo.connectorSize/2;
-        switch (spawnedConnectorInfo.spawnedOnSide) //Move the room based on the distance between where it was going to spawn minus the position of the wall it will spawn on
-            {
-                case "Left":
-                    Debug.Log("LEFT");
-                    realSpawnPosition.x = (newSpawnPoint.x - totalLength - 1);
-                    realSpawnPosition.y = (newSpawnPoint.y -(spawnedRoomInfo.doorR.transform.localPosition.y * spawnedRoomInfo.roomHeight));
-                    break;
-                case "Right":
-                    Debug.Log("RIGHT");
-                    realSpawnPosition.x = (newSpawnPoint.x + totalLength + 1);
-                    realSpawnPosition.y = (newSpawnPoint.y - (spawnedRoomInfo.doorL.transform.localPosition.y * spawnedRoomInfo.roomHeight));
-                    break;
-                case "Bottom":
-                    Debug.Log("BOTTOM");
-                    realSpawnPosition.y = (newSpawnPoint.y - totalHeight - 1);
-                    realSpawnPosition.x = (newSpawnPoint.x - (spawnedRoomInfo.doorT.transform.localPosition.x * spawnedRoomInfo.roomLength));
-                    break;
-                case "Top":
-                    Debug.Log("TOP");
-                    realSpawnPosition.y = (newSpawnPoint.y + totalHeight + 1);
-                    realSpawnPosition.x = (newSpawnPoint.x - (spawnedRoomInfo.doorB.transform.localPosition.x * spawnedRoomInfo.roomLength));
-                    break;
-            }
-        Debug.Log("Room should spawn at: " + realSpawnPosition);
-        roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //Instantiate the room at the spawnpoint's position
-        Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + realSpawnPosition);
-        StartCoroutine(WaitToUpdate(roomToSpawn, roomSpawnedOn, roomRandomNumber, spawnRandomNumber));
-        //UpdateSpawnWalls(roomToSpawn, roomRandomNumber, spawnRandomNumber);
-    }
-
-    void UpdateSpawnWalls(GameObject spawnedRoom, GameObject roomSpawnedOn, int roomRandomNumber, int spawnRandomNumber)
-    {
-        spawnedRoomInfo = spawnedRoom.GetComponent<RoomInfo>();
-        Debug.Log("Spawned room: " + spawnedRoomInfo.gameObject);
-        roomSpawnedOnInfo = roomSpawnedOn.GetComponent<RoomInfo>();
-        Debug.Log("and it spawned on: " + roomSpawnedOnInfo.gameObject);
-        foreach (var doors in spawnedRoomInfo.allDoors)
+        spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
+        int totalLength = spawningRoomInfo.roomLength / 2 + _spawnedConnectorInfo.connectorSize / 2;
+        int totalHeight = spawningRoomInfo.roomHeight / 2 + _spawnedConnectorInfo.connectorSize / 2;
+        switch (_spawnedConnectorInfo.spawnedOnSide) /*  Move the spawn point based on the length or width of the room, minus the x or y position of 
+                                                        the wall it will spawn on   */
         {
-            spawnPoints.Add(doors.transform);
-            _spawnPointPositions.Add(doors.transform.position);
-        } //Adding doors of the spawned room to the list of possible spawn points
+            case "Left":
+                Debug.Log("LEFT");
+                realSpawnPosition.x = (newSpawnPoint.x - totalLength - 1); //   1 is the wall thickness. Do NOT change it.
+                realSpawnPosition.y = (newSpawnPoint.y - (spawningRoomInfo.doorR.transform.localPosition.y * spawningRoomInfo.roomHeight));
+                break;
+            case "Right":
+                Debug.Log("RIGHT");
+                realSpawnPosition.x = (newSpawnPoint.x + totalLength + 1);
+                realSpawnPosition.y = (newSpawnPoint.y - (spawningRoomInfo.doorL.transform.localPosition.y * spawningRoomInfo.roomHeight));
+                break;
+            case "Bottom":
+                Debug.Log("BOTTOM");
+                realSpawnPosition.y = (newSpawnPoint.y - totalHeight - 1);
+                realSpawnPosition.x = (newSpawnPoint.x - (spawningRoomInfo.doorT.transform.localPosition.x * spawningRoomInfo.roomLength));
+                break;
+            case "Top":
+                Debug.Log("TOP");
+                realSpawnPosition.y = (newSpawnPoint.y + totalHeight + 1);
+                realSpawnPosition.x = (newSpawnPoint.x - (spawningRoomInfo.doorB.transform.localPosition.x * spawningRoomInfo.roomLength));
+                break;
+        }
+        //CheckSpawnIsValid();
+        roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //  Instantiate the room at the spawnpoint's position
+        Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + realSpawnPosition);
+        spawningRoomInfo.attachedConnectors.Add(_connectorToSpawn);
+        Debug.Log("Adding connector to spawning room.");
+        previouslySpawnedRoomInfo.attachedConnectors.Add(_connectorToSpawn);
+        Debug.Log("Adding connector to previously spawned room.");
+        roomsRemaining--;
+        Debug.Log("Rooms left to spawn: " + roomsRemaining);
+        //StartCoroutine(WaitToUpdate(roomToSpawn, roomSpawnedOn, roomRandomNumber, spawnRandomNumber));
+        UpdateSpawnWalls(roomToSpawn, roomRandomNumber, spawnRandomNumber);
+    }
 
-        spawnedRooms.Add(possibleRooms[roomRandomNumber]); //Add to the list of rooms already in the level
-        _spawnPointPositions.Remove(possibleRooms[roomRandomNumber].transform.position);
+    void UpdateSpawnWalls(GameObject roomToSpawn, int roomRandomNumber, int spawnRandomNumber)
+    {
+        spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
+        Debug.Log("Spawned room: " + spawningRoomInfo.gameObject.name);
+        
+        Debug.Log("and it spawned on: " + previouslySpawnedRoomInfo.gameObject.name);
+        
+        foreach (var door in spawningRoomInfo.allDoors) // Adding doors of the spawned room to the list of possible spawn points
+        {
+            spawnPoints.Add(door.transform);
+        } 
+        
+        spawnedRooms.Add(possibleRooms[roomRandomNumber]); //   Add to the list of rooms already in the level
         //possibleRooms.Remove(possibleRooms[roomRandomNumber]); //Remove the room from the list of rooms that can spawn
-        spawnPoints.Remove(
-            spawnPoints[spawnRandomNumber]); //Remove the door the room spawned on from the spawn point list.
-        switch (spawnedRoomInfo.spawnedOnSide) //Removing spawn points based on where the room spawned.
+        spawnPoints.Remove(spawnPoints[spawnRandomNumber]); //  Remove the door the room spawned on from the spawn point list.
+        
+        Debug.Log("Spawned on side: " + _spawnedConnectorInfo.spawnedOnSide);
+        
+        switch (_spawnedConnectorInfo.spawnedOnSide) //  Removing spawn points based on where the room spawned.
         {
             case "Left":
                 Debug.Log("HI LEFT");
-                spawnPoints.Remove(spawnedRoomInfo.doorR.transform);
-                _spawnPointPositions.Remove(spawnedRoomInfo.doorR.transform.position);
-                spawnPoints.Remove(roomSpawnedOnInfo.doorL.transform);
-                _spawnPointPositions.Remove(roomSpawnedOnInfo.doorL.transform.position);
-                spawnedRoomInfo.canHaveRightRoom = false;
-                roomSpawnedOnInfo.canHaveLeftRoom = false;
+                spawnPoints.Remove(spawningRoomInfo.doorR.transform);
+                spawnPoints.Remove(previouslySpawnedRoomInfo.doorL.transform);
+                spawningRoomInfo.canHaveRightRoom = false;
+                previouslySpawnedRoomInfo.canHaveLeftRoom = false;
                 break;
             case "Right":
                 Debug.Log("HI RIGHT");
-                spawnPoints.Remove(spawnedRoomInfo.doorL.transform);
-                _spawnPointPositions.Remove(spawnedRoomInfo.doorL.transform.position);
-                spawnPoints.Remove(roomSpawnedOnInfo.doorR.transform);
-                _spawnPointPositions.Remove(roomSpawnedOnInfo.doorR.transform.position);
-                spawnedRoomInfo.canHaveLeftRoom = false;
-                roomSpawnedOnInfo.canHaveRightRoom = false;
+                spawnPoints.Remove(spawningRoomInfo.doorL.transform);
+                spawnPoints.Remove(previouslySpawnedRoomInfo.doorR.transform);
+                spawningRoomInfo.canHaveLeftRoom = false;
+                previouslySpawnedRoomInfo.canHaveRightRoom = false;
                 break;
             case "Top":
                 Debug.Log("HI TOP");
-                spawnPoints.Remove(spawnedRoomInfo.doorB.transform);
-                _spawnPointPositions.Remove(spawnedRoomInfo.doorB.transform.position);
-                spawnPoints.Remove(roomSpawnedOnInfo.doorT.transform);
-                _spawnPointPositions.Remove(roomSpawnedOnInfo.doorT.transform.position);
-                spawnedRoomInfo.canHaveBottomRoom = false;
-                roomSpawnedOnInfo.canHaveTopRoom = false;
+                spawnPoints.Remove(spawningRoomInfo.doorB.transform);
+                spawnPoints.Remove(previouslySpawnedRoomInfo.doorT.transform);
+                spawningRoomInfo.canHaveBottomRoom = false;
+                previouslySpawnedRoomInfo.canHaveTopRoom = false;
                 break;
             case "Bottom":
                 Debug.Log("HI BOTTOM");
-                spawnPoints.Remove(spawnedRoomInfo.doorT.transform);
-                _spawnPointPositions.Remove(spawnedRoomInfo.doorT.transform.position);
-                spawnPoints.Remove(roomSpawnedOnInfo.doorB.transform);
-                _spawnPointPositions.Remove(roomSpawnedOnInfo.doorB.transform.position);
-                spawnedRoomInfo.canHaveTopRoom = false;
-                roomSpawnedOnInfo.canHaveBottomRoom = false;
+                spawnPoints.Remove(spawningRoomInfo.doorT.transform);
+                spawnPoints.Remove(previouslySpawnedRoomInfo.doorB.transform);
+                spawningRoomInfo.canHaveTopRoom = false;
+                previouslySpawnedRoomInfo.canHaveBottomRoom = false;
                 break;
         }
     }
 
-    IEnumerator WaitToUpdate(GameObject spawnedRoom, GameObject roomSpawnedOn, int roomRandomNumber,
+    /*IEnumerator WaitToUpdate(int roomRandomNumber,
         int spawnRandomNumber)
     {
-        UpdateSpawnWalls(spawnedRoom, roomSpawnedOn, roomRandomNumber, spawnRandomNumber);
+        UpdateSpawnWalls(roomRandomNumber, spawnRandomNumber);
         yield return new WaitForSecondsRealtime(1f);
-    }
+    }*/
 
     int RandomiseNumber(int setSize)
     {
@@ -298,42 +280,7 @@ public class LevelBuilder : MonoBehaviour
         return rng;
     }
 
-    string RandomiseConnectorLength(bool length)
-    {
-        string path = "";
-        switch (length)
-        {
-            case true:
-                switch (RandomiseNumber(2))
-                {
-                    case 0:
-                        path = "Room Layouts/Connectors/ConnectorShortHoriz";
-                        break;
 
-                    case 1:
-                        path = "Room Layouts/Connectors/ConnectorLongHoriz";
-                        break;
-                }
-
-                break;
-            case false:
-                switch (RandomiseNumber(2))
-                {
-                    case 0:
-                        path = "Room Layouts/Connectors/ConnectorShortVerti";
-                        break;
-
-                    case 1:
-                        path = "Room Layouts/Connectors/ConnectorLongVerti";
-                        break;
-                }
-
-                break;
-        }
-
-    return path;
-    }
-    
     GameObject ConnectorPathSetup(string side)
     {
         string path = "";
@@ -343,24 +290,56 @@ public class LevelBuilder : MonoBehaviour
             case "Left":
                 path = "Room Layouts/Connectors/ConnectorShortHoriz"; //TEMP CODE: MAY BE REPLACED
                 break;
-             case "Right":
+            case "Right":
                 path = "Room Layouts/Connectors/ConnectorShortHoriz"; //TEMP CODE: MAY BE REPLACED
                 break;
-            case "Top": 
+            case "Top":
                 path = "Room Layouts/Connectors/ConnectorShortVerti"; //TEMP CODE: MAY BE REPLACED
                 break;
-           case "Bottom":
+            case "Bottom":
                 path = "Room Layouts/Connectors/ConnectorShortVerti"; //TEMP CODE: MAY BE REPLACED
                 break;
-           default:
-               path = "Room Layouts/Connectors/ConnectorShortHoriz";
-               break;
+            default:
+                path = "Room Layouts/Connectors/ConnectorShortHoriz";
+                break;
         }
+
         GameObject connectorToSpawn = Resources.Load<GameObject>(path);
         return connectorToSpawn;
     }
+
+    void CheckSpawnIsValid()
+    {
+        bool isValid = true;
+        //CHECK IF THE ROOM CAN SPAWN ON THAT SIDE
+        switch (_spawnedConnectorInfo.spawnedOnSide)
+        {
+            case "Left" when spawningRoomInfo.canSpawnOnLeft == false:
+                isValid = false;
+                break;
+            case "Right" when spawningRoomInfo.canSpawnOnRight == false:
+                isValid = false;
+                break;
+            case "Top" when spawningRoomInfo.canSpawnOnTop == false:
+                isValid = false;
+                break;
+            case "Bottom" when spawningRoomInfo.canSpawnOnBottom == false:
+                isValid = false;
+                break;
+            default: 
+                break;
+        }
+
+        if (isValid == false)
+        {
+            Destroy(_connectorToSpawn.gameObject.transform.root.gameObject);
+            Debug.LogWarning("Impossible spawn, discarding last connector and room.");
+            roomsRemaining++;
+        }
+        else
+        {
+            Debug.Log("Spawn is valid.");
+        }
+    }
 }
 
-
-
-//TODO: Implement connecting rooms (i.e. short hallways between rooms)
