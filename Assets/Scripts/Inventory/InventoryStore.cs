@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -9,9 +10,11 @@ public class InventoryStore : MonoBehaviour
     [SerializeField] private Transform block;
     [SerializeField] private Transform grid;
     public List<GameObject> items;
+    private ToolbarHandler _toolbarHandler;
     
     private void Start()
     {
+        _toolbarHandler = GetComponent<ToolbarHandler>();
         RefreshList();
     }
 
@@ -25,19 +28,21 @@ public class InventoryStore : MonoBehaviour
             }
         }
         
-        foreach (var g in items)
+        for (var i = 0; i <= items.Count; i++)
         {
-	        AddNewItem(g);
+	        AddNewItem(items[i], i);
         }
     }
-
-
-    private void AddNewItem(GameObject item)
+    
+    private void AddNewItem(GameObject item, int i)
     {
         var consumable = item.GetComponent<Consumable>();
 
         var newBlock = Instantiate(block, block.position, block.rotation, grid);
         newBlock.GetComponentInChildren<TextMeshProUGUI>().text = consumable.title;
+        var indexHolder = newBlock.GetComponent<IndexHolder>();
+        indexHolder.InventoryIndex = i;
+        newBlock.GetComponent<Button>().onClick.AddListener(delegate { _toolbarHandler.InvItemSelected(indexHolder); });
         
         foreach (var s in newBlock.GetComponentsInChildren<Image>())
         {
