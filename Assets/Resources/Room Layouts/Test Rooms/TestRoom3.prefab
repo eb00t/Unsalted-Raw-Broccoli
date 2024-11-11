@@ -223,8 +223,8 @@ GameObject:
   - component: {fileID: 2081879405057274538}
   - component: {fileID: 3489761425377910020}
   m_Layer: 0
-  m_Name: RightHalfWallT
-  m_TagString: Untagged
+  m_Name: LeftHalfWallT
+  m_TagString: Left Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -329,7 +329,7 @@ GameObject:
   - component: {fileID: 5760282563942763503}
   m_Layer: 0
   m_Name: TopHalfWallR
-  m_TagString: Untagged
+  m_TagString: Top Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -659,7 +659,10 @@ MonoBehaviour:
   canHaveRightRoom: 0
   canHaveTopRoom: 0
   canHaveBottomRoom: 0
-  connectorsToSpawn: 0
+  canSpawnOnRight: 0
+  canSpawnOnLeft: 0
+  canSpawnOnTop: 0
+  canSpawnOnBottom: 0
   roomLength: 20
   roomHeight: 30
   allDoors: []
@@ -667,7 +670,6 @@ MonoBehaviour:
   doorR: {fileID: 930526794184351795}
   doorB: {fileID: 6025280676861799296}
   doorT: {fileID: 4797970635008267131}
-  spawnedOnSide: 
   attachedConnectors: []
 --- !u!1 &2437338312536971817
 GameObject:
@@ -1526,8 +1528,8 @@ GameObject:
   - component: {fileID: 4206142858217935309}
   - component: {fileID: 5588763501003848846}
   m_Layer: 0
-  m_Name: TopHalfWallL
-  m_TagString: Untagged
+  m_Name: BottomHalfWallR
+  m_TagString: Bottom Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1632,7 +1634,7 @@ GameObject:
   - component: {fileID: 7257681086202268450}
   m_Layer: 0
   m_Name: RightHalfWallT
-  m_TagString: Untagged
+  m_TagString: Right Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1845,7 +1847,7 @@ GameObject:
   - component: {fileID: 8012762804823244264}
   m_Layer: 0
   m_Name: TopHalfWallL
-  m_TagString: Untagged
+  m_TagString: Top Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1949,8 +1951,8 @@ GameObject:
   - component: {fileID: 8371567914289938448}
   - component: {fileID: 2133391173996685695}
   m_Layer: 0
-  m_Name: RightHalfWallB
-  m_TagString: Untagged
+  m_Name: LeftHalfWallB
+  m_TagString: Left Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2054,8 +2056,8 @@ GameObject:
   - component: {fileID: 7641405664317823389}
   - component: {fileID: 6797046835002035186}
   m_Layer: 0
-  m_Name: TopHalfWallR
-  m_TagString: Untagged
+  m_Name: BottomHalfWallL
+  m_TagString: Bottom Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2160,7 +2162,7 @@ GameObject:
   - component: {fileID: 3874463263332856773}
   m_Layer: 0
   m_Name: RightHalfWallB
-  m_TagString: Untagged
+  m_TagString: Right Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
