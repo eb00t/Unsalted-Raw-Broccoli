@@ -11,6 +11,7 @@ public class dialogueControllerScript : MonoBehaviour
     public float DialogueSpeed;
     public float fasterSpeed;
     public GameObject dialogueCanvas;
+    public bool canText = false;
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +24,7 @@ public class dialogueControllerScript : MonoBehaviour
     void Update()
     {
         //Move to next sentence
-        if(Input.GetKeyDown(KeyCode.Tab) && dialogueCanvas.activeInHierarchy == true)
+        if(Input.GetKeyDown(KeyCode.Tab) && dialogueCanvas.activeInHierarchy == true && canText == true)
         {
             NextSentence();
             DialogueSpeed = 0.05f;
@@ -53,6 +54,8 @@ public class dialogueControllerScript : MonoBehaviour
         {
             DialogueText.text = "";
             StartCoroutine(WriteSentence());
+
+            canText = false;
         }
     }
 
@@ -71,7 +74,6 @@ public class dialogueControllerScript : MonoBehaviour
     }
     */
 
-    
     void dialogueFinished()
     {
         if (Index == Sentences.Length )
@@ -90,5 +92,6 @@ public class dialogueControllerScript : MonoBehaviour
         }
 
         Index++;
+        canText = true;
     }
 }
