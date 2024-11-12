@@ -28,6 +28,7 @@ public class RoomInfo : MonoBehaviour
     public List<GameObject> attachedConnectors;
     void Awake()
     {
+        
         roomInstance = gameObject;
         attachedConnectors.Clear();
         foreach (var door in gameObject.GetComponentsInChildren<Transform>())
@@ -72,7 +73,7 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
-        intersectionCheck = GetComponentInChildren<CheckForIntersection>();
+      intersectionCheck = transform.Find("IntersectionChecker").gameObject.GetComponent<CheckForIntersection>();
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
         Debug.Log(gameObject + " Distance between left/right walls and centre: " + distToRoomCentre.x);
         distToRoomCentre.y = (wallT.transform.localPosition.y - wallB.transform.localPosition.y);

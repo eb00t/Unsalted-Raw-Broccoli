@@ -15,10 +15,10 @@ public class CheckForIntersection : MonoBehaviour
     void Start()
     { 
         _roomInfo = transform.root.GetComponent<RoomInfo>();
-        _leftRay = new Ray(_roomInfo.doorL.transform.localPosition, Vector3.left);
-        _rightRay = new Ray(_roomInfo.doorR.transform.localPosition, Vector3.right);
-        _upRay = new Ray(_roomInfo.doorT.transform.localPosition, Vector3.up);
-        _downRay = new Ray(_roomInfo.doorB.transform.localPosition, Vector3.down);
+        _leftRay = new Ray(_roomInfo.doorL.transform.localPosition, Vector3.right);
+        _rightRay = new Ray(_roomInfo.doorR.transform.localPosition, Vector3.left);
+        _upRay = new Ray(_roomInfo.doorT.transform.localPosition, Vector3.down);
+        _downRay = new Ray(_roomInfo.doorB.transform.localPosition, Vector3.up);
     }
 
    public void CheckForIntersections()
@@ -45,7 +45,12 @@ public class CheckForIntersection : MonoBehaviour
            Debug.Log("Something is intersecting");
        }
    }
-    
-    
-    
+
+   private void Update()
+   {
+       Debug.DrawRay(_roomInfo.doorL.transform.position, Vector3.right * (_roomInfo.roomLength + 2), Color.red);
+       Debug.DrawRay(_roomInfo.doorR.transform.position, Vector3.left * (_roomInfo.roomLength + 2), Color.green);
+       Debug.DrawRay(_roomInfo.doorT.transform.position, Vector3.down * (_roomInfo.roomHeight + 2), Color.blue);
+       Debug.DrawRay(_roomInfo.doorB.transform.position, Vector3.up * (_roomInfo.roomHeight + 2), Color.yellow);
+   }
 }

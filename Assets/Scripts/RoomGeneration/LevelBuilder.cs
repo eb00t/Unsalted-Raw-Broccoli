@@ -209,13 +209,16 @@ public class LevelBuilder : MonoBehaviour
         roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //  Instantiate the room at the spawnpoint's position
         //CheckSpawnIsValid(roomToSpawn);
         spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
+        
         Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + realSpawnPosition);
         spawningRoomInfo.attachedConnectors.Add(_connectorToSpawn);
+        Debug.Log(spawningRoomInfo);
         Debug.Log("Adding connector to" + spawningRoomInfo);
         previouslySpawnedRoomInfo.attachedConnectors.Add(_connectorToSpawn);
         Debug.Log("Adding connector to " + previouslySpawnedRoomInfo);
         roomsRemaining--;
         Debug.Log("Rooms left to spawn: " + roomsRemaining);
+        Debug.Log(spawningRoomInfo.intersectionCheck);
         spawningRoomInfo.intersectionCheck.CheckForIntersections();
         Debug.Log("Checking for intersecting rooms.");
         //StartCoroutine(WaitToUpdate(roomToSpawn, roomSpawnedOn, roomRandomNumber, spawnRandomNumber));
