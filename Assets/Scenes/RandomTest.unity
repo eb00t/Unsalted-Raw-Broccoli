@@ -1023,6 +1023,104 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 265789137}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1222872287
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4004463437874315707, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.748212
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004463437874315707, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.42201
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004463437874315707, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.29702
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004463437874315707, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004463437874315707, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004463437874315707, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004463437874315707, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004463437874315707, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004463437874315707, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004463437874315707, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6983787322761844931, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 330585545}
+    - target: {fileID: 6983787322761844931, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6983787322761844931, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_ActionId
+      value: 5465e31f-2d62-4d84-a9cf-139445e24b9d
+      objectReference: {fileID: 0}
+    - target: {fileID: 6983787322761844931, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[8].m_ActionId
+      value: 8d61b77c-6d2f-4615-9a7c-bf69594354cc
+      objectReference: {fileID: 0}
+    - target: {fileID: 6983787322761844931, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_ActionName
+      value: Controls/Pause[/Keyboard/escape]
+      objectReference: {fileID: 0}
+    - target: {fileID: 6983787322761844931, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[8].m_ActionName
+      value: Controls/Back[/Keyboard/backspace]
+      objectReference: {fileID: 0}
+    - target: {fileID: 7090649265688713789, guid: 312385df9d1d3454a8ec4177277ff9c3,
+        type: 3}
+      propertyPath: m_Name
+      value: Input
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 312385df9d1d3454a8ec4177277ff9c3, type: 3}
 --- !u!1 &1310954692
 GameObject:
   m_ObjectHideFlags: 0
@@ -1052,16 +1150,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0424e335075e17640829afd684b4f5d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfRooms: 15
-  roomsRemaining: 0
+  totalNumberOfRooms: 15
   numberOfConnectors: 0
   currentFloor: 0
   possibleRooms: []
+  roomsRemaining: 0
+  discardedRooms: 0
   possibleConnectors: []
   spawnedRooms: []
   spawnPoints: []
   spawningRoomInfo: {fileID: 0}
   previouslySpawnedRoomInfo: {fileID: 0}
+  spawnedConnectorInfo: {fileID: 0}
   spawnRoomDoorL: {fileID: 1746926608}
   spawnRoomDoorR: {fileID: 1893781025}
   spawnRoomDoorT: {fileID: 1189021738}
@@ -1260,3 +1360,4 @@ SceneRoots:
   - {fileID: 351125789}
   - {fileID: 1460999310}
   - {fileID: 1417524219}
+  - {fileID: 1222872287}

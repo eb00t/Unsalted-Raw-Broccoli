@@ -18,14 +18,17 @@ public class RoomInfo : MonoBehaviour
     public bool canSpawnOnBottom;
     public int roomLength; //
     public int roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
-    
+
 
     [field: Header("Debugging")] 
+    public GameObject roomInstance;
+    public CheckForIntersection intersectionCheck;
     public List<GameObject> allDoors;
     public Transform doorL, doorR, doorB, doorT;
     public List<GameObject> attachedConnectors;
     void Awake()
     {
+        roomInstance = gameObject;
         attachedConnectors.Clear();
         foreach (var door in gameObject.GetComponentsInChildren<Transform>())
         {
@@ -69,6 +72,7 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
+        intersectionCheck = GetComponentInChildren<CheckForIntersection>();
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
         Debug.Log(gameObject + " Distance between left/right walls and centre: " + distToRoomCentre.x);
         distToRoomCentre.y = (wallT.transform.localPosition.y - wallB.transform.localPosition.y);
