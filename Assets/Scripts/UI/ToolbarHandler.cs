@@ -12,6 +12,7 @@ public class ToolbarHandler : MonoBehaviour
     private void Start()
     {
         _inventoryStore = GetComponent<InventoryStore>();
+        /*
         foreach (var s in slots)
         {
             var n = s.GetComponentsInChildren<Image>();
@@ -23,6 +24,7 @@ public class ToolbarHandler : MonoBehaviour
                 }
             }
         }
+        */
     }
 
     private void AddToToolbar(Sprite newSprite, string txt)
@@ -34,8 +36,14 @@ public class ToolbarHandler : MonoBehaviour
             if (s.name == "Image")
             {
                 s.sprite = newSprite;
-                s.GetComponentInChildren<TextMeshProUGUI>().text = txt;
-                s.gameObject.SetActive(true);
+                foreach (var t in s.GetComponentsInChildren<TextMeshProUGUI>())
+                {
+                    if (t.name == "title")
+                    {
+                        t.text = txt;
+                    }
+                }
+                s.enabled = true;
             }
         }
     }
