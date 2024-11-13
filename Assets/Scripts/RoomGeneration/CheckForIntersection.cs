@@ -14,11 +14,11 @@ public class CheckForIntersection : MonoBehaviour
 
     void Start()
     { 
-        _roomInfo = transform.root.GetComponent<RoomInfo>();
         _leftRay = new Ray(_roomInfo.doorL.transform.localPosition, Vector3.right);
         _rightRay = new Ray(_roomInfo.doorR.transform.localPosition, Vector3.left);
         _upRay = new Ray(_roomInfo.doorT.transform.localPosition, Vector3.down);
         _downRay = new Ray(_roomInfo.doorB.transform.localPosition, Vector3.up);
+        _roomInfo = transform.root.GetComponent<RoomInfo>();
     }
 
    public void CheckForIntersections()
