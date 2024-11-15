@@ -10,8 +10,11 @@ public class dialogueControllerScript : MonoBehaviour
     private int Index = 0;
     public float DialogueSpeed;
     public float fasterSpeed;
-    public GameObject dialogueCanvas;
+    public GameObject dialogueCanvas, yesText, noText;
+
+    //Bools
     public bool canText = false;
+   // public bool YesOrNo = false; //true = yes, false = no
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +46,18 @@ public class dialogueControllerScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftControl) && dialogueCanvas.activeInHierarchy == true)
         {
             speedUptext();
+        }
+
+        //Qusetion answers
+        if(Input.GetKeyDown(KeyCode.Y)) //YesOrNo == true &&
+        {
+            //Answer is yes
+            answerY();
+        }
+        else if (Input.GetKeyDown(KeyCode.N)) //YesOrNo == false && 
+        {
+            //Answer is no
+            answerN();
         }
 
         dialogueFinished();
@@ -81,6 +96,20 @@ public class dialogueControllerScript : MonoBehaviour
             dialogueCanvas.SetActive(false);
             Debug.Log("Text Done!");
         }
+    }
+
+    void answerY()
+    {
+        yesText.SetActive(true);
+        noText.SetActive(false);
+        Debug.Log("YES!");
+    }
+
+    void answerN()
+    {
+        noText.SetActive(true);
+        yesText.SetActive(false);
+        Debug.Log("NO");
     }
 
     IEnumerator WriteSentence()
