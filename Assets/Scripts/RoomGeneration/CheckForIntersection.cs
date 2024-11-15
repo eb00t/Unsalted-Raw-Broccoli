@@ -11,10 +11,17 @@ public class CheckForIntersection : MonoBehaviour
     private Ray _upRay, _downRay, _leftRay, _rightRay;
     public LayerMask layerMask;
     public bool intersecting = false;
+    private BoxCollider _collider;
 
-    void Start()
+    void Awake()
     {
         _roomInfo = transform.root.gameObject.GetComponent<RoomInfo>();
+        _collider = GetComponent<BoxCollider>();
+        _collider.enabled = true;
+        var colliderSize = _collider.size;
+        colliderSize.x = _roomInfo.roomLength;
+        colliderSize.y = _roomInfo.roomHeight;
+        _collider.size = colliderSize;
         _leftRay = new Ray(_roomInfo.doorL.transform.localPosition, Vector3.right);
         _rightRay = new Ray(_roomInfo.doorR.transform.localPosition, Vector3.left);
         _upRay = new Ray(_roomInfo.doorT.transform.localPosition, Vector3.down);
@@ -23,27 +30,44 @@ public class CheckForIntersection : MonoBehaviour
 
    public void CheckForIntersections()
    {
-       if (Physics.Raycast(_leftRay, _roomInfo.roomLength + 2, layerMask))
+       _collider.enabled = false;
+       RaycastHit hitInfo;
+       Debug.Log("Checking for intersections.");
+       if (Physics.Raycast(_leftRay, out hitInfo, _roomInfo.roomLength + 2, layerMask))
        {
-           intersecting = true;
+          if (hitInfo.collider.gameObject.CompareTag("Intersection Checker"))
+          {
+              intersecting = true;
+          }
        }
-       if (Physics.Raycast(_rightRay, _roomInfo.roomLength + 2, layerMask))
+       if (Physics.Raycast(_rightRay, out hitInfo,_roomInfo.roomLength + 2, layerMask))
        {
-           intersecting = true;
+           if (hitInfo.collider.gameObject.CompareTag("Intersection Checker"))
+           {
+               intersecting = true;
+           }
        }
-       if (Physics.Raycast(_upRay, _roomInfo.roomHeight + 2, layerMask))
+       if (Physics.Raycast(_upRay, out hitInfo,_roomInfo.roomHeight + 2, layerMask))
        {
-           intersecting = true;
+           if (hitInfo.collider.gameObject.CompareTag("Intersection Checker"))
+           {
+               intersecting = true;
+           }
        }
-       if (Physics.Raycast(_downRay, _roomInfo.roomHeight + 2, layerMask))
+       if (Physics.Raycast(_downRay, out hitInfo,_roomInfo.roomHeight + 2, layerMask))
        {
-           intersecting = true;
+           if (hitInfo.collider.gameObject.CompareTag("Intersection Checker"))
+           {
+               intersecting = true;
+           }
        }
 
        if (intersecting)
        {
            Debug.Log("Something is intersecting");
+           LevelBuilder.Instance.KillRoomAndConnector(gameObject, _roomInfo.attachedConnectors[0]);
        }
+       _collider.enabled = true;
    }
 
    private void Update()

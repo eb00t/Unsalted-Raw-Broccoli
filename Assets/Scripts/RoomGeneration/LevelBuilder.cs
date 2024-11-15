@@ -230,11 +230,11 @@ public class LevelBuilder : MonoBehaviour
         spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
         Debug.Log(spawningRoomInfo);
         _spawningRoomIntersectionCheck = spawningRoomInfo.intersectionCheck;
-        Debug.Log(_spawningRoomIntersectionCheck);
+       _spawningRoomIntersectionCheck.CheckForIntersections();
+       
         Debug.Log("Spawned room: " + spawningRoomInfo.gameObject.name);
         
         Debug.Log("and it spawned on: " + previouslySpawnedRoomInfo.gameObject.name); 
-        Debug.Log(spawningRoomInfo.gameObject.name);
        
         foreach (var door in spawningRoomInfo.allDoors) // Adding doors of the spawned room to the list of possible spawn points
         {
