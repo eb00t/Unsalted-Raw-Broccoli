@@ -40,7 +40,7 @@ public class LevelBuilder : MonoBehaviour
     public Transform spawnRoomDoorT;
     public Transform spawnRoomDoorB;
     private GameObject _connectorToSpawn;
-    private CheckForIntersection _spawningRoomIntersectionCheck;
+    private IntersectionRaycast _spawningRoomIntersectionCheck;
     
 
     private void Awake()
@@ -181,8 +181,8 @@ public class LevelBuilder : MonoBehaviour
         Vector3 realSpawnPosition = Vector3.zero; //    The room's spawn position
         
         spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
-        int totalLength = spawningRoomInfo.roomLength / 2 + spawnedConnectorInfo.connectorSize / 2;
-        int totalHeight = spawningRoomInfo.roomHeight / 2 + spawnedConnectorInfo.connectorSize / 2;
+        float totalLength = spawningRoomInfo.roomLength / 2 + spawnedConnectorInfo.connectorSize / 2;
+        float totalHeight = spawningRoomInfo.roomHeight / 2 + spawnedConnectorInfo.connectorSize / 2;
         switch (spawnedConnectorInfo.spawnedOnSide) /*  Move the spawn point based on the length or width of the room, minus the x or y position of 
                                                         the wall it will spawn on   */
         {
@@ -230,7 +230,9 @@ public class LevelBuilder : MonoBehaviour
         spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
         Debug.Log(spawningRoomInfo);
         _spawningRoomIntersectionCheck = spawningRoomInfo.intersectionCheck;
-       _spawningRoomIntersectionCheck.CheckForIntersections();
+        _spawningRoomIntersectionCheck.CheckForInvalidSpawn(spawnedConnectorInfo);
+        //_spawningRoomIntersectionCheck = spawningRoomInfo.intersectionCheck;
+       //_spawningRoomIntersectionCheck.CheckForIntersections();
        
         Debug.Log("Spawned room: " + spawningRoomInfo.gameObject.name);
         
@@ -355,11 +357,11 @@ public class LevelBuilder : MonoBehaviour
         }
     }
 
-    public void KillRoomAndConnector(GameObject room, GameObject connector)
+    /*public void KillRoomAndConnector(GameObject room, GameObject connector)
     {
         Debug.Log("Destroying invalid room and connector.");
         Destroy(room.gameObject);
         Destroy(connector.gameObject);
-    }
+    }*/
 }
 

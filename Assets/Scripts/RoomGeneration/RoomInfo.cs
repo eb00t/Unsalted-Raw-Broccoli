@@ -16,19 +16,20 @@ public class RoomInfo : MonoBehaviour
     public bool canSpawnOnLeft;
     public bool canSpawnOnTop;
     public bool canSpawnOnBottom;
-    public int roomLength; //
-    public int roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
+    public float roomLength; //
+    public float roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
 
 
     [field: Header("Debugging")] 
     public GameObject roomInstance;
-    public CheckForIntersection intersectionCheck;
+    public IntersectionRaycast intersectionCheck;
     public List<GameObject> allDoors;
     public Transform doorL, doorR, doorB, doorT;
+    public Transform wallL, wallR, wallB, wallT;
     public List<GameObject> attachedConnectors;
     void Awake()
     {
-        intersectionCheck = transform.Find("IntersectionChecker").GetComponent<CheckForIntersection>();
+        intersectionCheck = GetComponent<IntersectionRaycast>();
         roomInstance = gameObject;
         attachedConnectors.Clear();
         foreach (var door in gameObject.GetComponentsInChildren<Transform>())

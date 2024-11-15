@@ -9,7 +9,7 @@ public class ConnectorRoomInfo : MonoBehaviour
     public List<GameObject> spawnWalls;
     public GameObject wallL, wallR, wallT, wallB;
     public string spawnedOnSide;
-    public int connectorSize;
+    public float connectorSize;
 
     void Start()
     {

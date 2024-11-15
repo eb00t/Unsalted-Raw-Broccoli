@@ -65,7 +65,7 @@ public class CheckForIntersection : MonoBehaviour
        if (intersecting)
        {
            Debug.Log("Something is intersecting");
-           LevelBuilder.Instance.KillRoomAndConnector(gameObject, _roomInfo.attachedConnectors[0]);
+           //LevelBuilder.Instance.KillRoomAndConnector(gameObject, _roomInfo.attachedConnectors[0]);
        }
        _collider.enabled = true;
    }
