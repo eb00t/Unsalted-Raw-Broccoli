@@ -18,6 +18,7 @@ public class RoomInfo : MonoBehaviour
     public bool canSpawnOnBottom;
     public float roomLength; //
     public float roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
+    
 
 
     [field: Header("Debugging")] 
@@ -27,6 +28,8 @@ public class RoomInfo : MonoBehaviour
     public Transform doorL, doorR, doorB, doorT;
     public Transform wallL, wallR, wallB, wallT;
     public List<GameObject> attachedConnectors;
+    public GameObject connectorSpawnedOff;
+    public bool markedForDiscard;
     void Awake()
     {
         intersectionCheck = GetComponent<IntersectionRaycast>();
@@ -74,6 +77,7 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
+        connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
         Debug.Log(gameObject + " Distance between left/right walls and centre: " + distToRoomCentre.x);
         distToRoomCentre.y = (wallT.transform.localPosition.y - wallB.transform.localPosition.y);

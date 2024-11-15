@@ -26,9 +26,10 @@ public class LevelBuilder : MonoBehaviour
     private GameObject _startingRoom;
 
     private GameObject _roomToSpawnOn; // The room containing the wall this room used as its spawn position.
-    [field: Header("Debugging")] public List<GameObject> possibleRooms; // Rooms that CAN spawn.
+    [field: Header("Debugging")] 
+    public List<GameObject> possibleRooms; // Rooms that CAN spawn.
     public int roomsRemaining; // Rooms yet to spawn
-    public int discardedRooms; // Rooms that were unable to spawn
+    public List<GameObject> discardedRooms; // Rooms that were unable to spawn
     public List<GameObject> possibleConnectors; // Connectors that can spawn.
     public List<GameObject> spawnedRooms; // Rooms that have ALREADY spawned.
     public List<Transform> spawnPoints; // Doors that rooms can spawn on
@@ -41,6 +42,7 @@ public class LevelBuilder : MonoBehaviour
     public Transform spawnRoomDoorB;
     private GameObject _connectorToSpawn;
     private IntersectionRaycast _spawningRoomIntersectionCheck;
+    public List<GameObject> _spawnedConnectors;
     
 
     private void Awake()
@@ -59,6 +61,7 @@ public class LevelBuilder : MonoBehaviour
         _startingRoom = GameObject.FindWithTag("StartingRoom");
         GetStartingRoomWalls();
         possibleRooms = new List<GameObject>();
+        _spawnedConnectors = new List<GameObject>();
         AddRoomsToList();
         SpawnConnector();
     }
@@ -167,11 +170,12 @@ public class LevelBuilder : MonoBehaviour
 
             //Debug.Log("Connector should spawn at: " + spawnPoints[spawnRandomNumber] + newSpawnPoint);
             _connectorToSpawn = Instantiate(connectorPathReference, newSpawnPoint, quaternion.identity); //  Spawn the connector at the adjusted spawn point.
-            
+            _spawnedConnectors.Add(_connectorToSpawn);
             SpawnRooms(spawnRandomNumber, newSpawnPoint); // Spawn the room on the connector
         }
-
+        
         MapTargetGroup.Instance.AddRoomsToTargetGroup();
+        CleanUpBadRooms();
     }
 
     void SpawnRooms(int spawnRandomNumber, Vector3 newSpawnPoint)
@@ -209,11 +213,11 @@ public class LevelBuilder : MonoBehaviour
         }
         roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //  Instantiate the room at the spawnpoint's position
         //CheckSpawnIsValid(roomToSpawn);
+        previouslySpawnedRoomInfo = spawningRoomInfo;
         spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
-        
+        spawningRoomInfo.connectorSpawnedOff = _connectorToSpawn;
         Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + realSpawnPosition);
         spawningRoomInfo.attachedConnectors.Add(_connectorToSpawn);
-        Debug.Log(spawningRoomInfo);
         Debug.Log("Adding connector to" + spawningRoomInfo);
         previouslySpawnedRoomInfo.attachedConnectors.Add(_connectorToSpawn);
         Debug.Log("Adding connector to " + previouslySpawnedRoomInfo);
@@ -357,6 +361,39 @@ public class LevelBuilder : MonoBehaviour
         }
     }
 
+    private void CleanUpBadRooms()
+    {
+       foreach (var room in discardedRooms)
+       {
+           RoomInfo badRoomInfo = room.GetComponent<RoomInfo>();
+           if (badRoomInfo.markedForDiscard == true)
+           {
+               spawnedRooms.Remove(room);
+               Debug.Log(room.name + " has been discarded.");
+              
+               _spawnedConnectors.Remove(badRoomInfo.connectorSpawnedOff);
+               Destroy(badRoomInfo.connectorSpawnedOff);
+               Destroy(room);
+           }
+       }
+       RerollDiscardedRooms();
+    }
+
+
+    void RerollDiscardedRooms()
+    {
+        if (discardedRooms.Count != 0)
+        {
+            totalNumberOfRooms = discardedRooms.Count;
+            discardedRooms.Clear();
+            SpawnConnector();
+        }
+        else
+        {
+            Debug.Log("All discarded rooms have been regenerated.");
+        }
+    }
+    
     /*public void KillRoomAndConnector(GameObject room, GameObject connector)
     {
         Debug.Log("Destroying invalid room and connector.");
