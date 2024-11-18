@@ -1,7 +1,12 @@
 using System;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEditor.Rendering.LookDev;
+using UnityEngine.InputSystem;
+using Vector2 = UnityEngine.Vector2;
 
 public class ToolbarHandler : MonoBehaviour
 {
@@ -55,5 +60,26 @@ public class ToolbarHandler : MonoBehaviour
         var t = consumable.title;
         
         AddToToolbar(s, t);
+    }
+
+    public void SlotItemActivated(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            var dir = context.ReadValue<Vector2>();
+
+            switch (dir.x, dir.y)
+            {
+                case (0, 1): // up (0)
+                    // use consumable in slot 0, and so on for each case
+                    break;
+                case (1, 0): // right (1)
+                    break;
+                case (0, -1): // down (2)
+                    break;
+                case (-1, 0): // left (3)
+                    break;
+            }
+        }
     }
 }

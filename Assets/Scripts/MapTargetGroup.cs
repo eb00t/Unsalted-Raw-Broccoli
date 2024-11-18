@@ -31,7 +31,7 @@ public class MapTargetGroup : MonoBehaviour
         foreach (var room in LevelBuilder.Instance.spawnedRooms)
         {
             targetGroup.AddMember(room.transform, 1, 5);
-            Debug.Log("Adding " + room + " to CinemachineTargetGroup.");
+            //Debug.Log("Adding " + room + " to CinemachineTargetGroup.");
         }
     }
 
