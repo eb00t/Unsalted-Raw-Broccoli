@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -28,7 +29,7 @@ public class InventoryStore : MonoBehaviour
             }
         }
         
-        for (var i = 0; i <= items.Count; i++)
+        for (var i = 0; i < items.Count; i++)
         {
 	        AddNewItem(items[i], i);
         }
@@ -41,6 +42,7 @@ public class InventoryStore : MonoBehaviour
         var newBlock = Instantiate(block, block.position, block.rotation, grid);
         newBlock.GetComponentInChildren<TextMeshProUGUI>().text = consumable.title;
         var indexHolder = newBlock.GetComponent<IndexHolder>();
+        Debug.Log(i);
         indexHolder.InventoryIndex = i;
         newBlock.GetComponent<Button>().onClick.AddListener(delegate { _toolbarHandler.InvItemSelected(indexHolder); });
         
