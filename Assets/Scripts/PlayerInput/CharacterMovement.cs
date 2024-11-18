@@ -81,6 +81,7 @@ public class CharacterMovement : MonoBehaviour
         if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter < 0f)
         {
             doubleJumpPerformed = true;
+            PlayerAnimator.SetBool("DoubleJump", true);
         }
     }
 
@@ -109,6 +110,10 @@ public class CharacterMovement : MonoBehaviour
         {
             Vector3 dashDir = new Vector3(input, 0f, 0f);
             rb.AddForce(dashDir * dashSpeed * Time.deltaTime, ForceMode.Impulse);
+            if (input != 0)
+            {
+                PlayerAnimator.SetBool("Dash", true);
+            }
         }
     }
 
@@ -117,6 +122,7 @@ public class CharacterMovement : MonoBehaviour
         Velocity = rb.velocity;
         PlayerAnimator.SetFloat("XVelocity", rb.velocity.x);
         PlayerAnimator.SetFloat("YVelocity", rb.velocity.y);
+        PlayerAnimator.SetBool("Grounded", grounded);
 
         wallJump();
 
