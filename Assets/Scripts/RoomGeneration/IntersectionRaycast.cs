@@ -47,7 +47,7 @@ public class IntersectionRaycast : MonoBehaviour
 
     public void CheckForInvalidSpawn(ConnectorRoomInfo spawnedConnectorInfo)
     {
-       gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+        gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
         bool discard = false;
         
         switch (spawnedConnectorInfo.spawnedOnSide)
@@ -87,12 +87,12 @@ public class IntersectionRaycast : MonoBehaviour
             Debug.Log("BOTTOM/RIGHT RAY HIT!");
             discard = true;
         }
-        else if (Physics.Raycast(_horizMiddleRay, _roomInfo.roomLength, layerMask))
+        else if (Physics.Raycast(_horizMiddleRay, _roomInfo.roomLength + 1, layerMask))
         {
             Debug.Log("HORIZ RAY HIT!");
             discard = true;
         } 
-        else if (Physics.Raycast(_verticMiddleRay, _roomInfo.roomHeight, layerMask))
+        else if (Physics.Raycast(_verticMiddleRay, _roomInfo.roomHeight + 1, layerMask))
         {
             Debug.Log("VERT RAY HIT!");
             discard = true;

@@ -77,7 +77,7 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
-        connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
+        //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
         Debug.Log(gameObject + " Distance between left/right walls and centre: " + distToRoomCentre.x);
         distToRoomCentre.y = (wallT.transform.localPosition.y - wallB.transform.localPosition.y);

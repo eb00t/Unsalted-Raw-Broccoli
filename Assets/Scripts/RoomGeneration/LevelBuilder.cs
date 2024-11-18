@@ -43,6 +43,7 @@ public class LevelBuilder : MonoBehaviour
     private GameObject _connectorToSpawn;
     private IntersectionRaycast _spawningRoomIntersectionCheck;
     public List<GameObject> _spawnedConnectors;
+    public GameObject roomToSpawn;
     
 
     private void Awake()
@@ -174,14 +175,18 @@ public class LevelBuilder : MonoBehaviour
             SpawnRooms(spawnRandomNumber, newSpawnPoint); // Spawn the room on the connector
         }
         
-        MapTargetGroup.Instance.AddRoomsToTargetGroup();
+//        MapTargetGroup.Instance.AddRoomsToTargetGroup();
         CleanUpBadRooms();
     }
 
     void SpawnRooms(int spawnRandomNumber, Vector3 newSpawnPoint)
     {
         int roomRandomNumber = RandomiseNumber(possibleRooms.Count); // Spawn a random room from the list of possible rooms
-        GameObject roomToSpawn; //  Room that will be spawned
+        //GameObject roomToSpawn; 
+        if (roomToSpawn != null)
+        {
+            previouslySpawnedRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
+        }
         Vector3 realSpawnPosition = Vector3.zero; //    The room's spawn position
         
         spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
@@ -213,8 +218,8 @@ public class LevelBuilder : MonoBehaviour
         }
         roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //  Instantiate the room at the spawnpoint's position
         //CheckSpawnIsValid(roomToSpawn);
-        previouslySpawnedRoomInfo = spawningRoomInfo;
-        spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
+        //previouslySpawnedRoomInfo = spawningRoomInfo;
+        spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
         spawningRoomInfo.connectorSpawnedOff = _connectorToSpawn;
         Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + realSpawnPosition);
         spawningRoomInfo.attachedConnectors.Add(_connectorToSpawn);
@@ -225,13 +230,13 @@ public class LevelBuilder : MonoBehaviour
         Debug.Log("Rooms left to spawn: " + roomsRemaining);
        
         //StartCoroutine(WaitToUpdate(roomToSpawn, roomSpawnedOn, roomRandomNumber, spawnRandomNumber));
-        UpdateSpawnWalls(roomToSpawn, roomRandomNumber, spawnRandomNumber);
+        UpdateSpawnWalls(roomRandomNumber, spawnRandomNumber);
     }
 
-    void UpdateSpawnWalls(GameObject roomToSpawn, int roomRandomNumber, int spawnRandomNumber)
+    void UpdateSpawnWalls(int roomRandomNumber, int spawnRandomNumber)
     { 
      
-        spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
+        //spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
         Debug.Log(spawningRoomInfo);
         _spawningRoomIntersectionCheck = spawningRoomInfo.intersectionCheck;
         _spawningRoomIntersectionCheck.CheckForInvalidSpawn(spawnedConnectorInfo);
