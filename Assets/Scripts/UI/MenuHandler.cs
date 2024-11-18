@@ -59,20 +59,21 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 
-	public void Back(InputAction.CallbackContext context)
+	public void Back(InputAction.CallbackContext context) // switch to just close everything and open what is needed ?
 	{
 		if (!context.performed) return;
 		
 		if (_isEquip && !_isInventory)
 		{
-			SwitchSelected(selectedMenu);
 			ToggleEquip();
-		}
-		else if (_isInventory && !_isInvInteractable)
-		{
-			ToggleInventory();
+			SwitchSelected(selectedMenu);
 		}
 		else if (_isInventory && _isInvInteractable)
+		{
+			ToggleInventory();
+			SwitchSelected(selectedEquip);
+		}
+		else if (_isInventory && !_isInvInteractable)
 		{
 			ToggleInventory();
 			ToggleEquip();
@@ -130,4 +131,27 @@ public class MenuHandler : MonoBehaviour
 			Debug.Log("No items in inventory");
 		}
 	}
+
+	public void OverrideBack()
+	{
+		if (_isEquip && !_isInventory)
+		{
+			ToggleEquip();
+			SwitchSelected(selectedMenu);
+		}
+		else if (_isInventory && _isInvInteractable)
+		{
+			ToggleInventory();
+			SwitchSelected(selectedEquip);
+		}
+		else if (_isInventory && !_isInvInteractable)
+		{
+			ToggleInventory();
+			ToggleEquip();
+		}
+		else if (!_isEquip && !_isInventory && menu.activeSelf)
+		{
+			menu.SetActive(false);
+			SwitchSelected(selectedMenu);
+		}
 }

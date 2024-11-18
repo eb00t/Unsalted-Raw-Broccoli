@@ -88,39 +88,12 @@
                 },
                 {
                     "name": "Con0",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "40545659-1d5d-4bde-ba06-75598f2c33d4",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Dpad",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Con1",
-                    "type": "Button",
-                    "id": "6f6a1760-b80d-4308-8491-953dbc46b2ea",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Con2",
-                    "type": "Button",
-                    "id": "06b81e58-ccd1-4335-aea4-2f3bcef66000",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Con3",
-                    "type": "Button",
-                    "id": "6880b0bd-2064-4983-a06b-3314e1b6f499",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -312,48 +285,114 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "dbb2b8d9-e470-4bfc-8ab2-e503afca5710",
+                    "name": "Gamepad",
+                    "id": "4d92aa1f-4100-4332-b58e-464c220d6cb0",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Con0",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "8c3ad588-58ed-4a72-b615-797a1cd3eda1",
                     "path": "<Gamepad>/dpad/up",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Con0",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "08ccf3ca-7b6f-4e35-984f-b8a4df163207",
-                    "path": "<Gamepad>/dpad/right",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Con1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "035e9bdb-f874-44d3-ab18-f8812752d3a5",
+                    "name": "down",
+                    "id": "d0176752-a120-40c6-8fc1-8d237b79c694",
                     "path": "<Gamepad>/dpad/down",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Con2",
+                    "action": "Con0",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "45ccc7eb-437c-4f44-8d1c-31e0d3553b3e",
+                    "name": "left",
+                    "id": "cc693402-95ff-4714-bc6d-973679128571",
                     "path": "<Gamepad>/dpad/left",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Con3",
+                    "action": "Con0",
                     "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "0d1e2b3b-e814-4a34-9123-122428ac97fc",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Con0",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "ArrowKeys",
+                    "id": "036f7df1-c21b-456e-b08f-26ccc93a5c62",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Con0",
+                    "isComposite": true,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "19ab8292-b41a-48ef-972c-2e0904d22494",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Con0",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "68f84fcd-fbfd-4e5f-9756-12aa5aa6e64d",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Con0",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "7dc0a0a0-2d7c-498c-ae88-34f326b22f9d",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Con0",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "4df9de6f-feb0-40cd-9c6b-703d3bc47f86",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Con0",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }
