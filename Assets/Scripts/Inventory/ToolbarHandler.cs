@@ -17,19 +17,6 @@ public class ToolbarHandler : MonoBehaviour
     private void Start()
     {
         _inventoryStore = GetComponent<InventoryStore>();
-        /*
-        foreach (var s in slots)
-        {
-            var n = s.GetComponentsInChildren<Image>();
-            foreach (var b in n)
-            {
-                if (b.name == "Image")
-                {
-                    b.gameObject.SetActive(false);
-                }
-            }
-        }
-        */
     }
 
     private void AddToToolbar(Sprite newSprite, string txt)
@@ -64,22 +51,24 @@ public class ToolbarHandler : MonoBehaviour
 
     public void SlotItemActivated(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            var dir = context.ReadValue<Vector2>();
+        if (!context.performed) return;
+        var dir = context.ReadValue<Vector2>();
 
-            switch (dir.x, dir.y)
-            {
-                case (0, 1): // up (0)
-                    // use consumable in slot 0, and so on for each case
-                    break;
-                case (1, 0): // right (1)
-                    break;
-                case (0, -1): // down (2)
-                    break;
-                case (-1, 0): // left (3)
-                    break;
-            }
+        switch (dir.x, dir.y)
+        {
+            case (0, 1): // up (0)
+                // use consumable in slot 0, and so on for each case
+                Debug.Log("item 0 used");
+                break;
+            case (1, 0): // right (1)
+                Debug.Log("item 1 used");
+                break;
+            case (0, -1): // down (2)
+                Debug.Log("item 2 used");
+                break;
+            case (-1, 0): // left (3)
+                Debug.Log("item 3 used");
+                break;
         }
     }
 }
