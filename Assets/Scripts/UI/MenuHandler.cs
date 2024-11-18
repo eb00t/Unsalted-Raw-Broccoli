@@ -25,7 +25,7 @@ public class MenuHandler : MonoBehaviour
 	{
 		inventoryGui.SetActive(!inventoryGui.activeSelf);
 		_isInventory = inventoryGui.activeSelf;
-		
+
 		foreach (var b in grid.GetComponentsInChildren<Button>())
 		{
 			b.interactable = false;
@@ -62,7 +62,7 @@ public class MenuHandler : MonoBehaviour
 	public void Back(InputAction.CallbackContext context) // switch to just close everything and open what is needed ?
 	{
 		if (!context.performed) return;
-		
+
 		if (_isEquip && !_isInventory)
 		{
 			ToggleEquip();
@@ -94,7 +94,7 @@ public class MenuHandler : MonoBehaviour
 			SwitchSelected(selectedMenu);
 		}
 	}
-	
+
 	private void SwitchSelected(GameObject g)
 	{
 		eventSystem.SetSelectedGameObject(null);
@@ -104,7 +104,7 @@ public class MenuHandler : MonoBehaviour
 	public void SlotSelected(int slot)
 	{
 		if (inventoryGui.activeSelf) return;
-		
+
 		if (_inventoryStore.items.Count > 0)
 		{
 			foreach (var b in grid.GetComponentsInChildren<IndexHolder>())
@@ -114,10 +114,10 @@ public class MenuHandler : MonoBehaviour
 					SwitchSelected(b.gameObject);
 				}
 			}
-			
+
 			ToggleInventory();
 			_isEquipInv = true;
-			
+
 			foreach (var b in grid.GetComponentsInChildren<Button>())
 			{
 				b.interactable = true;
@@ -154,4 +154,5 @@ public class MenuHandler : MonoBehaviour
 			menu.SetActive(false);
 			SwitchSelected(selectedMenu);
 		}
+	}
 }
