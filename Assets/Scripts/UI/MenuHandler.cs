@@ -123,6 +123,7 @@ public class MenuHandler : MonoBehaviour
 				b.interactable = true;
 				_isInvInteractable = true;
 			}
+
 			_toolbarHandler.slotNo = slot;
 		}
 		else
