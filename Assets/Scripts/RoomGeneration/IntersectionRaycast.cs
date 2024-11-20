@@ -15,7 +15,7 @@ public class IntersectionRaycast : MonoBehaviour
     private float _innerRayCastDistance;
     private float _halfRoomLength, _halfRoomHeight;
     public LayerMask layerMask;
-    private BoxCollider _collider;
+    public BoxCollider _collider;
     
     void Awake()
     {
@@ -87,18 +87,52 @@ public class IntersectionRaycast : MonoBehaviour
             Debug.Log("BOTTOM/RIGHT RAY HIT!");
             discard = true;
         }
-        else if (Physics.Raycast(_horizMiddleRay, _roomInfo.roomLength + 1, layerMask))
+        else if (FireInternalRayCast())
         {
-            Debug.Log("HORIZ RAY HIT!");
-            discard = true;
-        } 
-        else if (Physics.Raycast(_verticMiddleRay, _roomInfo.roomHeight + 1, layerMask))
-        {
-            Debug.Log("VERT RAY HIT!");
+            Debug.Log("INTERNAL RAY HIT");
             discard = true;
         }
-        
+            
+        if (discard)
+        {
+            Debug.Log(name + " is trying to spawn in occupied space.");
+            _roomInfo.markedForDiscard = true;
+            foreach (var door in _roomInfo.allDoors)
+            {
+                LevelBuilder.Instance.spawnPoints.Remove(door.transform);
+            }
+            LevelBuilder.Instance.discardedRooms.Add(gameObject);
+        }
+        _collider.enabled = true;
+        gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
+        StartCoroutine(SecondRoundInternalCheck());
+    }
 
+    private bool FireInternalRayCast()
+    {
+        bool discard;
+         if (Physics.Raycast(_horizMiddleRay, _roomInfo.roomLength + 1, layerMask))
+         {
+             Debug.Log("HORIZ RAY HIT!");
+             discard = true;
+         } 
+         else if (Physics.Raycast(_verticMiddleRay, _roomInfo.roomHeight + 1, layerMask))
+         {
+             Debug.Log("VERT RAY HIT!");
+             discard = true;
+         }
+         else
+         {
+             discard = false;
+         }
+
+         return discard;
+    }
+
+    private void CheckForInternalIntersection()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+        bool discard = FireInternalRayCast();
         if (discard)
         {
             Debug.Log(name + " is trying to spawn in occupied space.");
@@ -113,6 +147,12 @@ public class IntersectionRaycast : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
     }
 
+    IEnumerator SecondRoundInternalCheck()
+    {
+        yield return new WaitForSecondsRealtime(.5f);
+        CheckForInternalIntersection();
+    }
+    
     void Update()
     {
         Debug.DrawRay(_leftTopRay.origin, _leftTopRay.direction * (_rayCastLength), Color.red);

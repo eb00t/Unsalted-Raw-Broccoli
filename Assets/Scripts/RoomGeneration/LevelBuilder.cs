@@ -58,6 +58,12 @@ public class LevelBuilder : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(DelayStart());
+    }
+
+    IEnumerator DelayStart()
+    {
+        yield return new WaitForSecondsRealtime(.5f);
         roomsRemaining = totalNumberOfRooms;
         _startingRoom = GameObject.FindWithTag("StartingRoom");
         GetStartingRoomWalls();
@@ -66,7 +72,6 @@ public class LevelBuilder : MonoBehaviour
         AddRoomsToList();
         SpawnConnector();
     }
-
     void GetStartingRoomWalls()
     {
         spawnRoomDoorL = _startingRoom.GetComponent<RoomInfo>().doorL;
@@ -240,6 +245,7 @@ public class LevelBuilder : MonoBehaviour
         Debug.Log(spawningRoomInfo);
         _spawningRoomIntersectionCheck = spawningRoomInfo.intersectionCheck;
         _spawningRoomIntersectionCheck.CheckForInvalidSpawn(spawnedConnectorInfo);
+        Debug.Log(_spawningRoomIntersectionCheck.gameObject.name + " is checking for spawning room intersections");
         //_spawningRoomIntersectionCheck = spawningRoomInfo.intersectionCheck;
        //_spawningRoomIntersectionCheck.CheckForIntersections();
        
@@ -289,8 +295,14 @@ public class LevelBuilder : MonoBehaviour
                 previouslySpawnedRoomInfo.canHaveBottomRoom = false;
                 break;
         }
+        StartCoroutine(WaitASec());
     }
 
+    IEnumerator WaitASec()
+    {
+        yield return new WaitForSeconds(1f);
+    }
+    
     /*IEnumerator WaitToUpdate(int roomRandomNumber,
         int spawnRandomNumber)
     {
@@ -396,6 +408,10 @@ public class LevelBuilder : MonoBehaviour
         else
         {
             Debug.Log("All discarded rooms have been regenerated.");
+            foreach (var room in spawnedRooms)
+            {
+                //room.GetComponent<IntersectionRaycast>()._collider.enabled = false;
+            }
         }
     }
     
