@@ -1,22 +1,37 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class CharacterAttack : MonoBehaviour
 {
-    MeshCollider attackCollider;
-    Animator PlayerAnimator;
+    private MeshCollider _attackCollider;
+    private Animator _playerAnimator;
+    
+    [Header("Stats")]
+    [SerializeField] private int currentHealth = 100;
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int charAtk = 10;
+    
+    [Header("Tracking")]
+    [SerializeField] private List<EnemyHandler> enemyHandlers;
+    private EnemyHandler _nearestEnemy;
+    
+    [SerializeField] private Slider healthSlider;
+    
+    private void Start()
+    {
+        _attackCollider = GetComponent<MeshCollider>();
+        _playerAnimator = GameObject.FindGameObjectWithTag("PlayerRenderer").GetComponent<Animator>();
+    }
 
     public void LightAttack(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)
         {
             Debug.Log("LightAttack");
-            PlayerAnimator.SetBool("LightAttack1", true);
-            
+            _playerAnimator.SetBool("LightAttack1", true);
         }
-        
     }
 
     public void LightAttack1(InputAction.CallbackContext ctx)
@@ -24,32 +39,33 @@ public class CharacterAttack : MonoBehaviour
         if (ctx.performed)
         {
             Debug.Log("LightAttack1");
-            PlayerAnimator.SetBool("LightAttack2", true);
-            
+            _playerAnimator.SetBool("LightAttack2", true);
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void DisableCollider()
     {
-        attackCollider = GetComponent<MeshCollider>();
-        PlayerAnimator = GameObject.FindGameObjectWithTag("PlayerRenderer").GetComponent<Animator>();
+        _attackCollider.enabled = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void EnableCollider()
     {
-
-    }
-
-    public void disableCollider()
-    {
-        attackCollider.enabled = false;
-    }
-
-    public void enableCollider()
-    {
-        attackCollider.enabled = true;
+        _attackCollider.enabled = true;
         Debug.Log("Enable collider");
+    }
+
+    public void TakeDamagePlayer(int damage)
+    {
+        if (currentHealth - damage > 0)
+        {
+            currentHealth -= damage;
+            healthSlider.value = currentHealth;
+        }
+        else
+        {
+            currentHealth = 0;
+            healthSlider.value = 0;
+            //Die();
+        }
     }
 }
