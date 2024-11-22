@@ -20,12 +20,12 @@ public class PlayerAnimationEvents : MonoBehaviour
 
     private void disableCollider()
     {
-        charAttack.disableCollider();
+        charAttack.DisableCollider();
     }
 
     private void enableCollider()
     {
-        charAttack.enableCollider();
+        charAttack.EnableCollider();
     }
 
     private void disablePlayerMovement()

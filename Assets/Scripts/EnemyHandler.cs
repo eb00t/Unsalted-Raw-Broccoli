@@ -9,16 +9,22 @@ public class EnemyHandler : MonoBehaviour
     [Header("Enemy Stats")]
     [SerializeField] private int health = 100;
     [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int enemyAtk = 10;
     [SerializeField] private float chaseRange = 5;
     [SerializeField] private float attackRange = 2;
     [SerializeField] private float speed = 3;
     
     [Header("References")]
     [SerializeField] private Slider healthSlider; // if enemy is boss set this to HUD slider
+    [SerializeField] private CharacterAttack characterAttack;
     
     private Transform _target;
     private Animator _animator;
     private States _state =  States.Idle;
+    
+    // temp timer
+    public float targetTime = 0f;
+    
 
     private enum States
     {
@@ -54,11 +60,12 @@ public class EnemyHandler : MonoBehaviour
                 {
                     _state = States.Chase;
                 }
+                
+                // play idle animation / add patrolling 
                 break;
             }
             case States.Chase:
             {
-                //play the run animation
                 //animator.SetTrigger("chase");
                 //animator.SetBool("isAttacking", false);
 
@@ -66,17 +73,16 @@ public class EnemyHandler : MonoBehaviour
                 {
                     _state = States.Attack;
                 }
-
-                //move towards the player
+                
                 if (_target.position.x > transform.position.x)
                 {
-                    //move right
+                    // right
                     transform.Translate(transform.right * (speed * Time.deltaTime));
                     transform.rotation = Quaternion.Euler(0, 180, 0);
                 }
                 else
                 {
-                    //move left
+                    // left
                     transform.Translate(-transform.right * (speed * Time.deltaTime));
                     transform.rotation = Quaternion.identity;
                 }
@@ -87,7 +93,18 @@ public class EnemyHandler : MonoBehaviour
                 //animator.SetBool("isAttacking", true);
 
                 if (distance > attackRange)
+                {
                     _state = States.Chase;
+                }
+                
+                targetTime -= Time.deltaTime;
+                
+                if (targetTime <= 0.0f)
+                {
+                    characterAttack.TakeDamagePlayer(enemyAtk);
+                    targetTime = 2f;
+                }
+
                 break;
             }
             default:
@@ -95,7 +112,7 @@ public class EnemyHandler : MonoBehaviour
         }
     }
     
-    public void TakeDamage(int damage)
+    public void TakeDamageEnemy(int damage)
     {
         if (health - damage > 0)
         {
@@ -104,6 +121,7 @@ public class EnemyHandler : MonoBehaviour
         }
         else
         {
+            health = 0;
             healthSlider.value = 0;
             Die();
         }
