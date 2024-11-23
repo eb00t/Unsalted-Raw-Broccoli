@@ -19,8 +19,8 @@ public class LevelBuilder : MonoBehaviour
     }
 
     [field: Header("Configuration")] 
-    public int numberOfRoomsToSpawn;
-    
+    private int _numberOfRoomsToSpawn;
+    public int howManyRoomsToSpawn;
     public int numberOfConnectors;
     public LevelMode currentFloor;
     private GameObject _startingRoom;
@@ -60,13 +60,14 @@ public class LevelBuilder : MonoBehaviour
 
     void Start()
     {
+        _numberOfRoomsToSpawn = howManyRoomsToSpawn;
         StartCoroutine(DelayStart());
     }
 
     IEnumerator DelayStart()
     {
         yield return new WaitForSecondsRealtime(.5f);
-        roomsRemaining = numberOfRoomsToSpawn;
+        roomsRemaining = _numberOfRoomsToSpawn;
         _startingRoom = GameObject.FindWithTag("StartingRoom");
         GetStartingRoomWalls();
         possibleRooms = new List<GameObject>();
@@ -130,7 +131,7 @@ public class LevelBuilder : MonoBehaviour
 
     IEnumerator SpawnConnector()
     {
-        for (int i = 0; i < numberOfRoomsToSpawn; i++) //Spawn amount of rooms
+        for (int i = 0; i < _numberOfRoomsToSpawn; i++) //Spawn amount of rooms
         {
             yield return new WaitForSeconds(.1f);
             GameObject connectorPathReference = null;
@@ -401,22 +402,41 @@ public class LevelBuilder : MonoBehaviour
 
     void RerollDiscardedRooms()
     {
-        numberOfRoomsToSpawn = discardedRooms.Count;
-        if (numberOfRoomsToSpawn > 0)
+        _numberOfRoomsToSpawn = discardedRooms.Count;
+        if (_numberOfRoomsToSpawn > 0)
         {
             discardedRooms.Clear();
             StartCoroutine(SpawnConnector());
         }
-        else if (numberOfRoomsToSpawn <= 0)
+        else if (_numberOfRoomsToSpawn <= 0)
         {
             if (discardedRooms.Count > 0)
             {
                 
-                numberOfRoomsToSpawn = discardedRooms.Count;
+                _numberOfRoomsToSpawn = discardedRooms.Count;
                 StartCoroutine(SpawnConnector());
             }
             Debug.Log("All discarded rooms have been regenerated.");
+            /*if (spawnedRooms.Count != howManyRoomsToSpawn)
+            {
+                foreach (var room in spawnedRooms)
+                {
+                    Destroy(room.gameObject);
+                }
+
+                foreach (var connector in _spawnedConnectors)
+                {
+                    Destroy(connector.gameObject);
+                }
+                
+                spawnPoints.Clear();
+                GetStartingRoomWalls();
+                _numberOfRoomsToSpawn = howManyRoomsToSpawn;
+                StartCoroutine(SpawnConnector());
+            }*/
         }
+
+        
 
        
         foreach (var room in spawnedRooms)
