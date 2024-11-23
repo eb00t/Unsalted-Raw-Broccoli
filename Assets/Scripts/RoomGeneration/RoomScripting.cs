@@ -32,8 +32,11 @@ public class RoomScripting : MonoBehaviour
 
     IEnumerator CheckIfRoomHasEnemies()
     {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+        }
         
-        yield return new WaitForSeconds(1f);
     }
 
     void OpenAllRoomDoors()

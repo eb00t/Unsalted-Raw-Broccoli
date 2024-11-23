@@ -8,9 +8,7 @@ public class DoorInfo : MonoBehaviour
 
     public void CheckDoors()
     {
-            StartCoroutine(WaitASec());
-        
-
+        StartCoroutine(WaitASec());
     }
 
     IEnumerator WaitASec()
@@ -40,7 +38,7 @@ public class DoorInfo : MonoBehaviour
         {
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Intersection Checker"))
             {
-                Debug.Log(name + " has a connector attached!");
+                //Debug.Log(name + " has a connector attached!");
                 hasDoor = true;
             }
         }

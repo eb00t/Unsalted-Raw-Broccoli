@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
-
+[RequireComponent(typeof(IntersectionRaycast))]
 public class RoomInfo : MonoBehaviour
 {
     [field: Header("Configuration")] 
@@ -18,6 +18,7 @@ public class RoomInfo : MonoBehaviour
     public bool canSpawnOnBottom;
     public float roomLength; //
     public float roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
+    public bool rareRoom = false;
     
 
 
