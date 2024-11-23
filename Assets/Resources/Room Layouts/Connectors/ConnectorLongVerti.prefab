@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 802839524805848688}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 10.5, z: 0}
+  m_LocalPosition: {x: 0, y: -10.5, z: 0}
   m_LocalScale: {x: 5, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -223,7 +223,9 @@ GameObject:
   - component: {fileID: 72533319208393801}
   - component: {fileID: 4124397997767269095}
   - component: {fileID: -4842760841017465323}
-  m_Layer: 0
+  - component: {fileID: -8664626202262286061}
+  - component: {fileID: 1618629949223623733}
+  m_Layer: 6
   m_Name: ConnectorLongVerti
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -314,7 +316,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -334,12 +336,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontal: 0
   spawnWalls: []
-  wallL: {fileID: 8599879181382498161}
-  wallR: {fileID: 8835159966173856038}
-  wallT: {fileID: 957127673209608952}
-  wallB: {fileID: 802839524805848688}
+  wallL: {fileID: 7661029439447593580}
+  wallR: {fileID: 6586070801111483632}
+  wallT: {fileID: 7622447773876418337}
+  wallB: {fileID: 5842574634799213114}
   spawnedOnSide: 
-  connectorSize: 20
+  connectorLength: 5
+  connectorHeight: 20
+  markedForDiscard: 0
+  intersectionCheck: {fileID: 0}
+--- !u!114 &-8664626202262286061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3646509954627393381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff5e83a67aef47129d2e754d8fc74391, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _collider: {fileID: 0}
+--- !u!114 &1618629949223623733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3646509954627393381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9afaf4f726222064f809f68f97c9c83a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomType: 1
 --- !u!1 &8599879181382498161
 GameObject:
   m_ObjectHideFlags: 0

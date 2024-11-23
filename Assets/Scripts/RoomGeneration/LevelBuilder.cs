@@ -42,6 +42,7 @@ public class LevelBuilder : MonoBehaviour
     public Transform spawnRoomDoorB;
     private GameObject _connectorToSpawn;
     private IntersectionRaycast _spawningRoomIntersectionCheck;
+    private ConnectorIntersectionRaycast _spawnedConnectorIntersectionCheck;
     public List<GameObject> _spawnedConnectors;
     public GameObject roomToSpawn;
     
@@ -144,42 +145,43 @@ public class LevelBuilder : MonoBehaviour
                     Debug.Log("LEFT");
                     connectorPathReference = ConnectorPathSetup("Left"); 
                     spawnedConnectorInfo = connectorPathReference.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.x = (spawnPointPosition.x + spawnedConnectorInfo.wallR.transform.localPosition.x);
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallR.transform.localPosition.y);
+                    newSpawnPoint.x = (spawnPointPosition.x + spawnedConnectorInfo.wallL.localPosition.x);
+                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallL.localPosition.y);
                     spawnedConnectorInfo.spawnedOnSide = "Left";
                     break;
                 case "Right Door":
                     Debug.Log("RIGHT");
                     connectorPathReference = ConnectorPathSetup("Right");
                     spawnedConnectorInfo = connectorPathReference.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.x = (spawnPointPosition.x + spawnedConnectorInfo.wallL.transform.localPosition.x);
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallL.transform.localPosition.y);
+                    newSpawnPoint.x = (spawnPointPosition.x + spawnedConnectorInfo.wallR.localPosition.x);
+                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallR.localPosition.y);
                     spawnedConnectorInfo.spawnedOnSide = "Right";
                     break;
                 case "Bottom Door":
                     Debug.Log("BOTTOM");
                     connectorPathReference = ConnectorPathSetup("Bottom");
                     spawnedConnectorInfo = connectorPathReference.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallT.transform.localPosition.y);
-                    newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallT.transform.localPosition.x);
+                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallT.localPosition.y);
+                    newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallT.localPosition.x);
                     spawnedConnectorInfo.spawnedOnSide = "Bottom";
                     break;
                 case "Top Door":
                     Debug.Log("TOP");
                     connectorPathReference = ConnectorPathSetup("Top");
                     spawnedConnectorInfo = connectorPathReference.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallB.transform.localPosition.y);
-                    newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallB.transform.localPosition.x);
+                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallB.localPosition.y);
+                    newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallB.localPosition.x);
                     spawnedConnectorInfo.spawnedOnSide = "Top";
                     break;
             }
 
             //Debug.Log("Connector should spawn at: " + spawnPoints[spawnRandomNumber] + newSpawnPoint);
             _connectorToSpawn = Instantiate(connectorPathReference, newSpawnPoint, quaternion.identity); //  Spawn the connector at the adjusted spawn point.
+            _spawnedConnectorIntersectionCheck = _connectorToSpawn.GetComponent<ConnectorIntersectionRaycast>();
+            _spawnedConnectorIntersectionCheck.CheckForInvalidSpawn();
             _spawnedConnectors.Add(_connectorToSpawn);
             SpawnRooms(spawnRandomNumber, newSpawnPoint); // Spawn the room on the connector
         }
-        
 //        MapTargetGroup.Instance.AddRoomsToTargetGroup();
         CleanUpBadRooms();
     }
@@ -195,8 +197,8 @@ public class LevelBuilder : MonoBehaviour
         Vector3 realSpawnPosition = Vector3.zero; //    The room's spawn position
         
         spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
-        float totalLength = spawningRoomInfo.roomLength / 2 + spawnedConnectorInfo.connectorSize / 2;
-        float totalHeight = spawningRoomInfo.roomHeight / 2 + spawnedConnectorInfo.connectorSize / 2;
+        float totalLength = spawningRoomInfo.roomLength / 2 + spawnedConnectorInfo.connectorLength / 2;
+        float totalHeight = spawningRoomInfo.roomHeight / 2 + spawnedConnectorInfo.connectorHeight / 2;
         switch (spawnedConnectorInfo.spawnedOnSide) /*  Move the spawn point based on the length or width of the room, minus the x or y position of 
                                                         the wall it will spawn on   */
         {

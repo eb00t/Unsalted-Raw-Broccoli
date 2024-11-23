@@ -543,6 +543,7 @@ GameObject:
   - component: {fileID: -1691743808831641495}
   - component: {fileID: 573429788166635036}
   - component: {fileID: 6133817772996741514}
+  - component: {fileID: -5498167287000878910}
   m_Layer: 6
   m_Name: TestRoom3
   m_TagString: Untagged
@@ -667,7 +668,6 @@ MonoBehaviour:
   canSpawnOnBottom: 0
   roomLength: 20
   roomHeight: 30
-  markedForDiscard: 0
   roomInstance: {fileID: 0}
   intersectionCheck: {fileID: 0}
   allDoors: []
@@ -679,21 +679,9 @@ MonoBehaviour:
   wallR: {fileID: 2845426940613714455}
   wallB: {fileID: 2614753143980667281}
   wallT: {fileID: 4129384831042671969}
-  attachedConnectors:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  attachedConnectors: []
+  connectorSpawnedOff: {fileID: 0}
+  markedForDiscard: 0
 --- !u!114 &573429788166635036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -709,6 +697,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
+  _collider: {fileID: 0}
 --- !u!114 &6133817772996741514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -721,6 +710,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9afaf4f726222064f809f68f97c9c83a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomType: 0
+--- !u!114 &-5498167287000878910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038577148403120426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bfdd4b60f2047248ddc830e87c8f6d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyCount: 0
+  allDoors: []
+  roomInfo: {fileID: 0}
 --- !u!1 &2437338312536971817
 GameObject:
   m_ObjectHideFlags: 0

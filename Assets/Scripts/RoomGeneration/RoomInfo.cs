@@ -37,7 +37,7 @@ public class RoomInfo : MonoBehaviour
         attachedConnectors.Clear();
         foreach (var door in gameObject.GetComponentsInChildren<Transform>())
         {
-            if (door.name.Contains("Door")) 
+            if (door.tag.Contains("Door")) 
             {
                 allDoors.Add(door.gameObject);
             }

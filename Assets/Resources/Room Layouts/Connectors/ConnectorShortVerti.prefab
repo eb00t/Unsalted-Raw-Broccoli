@@ -223,7 +223,9 @@ GameObject:
   - component: {fileID: 72533319208393801}
   - component: {fileID: 4124397997767269095}
   - component: {fileID: 7375941879414255129}
-  m_Layer: 0
+  - component: {fileID: 8230622829529822518}
+  - component: {fileID: 7821264417860906526}
+  m_Layer: 6
   m_Name: ConnectorShortVerti
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -315,9 +317,9 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -335,12 +337,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontal: 0
   spawnWalls: []
-  wallL: {fileID: 8599879181382498161}
-  wallR: {fileID: 8835159966173856038}
-  wallT: {fileID: 957127673209608952}
-  wallB: {fileID: 802839524805848688}
+  wallL: {fileID: 6586070801111483632}
+  wallR: {fileID: 7661029439447593580}
+  wallT: {fileID: 7622447773876418337}
+  wallB: {fileID: 5842574634799213114}
   spawnedOnSide: Bottom
-  connectorSize: 10
+  connectorLength: 5
+  connectorHeight: 10
+  markedForDiscard: 0
+  intersectionCheck: {fileID: 0}
+--- !u!114 &8230622829529822518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3646509954627393381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff5e83a67aef47129d2e754d8fc74391, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _collider: {fileID: 0}
+--- !u!114 &7821264417860906526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3646509954627393381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9afaf4f726222064f809f68f97c9c83a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomType: 1
 --- !u!1 &4684323704598248988
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,8 +494,8 @@ GameObject:
   - component: {fileID: 2390062982025885125}
   - component: {fileID: 8485758135206910250}
   m_Layer: 0
-  m_Name: LeftWall
-  m_TagString: Left Wall
+  m_Name: RightWall
+  m_TagString: Right Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -565,8 +599,8 @@ GameObject:
   - component: {fileID: 6380832755607514992}
   - component: {fileID: 1113015053159172373}
   m_Layer: 0
-  m_Name: RightWall
-  m_TagString: Right Wall
+  m_Name: LeftWall
+  m_TagString: Left Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

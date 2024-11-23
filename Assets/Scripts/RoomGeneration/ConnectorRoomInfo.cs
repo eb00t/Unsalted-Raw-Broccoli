@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,24 +7,33 @@ using UnityEngine.Serialization;
 public class ConnectorRoomInfo : MonoBehaviour
 {
     public bool horizontal;
-    public List<GameObject> spawnWalls;
-    public GameObject wallL, wallR, wallT, wallB;
+    public List<Transform> spawnWalls;
+    public Transform wallL, wallR, wallT, wallB;
     public string spawnedOnSide;
-    public float connectorSize;
+    public float connectorLength;
+    public float connectorHeight; // The smaller side (should typically be the same for each connector)
+    public bool markedForDiscard;
+    public ConnectorIntersectionRaycast intersectionCheck;
 
-    void Start()
+    private void Awake()
     {
+        intersectionCheck = GetComponent<ConnectorIntersectionRaycast>();
         switch (horizontal)
         {
             case true:
-                spawnWalls.Add(wallL);
-                spawnWalls.Add(wallR);
+                spawnWalls.Add(wallL.transform);
+                spawnWalls.Add(wallR.transform);
                 break;
             case false:
-                spawnWalls.Add(wallB);
-                spawnWalls.Add(wallT);
+                spawnWalls.Add(wallB.transform);
+                spawnWalls.Add(wallT.transform);
                 break;
         }
+    }
+
+    void Start()
+    {
+       
     }
     
 }
