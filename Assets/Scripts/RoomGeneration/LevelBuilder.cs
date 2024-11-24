@@ -319,21 +319,17 @@ public class LevelBuilder : MonoBehaviour
         {
             Debug.Log("No rooms left to discard!");
             generatingFinished = true;
+            spawnedRooms.Add(_startingRoom);
             foreach (var room in spawnedRooms)
             {
                 RoomScripting roomScript = room.GetComponent<RoomScripting>();
                 roomScript.CheckDoors();
             }
+
+            spawnedRooms.Remove(_startingRoom);
         }
     }
     
-    /*IEnumerator WaitToUpdate(int roomRandomNumber,
-        int spawnRandomNumber)
-    {
-        UpdateSpawnWalls(roomRandomNumber, spawnRandomNumber);
-        yield return new WaitForSecondsRealtime(1f);
-    }*/
-
     int RandomiseNumber(int setSize)
     {
         int rng = Random.Range(0, setSize);

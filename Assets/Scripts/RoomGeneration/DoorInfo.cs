@@ -5,7 +5,8 @@ using UnityEngine;
 public class DoorInfo : MonoBehaviour
 {
     public bool hasDoor = false;
-
+    
+    
     public void CheckDoors()
     {
         StartCoroutine(WaitASec());
