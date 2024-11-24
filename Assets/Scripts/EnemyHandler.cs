@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 
 // Adapted from https://github.com/Chaker-Gamra/2.5D-Platformer-Game/blob/master/Assets/Scripts/Enemy/Enemy.cs
+
+// TODO: fix issue with enemy ai breaking references when being spawned by code
 public class EnemyHandler : MonoBehaviour
 {
     [Header("Enemy Stats")]
@@ -15,15 +17,15 @@ public class EnemyHandler : MonoBehaviour
     [SerializeField] private float speed = 3;
     
     [Header("References")]
-    [SerializeField] private Slider healthSlider; // if enemy is boss set this to HUD slider
-    [SerializeField] private CharacterAttack characterAttack;
+    //[SerializeField] private Slider healthSlider; // if enemy is boss set this to HUD slider
+    private CharacterAttack _characterAttack;
     
     private Transform _target;
     private Animator _animator;
     private States _state =  States.Idle;
     
     // temp timer
-    public float targetTime = 0f;
+    public float targetTime;
     
 
     private enum States
@@ -35,9 +37,10 @@ public class EnemyHandler : MonoBehaviour
 
     private void Start()
     {
-        healthSlider.maxValue = maxHealth;
-        healthSlider.value = health;
+        //healthSlider.maxValue = maxHealth;
+        //healthSlider.value = health;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
+        _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
     }
 
     private void Update()
@@ -49,7 +52,8 @@ public class EnemyHandler : MonoBehaviour
             this.enabled = false;
         }
         */
-
+        
+        
         var distance = Vector3.Distance(transform.position, _target.position);
 
         switch (_state)
@@ -101,7 +105,7 @@ public class EnemyHandler : MonoBehaviour
                 
                 if (targetTime <= 0.0f)
                 {
-                    characterAttack.TakeDamagePlayer(enemyAtk);
+                    _characterAttack.TakeDamagePlayer(enemyAtk);
                     targetTime = 2f;
                 }
 
@@ -117,12 +121,12 @@ public class EnemyHandler : MonoBehaviour
         if (health - damage > 0)
         {
             health -= damage;
-            healthSlider.value = health;
+            //healthSlider.value = health;
         }
         else
         {
             health = 0;
-            healthSlider.value = 0;
+            //healthSlider.value = 0;
             Die();
         }
     }
