@@ -46,6 +46,7 @@ public class LevelBuilder : MonoBehaviour
     private ConnectorIntersectionRaycast _spawnedConnectorIntersectionCheck;
     public List<GameObject> _spawnedConnectors;
     public GameObject roomToSpawn;
+    public bool generatingFinished;
     
 
     private void Awake()
@@ -305,6 +306,25 @@ public class LevelBuilder : MonoBehaviour
     IEnumerator WaitASec()
     {
         yield return new WaitForSeconds(1f);
+        for (int i = spawnedRooms.Count; i < spawnedRooms.Count; i--)
+        {
+            IntersectionRaycast intersectionRaycast = spawnedRooms[i].GetComponent<IntersectionRaycast>();
+            intersectionRaycast.CheckForInvalidSpawn();
+        }
+        if (discardedRooms.Count > 0)
+        {
+            CleanUpBadRooms();
+        }
+        else
+        {
+            Debug.Log("No rooms left to discard!");
+            generatingFinished = true;
+            foreach (var room in spawnedRooms)
+            {
+                RoomScripting roomScript = room.GetComponent<RoomScripting>();
+                roomScript.CheckDoors();
+            }
+        }
     }
     
     /*IEnumerator WaitToUpdate(int roomRandomNumber,
@@ -412,11 +432,14 @@ public class LevelBuilder : MonoBehaviour
         {
             if (discardedRooms.Count > 0)
             {
-                
                 _numberOfRoomsToSpawn = discardedRooms.Count;
                 StartCoroutine(SpawnConnector());
             }
-            Debug.Log("All discarded rooms have been regenerated.");
+            else
+            {
+                StartCoroutine(WaitASec());
+                Debug.Log("All discarded rooms have been regenerated.");
+            }
             /*if (spawnedRooms.Count != howManyRoomsToSpawn)
             {
                 foreach (var room in spawnedRooms)
@@ -428,7 +451,7 @@ public class LevelBuilder : MonoBehaviour
                 {
                     Destroy(connector.gameObject);
                 }
-                
+
                 spawnPoints.Clear();
                 GetStartingRoomWalls();
                 _numberOfRoomsToSpawn = howManyRoomsToSpawn;
@@ -445,12 +468,14 @@ public class LevelBuilder : MonoBehaviour
         }
         
     }
-    
-    /*public void KillRoomAndConnector(GameObject room, GameObject connector)
+
+    private void Update()
     {
-        Debug.Log("Destroying invalid room and connector.");
-        Destroy(room.gameObject);
-        Destroy(connector.gameObject);
-    }*/
+        if (spawnRandomNumber > spawnPoints.Count)
+        {
+            Debug.Log("Spawn points are out of range.");
+            spawnRandomNumber = RandomiseNumber(spawnPoints.Count);
+        }
+    }
 }
 

@@ -125,7 +125,7 @@ public class IntersectionRaycast : MonoBehaviour
         Ray threeQuarterHeightRay = new Ray(threeQuarterHeight, Vector3.right);
         Ray quarterLengthRay = new Ray(quarterLength, Vector3.down); // QUARTER LENGTH FROM THE LEFT
         Ray threeQuarterLengthRay = new Ray(threeQuarterLength, Vector3.down);*/
-        bool discard;
+        bool discard = false;
          if (Physics.Raycast(_horizMiddleRay, out RaycastHit horizHit, _roomInfo.roomLength + 1, layerMask))
          {
              Debug.Log("HORIZ RAY HIT!");
@@ -133,7 +133,11 @@ public class IntersectionRaycast : MonoBehaviour
              {
                  discard = false;
              }
-             discard = true;
+             else if (horizHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard == false)
+             {
+                 discard = true;
+             }
+             
          } 
          else if (Physics.Raycast(_verticMiddleRay, out RaycastHit vertHit, _roomInfo.roomHeight + 1, layerMask))
          {
@@ -142,7 +146,10 @@ public class IntersectionRaycast : MonoBehaviour
              {
                  discard = false;
              }
-             discard = true;
+             else if (vertHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard == false) 
+             {
+                 discard = true;
+             }
          }
          else
          {

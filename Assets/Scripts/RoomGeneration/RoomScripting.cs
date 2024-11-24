@@ -21,7 +21,7 @@ public class RoomScripting : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void CheckDoors()
     {
         foreach (var door in allDoors)
         {
