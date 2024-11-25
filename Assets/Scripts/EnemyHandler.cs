@@ -135,9 +135,12 @@ public class EnemyHandler : MonoBehaviour
     {
         //animator.SetTrigger("isDead");
         
+        /*
         GetComponent<CapsuleCollider>().enabled = false;
         gameObject.SetActive(false);
         enabled = false;
+        */
+        Destroy(gameObject);
     }
     
     
