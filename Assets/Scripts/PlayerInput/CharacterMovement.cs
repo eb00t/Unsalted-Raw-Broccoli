@@ -64,7 +64,10 @@ public class CharacterMovement : MonoBehaviour
             Debug.Log("Jump");
             Vector3 jump = new Vector3(0f, jumpForce, 0f);
             rb.AddForce(jump);
-            PlayerAnimator.SetBool("Jump", true);
+            if (grounded)
+            {
+                PlayerAnimator.SetBool("Jump", true);
+            }
         }
 
         if (ctx.performed && wallJumpingCounter > 0f)
@@ -75,6 +78,7 @@ public class CharacterMovement : MonoBehaviour
             Vector3 wallJump = new Vector3(-input * wallJumpForce.x, wallJumpForce.y, 0f);
             wallJumpingCounter = 0f;
             rb.AddForce(wallJump);
+            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
             Invoke(nameof(stopWallJump), wallJumpingDuration);
         }
 
@@ -87,7 +91,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void wallJump()
     {
-        if (slideAllowed || startSlideTimer)
+        if (slideAllowed || startSlideTimer || grounded)
         {
             isWallJumping = false;
             wallJumpingCounter = wallJumpingTime;
@@ -106,7 +110,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void Dash(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed && grounded)
+        if (ctx.performed && grounded) // MAKE A COOLDOWN
         {
             Vector3 dashDir = new Vector3(input, 0f, 0f);
             rb.AddForce(dashDir * dashSpeed * Time.deltaTime, ForceMode.Impulse);
@@ -126,7 +130,7 @@ public class CharacterMovement : MonoBehaviour
 
         wallJump();
 
-        if (input != 0 && Mathf.Sign(transform.localScale.x) != Mathf.Sign(rb.velocity.x))
+        if (input != 0 && Mathf.Sign(transform.localScale.x) != input)
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
@@ -229,6 +233,7 @@ public class CharacterMovement : MonoBehaviour
             startSlide = false;
             slideAllowed = false;
             sliding = false;
+            timer = 0f;
             PlayerAnimator.SetBool("WallCling", false);
         }
     }
