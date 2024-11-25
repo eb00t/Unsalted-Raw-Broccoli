@@ -2,13 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SemiSolidPlatform : MonoBehaviour
 {
     private BoxCollider _boxCollider;
-    public string _layerToIgnore;
-    public LayerMask interactableObjects;
-    public LayerMask layersToExclude, layersToInclude;
+    public LayerMask _layerToIgnore;
     private void Awake()
     {
         _boxCollider = GetComponent<BoxCollider>();
@@ -18,11 +17,11 @@ public class SemiSolidPlatform : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            _layerToIgnore = "Player";
+            _layerToIgnore = LayerMask.GetMask("Player");
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            _layerToIgnore = "Enemy";
+            _layerToIgnore = LayerMask.GetMask("Enemy");
         }
         TurnOffCollision(_layerToIgnore);
     }
@@ -31,22 +30,24 @@ public class SemiSolidPlatform : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            _layerToIgnore = "Player";
+            _layerToIgnore = LayerMask.GetMask("Player");
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            _layerToIgnore = "Enemy";
+            _layerToIgnore = LayerMask.GetMask("Enemy");
         }
         TurnOnCollision(_layerToIgnore);
     }
 
-    public void TurnOffCollision(string layerMask)
+    public void TurnOffCollision(LayerMask layerMask)
     {
-        _boxCollider.excludeLayers += LayerMask.NameToLayer(layerMask);
+        _boxCollider.excludeLayers += layerMask;
     }
 
-    public void TurnOnCollision(string layerMask)
+    public void TurnOnCollision(LayerMask layerMask)
     {
-        _boxCollider.excludeLayers -= LayerMask.NameToLayer(layerMask);
+        _boxCollider.excludeLayers -= layerMask;
     }
+
+    
 }
