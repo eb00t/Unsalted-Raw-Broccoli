@@ -139,7 +139,7 @@ public class CharacterMovement : MonoBehaviour
         
         wallJump();
 
-        if (input != 0 && Mathf.Sign(transform.localScale.x) != input)
+        if ((input <= -0.1f || input >= 0.1) && Mathf.Sign(transform.localScale.x) != input)
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
