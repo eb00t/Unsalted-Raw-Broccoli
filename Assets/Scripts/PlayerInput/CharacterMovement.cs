@@ -73,7 +73,7 @@ public class CharacterMovement : MonoBehaviour
             }
         }
 
-        if (ctx.performed && wallJumpingCounter > 0f)
+        if (ctx.performed && wallJumpingCounter > 0f && startSlideTimer)
         {
             slideAllowed = false;
             startSlideTimer = false;
