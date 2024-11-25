@@ -7,15 +7,15 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(IntersectionRaycast))]
 public class RoomInfo : MonoBehaviour
 {
+   [NonSerialized] public bool canHaveLeftRoom;
+    [NonSerialized]public bool canHaveRightRoom;
+    [NonSerialized]public bool canHaveTopRoom;
+    [NonSerialized]public bool canHaveBottomRoom;
+    [NonSerialized]public bool canSpawnOnRight;
+    [NonSerialized] public bool canSpawnOnLeft;
+    [NonSerialized]public bool canSpawnOnTop;
+    [NonSerialized] public bool canSpawnOnBottom;
     [field: Header("Configuration")] 
-    public bool canHaveLeftRoom;
-    public bool canHaveRightRoom;
-    public bool canHaveTopRoom;
-    public bool canHaveBottomRoom;
-    public bool canSpawnOnRight;
-    public bool canSpawnOnLeft;
-    public bool canSpawnOnTop;
-    public bool canSpawnOnBottom;
     public float roomLength; //
     public float roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
     public bool rareRoom = false;
@@ -23,7 +23,6 @@ public class RoomInfo : MonoBehaviour
 
 
     [field: Header("Debugging")] 
-    public GameObject roomInstance;
     public IntersectionRaycast intersectionCheck;
     public List<GameObject> allDoors;
     public Transform doorL, doorR, doorB, doorT;
@@ -34,7 +33,6 @@ public class RoomInfo : MonoBehaviour
     void Awake()
     {
         intersectionCheck = GetComponent<IntersectionRaycast>();
-        roomInstance = gameObject;
         attachedConnectors.Clear();
         foreach (var door in gameObject.GetComponentsInChildren<Transform>())
         {

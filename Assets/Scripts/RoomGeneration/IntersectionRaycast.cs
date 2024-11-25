@@ -15,7 +15,7 @@ public class IntersectionRaycast : MonoBehaviour
     private float _innerRayCastDistance;
     private float _halfRoomLength, _halfRoomHeight, _quarterRoomLength, _quarterRoomHeight;
     public LayerMask layerMask;
-    public BoxCollider _collider;
+    private BoxCollider _collider;
     
     void Awake()
     {

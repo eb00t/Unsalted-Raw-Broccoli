@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class SemiSolidPlatform : MonoBehaviour
 {
     private BoxCollider _boxCollider;
-    public LayerMask _layerToIgnore;
+    private LayerMask _layerToIgnore;
     private void Awake()
     {
         _boxCollider = GetComponent<BoxCollider>();

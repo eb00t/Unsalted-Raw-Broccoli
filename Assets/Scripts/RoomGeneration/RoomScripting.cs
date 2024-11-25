@@ -7,14 +7,14 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(RoomInfo))]
 public class RoomScripting : MonoBehaviour
 {
-    public int enemyCount;
+    private int _enemyCount;
     public List<GameObject> allDoors;
-    public RoomInfo roomInfo;
+    private RoomInfo _roomInfo;
 
     private void Awake()
     {
-        roomInfo = GetComponent<RoomInfo>();
-        allDoors = new List<GameObject>(roomInfo.allDoors);
+        _roomInfo = GetComponent<RoomInfo>();
+        allDoors = new List<GameObject>(_roomInfo.allDoors);
         foreach (var door in allDoors)
         {
             door.AddComponent<DoorInfo>();
@@ -34,9 +34,12 @@ public class RoomScripting : MonoBehaviour
     {
         while (true)
         {
+            if (_enemyCount == 0)
+            {
+                OpenAllRoomDoors();
+            }
             yield return new WaitForSeconds(1f);
         }
-        
     }
 
     void OpenAllRoomDoors()
