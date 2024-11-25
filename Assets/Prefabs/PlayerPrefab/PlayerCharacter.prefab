@@ -48,8 +48,8 @@ MonoBehaviour:
   currentHealth: 100
   maxHealth: 100
   charAtk: 10
-  enemyHandlers:
-  - {fileID: 0}
+  atkRange: 3
+  enemyHandlers: []
   healthSlider: {fileID: 0}
 --- !u!64 &3621395720539083714
 MeshCollider:
@@ -310,6 +310,7 @@ MonoBehaviour:
   wallJumpingTime: 0.2
   wallJumpForce: {x: 450, y: 500}
   wallJumpingDuration: 0.2
+  uiOpen: 0
 --- !u!65 &7947488834224069209
 BoxCollider:
   m_ObjectHideFlags: 0
