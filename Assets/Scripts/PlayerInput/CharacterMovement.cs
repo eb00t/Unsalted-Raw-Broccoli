@@ -36,6 +36,8 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private Vector2 wallJumpForce = new Vector2(300f, 300f);
     [SerializeField] private float wallJumpingDuration = 0.4f;
 
+    public bool uiOpen; // makes sure player doesnt move when ui is open
+
     public void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -45,18 +47,19 @@ public class CharacterMovement : MonoBehaviour
 
     public void Crouch(InputAction.CallbackContext ctx)
     {
-
+        if (uiOpen) return;
     }
 
     public void XAxis(InputAction.CallbackContext ctx)
     {
+        if (uiOpen) return;
         input = ctx.ReadValue<float>();
         PlayerAnimator.SetFloat("Input", input);
-        
     }
 
     public void Jump(InputAction.CallbackContext ctx)
     {
+        if (uiOpen) return;
         if(!allowMovement) { }
             else
         if (ctx.performed && !doubleJumpPerformed && !startSlideTimer && !sliding)
@@ -91,6 +94,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void wallJump()
     {
+        if (uiOpen) return;
         if (slideAllowed || startSlideTimer || grounded)
         {
             isWallJumping = false;
@@ -105,11 +109,13 @@ public class CharacterMovement : MonoBehaviour
 
     private void stopWallJump()
     {
+        if (uiOpen) return;
         isWallJumping = false;
     }
 
     public void Dash(InputAction.CallbackContext ctx)
     {
+        if (uiOpen) return;
         if (ctx.performed && grounded) // MAKE A COOLDOWN
         {
             Vector3 dashDir = new Vector3(input, 0f, 0f);
@@ -123,11 +129,14 @@ public class CharacterMovement : MonoBehaviour
 
     public void Update()
     {
+        
         Velocity = rb.velocity;
         PlayerAnimator.SetFloat("XVelocity", rb.velocity.x);
         PlayerAnimator.SetFloat("YVelocity", rb.velocity.y);
         PlayerAnimator.SetBool("Grounded", grounded);
-
+        
+        if (uiOpen) return;
+        
         wallJump();
 
         if (input != 0 && Mathf.Sign(transform.localScale.x) != input)
@@ -154,6 +163,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void FixedUpdate()
     {
+        if (uiOpen) return;
         if (!allowMovement) { }
         else
         if (walkAllowed && !isWallJumping)
@@ -178,6 +188,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        if (uiOpen) return;
         if (other.CompareTag("Bottom Wall"))
         {
             grounded = true;

@@ -68,4 +68,34 @@ public class CharacterAttack : MonoBehaviour
             //Die();
         }
     }
+
+    private void InitiateAttack()
+    {
+        CountEnemies();
+
+        if (enemyHandlers.Count > 0)
+        {
+            foreach (var eh in enemyHandlers)
+            {
+                var dist = Vector3.Distance(transform.position, eh.transform.position);
+                var orgDist = Vector3.Distance(transform.position, _nearestEnemy.transform.position);
+                
+                if (_nearestEnemy != null || dist <= orgDist)
+                {
+                    _nearestEnemy = eh;
+                }
+            }
+        }
+    }
+
+    private void CountEnemies()
+    {
+        foreach (var e in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            if (e.GetComponent<EnemyHandler>())
+            {
+                enemyHandlers.Add(e.GetComponent<EnemyHandler>());
+            }
+        }
+    }
 }

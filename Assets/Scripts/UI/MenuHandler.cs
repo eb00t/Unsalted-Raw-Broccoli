@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuHandler : MonoBehaviour
@@ -15,10 +16,24 @@ public class MenuHandler : MonoBehaviour
 	private ToolbarHandler _toolbarHandler;
 	[SerializeField] private GameObject grid;
 
+	[SerializeField] private CharacterMovement characterMovement;
+
 	private void Start()
 	{
 		_inventoryStore = GetComponent<InventoryStore>();
 		_toolbarHandler = GetComponent<ToolbarHandler>();
+	}
+
+	private void Update()
+	{
+		if (_isEquip || _isInventory || _isInvInteractable || menu.activeSelf)
+		{
+			characterMovement.uiOpen = true;
+		}
+		else
+		{
+			characterMovement.uiOpen = false;
+		}
 	}
 
 	public void ToggleInventory()
@@ -155,5 +170,10 @@ public class MenuHandler : MonoBehaviour
 			menu.SetActive(false);
 			SwitchSelected(selectedMenu);
 		}
+	}
+
+	public void SceneReload()
+	{
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 }

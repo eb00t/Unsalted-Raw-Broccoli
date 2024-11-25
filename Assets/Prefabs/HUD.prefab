@@ -71,6 +71,7 @@ MonoBehaviour:
   selectedEquip: {fileID: 3529939320444828792}
   eventSystem: {fileID: 9000649280543155340}
   grid: {fileID: 5694102940572365120}
+  characterMovement: {fileID: 0}
 --- !u!114 &8214983867270208165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7751,7 +7752,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1748993999359755081}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4309984013583806159}
+        m_TargetAssemblyTypeName: MenuHandler, Assembly-CSharp
+        m_MethodName: SceneReload
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &3498027895686878564
 PrefabInstance:
   m_ObjectHideFlags: 0
