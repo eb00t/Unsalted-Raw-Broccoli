@@ -79,11 +79,16 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
-        CameraManager.Instance.virtualCameras.Add(_roomCam);
+        CameraManager.Instance.virtualCameras.Add(_roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
         Debug.Log(gameObject + " Distance between left/right walls and centre: " + distToRoomCentre.x);
         distToRoomCentre.y = (wallT.transform.localPosition.y - wallB.transform.localPosition.y);
         Debug.Log(gameObject + "Distance between top/bottom walls and centre: " + distToRoomCentre.y);*/
+    }
+
+    private void OnDestroy()
+    {
+        CameraManager.Instance.virtualCameras.Remove(_roomCam.GetComponent<CinemachineVirtualCamera>());
     }
 }

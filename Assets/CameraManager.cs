@@ -10,7 +10,7 @@ public class CameraManager : MonoBehaviour
     public static CameraManager Instance { get; private set; }
     
     private CinemachineBrain _cinemachineBrain;
-    private CinemachineVirtualCamera _playerCam;
+    public CinemachineVirtualCamera playerCam;
     private CinemachineVirtualCamera _currentCamera;
     public List<CinemachineVirtualCamera> virtualCameras;
 
@@ -26,8 +26,8 @@ public class CameraManager : MonoBehaviour
 
     void Start()
     {
-        _playerCam = GameObject.FindGameObjectWithTag("PlayerCam").GetComponent<CinemachineVirtualCamera>();
-        virtualCameras = new List<CinemachineVirtualCamera> { _playerCam };
+        playerCam = GameObject.FindGameObjectWithTag("PlayerCam").GetComponent<CinemachineVirtualCamera>();
+        virtualCameras = new List<CinemachineVirtualCamera> { playerCam };
     }
 
     // Update is called once per frame
