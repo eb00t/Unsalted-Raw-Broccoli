@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -30,8 +31,10 @@ public class RoomInfo : MonoBehaviour
     public List<GameObject> attachedConnectors;
     public GameObject connectorSpawnedOff;
     public bool markedForDiscard;
+    private CinemachineVirtualCamera _roomCam;
     void Awake()
     {
+        _roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
         intersectionCheck = GetComponent<IntersectionRaycast>();
         attachedConnectors.Clear();
         foreach (var door in gameObject.GetComponentsInChildren<Transform>())
@@ -76,6 +79,7 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
+        CameraManager.Instance.virtualCameras.Add(_roomCam);
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
         Debug.Log(gameObject + " Distance between left/right walls and centre: " + distToRoomCentre.x);
