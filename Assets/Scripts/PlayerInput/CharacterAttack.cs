@@ -62,12 +62,12 @@ public class CharacterAttack : MonoBehaviour
         if (currentHealth - damage > 0)
         {
             currentHealth -= damage;
-            //healthSlider.value = currentHealth;
+            healthSlider.value = currentHealth;
         }
         else
         {
             currentHealth = 0;
-            //healthSlider.value = 0;
+            healthSlider.value = 0;
             //Die();
         }
     }

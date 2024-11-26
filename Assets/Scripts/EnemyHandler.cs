@@ -17,7 +17,7 @@ public class EnemyHandler : MonoBehaviour
     [SerializeField] private float speed = 3;
     
     [Header("References")]
-    //[SerializeField] private Slider healthSlider; // if enemy is boss set this to HUD slider
+    private Slider _healthSlider;
     private CharacterAttack _characterAttack;
     
     private Transform _target;
@@ -37,8 +37,9 @@ public class EnemyHandler : MonoBehaviour
 
     private void Start()
     {
-        //healthSlider.maxValue = maxHealth;
-        //healthSlider.value = health;
+        _healthSlider = GetComponentInChildren<Slider>();
+        _healthSlider.maxValue = maxHealth;
+        _healthSlider.value = health;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
     }
@@ -121,12 +122,12 @@ public class EnemyHandler : MonoBehaviour
         if (health - damage > 0)
         {
             health -= damage;
-            //healthSlider.value = health;
+            _healthSlider.value = health;
         }
         else
         {
             health = 0;
-            //healthSlider.value = 0;
+            _healthSlider.value = 0;
             Die();
         }
     }
