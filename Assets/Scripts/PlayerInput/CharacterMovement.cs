@@ -85,7 +85,7 @@ public class CharacterMovement : MonoBehaviour
             Invoke(nameof(stopWallJump), wallJumpingDuration);
         }
 
-        if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter < 0f)
+        if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter <= 0f)
         {
             doubleJumpPerformed = true;
             PlayerAnimator.SetBool("DoubleJump", true);
@@ -139,7 +139,7 @@ public class CharacterMovement : MonoBehaviour
         
         wallJump();
 
-        if ((input <= -0.1f || input >= 0.1) && Mathf.Sign(transform.localScale.x) != input)
+        if (Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(Velocity.x))
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
