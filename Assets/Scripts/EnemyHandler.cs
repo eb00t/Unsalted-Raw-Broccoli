@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -27,12 +28,12 @@ public class EnemyHandler : MonoBehaviour
     private CharacterAttack _characterAttack;
     
     private Transform _target;
+    private Vector3 _patrolTarget;
     private Animator _animator;
     private States _state =  States.Idle;
     private Vector3 _patrol1, _patrol2;
-    [SerializeField] private bool _isIdle;
-    
-    private float targetTime;
+    private bool _isIdle;
+    private float _targetTime;
     
 
     private enum States
@@ -51,6 +52,7 @@ public class EnemyHandler : MonoBehaviour
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         PickPatrolPoints();
+        _patrolTarget = _patrol1;
     }
 
     private void Update()
@@ -65,53 +67,45 @@ public class EnemyHandler : MonoBehaviour
         
         
         var distance = Vector3.Distance(transform.position, _target.position);
+        
+        if (distance < chaseRange || (distance > attackRange && distance < chaseRange))
+        {
+            _state = States.Chase;
+        } 
+        else if (distance > chaseRange && !_isIdle)
+        {
+            _state = States.Patrol;
+        }
+        else if (distance < attackRange)
+        {
+            _state = States.Attack;
+        }
 
         switch (_state)
         {
             case States.Idle:
             {
-                if (distance < chaseRange && _isIdle)
-                {
-                    _state = States.Chase;
-                }
                 
-                // play idle animation / add patrolling 
                 break;
             }
             case States.Patrol:
-                if (distance < chaseRange && !_isIdle)
+                var dist = Mathf.Abs(transform.position.x - _patrolTarget.x);
+                
+                if (dist <= 0.1f)
                 {
-                    _state = States.Patrol;
+                    _patrolTarget = (_patrolTarget == _patrol1) ? _patrol2 : _patrol1;
                 }
                 
-                var dist1 = Vector3.Distance(transform.position, _patrol1);
-                var dist2 = Vector3.Distance(transform.position, _patrol2);
-                    
-                if (dist1 > dist2)
+                var x = Mathf.MoveTowards(transform.position.x, _patrolTarget.x, speed * Time.deltaTime);
+                transform.position = new Vector3(x, transform.position.y, transform.position.z);
+                
+                if (_patrolTarget.x > transform.position.x)
                 {
-                    if (_patrol1.x > transform.position.x)
-                    {
-                        transform.Translate(transform.right * (speed * Time.deltaTime));
-                        transform.rotation = Quaternion.Euler(0, 180, 0);
-                    }
-                    else
-                    {
-                        transform.Translate(-transform.right * (speed * Time.deltaTime));
-                        transform.rotation = Quaternion.identity;
-                    }
+                    transform.rotation = Quaternion.Euler(0, 180, 0);
                 }
-                else
+                else if (_patrolTarget.x < transform.position.x)
                 {
-                    if (_patrol2.x > transform.position.x)
-                    {
-                        transform.Translate(transform.right * (speed * Time.deltaTime));
-                        transform.rotation = Quaternion.Euler(0, 180, 0);
-                    }
-                    else
-                    {
-                        transform.Translate(-transform.right * (speed * Time.deltaTime));
-                        transform.rotation = Quaternion.identity;
-                    }
+                    transform.rotation = Quaternion.identity;
                 }
 
                 break;
@@ -119,11 +113,6 @@ public class EnemyHandler : MonoBehaviour
             {
                 //animator.SetTrigger("chase");
                 //animator.SetBool("isAttacking", false);
-
-                if (distance < attackRange)
-                {
-                    _state = States.Attack;
-                }
                 
                 if (_target.position.x > transform.position.x)
                 {
@@ -142,18 +131,13 @@ public class EnemyHandler : MonoBehaviour
             case States.Attack:
             {
                 //animator.SetBool("isAttacking", true);
-
-                if (distance > attackRange)
-                {
-                    _state = States.Chase;
-                }
                 
-                targetTime -= Time.deltaTime;
+                _targetTime -= Time.deltaTime;
                 
-                if (targetTime <= 0.0f)
+                if (_targetTime <= 0.0f)
                 {
                     _characterAttack.TakeDamagePlayer(enemyAtk);
-                    targetTime = 2f;
+                    _targetTime = 2f;
                 }
 
                 break;
@@ -198,7 +182,7 @@ public class EnemyHandler : MonoBehaviour
         Destroy(gameObject);
     }
     
-    
+
     private void OnDrawGizmosSelected()
     {
         var position = transform.position;

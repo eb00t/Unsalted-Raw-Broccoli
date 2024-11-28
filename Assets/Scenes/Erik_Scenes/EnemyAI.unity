@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028301, g: 0.22571309, b: 0.30692127, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 400926108}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Bottom Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -223,7 +223,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -25.8, z: 0}
-  m_LocalScale: {x: 2250, y: 50, z: 1}
+  m_LocalScale: {x: 2250, y: 50, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1277,15 +1277,15 @@ PrefabInstance:
       propertyPath: patrolRange
       value: 15
       objectReference: {fileID: 0}
-    - target: {fileID: 13253944112422509, guid: 8b53f5b8f7a6b9246837beb336c55863,
+    - target: {fileID: 1286014152202851822, guid: 8b53f5b8f7a6b9246837beb336c55863,
         type: 3}
-      propertyPath: maxPatrolRange
-      value: 10
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 13253944112422509, guid: 8b53f5b8f7a6b9246837beb336c55863,
+    - target: {fileID: 2089371190449727050, guid: 8b53f5b8f7a6b9246837beb336c55863,
         type: 3}
-      propertyPath: minPatrolRange
-      value: 6
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2213295591295441800, guid: 8b53f5b8f7a6b9246837beb336c55863,
         type: 3}
@@ -1305,7 +1305,7 @@ PrefabInstance:
     - target: {fileID: 2973337476997601813, guid: 8b53f5b8f7a6b9246837beb336c55863,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.76
+      value: 1.99
       objectReference: {fileID: 0}
     - target: {fileID: 2973337476997601813, guid: 8b53f5b8f7a6b9246837beb336c55863,
         type: 3}
@@ -1352,10 +1352,30 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 407152769}
+    - target: {fileID: 6455373504156203846, guid: 8b53f5b8f7a6b9246837beb336c55863,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6838058655225840457, guid: 8b53f5b8f7a6b9246837beb336c55863,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7412974440695747437, guid: 8b53f5b8f7a6b9246837beb336c55863,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8636445171887568825, guid: 8b53f5b8f7a6b9246837beb336c55863,
         type: 3}
       propertyPath: m_Name
       value: PunchingBag
+      objectReference: {fileID: 0}
+    - target: {fileID: 8636445171887568825, guid: 8b53f5b8f7a6b9246837beb336c55863,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
