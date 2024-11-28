@@ -1,6 +1,10 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 
 // Adapted from https://github.com/Chaker-Gamra/2.5D-Platformer-Game/blob/master/Assets/Scripts/Enemy/Enemy.cs
@@ -15,6 +19,8 @@ public class EnemyHandler : MonoBehaviour
     [SerializeField] private float chaseRange = 5;
     [SerializeField] private float attackRange = 2;
     [SerializeField] private float speed = 3;
+    [SerializeField] private float maxPatrolRange = 15;
+    [SerializeField] private float minPatrolRange = 6;
     
     [Header("References")]
     private Slider _healthSlider;
@@ -23,14 +29,16 @@ public class EnemyHandler : MonoBehaviour
     private Transform _target;
     private Animator _animator;
     private States _state =  States.Idle;
+    private Vector3 _patrol1, _patrol2;
+    [SerializeField] private bool _isIdle;
     
-    // temp timer
-    public float targetTime;
+    private float targetTime;
     
 
     private enum States
     {
         Idle,
+        Patrol,
         Chase,
         Attack
     }
@@ -42,6 +50,7 @@ public class EnemyHandler : MonoBehaviour
         _healthSlider.value = health;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
+        PickPatrolPoints();
     }
 
     private void Update()
@@ -61,7 +70,7 @@ public class EnemyHandler : MonoBehaviour
         {
             case States.Idle:
             {
-                if (distance < chaseRange)
+                if (distance < chaseRange && _isIdle)
                 {
                     _state = States.Chase;
                 }
@@ -69,6 +78,43 @@ public class EnemyHandler : MonoBehaviour
                 // play idle animation / add patrolling 
                 break;
             }
+            case States.Patrol:
+                if (distance < chaseRange && !_isIdle)
+                {
+                    _state = States.Patrol;
+                }
+                
+                var dist1 = Vector3.Distance(transform.position, _patrol1);
+                var dist2 = Vector3.Distance(transform.position, _patrol2);
+                    
+                if (dist1 > dist2)
+                {
+                    if (_patrol1.x > transform.position.x)
+                    {
+                        transform.Translate(transform.right * (speed * Time.deltaTime));
+                        transform.rotation = Quaternion.Euler(0, 180, 0);
+                    }
+                    else
+                    {
+                        transform.Translate(-transform.right * (speed * Time.deltaTime));
+                        transform.rotation = Quaternion.identity;
+                    }
+                }
+                else
+                {
+                    if (_patrol2.x > transform.position.x)
+                    {
+                        transform.Translate(transform.right * (speed * Time.deltaTime));
+                        transform.rotation = Quaternion.Euler(0, 180, 0);
+                    }
+                    else
+                    {
+                        transform.Translate(-transform.right * (speed * Time.deltaTime));
+                        transform.rotation = Quaternion.identity;
+                    }
+                }
+
+                break;
             case States.Chase:
             {
                 //animator.SetTrigger("chase");
@@ -116,7 +162,15 @@ public class EnemyHandler : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
     }
-    
+
+    private void PickPatrolPoints()
+    {
+        var position = transform.position;
+        var ranDist = Random.Range(position.x + minPatrolRange, maxPatrolRange);
+        _patrol1 = new Vector3(ranDist, position.y, position.z);
+        _patrol2 = new Vector3(-ranDist, position.y, position.z);
+    }
+
     public void TakeDamageEnemy(int damage)
     {
         if (health - damage > 0)
@@ -148,12 +202,22 @@ public class EnemyHandler : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         var position = transform.position;
+        //PickPatrolPoints();
         
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(position, attackRange);
         
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(position, chaseRange);
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(position, maxPatrolRange);
+        Gizmos.DrawWireSphere(position, minPatrolRange);
+        
+        var v = new Vector3(1, 1, 1);
+        
+        Gizmos.DrawWireCube(_patrol1, v);
+        Gizmos.DrawWireCube(_patrol2, v);
     }
 
 }
