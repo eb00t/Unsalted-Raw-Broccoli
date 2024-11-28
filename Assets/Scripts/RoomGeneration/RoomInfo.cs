@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(IntersectionRaycast))]
 public class RoomInfo : MonoBehaviour
 {
-   [NonSerialized] public bool canHaveLeftRoom;
+    [NonSerialized] public bool canHaveLeftRoom;
     [NonSerialized]public bool canHaveRightRoom;
     [NonSerialized]public bool canHaveTopRoom;
     [NonSerialized]public bool canHaveBottomRoom;
@@ -79,6 +79,11 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
+        if (!gameObject.CompareTag("StartingRoom"))
+        {
+            LevelBuilder.Instance.spawnedRooms.Add(gameObject); //  Add to the list of rooms already in the level
+        }
+
         CameraManager.Instance.virtualCameras.Add(_roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
@@ -89,6 +94,7 @@ public class RoomInfo : MonoBehaviour
 
     private void OnDestroy()
     {
+        LevelBuilder.Instance.spawnedRooms.Remove(gameObject);
         CameraManager.Instance.virtualCameras.Remove(_roomCam.GetComponent<CinemachineVirtualCamera>());
     }
 }

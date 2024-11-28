@@ -137,6 +137,7 @@ public class LevelBuilder : MonoBehaviour
             yield return new WaitForSeconds(.1f);
             GameObject connectorPathReference = null;
             spawnRandomNumber = RandomiseNumber(spawnPoints.Count); //  RNG for where to spawn connectors
+            Debug.Log("Spawn Random Number: " + spawnRandomNumber);
             Vector3 spawnPointPosition = spawnPoints[spawnRandomNumber].position; //    Position that the room will use to spawn on
             Vector3 newSpawnPoint = Vector3.zero; //    Where the connecting room will spawn
 
@@ -183,7 +184,7 @@ public class LevelBuilder : MonoBehaviour
             _connectorToSpawn = Instantiate(connectorPathReference, newSpawnPoint, quaternion.identity); //  Spawn the connector at the adjusted spawn point.
             //_spawnedConnectorIntersectionCheck = _connectorToSpawn.GetComponent<ConnectorIntersectionRaycast>();
             //_spawnedConnectorIntersectionCheck.CheckForInvalidSpawn();
-            _spawnedConnectors.Add(_connectorToSpawn);
+            //_spawnedConnectors.Add(_connectorToSpawn);
             
             StartCoroutine(SpawnRooms(newSpawnPoint)); // Spawn the room on the connector
         }
@@ -231,44 +232,29 @@ public class LevelBuilder : MonoBehaviour
         }
         roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //  Instantiate the room at the spawnpoint's position
         //CheckSpawnIsValid(roomToSpawn);
-        //previouslySpawnedRoomInfo = spawningRoomInfo;
         spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
         spawningRoomInfo.connectorSpawnedOff = _connectorToSpawn;
         Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + realSpawnPosition);
-        spawningRoomInfo.attachedConnectors.Add(_connectorToSpawn);
-        Debug.Log("Adding connector to" + spawningRoomInfo);
-        previouslySpawnedRoomInfo.attachedConnectors.Add(_connectorToSpawn);
-        Debug.Log("Adding connector to " + previouslySpawnedRoomInfo);
         roomsRemaining--;
         Debug.Log("Rooms left to spawn: " + roomsRemaining);
-       
-        //StartCoroutine(WaitToUpdate(roomToSpawn, roomSpawnedOn, roomRandomNumber, spawnRandomNumber));
+        
         UpdateSpawnWalls();
     }
 
     void UpdateSpawnWalls()
     { 
-        //spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
-        Debug.Log(spawningRoomInfo);
         _spawningRoomIntersectionCheck = spawningRoomInfo.intersectionCheck;
-        //_spawningRoomIntersectionCheck.CheckForInvalidSpawn();//spawnedConnectorInfo);
         Debug.Log(_spawningRoomIntersectionCheck.gameObject.name + " is checking for spawning room intersections");
-        //_spawningRoomIntersectionCheck = spawningRoomInfo.intersectionCheck;
-       //_spawningRoomIntersectionCheck.CheckForIntersections();
        
         foreach (var door in spawningRoomInfo.allDoors) // Adding doors of the spawned room to the list of possible spawn points
         {
             spawnPoints.Add(door.transform);
         } 
-        
-        spawnedRooms.Add(roomToSpawn); //   Add to the list of rooms already in the level
         if (spawningRoomInfo.rareRoom) 
         {
             possibleRooms.Remove(possibleRooms[roomRandomNumber]); // Remove the rare room from the list of rooms that can spawn
         } 
         spawnPoints.Remove(spawnPoints[spawnRandomNumber]); //  Remove the door the room spawned on from the spawn point list.
-        
-        //Debug.Log("Spawned on side: " + spawnedConnectorInfo.spawnedOnSide);
         
         switch (spawnedConnectorInfo.spawnedOnSide) //  Removing spawn points based on where the room spawned.
         {
@@ -309,7 +295,7 @@ public class LevelBuilder : MonoBehaviour
         for (int i = spawnedRooms.Count; i < spawnedRooms.Count; i--)
         {
             IntersectionRaycast intersectionRaycast = spawnedRooms[i].GetComponent<IntersectionRaycast>();
-            intersectionRaycast.CheckForInvalidSpawn();
+            intersectionRaycast.CheckForInternalIntersection();
         }
         if (discardedRooms.Count > 0)
         {
@@ -325,7 +311,6 @@ public class LevelBuilder : MonoBehaviour
                 RoomScripting roomScript = room.GetComponent<RoomScripting>();
                 roomScript.CheckDoors();
             }
-
             spawnedRooms.Remove(_startingRoom);
         }
     }
@@ -405,9 +390,7 @@ public class LevelBuilder : MonoBehaviour
            RoomInfo badRoomInfo = room.GetComponent<RoomInfo>();
            if (badRoomInfo.markedForDiscard == true)
            {
-               spawnedRooms.Remove(room);
                Debug.Log(room.name + " has been discarded.");
-               _spawnedConnectors.Remove(badRoomInfo.connectorSpawnedOff);
                Destroy(badRoomInfo.connectorSpawnedOff);
                Destroy(room);
            }

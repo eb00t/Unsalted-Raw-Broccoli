@@ -1,15 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DoorInfo : MonoBehaviour
 {
     public bool hasDoor = false;
-    
+    private RoomInfo _roomInfo;
     
     public void CheckDoors()
     {
         StartCoroutine(WaitASec());
+    }
+
+    private void Start()
+    {
+        _roomInfo = transform.root.GetComponent<RoomInfo>();
     }
 
     IEnumerator WaitASec()
@@ -39,6 +45,7 @@ public class DoorInfo : MonoBehaviour
         {
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Intersection Checker"))
             {
+                _roomInfo.attachedConnectors.Add(hit.transform.gameObject);
                 //Debug.Log(name + " has a connector attached!");
                 hasDoor = true;
             }
