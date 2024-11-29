@@ -5,12 +5,15 @@ using UnityEngine;
 public class DoorInfo : MonoBehaviour
 {
     public bool hasDoor = false;
+    private RoomInfo _roomInfo;
 
     public void CheckDoors()
     {
-            StartCoroutine(WaitASec());
-        
-
+        StartCoroutine(WaitASec());
+    }
+    private void Start()
+    {
+        _roomInfo = transform.root.GetComponent<RoomInfo>();
     }
 
     IEnumerator WaitASec()
@@ -40,13 +43,11 @@ public class DoorInfo : MonoBehaviour
         {
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Intersection Checker"))
             {
-<<<<<<< Updated upstream
-                Debug.Log(name + " has a connector attached!");
-=======
+                //Debug.Log(name + " has a connector attached!");
                 _roomInfo.attachedConnectors.Add(hit.transform.gameObject);
->>>>>>> Stashed changes
                 hasDoor = true;
-            } else if (hit.transform.gameObject.tag.Contains("Door"))
+            } 
+            else if (hit.transform.gameObject.tag.Contains("Door"))
             {
                 var transformPosition = hit.transform.position;
                 if (transformPosition.y == gameObject.transform.position.y)
@@ -55,7 +56,6 @@ public class DoorInfo : MonoBehaviour
                     hit.transform.gameObject.GetComponent<DoorInfo>().hasDoor = true;
                 }
             }
-            
         }
 
         if (hasDoor) //TODO: Animate this

@@ -25,7 +25,12 @@ public class ConnectorIntersectionRaycast : MonoBehaviour
         _horizMiddleRay = new Ray(_connectorRoomInfo.wallL.position, Vector3.right);
         _verticMiddleRay = new Ray(_connectorRoomInfo.wallT.position, Vector3.down);
     }
-
+    
+    private void Start()
+    {
+        CheckForInvalidSpawn();
+    }
+    
     public void CheckForInvalidSpawn()
     {
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
@@ -41,7 +46,7 @@ public class ConnectorIntersectionRaycast : MonoBehaviour
         {
             Debug.Log(name + " is trying to spawn in occupied space.");
             _connectorRoomInfo.markedForDiscard = true;
-            LevelBuilder.Instance.discardedRooms.Add(gameObject);
+            //LevelBuilder.Instance.discardedRooms.Add(gameObject);
         }
         _collider.enabled = true;
         gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
@@ -77,12 +82,8 @@ public class ConnectorIntersectionRaycast : MonoBehaviour
         {
             Debug.Log(name + " is trying to spawn in occupied space.");
             _connectorRoomInfo.markedForDiscard = true;
-<<<<<<< Updated upstream
-            LevelBuilder.Instance.discardedRooms.Add(gameObject);
-=======
             _connectorRoomInfo.attachedRooms[_connectorRoomInfo.attachedRooms.Count].GetComponent<RoomInfo>().markedForDiscard = true;
             //LevelBuilder.Instance.discardedRooms.Add(gameObject);
->>>>>>> Stashed changes
         }
         _collider.enabled = true;
         gameObject.layer = LayerMask.NameToLayer("Intersection Checker");

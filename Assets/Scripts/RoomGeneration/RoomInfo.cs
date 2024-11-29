@@ -1,28 +1,29 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
+[RequireComponent(typeof(IntersectionRaycast))]
 public class RoomInfo : MonoBehaviour
 {
     [field: Header("Configuration")] 
-    public bool canHaveLeftRoom;
-    public bool canHaveRightRoom;
-    public bool canHaveTopRoom;
-    public bool canHaveBottomRoom;
-    public bool canSpawnOnRight;
-    public bool canSpawnOnLeft;
-    public bool canSpawnOnTop;
-    public bool canSpawnOnBottom;
+    [NonSerialized] public bool canHaveLeftRoom;
+    [NonSerialized]public bool canHaveRightRoom;
+    [NonSerialized]public bool canHaveTopRoom;
+    [NonSerialized]public bool canHaveBottomRoom;
+    [NonSerialized]public bool canSpawnOnRight;
+    [NonSerialized] public bool canSpawnOnLeft;
+    [NonSerialized]public bool canSpawnOnTop;
+    [NonSerialized] public bool canSpawnOnBottom;
     public float roomLength; //
     public float roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
-    
+    public bool rareRoom = false;
 
 
     [field: Header("Debugging")] 
-    public GameObject roomInstance;
     public IntersectionRaycast intersectionCheck;
     public List<GameObject> allDoors;
     public Transform doorL, doorR, doorB, doorT;
@@ -30,10 +31,11 @@ public class RoomInfo : MonoBehaviour
     public List<GameObject> attachedConnectors;
     public GameObject connectorSpawnedOff;
     public bool markedForDiscard;
+    private CinemachineVirtualCamera _roomCam;
     void Awake()
     {
+        _roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
         intersectionCheck = GetComponent<IntersectionRaycast>();
-        roomInstance = gameObject;
         attachedConnectors.Clear();
         foreach (var door in gameObject.GetComponentsInChildren<Transform>())
         {
@@ -77,23 +79,18 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
-<<<<<<< Updated upstream
-=======
         //if (!gameObject.CompareTag("StartingRoom"))
         {
             LevelBuilder.Instance.spawnedRooms.Add(gameObject); //  Add to the list of rooms already in the level
         }
 
         CameraManager.Instance.virtualCameras.Add(_roomCam.GetComponent<CinemachineVirtualCamera>());
->>>>>>> Stashed changes
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
         Debug.Log(gameObject + " Distance between left/right walls and centre: " + distToRoomCentre.x);
         distToRoomCentre.y = (wallT.transform.localPosition.y - wallB.transform.localPosition.y);
         Debug.Log(gameObject + "Distance between top/bottom walls and centre: " + distToRoomCentre.y);*/
     }
-<<<<<<< Updated upstream
-=======
 
     private void OnDestroy()
     {
@@ -102,7 +99,7 @@ public class RoomInfo : MonoBehaviour
         if (rareRoom)
         {
             LevelBuilder.Instance.possibleRooms.Add(
-                Resources.Load<GameObject>(LevelBuilder.Instance.floorSpecificRoomPath + gameObject.name.Substring(gameObject.name.Length - 7)));
+                Resources.Load<GameObject>(LevelBuilder.Instance._floorSpecificRoomPath + gameObject.name.Substring(gameObject.name.Length - 7)));
         }
 
         foreach (var connector in attachedConnectors)
@@ -113,5 +110,5 @@ public class RoomInfo : MonoBehaviour
             }
         }
     }
->>>>>>> Stashed changes
+
 }
