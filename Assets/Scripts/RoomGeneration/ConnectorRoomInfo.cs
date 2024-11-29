@@ -8,6 +8,7 @@ public class ConnectorRoomInfo : MonoBehaviour
 {
     public bool horizontal;
     public List<Transform> spawnWalls;
+    public List<GameObject> attachedRooms;
     public Transform wallL, wallR, wallT, wallB;
     public string spawnedOnSide;
     public float connectorLength;
@@ -17,6 +18,8 @@ public class ConnectorRoomInfo : MonoBehaviour
 
     private void Awake()
     {
+        attachedRooms = new List<GameObject>();
+        spawnWalls = new List<Transform>();
         intersectionCheck = GetComponent<ConnectorIntersectionRaycast>();
         switch (horizontal)
         {
