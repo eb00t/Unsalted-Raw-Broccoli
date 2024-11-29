@@ -26,6 +26,11 @@ public class ConnectorIntersectionRaycast : MonoBehaviour
         _verticMiddleRay = new Ray(_connectorRoomInfo.wallT.position, Vector3.down);
     }
 
+    private void Start()
+    {
+        CheckForInvalidSpawn();
+    }
+
     public void CheckForInvalidSpawn()
     {
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
@@ -41,7 +46,7 @@ public class ConnectorIntersectionRaycast : MonoBehaviour
         {
             Debug.Log(name + " is trying to spawn in occupied space.");
             _connectorRoomInfo.markedForDiscard = true;
-            LevelBuilder.Instance.discardedRooms.Add(gameObject);
+            //LevelBuilder.Instance.discardedRooms.Add(gameObject);
         }
         _collider.enabled = true;
         gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
@@ -77,7 +82,7 @@ public class ConnectorIntersectionRaycast : MonoBehaviour
         {
             Debug.Log(name + " is trying to spawn in occupied space.");
             _connectorRoomInfo.markedForDiscard = true;
-            LevelBuilder.Instance.discardedRooms.Add(gameObject);
+            //LevelBuilder.Instance.discardedRooms.Add(gameObject);
         }
         _collider.enabled = true;
         gameObject.layer = LayerMask.NameToLayer("Intersection Checker");

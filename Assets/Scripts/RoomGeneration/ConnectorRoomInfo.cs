@@ -36,7 +36,12 @@ public class ConnectorRoomInfo : MonoBehaviour
 
     void Start()
     {
-       
+        LevelBuilder.Instance._spawnedConnectors.Add(gameObject);
+    }
+
+    void OnDestroy()
+    {
+        LevelBuilder.Instance._spawnedConnectors.Remove(gameObject);
     }
     
 }
