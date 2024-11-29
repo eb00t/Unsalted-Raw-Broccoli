@@ -26,11 +26,6 @@ public class ConnectorIntersectionRaycast : MonoBehaviour
         _verticMiddleRay = new Ray(_connectorRoomInfo.wallT.position, Vector3.down);
     }
 
-    private void Start()
-    {
-        CheckForInvalidSpawn();
-    }
-
     public void CheckForInvalidSpawn()
     {
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
@@ -46,7 +41,7 @@ public class ConnectorIntersectionRaycast : MonoBehaviour
         {
             Debug.Log(name + " is trying to spawn in occupied space.");
             _connectorRoomInfo.markedForDiscard = true;
-            //LevelBuilder.Instance.discardedRooms.Add(gameObject);
+            LevelBuilder.Instance.discardedRooms.Add(gameObject);
         }
         _collider.enabled = true;
         gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
@@ -56,12 +51,12 @@ public class ConnectorIntersectionRaycast : MonoBehaviour
     private bool FireInternalRayCast()
     {
         bool discard;
-         if (Physics.Raycast(_horizMiddleRay, _connectorRoomInfo.connectorLength + 1, layerMask))
+         if (Physics.Raycast(_horizMiddleRay, out RaycastHit horizHit, _connectorRoomInfo.connectorLength + 1, layerMask))
          {
              Debug.Log("HORIZ RAY HIT!");
              discard = true;
          } 
-         else if (Physics.Raycast(_verticMiddleRay, _connectorRoomInfo.connectorHeight + 1, layerMask))
+         else if (Physics.Raycast(_verticMiddleRay, out RaycastHit vertHit,_connectorRoomInfo.connectorHeight + 1, layerMask))
          {
              Debug.Log("VERT RAY HIT!");
              discard = true;
@@ -82,7 +77,12 @@ public class ConnectorIntersectionRaycast : MonoBehaviour
         {
             Debug.Log(name + " is trying to spawn in occupied space.");
             _connectorRoomInfo.markedForDiscard = true;
+<<<<<<< Updated upstream
+            LevelBuilder.Instance.discardedRooms.Add(gameObject);
+=======
+            _connectorRoomInfo.attachedRooms[_connectorRoomInfo.attachedRooms.Count].GetComponent<RoomInfo>().markedForDiscard = true;
             //LevelBuilder.Instance.discardedRooms.Add(gameObject);
+>>>>>>> Stashed changes
         }
         _collider.enabled = true;
         gameObject.layer = LayerMask.NameToLayer("Intersection Checker");

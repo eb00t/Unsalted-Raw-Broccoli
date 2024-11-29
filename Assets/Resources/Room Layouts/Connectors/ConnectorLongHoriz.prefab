@@ -223,7 +223,6 @@ GameObject:
   - component: {fileID: 72533319208393801}
   - component: {fileID: 4124397997767269095}
   - component: {fileID: -5614927626838786485}
-  - component: {fileID: -1592791757878131540}
   - component: {fileID: 4647156500334148366}
   m_Layer: 6
   m_Name: ConnectorLongHoriz
@@ -266,7 +265,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3646509954627393381}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -336,6 +335,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontal: 1
   spawnWalls: []
+  attachedRooms: []
   wallL: {fileID: 7661029439447593580}
   wallR: {fileID: 6586070801111483632}
   wallT: {fileID: 7622447773876418337}
@@ -345,6 +345,7 @@ MonoBehaviour:
   connectorHeight: 5
   markedForDiscard: 0
   intersectionCheck: {fileID: 0}
+<<<<<<< Updated upstream
 --- !u!114 &-1592791757878131540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,8 +360,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   _collider: {fileID: 0}
+=======
+>>>>>>> Stashed changes
 --- !u!114 &4647156500334148366
 MonoBehaviour:
   m_ObjectHideFlags: 0
