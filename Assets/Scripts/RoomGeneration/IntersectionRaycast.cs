@@ -33,14 +33,15 @@ public class IntersectionRaycast : MonoBehaviour
         {
             _layers.Add(child.gameObject.layer);
         }
-        MessUpLayers();
         _collider = GetComponent<BoxCollider>();
         _roomInfo = GetComponent<RoomInfo>();
         _halfRoomLength = _roomInfo.roomLength / 2;
         _halfRoomHeight = _roomInfo.roomHeight / 2;
         _quarterRoomLength = _roomInfo.roomLength / 4;
         _quarterRoomHeight = _roomInfo.roomHeight / 4;
-
+        
+        MessUpLayers();
+        
         _rayCastLength = _roomInfo.roomLength + 12;
         _rayCastHeight = _roomInfo.roomHeight + 12;
 
@@ -78,8 +79,19 @@ public class IntersectionRaycast : MonoBehaviour
         {
             _allChildren[i].gameObject.layer = _layers[i];
         }
-
-        _checkedTwice = true;
+        _layers.Clear();
+        foreach (var wall in _roomInfo.allWalls)
+        {
+            _layers.Add(wall.gameObject.layer);
+            wall.gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
+        }
+        foreach (var door in _roomInfo.allDoors)
+        {
+            _layers.Add(door.gameObject.layer);
+            door.gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
+        }
+        
+        
     }
     
     private void Start()
@@ -103,78 +115,38 @@ public class IntersectionRaycast : MonoBehaviour
         if (Physics.Raycast(_horizMiddleRay, out RaycastHit horizHit, _roomInfo.roomLength + .1f, layerMask))
         {
             Debug.Log("HORIZ RAY HIT!");
-            if (horizHit.transform.gameObject.GetComponent<RoomInfo>())
+            if (horizHit.transform.root.gameObject.GetComponent<RoomInfo>())
             {
-                if (horizHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard || 
-                    LevelBuilder.Instance.spawnedRooms.IndexOf(gameObject) < LevelBuilder.Instance.spawnedRooms.IndexOf(horizHit.transform.gameObject))
-                {
-                    discard = false;
-                }
-                if (horizHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard == false || 
-                         LevelBuilder.Instance.spawnedRooms.IndexOf(gameObject) > LevelBuilder.Instance.spawnedRooms.IndexOf(horizHit.transform.gameObject))
-                {
-                    Debug.Log("Horizontal Ray from: " + gameObject.name + " hit " + horizHit.collider.gameObject.name);
-                    discard = true;
-                }
+               discard = true;
             }
-            else if (horizHit.transform.gameObject.GetComponent<ConnectorRoomInfo>())
+            if (horizHit.transform.root.gameObject.GetComponent<ConnectorRoomInfo>())
             {
-                if (horizHit.transform.gameObject.GetComponent<ConnectorRoomInfo>().markedForDiscard)
+                Debug.Log("Horizontal Ray from: " + gameObject.name + " hit " + horizHit.collider.gameObject.name);
+                foreach (var connector in _roomInfo.attachedConnectors)
                 {
-                    foreach (var connector in _roomInfo.attachedConnectors)
-                    {
-                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = false;
-                    }
-                    discard = false;
+                    connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
                 }
-                if (horizHit.transform.gameObject.GetComponent<ConnectorRoomInfo>().markedForDiscard == false)
-                {
-                    Debug.Log("Horizontal Ray from: " + gameObject.name + " hit " + horizHit.collider.gameObject.name);
-                    foreach (var connector in _roomInfo.attachedConnectors)
-                    {
-                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
-                    }
-                    discard = true;
-                }
+                discard = true;
             }
         }
-        else if (Physics.Raycast(_verticMiddleRay, out RaycastHit vertHit, _roomInfo.roomHeight + .1f, layerMask))
+        else if (Physics.Raycast(_verticMiddleRay, out RaycastHit vertHit, _roomInfo.roomHeight, layerMask))
         {
             Debug.Log("VERT RAY HIT!");
-            if (vertHit.transform.gameObject.GetComponent<RoomInfo>())
+            if (vertHit.transform.root.gameObject.GetComponent<RoomInfo>())
             {
-                if (vertHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard || 
-                    LevelBuilder.Instance.spawnedRooms.IndexOf(gameObject) < LevelBuilder.Instance.spawnedRooms.IndexOf(vertHit.transform.gameObject))
-                {
-                    discard = false;
-                } 
-                if (vertHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard == false ||
-                      LevelBuilder.Instance.spawnedRooms.IndexOf(gameObject) > LevelBuilder.Instance.spawnedRooms.IndexOf(vertHit.transform.gameObject))
-                {
-                    Debug.Log("Vertical Ray from: " + gameObject.name + " hit " + vertHit.collider.gameObject.name);
-                    discard = true;
-                }
+                Debug.Log("Vertical Ray from: " + gameObject.name + " hit " + vertHit.collider.gameObject.name);
+                discard = true;
             }
-            else if (vertHit.transform.gameObject.GetComponent<ConnectorRoomInfo>())
+            if (vertHit.transform.root.gameObject.GetComponent<ConnectorRoomInfo>())
             {
-                if (vertHit.transform.gameObject.GetComponent<ConnectorRoomInfo>().markedForDiscard)
+                foreach (var connector in _roomInfo.attachedConnectors)
                 {
-                    foreach (var connector in _roomInfo.attachedConnectors)
-                    {
-                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = false;
-                    }
-                    discard = false;
-                } 
-                if (vertHit.transform.gameObject.GetComponent<ConnectorRoomInfo>().markedForDiscard == false)
-                { 
-                    foreach (var connector in _roomInfo.attachedConnectors)
-                    {
-                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
-                    }
-                    Debug.Log("Vertical Ray from: " + gameObject.name + " hit " + vertHit.collider.gameObject.name);
-                    discard = true;
+                    connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
                 }
+                Debug.Log("Vertical Ray from: " + gameObject.name + " hit " + vertHit.collider.gameObject.name);
+                discard = true;
             }
+            
         }
         else
         {
@@ -221,15 +193,15 @@ public class IntersectionRaycast : MonoBehaviour
             gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
             if (!_checkedTwice)
             {
-                StartCoroutine(SecondRoundInternalCheck());
+                //StartCoroutine(SecondRoundInternalCheck());
             }
         }
+        FixLayers();
     }
     public IEnumerator SecondRoundInternalCheck()
     {
         yield return new WaitForSecondsRealtime(1f);
         CheckForInternalIntersection();
-        FixLayers();
     }
     
     void Update()

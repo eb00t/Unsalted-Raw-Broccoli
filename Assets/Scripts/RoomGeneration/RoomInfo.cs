@@ -26,6 +26,7 @@ public class RoomInfo : MonoBehaviour
     [field: Header("Debugging")] 
     public IntersectionRaycast intersectionCheck;
     public List<GameObject> allDoors;
+    public List<GameObject> allWalls;
     public Transform doorL, doorR, doorB, doorT;
     public Transform wallL, wallR, wallB, wallT;
     public List<GameObject> attachedConnectors;
@@ -43,6 +44,11 @@ public class RoomInfo : MonoBehaviour
             if (door.tag.Contains("Door")) 
             {
                 allDoors.Add(door.gameObject);
+            }
+
+            if (door.tag.Contains("Wall"))
+            {
+                allWalls.Add(door.gameObject);
             }
         }
 
@@ -90,8 +96,6 @@ public class RoomInfo : MonoBehaviour
         }
         
         LevelBuilder.Instance.spawnedRooms.Add(gameObject); //  Add to the list of rooms already in the level
-        
-
         CameraManager.Instance.virtualCameras.Add(_roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);

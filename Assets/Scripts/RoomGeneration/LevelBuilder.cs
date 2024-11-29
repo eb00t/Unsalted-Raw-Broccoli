@@ -250,7 +250,10 @@ public class LevelBuilder : MonoBehaviour
             possibleRooms.Remove(possibleRooms[roomRandomNumber]); // Remove the rare room from the list of rooms that can spawn
         } 
         spawnPoints.Remove(spawnPoints[spawnRandomNumber]); //  Remove the door the room spawned on from the spawn point list.
-        
+        /*if (previouslySpawnedRoomInfo == null)
+        {
+            Destroy(spawningRoomInfo.gameObject);
+        }*/
         switch (spawnedConnectorInfo.spawnedOnSide) //  Removing spawn points based on where the room spawned.
         {
             case "Left":
