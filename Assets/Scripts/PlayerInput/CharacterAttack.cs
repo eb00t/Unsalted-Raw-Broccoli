@@ -12,10 +12,11 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private int currentHealth = 100;
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int charAtk = 10;
+    [SerializeField] private float atkRange = 3;
     
     [Header("Tracking")]
     [SerializeField] private List<EnemyHandler> enemyHandlers;
-    private EnemyHandler _nearestEnemy;
+    [SerializeField] private EnemyHandler _nearestEnemy;
     
     [SerializeField] private Slider healthSlider;
     
@@ -31,6 +32,7 @@ public class CharacterAttack : MonoBehaviour
         {
             Debug.Log("LightAttack");
             _playerAnimator.SetBool("LightAttack1", true);
+            InitiateAttack();
         }
     }
 
@@ -40,6 +42,7 @@ public class CharacterAttack : MonoBehaviour
         {
             Debug.Log("LightAttack1");
             _playerAnimator.SetBool("LightAttack2", true);
+            InitiateAttack();
         }
     }
 
@@ -66,6 +69,49 @@ public class CharacterAttack : MonoBehaviour
             currentHealth = 0;
             healthSlider.value = 0;
             //Die();
+        }
+    }
+
+    private void InitiateAttack()
+    {
+        CountEnemies();
+
+        if (enemyHandlers.Count > 0)
+        {
+            foreach (var eh in enemyHandlers)
+            {
+                var dist = Vector3.Distance(transform.position, eh.transform.position);
+                
+                
+                if (_nearestEnemy == null)
+                {
+                    _nearestEnemy = eh;
+                }
+                else if (dist <= Vector3.Distance(transform.position, _nearestEnemy.transform.position))
+                {
+                    _nearestEnemy = eh;
+                }
+            }
+        }
+
+        var dist1 = Vector3.Distance(transform.position, _nearestEnemy.transform.position);
+
+        if (dist1 <= atkRange)
+        {
+            _nearestEnemy.TakeDamageEnemy(charAtk);
+        }
+    }
+
+    private void CountEnemies()
+    {
+        enemyHandlers.Clear();
+        
+        foreach (var e in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            if (e.GetComponent<EnemyHandler>())
+            {
+                enemyHandlers.Add(e.GetComponent<EnemyHandler>());
+            }
         }
     }
 }

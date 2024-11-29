@@ -48,8 +48,10 @@ MonoBehaviour:
   currentHealth: 100
   maxHealth: 100
   charAtk: 10
-  enemyHandlers:
-  - {fileID: 0}
+  atkRange: 3
+  enemyHandlers: []
+  _nearestEnemy: {fileID: 0}
+  healthSlider: {fileID: 0}
 --- !u!64 &3621395720539083714
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -168,7 +170,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1648015146, guid: b8ffd14b6001fb34c9a05964c2fcce0b, type: 3}
+  m_Sprite: {fileID: 402854391, guid: f0ab66f3fe991684f943be5abca6be05, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -204,7 +206,7 @@ GameObject:
   - component: {fileID: 2446109549260896131}
   - component: {fileID: 6931550250588402113}
   - component: {fileID: 7947488834224069209}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -306,9 +308,10 @@ MonoBehaviour:
   timer: 0
   isWallJumping: 0
   wallJumpingCounter: 0
-  wallJumpingTime: 0.6
+  wallJumpingTime: 0.2
   wallJumpForce: {x: 450, y: 500}
-  wallJumpingDuration: 0.6
+  wallJumpingDuration: 0.2
+  uiOpen: 0
 --- !u!65 &7947488834224069209
 BoxCollider:
   m_ObjectHideFlags: 0

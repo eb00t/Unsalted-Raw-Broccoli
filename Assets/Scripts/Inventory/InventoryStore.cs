@@ -40,9 +40,8 @@ public class InventoryStore : MonoBehaviour
         var consumable = item.GetComponent<Consumable>();
 
         var newBlock = Instantiate(block, block.position, block.rotation, grid);
-        newBlock.GetComponentInChildren<TextMeshProUGUI>().text = consumable.title;
+        //newBlock.GetComponentInChildren<TextMeshProUGUI>().text = consumable.title;
         var indexHolder = newBlock.GetComponent<IndexHolder>();
-        Debug.Log(i);
         indexHolder.InventoryIndex = i;
         newBlock.GetComponent<Button>().onClick.AddListener(delegate { _toolbarHandler.InvItemSelected(indexHolder); });
         
