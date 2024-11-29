@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -22,19 +23,18 @@ public class EnemyHandler : MonoBehaviour
     [SerializeField] private float speed = 3;
     [SerializeField] private float maxPatrolRange = 15;
     [SerializeField] private float minPatrolRange = 6;
-    
-    [Header("References")]
-    private Slider _healthSlider;
-    private CharacterAttack _characterAttack;
-    
-    private Transform _target;
-    private Vector3 _patrolTarget;
-    private Animator _animator;
-    private States _state =  States.Idle;
-    private Vector3 _patrol1, _patrol2;
-    private bool _isIdle;
     private float _targetTime;
     
+    private Slider _healthSlider;
+    private Animator _animator;
+    private Transform _target;
+    private NavMeshAgent _agent;
+    
+    private CharacterAttack _characterAttack;
+    
+    private Vector3 _patrolTarget, _patrol1, _patrol2;
+    private States _state =  States.Idle;
+    private bool _isIdle;
 
     private enum States
     {
@@ -49,102 +49,123 @@ public class EnemyHandler : MonoBehaviour
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = health;
+        
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
+        _agent = GetComponent<NavMeshAgent>();
+        _agent.updateRotation = false;
+        
         PickPatrolPoints();
         _patrolTarget = _patrol1;
     }
 
     private void Update()
     {
-        /*
-        if (PlayerManager.gameOver)
-        {
-            animator.enabled = false;
-            this.enabled = false;
-        }
-        */
-        
-        
         var distance = Vector3.Distance(transform.position, _target.position);
-        
-        if (distance < chaseRange || (distance > attackRange && distance < chaseRange))
+
+        if (distance < attackRange)
+        {
+            _state = States.Attack;
+        }
+        else if (distance < chaseRange)
         {
             _state = States.Chase;
-        } 
-        else if (distance > chaseRange && !_isIdle)
+        }
+        else if (!_isIdle)
         {
             _state = States.Patrol;
         }
-        else if (distance < attackRange)
+        else
         {
-            _state = States.Attack;
+            _state = States.Idle;
         }
 
         switch (_state)
         {
             case States.Idle:
-            {
-                
+                _agent.isStopped = true;
                 break;
-            }
             case States.Patrol:
-                var dist = Mathf.Abs(transform.position.x - _patrolTarget.x);
-                
-                if (dist <= 0.1f)
-                {
-                    _patrolTarget = (_patrolTarget == _patrol1) ? _patrol2 : _patrol1;
-                }
-                
-                var x = Mathf.MoveTowards(transform.position.x, _patrolTarget.x, speed * Time.deltaTime);
-                transform.position = new Vector3(x, transform.position.y, transform.position.z);
-                
-                if (_patrolTarget.x > transform.position.x)
-                {
-                    transform.rotation = Quaternion.Euler(0, 180, 0);
-                }
-                else if (_patrolTarget.x < transform.position.x)
-                {
-                    transform.rotation = Quaternion.identity;
-                }
-
+                Patrol();
                 break;
             case States.Chase:
-            {
-                //animator.SetTrigger("chase");
-                //animator.SetBool("isAttacking", false);
-                
-                if (_target.position.x > transform.position.x)
-                {
-                    // right
-                    transform.Translate(transform.right * (speed * Time.deltaTime));
-                    transform.rotation = Quaternion.Euler(0, 180, 0);
-                }
-                else
-                {
-                    // left
-                    transform.Translate(-transform.right * (speed * Time.deltaTime));
-                    transform.rotation = Quaternion.identity;
-                }
+                Chase();
                 break;
-            }
             case States.Attack:
-            {
-                //animator.SetBool("isAttacking", true);
-                
-                _targetTime -= Time.deltaTime;
-                
-                if (_targetTime <= 0.0f)
-                {
-                    _characterAttack.TakeDamagePlayer(enemyAtk);
-                    _targetTime = 2f;
-                }
-
+                Attack();
                 break;
-            }
             default:
                 throw new ArgumentOutOfRangeException();
         }
+        
+        var velocity = _agent.velocity;
+
+        transform.localScale = velocity.x switch
+        {
+            > 0.1f => new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z),
+            < -0.1f => new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z),
+            _ => transform.localScale
+        };
+    }
+
+    private void Patrol()
+    {
+        if (_agent.pathPending || !(_agent.remainingDistance <= _agent.stoppingDistance)) return;
+        _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
+
+        _agent.SetDestination(_patrolTarget);
+        
+        /*
+                  var dist = Mathf.Abs(transform.position.x - _patrolTarget.x);
+          
+                  if (dist <= 0.1f)
+                  {
+                      _patrolTarget = (_patrolTarget == _patrol1) ? _patrol2 : _patrol1;
+                  }
+          
+                  var x = Mathf.MoveTowards(transform.position.x, _patrolTarget.x, speed * Time.deltaTime);
+                  transform.position = new Vector3(x, transform.position.y, transform.position.z);
+          
+                  if (_patrolTarget.x > transform.position.x)
+                  {
+                      transform.rotation = Quaternion.Euler(0, 180, 0);
+                  }
+                  else if (_patrolTarget.x < transform.position.x)
+                  {
+                      transform.rotation = Quaternion.identity;
+                  }
+                  */
+    }
+
+    private void Chase()
+    {
+        _agent.isStopped = false;
+        _agent.SetDestination(_target.position);
+        
+        /*
+        if (_target.position.x > transform.position.x)
+        {
+            // right
+            transform.Translate(transform.right * (speed * Time.deltaTime));
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+        else
+        {
+            // left
+            transform.Translate(-transform.right * (speed * Time.deltaTime));
+            transform.rotation = Quaternion.identity;
+        }
+        */
+    }
+
+    private void Attack()
+    {
+        _agent.isStopped = true;
+        _targetTime -= Time.deltaTime;
+
+        if (!(_targetTime <= 0.0f)) return;
+        _characterAttack.TakeDamagePlayer(enemyAtk);
+        _targetTime = 2f;
     }
 
     private void PickPatrolPoints()
@@ -174,16 +195,12 @@ public class EnemyHandler : MonoBehaviour
     {
         //animator.SetTrigger("isDead");
         
-        /*
-        GetComponent<CapsuleCollider>().enabled = false;
         gameObject.SetActive(false);
-        enabled = false;
-        */
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
     
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         var position = transform.position;
         //PickPatrolPoints();
