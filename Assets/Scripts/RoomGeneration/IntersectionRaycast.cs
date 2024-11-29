@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
-
+[RequireComponent(typeof(RoomInfo))]
 public class IntersectionRaycast : MonoBehaviour
 {
     private Ray _firstRay, _secondRay; //Which rays are being used to check for rooms in the way.
@@ -22,6 +23,8 @@ public class IntersectionRaycast : MonoBehaviour
     
     void Awake()
     {
+        _allChildren = new List<Transform>();
+        _layers = new List<int>();
         foreach (var child in gameObject.GetComponentsInChildren<Transform>())
         {
             _allChildren.Add(child);
@@ -97,16 +100,18 @@ public class IntersectionRaycast : MonoBehaviour
         Ray quarterLengthRay = new Ray(quarterLength, Vector3.down); // QUARTER LENGTH FROM THE LEFT
         Ray threeQuarterLengthRay = new Ray(threeQuarterLength, Vector3.down);*/
         bool discard = false;
-        if (Physics.Raycast(_horizMiddleRay, out RaycastHit horizHit, _roomInfo.roomLength, layerMask))
+        if (Physics.Raycast(_horizMiddleRay, out RaycastHit horizHit, _roomInfo.roomLength + .1f, layerMask))
         {
             Debug.Log("HORIZ RAY HIT!");
             if (horizHit.transform.gameObject.GetComponent<RoomInfo>())
             {
-                if (horizHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard)
+                if (horizHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard || 
+                    LevelBuilder.Instance.spawnedRooms.IndexOf(gameObject) < LevelBuilder.Instance.spawnedRooms.IndexOf(horizHit.transform.gameObject))
                 {
                     discard = false;
                 }
-                else if (horizHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard == false)
+                if (horizHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard == false || 
+                         LevelBuilder.Instance.spawnedRooms.IndexOf(gameObject) > LevelBuilder.Instance.spawnedRooms.IndexOf(horizHit.transform.gameObject))
                 {
                     Debug.Log("Horizontal Ray from: " + gameObject.name + " hit " + horizHit.collider.gameObject.name);
                     discard = true;
@@ -116,25 +121,35 @@ public class IntersectionRaycast : MonoBehaviour
             {
                 if (horizHit.transform.gameObject.GetComponent<ConnectorRoomInfo>().markedForDiscard)
                 {
+                    foreach (var connector in _roomInfo.attachedConnectors)
+                    {
+                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = false;
+                    }
                     discard = false;
                 }
-                else if (horizHit.transform.gameObject.GetComponent<ConnectorRoomInfo>().markedForDiscard == false)
+                if (horizHit.transform.gameObject.GetComponent<ConnectorRoomInfo>().markedForDiscard == false)
                 {
                     Debug.Log("Horizontal Ray from: " + gameObject.name + " hit " + horizHit.collider.gameObject.name);
+                    foreach (var connector in _roomInfo.attachedConnectors)
+                    {
+                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
+                    }
                     discard = true;
                 }
             }
         }
-        else if (Physics.Raycast(_verticMiddleRay, out RaycastHit vertHit, _roomInfo.roomHeight, layerMask))
+        else if (Physics.Raycast(_verticMiddleRay, out RaycastHit vertHit, _roomInfo.roomHeight + .1f, layerMask))
         {
             Debug.Log("VERT RAY HIT!");
             if (vertHit.transform.gameObject.GetComponent<RoomInfo>())
             {
-                if (vertHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard)
+                if (vertHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard || 
+                    LevelBuilder.Instance.spawnedRooms.IndexOf(gameObject) < LevelBuilder.Instance.spawnedRooms.IndexOf(vertHit.transform.gameObject))
                 {
                     discard = false;
-                }
-                else if (vertHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard == false)
+                } 
+                if (vertHit.transform.gameObject.GetComponent<RoomInfo>().markedForDiscard == false ||
+                      LevelBuilder.Instance.spawnedRooms.IndexOf(gameObject) > LevelBuilder.Instance.spawnedRooms.IndexOf(vertHit.transform.gameObject))
                 {
                     Debug.Log("Vertical Ray from: " + gameObject.name + " hit " + vertHit.collider.gameObject.name);
                     discard = true;
@@ -144,10 +159,18 @@ public class IntersectionRaycast : MonoBehaviour
             {
                 if (vertHit.transform.gameObject.GetComponent<ConnectorRoomInfo>().markedForDiscard)
                 {
+                    foreach (var connector in _roomInfo.attachedConnectors)
+                    {
+                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = false;
+                    }
                     discard = false;
-                }
-                else if (vertHit.transform.gameObject.GetComponent<ConnectorRoomInfo>().markedForDiscard == false)
-                {
+                } 
+                if (vertHit.transform.gameObject.GetComponent<ConnectorRoomInfo>().markedForDiscard == false)
+                { 
+                    foreach (var connector in _roomInfo.attachedConnectors)
+                    {
+                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
+                    }
                     Debug.Log("Vertical Ray from: " + gameObject.name + " hit " + vertHit.collider.gameObject.name);
                     discard = true;
                 }
@@ -158,8 +181,17 @@ public class IntersectionRaycast : MonoBehaviour
             discard = false;
         }
 
-        return discard;
+       
+
+        if (_roomInfo.canBeDiscarded == false)
+        {
+            return false;
         }
+        else
+        {
+            return discard;
+        }
+    }
     
 
     public void CheckForInternalIntersection()
@@ -171,16 +203,18 @@ public class IntersectionRaycast : MonoBehaviour
         {
             Debug.Log(name + " is trying to spawn in occupied space.");
             _roomInfo.markedForDiscard = true;
-            foreach (var door in _roomInfo.allDoors)
+            foreach (var room in _roomInfo.allDoors)
             {
-                LevelBuilder.Instance.spawnPoints.Remove(door.transform);
+                LevelBuilder.Instance.spawnPoints.Remove(room.transform);
             }
-
+            _roomInfo.allDoors.Clear();
+            
             if (!LevelBuilder.Instance.discardedRooms.Contains(gameObject))
             {
                 LevelBuilder.Instance.discardedRooms.Add(gameObject);
             }
-        }
+            LevelBuilder.Instance.CleanUpBadRooms();
+        } 
         _collider.enabled = true;
         if (discard == false)
         {
@@ -190,15 +224,7 @@ public class IntersectionRaycast : MonoBehaviour
                 StartCoroutine(SecondRoundInternalCheck());
             }
         }
-        else
-        {
-            foreach (var child in transform.GetComponentsInChildren<Transform>())
-            {
-                child.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-            }
-        }
     }
-
     public IEnumerator SecondRoundInternalCheck()
     {
         yield return new WaitForSecondsRealtime(1f);

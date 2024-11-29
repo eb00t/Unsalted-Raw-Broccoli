@@ -14,13 +14,11 @@ public class ConnectorRoomInfo : MonoBehaviour
     public float connectorLength;
     public float connectorHeight; // The smaller side (should typically be the same for each connector)
     public bool markedForDiscard;
-    public ConnectorIntersectionRaycast intersectionCheck;
 
     private void Awake()
     {
         attachedRooms = new List<GameObject>();
         spawnWalls = new List<Transform>();
-        intersectionCheck = GetComponent<ConnectorIntersectionRaycast>();
         switch (horizontal)
         {
             case true:

@@ -21,7 +21,7 @@ public class LevelBuilder : MonoBehaviour
     [field: Header("Configuration")] 
     private int _numberOfRoomsToSpawn;
     public int howManyRoomsToSpawn;
-    public int numberOfConnectors;
+    public int roomsDiscarded;
     public LevelMode currentFloor;
     private GameObject _startingRoom;
 
@@ -49,6 +49,7 @@ public class LevelBuilder : MonoBehaviour
     public bool generatingFinished;
     private string _multiFloorRoomPath;
     public string _floorSpecificRoomPath;
+    private float _spawnTimer;
 
     private void Awake()
     {
@@ -180,17 +181,11 @@ public class LevelBuilder : MonoBehaviour
                     spawnedConnectorInfo.spawnedOnSide = "Top";
                     break;
             }
-
-            //Debug.Log("Connector should spawn at: " + spawnPoints[spawnRandomNumber] + newSpawnPoint);
             _connectorToSpawn = Instantiate(connectorPathReference, newSpawnPoint, quaternion.identity); //  Spawn the connector at the adjusted spawn point.
-            //_spawnedConnectorIntersectionCheck = _connectorToSpawn.GetComponent<ConnectorIntersectionRaycast>();
-            //_spawnedConnectorIntersectionCheck.CheckForInvalidSpawn();
-            //_spawnedConnectors.Add(_connectorToSpawn);
-            
             StartCoroutine(SpawnRooms(newSpawnPoint)); // Spawn the room on the connector
         }
 //        MapTargetGroup.Instance.AddRoomsToTargetGroup();
-        CleanUpBadRooms();
+        RerollDiscardedRooms();
     }
 
     IEnumerator SpawnRooms(Vector3 newSpawnPoint)
@@ -232,7 +227,6 @@ public class LevelBuilder : MonoBehaviour
                 break;
         }
         roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //  Instantiate the room at the spawnpoint's position
-        //CheckSpawnIsValid(roomToSpawn);
         spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
         spawningRoomInfo.connectorSpawnedOff = _connectorToSpawn;
         Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + realSpawnPosition);
@@ -298,21 +292,19 @@ public class LevelBuilder : MonoBehaviour
             IntersectionRaycast intersectionRaycast = spawnedRooms[i].GetComponent<IntersectionRaycast>();
             intersectionRaycast.CheckForInternalIntersection();
         }
-        if (discardedRooms.Count > 0)
+        if (roomsDiscarded > 0)
         {
-            CleanUpBadRooms();
+           RerollDiscardedRooms();
         }
         else
         {
             Debug.Log("No rooms left to discard!");
             generatingFinished = true;
-            spawnedRooms.Add(_startingRoom);
             foreach (var room in spawnedRooms)
             {
                 RoomScripting roomScript = room.GetComponent<RoomScripting>();
                 roomScript.CheckDoors();
             }
-            spawnedRooms.Remove(_startingRoom);
         }
     }
     
@@ -321,7 +313,6 @@ public class LevelBuilder : MonoBehaviour
         int rng = Random.Range(0, setSize);
         return rng;
     }
-
 
     GameObject ConnectorPathSetup(string side)
     {
@@ -384,7 +375,7 @@ public class LevelBuilder : MonoBehaviour
         }
     }
 
-    private void CleanUpBadRooms()
+    public void CleanUpBadRooms()
     {
        foreach (var room in discardedRooms)
        {
@@ -396,21 +387,20 @@ public class LevelBuilder : MonoBehaviour
                Destroy(room);
            }
        }
-       RerollDiscardedRooms();
     }
 
 
     void RerollDiscardedRooms()
     {
-        _numberOfRoomsToSpawn = discardedRooms.Count;
+        _numberOfRoomsToSpawn = roomsDiscarded;
         if (_numberOfRoomsToSpawn > 0)
         {
-            discardedRooms.Clear();
+            roomsDiscarded = 0;
             StartCoroutine(SpawnConnector());
         }
         else if (_numberOfRoomsToSpawn <= 0)
         {
-            if (discardedRooms.Count > 0)
+            if (roomsDiscarded > 0)
             {
                 _numberOfRoomsToSpawn = discardedRooms.Count;
                 StartCoroutine(SpawnConnector());
@@ -418,30 +408,8 @@ public class LevelBuilder : MonoBehaviour
             else
             {
                 StartCoroutine(WaitASec());
-                Debug.Log("All discarded rooms have been regenerated.");
             }
-            /*if (spawnedRooms.Count != howManyRoomsToSpawn)
-            {
-                foreach (var room in spawnedRooms)
-                {
-                    Destroy(room.gameObject);
-                }
-
-                foreach (var connector in _spawnedConnectors)
-                {
-                    Destroy(connector.gameObject);
-                }
-
-                spawnPoints.Clear();
-                GetStartingRoomWalls();
-                _numberOfRoomsToSpawn = howManyRoomsToSpawn;
-                StartCoroutine(SpawnConnector());
-            }*/
         }
-
-        
-
-       
         foreach (var room in spawnedRooms)
         {
             //room.GetComponent<IntersectionRaycast>()._collider.enabled = false;
@@ -456,6 +424,8 @@ public class LevelBuilder : MonoBehaviour
             Debug.Log("Spawn points are out of range.");
             spawnRandomNumber = RandomiseNumber(spawnPoints.Count);
         }
+
+        _spawnTimer -= Time.deltaTime;
     }
 }
 

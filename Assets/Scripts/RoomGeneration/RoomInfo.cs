@@ -32,6 +32,7 @@ public class RoomInfo : MonoBehaviour
     public GameObject connectorSpawnedOff;
     public bool markedForDiscard;
     private CinemachineVirtualCamera _roomCam;
+    public bool canBeDiscarded = true;
     void Awake()
     {
         _roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
@@ -79,10 +80,17 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
-        //if (!gameObject.CompareTag("StartingRoom"))
+        if (gameObject.CompareTag("StartingRoom"))
         {
-            LevelBuilder.Instance.spawnedRooms.Add(gameObject); //  Add to the list of rooms already in the level
+            canBeDiscarded = false;
         }
+        else
+        {
+            canBeDiscarded = true;
+        }
+        
+        LevelBuilder.Instance.spawnedRooms.Add(gameObject); //  Add to the list of rooms already in the level
+        
 
         CameraManager.Instance.virtualCameras.Add(_roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
@@ -95,13 +103,20 @@ public class RoomInfo : MonoBehaviour
     private void OnDestroy()
     {
         LevelBuilder.Instance.spawnedRooms.Remove(gameObject);
+        foreach (var door in allDoors)
+        {
+           LevelBuilder.Instance.spawnPoints.Remove(door.transform); 
+        }
         CameraManager.Instance.virtualCameras.Remove(_roomCam.GetComponent<CinemachineVirtualCamera>());
         if (rareRoom)
         {
-            LevelBuilder.Instance.possibleRooms.Add(
-                Resources.Load<GameObject>(LevelBuilder.Instance._floorSpecificRoomPath + gameObject.name.Substring(gameObject.name.Length - 7)));
+            //LevelBuilder.Instance.possibleRooms.Add(Resources.Load<GameObject>(LevelBuilder.Instance._floorSpecificRoomPath + gameObject.name.Substring(gameObject.name.Length - 7)));
         }
-
+        if (LevelBuilder.Instance.discardedRooms.Contains(gameObject))
+        {
+            LevelBuilder.Instance.discardedRooms.Remove(gameObject);
+            LevelBuilder.Instance.roomsDiscarded += 1;
+        }
         foreach (var connector in attachedConnectors)
         {
             if (connector != null)

@@ -9,16 +9,7 @@ public class DoorInfo : MonoBehaviour
 
     public void CheckDoors()
     {
-        StartCoroutine(WaitASec());
-    }
-    private void Start()
-    {
-        _roomInfo = transform.root.GetComponent<RoomInfo>();
-    }
-
-    IEnumerator WaitASec()
-    {
-        yield return new WaitForSeconds(1.5f);
+        Debug.Log("Checking for doors");
         Vector3 direction;
         switch (tag)
         {
@@ -38,10 +29,9 @@ public class DoorInfo : MonoBehaviour
                 direction = Vector3.zero;
                 break;
         }
-
         if (Physics.Raycast(transform.position, direction, out RaycastHit hit, 1))
         {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Intersection Checker"))
+            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Connector Intersection Checker"))
             {
                 //Debug.Log(name + " has a connector attached!");
                 _roomInfo.attachedConnectors.Add(hit.transform.gameObject);
@@ -57,11 +47,15 @@ public class DoorInfo : MonoBehaviour
                 }
             }
         }
-
         if (hasDoor) //TODO: Animate this
         {
             Vector3 transformPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + 3f);
-            transform.position = transformPos;
+            transform.position = Vector3.MoveTowards(transform.position, transformPos, 3f);
         }
     }
+    private void Start()
+    {
+        _roomInfo = transform.root.GetComponent<RoomInfo>();
+    }
+    
 }
