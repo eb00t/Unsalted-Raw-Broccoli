@@ -49,8 +49,8 @@ public class DoorInfo : MonoBehaviour
         }
         if (hasDoor) //TODO: Animate this
         {
-            Vector3 transformPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + 3f);
-            transform.position = Vector3.MoveTowards(transform.position, transformPos, 3f);
+            Vector3 transformPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2.99f);
+            transform.position = Vector3.MoveTowards(transform.position, transformPos, 2.99f);
         }
     }
     private void Start()
