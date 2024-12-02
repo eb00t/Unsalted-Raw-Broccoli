@@ -1823,7 +1823,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 2.56
-  m_Speed: 3.5
+  m_Speed: 5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -1834,7 +1834,7 @@ NavMeshAgent:
   m_Height: 5.12
   m_BaseOffset: 2.56
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!114 &5664032263486713906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2150,6 +2150,11 @@ PrefabInstance:
     - target: {fileID: 5707501096326961560, guid: d413629171229f04c95e878f27a33258,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6458999551992175689, guid: d413629171229f04c95e878f27a33258,
+        type: 3}
+      propertyPath: m_ObstacleAvoidanceType
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6736020984107105367, guid: d413629171229f04c95e878f27a33258,
