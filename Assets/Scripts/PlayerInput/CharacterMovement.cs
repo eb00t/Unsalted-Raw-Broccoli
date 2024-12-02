@@ -74,12 +74,17 @@ public class CharacterMovement : MonoBehaviour
             }
         }
 
-        if (ctx.performed && wallJumpingCounter > 0f && startSlideTimer)
+        if (ctx.performed && wallJumpingCounter > 0f && (startSlideTimer || sliding))
         {
             slideAllowed = false;
             startSlideTimer = false;
             isWallJumping = true;
-            Vector3 wallJump = new Vector3(-input * wallJumpForce.x, wallJumpForce.y, 0f);
+            Vector3 wallJump = new Vector3(-input * wallJumpForce.x, wallJumpForce.y, 0f); ;
+            /*if (!sliding)
+            {
+                wallJump = new Vector3(-input * wallJumpForce.x, wallJumpForce.y, 0f);
+            }
+            else { wallJump = new Vector3(-input * wallJumpForce.x/1.2f, wallJumpForce.y * 1.1f, 0f); }*/
             wallJumpingCounter = 0f;
             rb.AddForce(wallJump);
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
@@ -190,7 +195,7 @@ public class CharacterMovement : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (uiOpen) return;
-        if (other.CompareTag("Bottom Wall"))
+        if (/*other.gameObject.layer == 10*/other.CompareTag("Ground"))
         {
             grounded = true;
             startSlide = false;
