@@ -11,14 +11,14 @@ using Random = UnityEngine.Random;
 
 // Adapted from https://github.com/Chaker-Gamra/2.5D-Platformer-Game/blob/master/Assets/Scripts/Enemy/Enemy.cs
 
-public class EnemyHandler : MonoBehaviour
+public class BossHandler : MonoBehaviour
 {
     [Header("Enemy Stats")]
     private int _health = 100;
     [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int enemyAtk = 10;
+    [SerializeField] private int atk = 10;
     [SerializeField] private float chaseRange = 5;
-    [SerializeField] private float attackRange = 2;
+    [SerializeField] private float atkRange = 2;
     [SerializeField] private float maxPatrolRange = 15;
     [SerializeField] private float minPatrolRange = 6;
     private float _targetTime;
@@ -27,7 +27,6 @@ public class EnemyHandler : MonoBehaviour
     private Animator _animator;
     private Transform _target;
     private NavMeshAgent _agent;
-    private Transform _canvasTransform;
     
     private CharacterAttack _characterAttack;
     
@@ -51,8 +50,6 @@ public class EnemyHandler : MonoBehaviour
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
         _health = maxHealth;
-
-        _canvasTransform = GetComponentInChildren<Canvas>().transform;
         
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
@@ -67,7 +64,7 @@ public class EnemyHandler : MonoBehaviour
     {
         var distance = Vector3.Distance(transform.position, _target.position);
 
-        if (distance < attackRange)
+        if (distance < atkRange)
         {
             _state = States.Attack;
         }
@@ -103,25 +100,15 @@ public class EnemyHandler : MonoBehaviour
         }
         
         var velocity = _agent.velocity;
-
-        transform.localScale = velocity.x switch
+        var localScale = transform.localScale;
+        
+        localScale = velocity.x switch
         {
-            > 0.1f => new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z),
-            < -0.1f => new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z),
-            _ => transform.localScale
+            > 0.1f => new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z),
+            < -0.1f => new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z),
+            _ => localScale
         };
-
-        /*
-        var rot = _canvasTransform.rotation;
-        if (velocity.x > 0.1f)
-        {
-            rot.y = 0;
-        }
-        else if (velocity.x < -0.1f)
-        {
-            rot.y = 0;
-        }
-        */
+        transform.localScale = localScale;
     }
 
     private void Patrol()
@@ -130,48 +117,12 @@ public class EnemyHandler : MonoBehaviour
         _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
 
         _agent.SetDestination(_patrolTarget);
-        
-        /*
-                  var dist = Mathf.Abs(transform.position.x - _patrolTarget.x);
-          
-                  if (dist <= 0.1f)
-                  {
-                      _patrolTarget = (_patrolTarget == _patrol1) ? _patrol2 : _patrol1;
-                  }
-          
-                  var x = Mathf.MoveTowards(transform.position.x, _patrolTarget.x, speed * Time.deltaTime);
-                  transform.position = new Vector3(x, transform.position.y, transform.position.z);
-          
-                  if (_patrolTarget.x > transform.position.x)
-                  {
-                      transform.rotation = Quaternion.Euler(0, 180, 0);
-                  }
-                  else if (_patrolTarget.x < transform.position.x)
-                  {
-                      transform.rotation = Quaternion.identity;
-                  }
-                  */
     }
 
     private void Chase()
     {
         _agent.isStopped = false;
         _agent.SetDestination(_target.position);
-        
-        /*
-        if (_target.position.x > transform.position.x)
-        {
-            // right
-            transform.Translate(transform.right * (speed * Time.deltaTime));
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
-        else
-        {
-            // left
-            transform.Translate(-transform.right * (speed * Time.deltaTime));
-            transform.rotation = Quaternion.identity;
-        }
-        */
     }
 
     private void Attack()
@@ -181,7 +132,7 @@ public class EnemyHandler : MonoBehaviour
         _targetTime -= Time.deltaTime;
 
         if (!(_targetTime <= 0.0f)) return;
-        _characterAttack.TakeDamagePlayer(enemyAtk);
+        _characterAttack.TakeDamagePlayer(atk);
         _targetTime = 2f;
     }
 
@@ -210,26 +161,23 @@ public class EnemyHandler : MonoBehaviour
     
     private void Die()
     {
-        //animator.SetTrigger("isDead");
-        
         gameObject.SetActive(false);
-        //Destroy(gameObject);
     }
     
 
     private void OnDrawGizmos()
     {
         var position = transform.position;
-        //PickPatrolPoints();
         
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(position, attackRange);
+        Gizmos.DrawWireSphere(position, atkRange);
         
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(position, chaseRange);
 
         if (debugPatrol)
         {
+            //PickPatrolPoints();
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(position, maxPatrolRange);
             Gizmos.DrawWireSphere(position, minPatrolRange);

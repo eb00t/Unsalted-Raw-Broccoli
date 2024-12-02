@@ -11,7 +11,7 @@ public class MenuHandler : MonoBehaviour
 {
 	[SerializeField] private GameObject inventoryGui, menu, selectedMenu, equip, selectedEquip;
 	[SerializeField] private EventSystem eventSystem;
-	private bool _isEquip, _isEquipInv, _isInventory, _isInvInteractable;
+	private bool _isEquip, _isInventory, _isInvInteractable;
 	private InventoryStore _inventoryStore;
 	private ToolbarHandler _toolbarHandler;
 	[SerializeField] private GameObject grid;
@@ -131,7 +131,6 @@ public class MenuHandler : MonoBehaviour
 			}
 
 			ToggleInventory();
-			_isEquipInv = true;
 
 			foreach (var b in grid.GetComponentsInChildren<Button>())
 			{
