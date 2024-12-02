@@ -119,7 +119,10 @@ public class CharacterAttack : MonoBehaviour
         
         foreach (var e in GameObject.FindGameObjectsWithTag("Enemy"))
         {
-            enemies.Add(e.transform);
+            if (e.GetComponent<EnemyHandler>() || e.GetComponent<BossHandler>())
+            {
+                enemies.Add(e.transform);
+            }
         }
     }
 }

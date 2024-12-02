@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TreeEditor;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
@@ -104,24 +105,17 @@ public class EnemyHandler : MonoBehaviour
         
         var velocity = _agent.velocity;
 
-        transform.localScale = velocity.x switch
+        var localScale = GetComponentInChildren<SpriteRenderer>().transform.localScale;
+        
+        localScale = velocity.x switch
         {
-            > 0.1f => new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z),
-            < -0.1f => new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z),
-            _ => transform.localScale
+            > 0.1f => new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z),
+            < -0.1f => new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z),
+            _ => localScale
         };
-
-        /*
-        var rot = _canvasTransform.rotation;
-        if (velocity.x > 0.1f)
-        {
-            rot.y = 0;
-        }
-        else if (velocity.x < -0.1f)
-        {
-            rot.y = 0;
-        }
-        */
+        GetComponentInChildren<SpriteRenderer>().transform.localScale = localScale;
+        
+        
     }
 
     private void Patrol()
