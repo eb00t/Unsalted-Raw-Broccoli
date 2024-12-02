@@ -13,6 +13,7 @@ public class SemiSolidPlatform : MonoBehaviour
     public bool canFall;
     private bool FallThrough;
     private Rigidbody rigid;
+    public int fallSpeed;
     private void Awake()
     {
         _boxCollider = GetComponent<BoxCollider>();
@@ -62,7 +63,7 @@ public class SemiSolidPlatform : MonoBehaviour
         {
             if (FallThrough && collision.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
-                rigid.drag = 5;
+                rigid.drag = fallSpeed;
             }
             else
             {
