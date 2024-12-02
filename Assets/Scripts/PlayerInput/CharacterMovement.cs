@@ -65,8 +65,9 @@ public class CharacterMovement : MonoBehaviour
         if (ctx.performed && !doubleJumpPerformed && !startSlideTimer && !sliding)
         {
             Debug.Log("Jump");
-            Vector3 jump = new Vector3(0f, jumpForce, 0f);
-            rb.AddForce(jump);
+            Vector3 jump = new Vector3(rb.velocity.x, jumpForce, 0f);
+            //rb.AddForce(jump);
+            rb.velocity = jump;
             if (grounded)
             {
                 PlayerAnimator.SetBool("Jump", true);
@@ -85,7 +86,7 @@ public class CharacterMovement : MonoBehaviour
             Invoke(nameof(stopWallJump), wallJumpingDuration);
         }
 
-        if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter <= 0f)
+        if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter <= 0f && !doubleJumpPerformed)
         {
             doubleJumpPerformed = true;
             PlayerAnimator.SetBool("DoubleJump", true);
