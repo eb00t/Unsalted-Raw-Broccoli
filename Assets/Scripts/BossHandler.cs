@@ -55,6 +55,7 @@ public class BossHandler : MonoBehaviour
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateRotation = false;
+        _healthSlider.gameObject.SetActive(false);
         
         PickPatrolPoints();
         _patrolTarget = _patrol1;
@@ -85,6 +86,7 @@ public class BossHandler : MonoBehaviour
         {
             case States.Idle:
                 _agent.isStopped = true;
+                _healthSlider.gameObject.SetActive(false);
                 break;
             case States.Patrol:
                 Patrol();
@@ -115,13 +117,15 @@ public class BossHandler : MonoBehaviour
     {
         if (_agent.pathPending || !(_agent.remainingDistance <= _agent.stoppingDistance)) return;
         _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
-
+        
+        _healthSlider.gameObject.SetActive(false);
         _agent.SetDestination(_patrolTarget);
     }
 
     private void Chase()
     {
         _agent.isStopped = false;
+        _healthSlider.gameObject.SetActive(true);
         _agent.SetDestination(_target.position);
     }
 

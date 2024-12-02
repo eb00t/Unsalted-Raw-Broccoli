@@ -52,6 +52,7 @@ public class EnemyHandler : MonoBehaviour
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
         _health = maxHealth;
+        _healthSlider.gameObject.SetActive(false);
 
         _canvasTransform = GetComponentInChildren<Canvas>().transform;
         
@@ -89,6 +90,7 @@ public class EnemyHandler : MonoBehaviour
         {
             case States.Idle:
                 _agent.isStopped = true;
+                _healthSlider.gameObject.SetActive(false);
                 break;
             case States.Patrol:
                 Patrol();
@@ -122,6 +124,8 @@ public class EnemyHandler : MonoBehaviour
     {
         if (_agent.pathPending || !(_agent.remainingDistance <= _agent.stoppingDistance)) return;
         _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
+        
+        _healthSlider.gameObject.SetActive(false);
 
         _agent.SetDestination(_patrolTarget);
         
@@ -150,6 +154,7 @@ public class EnemyHandler : MonoBehaviour
     private void Chase()
     {
         _agent.isStopped = false;
+        _healthSlider.gameObject.SetActive(true);
         _agent.SetDestination(_target.position);
         
         /*
