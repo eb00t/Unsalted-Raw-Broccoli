@@ -11,8 +11,8 @@ public class IntersectionRaycast : MonoBehaviour
     private Ray _topLeftRay, _topRightRay, _bottomLeftRay, _bottomRightRay;
     private Ray _horizMiddleRay, _verticMiddleRay;
     private RoomInfo _roomInfo;
-    private List<int> _layers;
-    private List<Transform> _allChildren;
+    private List<int> _layers, _wallLayers, _doorLayers;
+    private List<Transform> _allChildren, _allWalls, _allDoors;
     private float _rayCastLength, _rayCastHeight; //Stored for use later
     private float _rayCastDistance; //Used as a variable when checking raycasts
     private float _innerRayCastDistance;
@@ -24,7 +24,12 @@ public class IntersectionRaycast : MonoBehaviour
     void Awake()
     {
         _allChildren = new List<Transform>();
+        _allWalls = new List<Transform>();
+        _allDoors = new List<Transform>();
         _layers = new List<int>();
+        _wallLayers = new List<int>();
+        _doorLayers = new List<int>();
+        
         foreach (var child in gameObject.GetComponentsInChildren<Transform>())
         {
             _allChildren.Add(child);
@@ -82,18 +87,34 @@ public class IntersectionRaycast : MonoBehaviour
         _layers.Clear();
         foreach (var wall in _roomInfo.allWalls)
         {
-            _layers.Add(wall.gameObject.layer);
+            _wallLayers.Add(wall.gameObject.layer);
+            _allWalls.Add(wall.transform);
             wall.gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
         }
         foreach (var door in _roomInfo.allDoors)
         {
-            _layers.Add(door.gameObject.layer);
+            _doorLayers.Add(door.gameObject.layer);
+            _allDoors.Add(door.transform);
             door.gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
         }
-        
-        
     }
-    
+
+    public void FixWallLayers()
+    {
+        for(int i = 0; i < _allWalls.Count; i++)
+        {
+            _allWalls[i].gameObject.layer = _wallLayers[i];
+        }
+    }
+
+    public void FixDoorLayers()
+    {
+        for (int i = 0; i < _allDoors.Count; i++)
+        {
+            _allDoors[i].gameObject.layer = _doorLayers[i];
+        }
+    }
+
     private void Start()
     {
         if (!gameObject.CompareTag("StartingRoom"))

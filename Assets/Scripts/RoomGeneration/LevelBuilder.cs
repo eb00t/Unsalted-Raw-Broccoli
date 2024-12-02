@@ -307,6 +307,8 @@ public class LevelBuilder : MonoBehaviour
             {
                 RoomScripting roomScript = room.GetComponent<RoomScripting>();
                 roomScript.CheckDoors();
+                IntersectionRaycast intersectionRaycast = room.GetComponent<IntersectionRaycast>();
+                intersectionRaycast.FixWallLayers();
             }
         }
     }

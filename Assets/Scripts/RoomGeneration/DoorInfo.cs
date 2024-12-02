@@ -6,9 +6,13 @@ public class DoorInfo : MonoBehaviour
 {
     public bool hasDoor = false;
     private RoomInfo _roomInfo;
-
+private void Awake()
+    {
+        _roomInfo = transform.root.GetComponent<RoomInfo>();
+    }
     public void CheckDoors()
     {
+        
         Debug.Log("Checking for doors");
         Vector3 direction;
         switch (tag)
@@ -52,10 +56,8 @@ public class DoorInfo : MonoBehaviour
             Vector3 transformPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2.99f);
             transform.position = Vector3.MoveTowards(transform.position, transformPos, 2.99f);
         }
+        _roomInfo.gameObject.GetComponent<IntersectionRaycast>().FixDoorLayers();
     }
-    private void Start()
-    {
-        _roomInfo = transform.root.GetComponent<RoomInfo>();
-    }
+    
     
 }
