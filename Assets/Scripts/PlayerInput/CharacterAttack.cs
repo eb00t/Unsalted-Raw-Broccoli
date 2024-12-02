@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class CharacterAttack : MonoBehaviour
@@ -9,14 +10,14 @@ public class CharacterAttack : MonoBehaviour
     private Animator _playerAnimator;
     
     [Header("Stats")]
-    [SerializeField] private int currentHealth = 100;
+    private int _currentHealth = 100;
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int charAtk = 10;
     [SerializeField] private float atkRange = 3;
     
     [Header("Tracking")]
-    [SerializeField] private List<EnemyHandler> enemyHandlers;
-    [SerializeField] private EnemyHandler _nearestEnemy;
+    [SerializeField] private List<Transform> enemies;
+    [SerializeField] private Transform nearestEnemy;
     
     [SerializeField] private Slider healthSlider;
     
@@ -24,6 +25,9 @@ public class CharacterAttack : MonoBehaviour
     {
         _attackCollider = GetComponent<MeshCollider>();
         _playerAnimator = GameObject.FindGameObjectWithTag("PlayerRenderer").GetComponent<Animator>();
+        healthSlider.maxValue = maxHealth;
+        healthSlider.value = maxHealth;
+        _currentHealth = maxHealth;
     }
 
     public void LightAttack(InputAction.CallbackContext ctx)
@@ -59,14 +63,14 @@ public class CharacterAttack : MonoBehaviour
 
     public void TakeDamagePlayer(int damage)
     {
-        if (currentHealth - damage > 0)
+        if (_currentHealth - damage > 0)
         {
-            currentHealth -= damage;
-            healthSlider.value = currentHealth;
+            _currentHealth -= damage;
+            healthSlider.value = _currentHealth;
         }
         else
         {
-            currentHealth = 0;
+            _currentHealth = 0;
             healthSlider.value = 0;
             //Die();
         }
@@ -76,42 +80,46 @@ public class CharacterAttack : MonoBehaviour
     {
         CountEnemies();
 
-        if (enemyHandlers.Count > 0)
+        if (enemies.Count > 0)
         {
-            foreach (var eh in enemyHandlers)
+            foreach (var eh in enemies)
             {
                 var dist = Vector3.Distance(transform.position, eh.transform.position);
                 
                 
-                if (_nearestEnemy == null)
+                if (nearestEnemy == null)
                 {
-                    _nearestEnemy = eh;
+                    nearestEnemy = eh;
                 }
-                else if (dist <= Vector3.Distance(transform.position, _nearestEnemy.transform.position))
+                else if (dist <= Vector3.Distance(transform.position, nearestEnemy.transform.position))
                 {
-                    _nearestEnemy = eh;
+                    nearestEnemy = eh;
                 }
             }
         }
 
-        var dist1 = Vector3.Distance(transform.position, _nearestEnemy.transform.position);
+        var dist1 = Vector3.Distance(transform.position, nearestEnemy.transform.position);
 
         if (dist1 <= atkRange)
         {
-            _nearestEnemy.TakeDamageEnemy(charAtk);
+            if (nearestEnemy.GetComponent<EnemyHandler>())
+            {
+                nearestEnemy.GetComponent<EnemyHandler>().TakeDamageEnemy(charAtk);
+            }
+            else if (nearestEnemy.GetComponent<BossHandler>())
+            {
+                nearestEnemy.GetComponent<BossHandler>().TakeDamageEnemy(charAtk);
+            }
         }
     }
 
     private void CountEnemies()
     {
-        enemyHandlers.Clear();
+        enemies.Clear();
         
         foreach (var e in GameObject.FindGameObjectsWithTag("Enemy"))
         {
-            if (e.GetComponent<EnemyHandler>())
-            {
-                enemyHandlers.Add(e.GetComponent<EnemyHandler>());
-            }
+            enemies.Add(e.transform);
         }
     }
 }
