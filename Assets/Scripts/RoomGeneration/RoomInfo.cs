@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -34,8 +35,10 @@ public class RoomInfo : MonoBehaviour
     public bool markedForDiscard;
     private CinemachineVirtualCamera _roomCam;
     public bool canBeDiscarded = true;
+    private string _roomPath;
     void Awake()
     {
+        _roomPath = AssetDatabase.GetAssetPath(gameObject);
         _roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
         intersectionCheck = GetComponent<IntersectionRaycast>();
         attachedConnectors.Clear();
@@ -114,7 +117,11 @@ public class RoomInfo : MonoBehaviour
         CameraManager.Instance.virtualCameras.Remove(_roomCam.GetComponent<CinemachineVirtualCamera>());
         if (rareRoom)
         {
-            //LevelBuilder.Instance.possibleRooms.Add(Resources.Load<GameObject>(LevelBuilder.Instance._floorSpecificRoomPath + gameObject.name.Substring(gameObject.name.Length - 7)));
+            LevelBuilder.Instance.possibleRooms.Add(Resources.Load<GameObject>(_roomPath));
+            if (gameObject.name.Contains("(1)") || gameObject.name.Contains("(2)") || gameObject.name.Contains("(3)"))
+            {
+                LevelBuilder.Instance.ReAddBossRooms();
+            }
         }
         if (LevelBuilder.Instance.discardedRooms.Contains(gameObject))
         {

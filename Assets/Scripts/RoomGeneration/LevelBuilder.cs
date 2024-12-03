@@ -51,7 +51,12 @@ public class LevelBuilder : MonoBehaviour
     private string _multiFloorRoomPath, _bossRoomPath;
     public string floorSpecificRoomPath;
     private float _spawnTimer;
-
+    private enum SpawnMode
+    {
+        Normal,
+        BossRooms,
+    }
+    private SpawnMode _spawnMode;
     private void Awake()
     {
         if (Instance != null)
@@ -64,6 +69,7 @@ public class LevelBuilder : MonoBehaviour
 
     void Start()
     {
+        _spawnMode = SpawnMode.Normal;
         _numberOfRoomsToSpawn = howManyRoomsToSpawn;
         StartCoroutine(DelayStart());
     }
@@ -194,6 +200,10 @@ public class LevelBuilder : MonoBehaviour
             }
             _connectorToSpawn = Instantiate(connectorPathReference, newSpawnPoint, quaternion.identity); //  Spawn the connector at the adjusted spawn point.
             StartCoroutine(SpawnRooms(newSpawnPoint)); // Spawn the room on the connector
+            if (_spawnMode == SpawnMode.BossRooms)
+            {
+                spawnPoints.Clear();
+            }
         }
 //        MapTargetGroup.Instance.AddRoomsToTargetGroup();
         RerollDiscardedRooms();
@@ -202,7 +212,16 @@ public class LevelBuilder : MonoBehaviour
     IEnumerator SpawnRooms(Vector3 newSpawnPoint)
     {
         yield return new WaitForSeconds(0.1f);
-        roomRandomNumber = RandomiseNumber(possibleRooms.Count); // Spawn a random room from the list of possible rooms
+        switch (_spawnMode)
+        {
+            case SpawnMode.Normal:
+             roomRandomNumber = RandomiseNumber(possibleRooms.Count); // Spawn a random room from the list of possible rooms
+                break;
+            case SpawnMode.BossRooms:
+                roomRandomNumber = 0;
+                break;
+        }
+       
         //GameObject roomToSpawn; 
         if (roomToSpawn != null)
         {
@@ -327,15 +346,33 @@ public class LevelBuilder : MonoBehaviour
     }
 
   void SpawnBossRoom()
-    {
-        possibleRooms.Clear();
-        foreach (var bossRoom in possibleBossRooms)
-        {
-            possibleRooms.Add(bossRoom);
-        }
-        StartCoroutine(SpawnConnector());
-    }
-    
+  {
+      if (_spawnMode != SpawnMode.BossRooms)
+      {
+          _numberOfRoomsToSpawn = possibleBossRooms.Count;
+          possibleRooms.Clear();
+          _spawnMode = SpawnMode.BossRooms;
+          foreach (var bossRoom in possibleBossRooms)
+          {
+              possibleRooms.Add(bossRoom);
+          }
+          StartCoroutine(SpawnConnector());
+      }
+     
+  }
+
+  public void ReAddBossRooms()
+  {
+      possibleRooms.Clear();
+      foreach (var room in possibleBossRooms)
+      {
+          if (!spawnedRooms.Contains(room) || !possibleRooms.Contains(room))
+          { 
+             possibleRooms.Add(room);
+          }
+      }
+  }
+  
     int RandomiseNumber(int setSize)
     {
         int rng = Random.Range(0, setSize);
@@ -408,7 +445,7 @@ public class LevelBuilder : MonoBehaviour
        foreach (var room in discardedRooms)
        {
            RoomInfo badRoomInfo = room.GetComponent<RoomInfo>();
-           if (badRoomInfo.markedForDiscard == true)
+           if (badRoomInfo.markedForDiscard)
            {
                Debug.Log(room.name + " has been discarded.");
                Destroy(badRoomInfo.connectorSpawnedOff);

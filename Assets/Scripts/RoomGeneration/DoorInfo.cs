@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,9 +7,12 @@ public class DoorInfo : MonoBehaviour
 {
     public bool hasDoor = false;
     private RoomInfo _roomInfo;
+    private Vector3 _initialPosition;
+    private float _lerpTime;
 private void Awake()
     {
         _roomInfo = transform.root.GetComponent<RoomInfo>();
+        _initialPosition = transform.position;
     }
     public void CheckDoors()
     {
@@ -53,11 +57,14 @@ private void Awake()
         }
         if (hasDoor) //TODO: Animate this
         {
-            Vector3 transformPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2.99f);
-            transform.position = Vector3.MoveTowards(transform.position, transformPos, 2.99f);
+            Vector3 transformPos = new Vector3(_initialPosition.x, _initialPosition.y, _initialPosition.z + 2.99f);
+            transform.position = transformPos;
         }
         _roomInfo.gameObject.GetComponent<IntersectionRaycast>().FixDoorLayers();
     }
-    
-    
+
+    private void Update()
+    {
+        //throw new NotImplementedException();
+    }
 }
