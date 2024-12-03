@@ -303,6 +303,7 @@ public class LevelBuilder : MonoBehaviour
         {
             Debug.Log("No rooms left to discard!");
             generatingFinished = true;
+            AudioManager.Instance.SetEventParameter(AudioManager.Instance.loadingEventInstance, "Level Loaded", 1);
             foreach (var room in spawnedRooms)
             {
                 RoomScripting roomScript = room.GetComponent<RoomScripting>();

@@ -35,7 +35,7 @@ public class AudioManager : MonoBehaviour
     private List<EventInstance> _eventInstances;
     private List<StudioEventEmitter> _eventEmitters;
     private EventInstance _ambienceEventInstance;
-
+    public EventInstance loadingEventInstance;
     public EventInstance MusicEventInstance;
     //Add any more sort of background-ish sound effects here if necessary.
 
@@ -61,7 +61,10 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
+       loadingEventInstance = CreateEventInstance(FMODEvents.Instance.Loading);
+        loadingEventInstance.start();
         InitialiseAmbience(FMODEvents.Instance.Ambience);
+        
         InitialiseMusic(FMODEvents.Instance.Music);
     }
 

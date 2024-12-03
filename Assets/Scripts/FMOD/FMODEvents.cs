@@ -17,6 +17,7 @@ public class FMODEvents : MonoBehaviour
     
     [field: Header("Ambience")]
     [field: SerializeField] public EventReference Ambience { get; private set; }
+    [field: SerializeField] public EventReference Loading { get; private set; }
     
     [field: Header("Music")]
     [field: SerializeField] public EventReference Music { get; private set; }
