@@ -28,6 +28,7 @@ public class LevelBuilder : MonoBehaviour
     private GameObject _roomToSpawnOn; // The room containing the wall this room used as its spawn position.
     [field: Header("Debugging")] 
     public List<GameObject> possibleRooms; // Rooms that CAN spawn.
+    public List<GameObject> possibleBossRooms;
     public int roomsRemaining; // Rooms yet to spawn
     public List<GameObject> discardedRooms; // Rooms that were unable to spawn
     public List<GameObject> possibleConnectors; // Connectors that can spawn.
@@ -47,8 +48,8 @@ public class LevelBuilder : MonoBehaviour
     public List<GameObject> _spawnedConnectors;
     public GameObject roomToSpawn;
     public bool generatingFinished;
-    private string _multiFloorRoomPath;
-    public string _floorSpecificRoomPath;
+    private string _multiFloorRoomPath, _bossRoomPath;
+    public string floorSpecificRoomPath;
     private float _spawnTimer;
 
     private void Awake()
@@ -95,41 +96,51 @@ public class LevelBuilder : MonoBehaviour
 
     void AddRoomsToList()
     {
-        _floorSpecificRoomPath = "YOU SHOULDN'T SEE THIS"; //Path for floor exclusive rooms
+        floorSpecificRoomPath = "YOU SHOULDN'T SEE THIS"; //Path for floor exclusive rooms
         _multiFloorRoomPath = "YOU SHOULDN'T SEE THIS EITHER"; //TODO: Path for rooms used in multiple floors 
+        _bossRoomPath = "YOU STILL SHOULDN'T SEE THIS";
         string connectorPath = "Room Layouts/Connectors";
         switch (currentFloor)
         {
             case LevelMode.TEST:
-                _floorSpecificRoomPath = "Room Layouts/Test Rooms";
+                floorSpecificRoomPath = "Room Layouts/Test Rooms";
+                _bossRoomPath = "Room Layouts/Boss Rooms/Test";
                 break;
             case LevelMode.Floor1:
-                _floorSpecificRoomPath = "Room Layouts/Floor 1";
+                floorSpecificRoomPath = "Room Layouts/Floor 1";
+                _bossRoomPath = "Room Layouts/Boss Rooms/Floor 1";
                 break;
             case LevelMode.Floor2:
-                _floorSpecificRoomPath = "Room Layouts/Floor 2";
+                floorSpecificRoomPath = "Room Layouts/Floor 2";
+                _bossRoomPath = "Room Layouts/Boss Rooms/Floor 2";
                 break;
             case LevelMode.Floor3:
-                _floorSpecificRoomPath = "Room Layouts/Floor 3";
+                floorSpecificRoomPath = "Room Layouts/Floor 3";
+                _bossRoomPath = "Room Layouts/Boss Rooms/Floor 3";
                 break;
         }
 
-        foreach (var rooms in Resources.LoadAll<GameObject>(_floorSpecificRoomPath))
+        foreach (var room in Resources.LoadAll<GameObject>(floorSpecificRoomPath))
         {
-            possibleRooms.Add(rooms);
+            possibleRooms.Add(room);
         }
 
-        foreach (var rooms in Resources.LoadAll<GameObject>(_multiFloorRoomPath))
+        foreach (var room in Resources.LoadAll<GameObject>(_multiFloorRoomPath))
         {
-            possibleRooms.Add(rooms);
+            possibleRooms.Add(room);
         }
 
-        foreach (var rooms in Resources.LoadAll<GameObject>(connectorPath))
+        foreach (var connector in Resources.LoadAll<GameObject>(connectorPath))
         {
-            possibleConnectors.Add(rooms);
+            possibleConnectors.Add(connector);
+        }
+        
+        foreach (var bossRoom in Resources.LoadAll<GameObject>(_bossRoomPath))
+        {
+            possibleBossRooms.Add(bossRoom);
         }
 
-        Debug.Log(_floorSpecificRoomPath + " " + _multiFloorRoomPath);
+        Debug.Log(floorSpecificRoomPath + " " + _multiFloorRoomPath);
     }
 
     IEnumerator SpawnConnector()
@@ -302,6 +313,7 @@ public class LevelBuilder : MonoBehaviour
         else
         {
             Debug.Log("No rooms left to discard!");
+            SpawnBossRoom();
             generatingFinished = true;
             AudioManager.Instance.SetEventParameter(AudioManager.Instance.loadingEventInstance, "Level Loaded", 1);
             foreach (var room in spawnedRooms)
@@ -312,6 +324,16 @@ public class LevelBuilder : MonoBehaviour
                 intersectionRaycast.FixWallLayers();
             }
         }
+    }
+
+  void SpawnBossRoom()
+    {
+        possibleRooms.Clear();
+        foreach (var bossRoom in possibleBossRooms)
+        {
+            possibleRooms.Add(bossRoom);
+        }
+        StartCoroutine(SpawnConnector());
     }
     
     int RandomiseNumber(int setSize)
