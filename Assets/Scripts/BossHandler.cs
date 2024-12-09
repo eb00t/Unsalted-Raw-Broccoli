@@ -113,7 +113,7 @@ public class BossHandler : MonoBehaviour
         transform.localScale = localScale;
     }
 
-    private void Patrol()
+    private void Patrol() // TODO: make enemies return to spawn location when restarting patrol
     {
         if (_agent.pathPending || !(_agent.remainingDistance <= _agent.stoppingDistance)) return;
         _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
