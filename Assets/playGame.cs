@@ -11,6 +11,12 @@ public class playGame : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
+    public void ReplayGame()
+    {
+         SceneManager.LoadScene("StartScreen");
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
     public void quitGame()
     {
         Application.Quit();
