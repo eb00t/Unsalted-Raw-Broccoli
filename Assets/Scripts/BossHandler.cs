@@ -16,7 +16,7 @@ public class BossHandler : MonoBehaviour
     [Header("Enemy Stats")]
     private int _health = 100;
     [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int atk = 10;
+    public int bossAtk = 10;
     [SerializeField] private float chaseRange = 5;
     [SerializeField] private float atkRange = 2;
     [SerializeField] private float maxPatrolRange = 15;
@@ -56,6 +56,7 @@ public class BossHandler : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateRotation = false;
         _healthSlider.gameObject.SetActive(false);
+        _animator = GetComponent<Animator>();
         
         PickPatrolPoints();
         _patrolTarget = _patrol1;
@@ -136,10 +137,11 @@ public class BossHandler : MonoBehaviour
         _targetTime -= Time.deltaTime;
 
         if (!(_targetTime <= 0.0f)) return;
-        _characterAttack.TakeDamagePlayer(atk);
+        //_characterAttack.TakeDamagePlayer(atk);
+        _animator.SetTrigger("JumpAttack1");
         _targetTime = 2f;
     }
-
+    
     private void PickPatrolPoints()
     {
         var position = transform.position;
