@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,6 +9,23 @@ public class LevelTextManager : MonoBehaviour
     public TMP_Text titleText;
     public TMP_Text subtitleText;
     private bool _doneWaiting;
+    public Color textColor;
+    public Color transparentColor;
+    private float _lerpTime;
+    private bool _fadedOut;
+    private Color _startColor;
+    private enum LerpDirection
+    {
+        Neither,
+        FadeOut,
+        FadeIn,
+    }
+    private LerpDirection _lerpDirection;
+
+    private void Awake()
+    {
+        _startColor = titleText.color;
+    }
 
     void Start()
     {
@@ -52,41 +70,53 @@ public class LevelTextManager : MonoBehaviour
                 subtitleText.text = ("...");
                 break;
         }
-
-        StartCoroutine(LowerTextOpacity());
-
     }
 
-    IEnumerator LowerTextOpacity()
+    IEnumerator WaitToLowerTextOpacity()
+    { 
+        yield return new WaitForSecondsRealtime(2f);
+        LowerTextOpacity();
+    }
+
+    void LowerTextOpacity()
     {
-        while (true)
+        _lerpTime = 0;
+        _lerpDirection = LerpDirection.FadeOut;
+    }
+
+    private void Update()
+    {
+        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false)
         {
-            if (!_doneWaiting)
-            {
-                yield return new WaitForSecondsRealtime(2f);
-            }
-
-            _doneWaiting = true;
-            var subtitleTextColor = subtitleText.color;
-            subtitleTextColor.a -= .1f;
-            subtitleText.color = subtitleTextColor;
-            titleText.color = subtitleText.color;
-            yield return new WaitForSeconds(0.1f);
+            _fadedOut = true;
+            StartCoroutine(WaitToLowerTextOpacity());
         }
-}
-
-// Update is called once per frame
-    void Update()
-    {
-        if (titleText.color.a <= 0)
+        if (titleText.color.a <= 0 && _lerpDirection == LerpDirection.FadeOut)
         {
             titleText.gameObject.SetActive(false);
-            StopCoroutine(LowerTextOpacity());
-            
-        }  
-        if (subtitleText.color.a <= 0)
-        {
             subtitleText.gameObject.SetActive(false);
+            _lerpDirection = LerpDirection.Neither;
         }
+
+        switch (_lerpDirection)
+        {
+            case LerpDirection.Neither:
+                textColor = _startColor;
+                titleText.color = textColor;
+                subtitleText.color = textColor;
+                break;
+            case LerpDirection.FadeOut:
+                titleText.color = Color.Lerp(textColor, transparentColor, _lerpTime);
+                subtitleText.color = titleText.color;
+                break;  
+            case LerpDirection.FadeIn:
+                titleText.color = Color.Lerp(transparentColor, textColor, _lerpTime);
+                subtitleText.color = titleText.color;
+                break;
+        }
+        
+        _lerpTime += .002f; 
+        
     }
 }
+    

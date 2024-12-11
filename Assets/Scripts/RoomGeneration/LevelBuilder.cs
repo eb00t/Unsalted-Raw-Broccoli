@@ -47,7 +47,8 @@ public class LevelBuilder : MonoBehaviour
     private ConnectorIntersectionRaycast _spawnedConnectorIntersectionCheck;
     public List<GameObject> _spawnedConnectors;
     public GameObject roomToSpawn;
-    public bool generatingFinished;
+    public bool roomGeneratingFinished;
+    public bool bossRoomGeneratingFinished;
     private string _multiFloorRoomPath, _bossRoomPath;
     public string floorSpecificRoomPath;
     private float _spawnTimer;
@@ -333,7 +334,7 @@ public class LevelBuilder : MonoBehaviour
         {
             Debug.Log("No rooms left to discard!");
             SpawnBossRoom();
-            generatingFinished = true;
+            roomGeneratingFinished = true;
             AudioManager.Instance.SetEventParameter(AudioManager.Instance.loadingEventInstance, "Level Loaded", 1);
             foreach (var room in spawnedRooms)
             {
@@ -358,7 +359,11 @@ public class LevelBuilder : MonoBehaviour
           }
           StartCoroutine(SpawnConnector());
       }
-     
+
+      if (possibleRooms.Count == 0)
+      {
+          bossRoomGeneratingFinished = true;
+      }
   }
 
   public void ReAddBossRooms()
