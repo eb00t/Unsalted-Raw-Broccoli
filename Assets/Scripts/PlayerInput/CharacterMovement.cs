@@ -62,16 +62,13 @@ public class CharacterMovement : MonoBehaviour
         if (uiOpen) return;
         if(!allowMovement) { }
             else
-        if (ctx.performed && !doubleJumpPerformed && !startSlideTimer && !sliding)
+        if (ctx.performed && !doubleJumpPerformed && !startSlideTimer && !sliding && grounded)
         {
             Debug.Log("Jump");
             Vector3 jump = new Vector3(rb.velocity.x, jumpForce, 0f);
             //rb.AddForce(jump);
             rb.velocity = jump;
-            if (grounded)
-            {
-                PlayerAnimator.SetBool("Jump", true);
-            }
+            PlayerAnimator.SetBool("Jump", true);
         }
 
         if (ctx.performed && wallJumpingCounter > 0f && (startSlideTimer || sliding))
@@ -94,6 +91,8 @@ public class CharacterMovement : MonoBehaviour
         if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter <= 0f && !doubleJumpPerformed)
         {
             doubleJumpPerformed = true;
+            Vector3 jump = new Vector3(rb.velocity.x, jumpForce, 0f);
+            rb.velocity = jump;
             PlayerAnimator.SetBool("DoubleJump", true);
         }
     }
@@ -194,7 +193,7 @@ public class CharacterMovement : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (uiOpen) return;
-        if (/*other.gameObject.layer == 10*/other.CompareTag("Ground"))
+        if (other.gameObject.layer == 10)
         {
             grounded = true;
             startSlide = false;
@@ -205,7 +204,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Bottom Wall"))
+        if (other.gameObject.layer == 10)
         {
             grounded = false;
         }
