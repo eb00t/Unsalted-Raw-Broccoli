@@ -16,7 +16,6 @@ private void Awake()
     }
     public void CheckDoors()
     {
-        
         Debug.Log("Checking for doors");
         Vector3 direction;
         switch (tag)
@@ -41,7 +40,7 @@ private void Awake()
         {
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Connector Intersection Checker"))
             {
-                //Debug.Log(name + " has a connector attached!");
+                Debug.Log(name + " hit a connector! " + "(" + hit.transform.gameObject.name + ")");
                 _roomInfo.attachedConnectors.Add(hit.transform.gameObject);
                 hasDoor = true;
             } 
@@ -50,6 +49,7 @@ private void Awake()
                 var transformPosition = hit.transform.position;
                 if (transformPosition.y == gameObject.transform.position.y)
                 {
+                    Debug.Log(name + " hit another door! " + "(" + hit.transform.gameObject.name + ")");
                     hasDoor = true;
                     hit.transform.gameObject.GetComponent<DoorInfo>().hasDoor = true;
                 }

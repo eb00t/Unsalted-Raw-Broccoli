@@ -11,8 +11,8 @@ public class IntersectionRaycast : MonoBehaviour
     private Ray _topLeftRay, _topRightRay, _bottomLeftRay, _bottomRightRay;
     private Ray _horizMiddleRay, _verticMiddleRay;
     private RoomInfo _roomInfo;
-    private List<int> _layers, _wallLayers, _doorLayers;
-    private List<Transform> _allChildren, _allWalls, _allDoors;
+    public List<int> _layers, _wallLayers, _doorLayers;
+    public List<Transform> _allChildren, _allWalls, _allDoors;
     private float _rayCastLength, _rayCastHeight; //Stored for use later
     private float _rayCastDistance; //Used as a variable when checking raycasts
     private float _innerRayCastDistance;
@@ -72,6 +72,7 @@ public class IntersectionRaycast : MonoBehaviour
 
     void MessUpLayers()
     {
+        Debug.Log("Messing up layers of " + gameObject.name);
         foreach (var child in _allChildren)
         {
             child.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
@@ -117,10 +118,7 @@ public class IntersectionRaycast : MonoBehaviour
 
     private void Start()
     {
-        if (!gameObject.CompareTag("StartingRoom"))
-        {
-            CheckForInternalIntersection(); //_roomInfo.connectorSpawnedOff.GetComponent<ConnectorRoomInfo>());
-        }
+        CheckForInternalIntersection(); //_roomInfo.connectorSpawnedOff.GetComponent<ConnectorRoomInfo>());
     }
     private bool FireInternalRayCast()
     {

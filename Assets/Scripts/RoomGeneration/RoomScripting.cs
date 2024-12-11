@@ -11,7 +11,7 @@ public class RoomScripting : MonoBehaviour
     public List<GameObject> allDoors;
     private RoomInfo _roomInfo;
 
-    private void Awake()
+    private void Start()
     {
         _roomInfo = GetComponent<RoomInfo>();
         allDoors = new List<GameObject>(_roomInfo.allDoors);
