@@ -38,7 +38,8 @@ public class RoomInfo : MonoBehaviour
     private string _roomPath;
     void Awake()
     {
-        _roomPath = AssetDatabase.GetAssetPath(gameObject);
+        //_roomPath = AssetDatabase.GetAssetPath(gameObject);
+        //Debug.Log(_roomPath);
         _roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
         intersectionCheck = GetComponent<IntersectionRaycast>();
         attachedConnectors.Clear();
@@ -120,6 +121,7 @@ public class RoomInfo : MonoBehaviour
             LevelBuilder.Instance.possibleRooms.Add(Resources.Load<GameObject>(_roomPath));
             if (gameObject.name.Contains("(1)") || gameObject.name.Contains("(2)") || gameObject.name.Contains("(3)"))
             {
+                LevelBuilder.Instance.roomRandomNumber--;
                 LevelBuilder.Instance.ReAddBossRooms();
             }
         }

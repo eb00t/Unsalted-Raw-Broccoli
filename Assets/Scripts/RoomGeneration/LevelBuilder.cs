@@ -42,7 +42,8 @@ public class LevelBuilder : MonoBehaviour
     public Transform spawnRoomDoorT;
     public Transform spawnRoomDoorB;
     private GameObject _connectorToSpawn;
-    private int roomRandomNumber, spawnRandomNumber;
+    public int roomRandomNumber;
+    private int spawnRandomNumber;
     private IntersectionRaycast _spawningRoomIntersectionCheck;
     private ConnectorIntersectionRaycast _spawnedConnectorIntersectionCheck;
     public List<GameObject> _spawnedConnectors;
@@ -104,7 +105,7 @@ public class LevelBuilder : MonoBehaviour
     void AddRoomsToList()
     {
         floorSpecificRoomPath = "YOU SHOULDN'T SEE THIS"; //Path for floor exclusive rooms
-        _multiFloorRoomPath = "YOU SHOULDN'T SEE THIS EITHER"; //TODO: Path for rooms used in multiple floors 
+        _multiFloorRoomPath = "Room Layouts/Multi Floor Rooms"; //TODO: Path for rooms used in multiple floors 
         _bossRoomPath = "YOU STILL SHOULDN'T SEE THIS";
         string connectorPath = "Room Layouts/Connectors";
         switch (currentFloor)

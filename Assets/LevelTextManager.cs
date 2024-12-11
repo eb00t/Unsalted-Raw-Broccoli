@@ -25,6 +25,7 @@ public class LevelTextManager : MonoBehaviour
     private void Awake()
     {
         _startColor = titleText.color;
+        RaiseTextOpacity();
     }
 
     void Start()
@@ -84,6 +85,12 @@ public class LevelTextManager : MonoBehaviour
         _lerpDirection = LerpDirection.FadeOut;
     }
 
+    void RaiseTextOpacity()
+    {
+        _lerpTime = 0;
+        _lerpDirection = LerpDirection.FadeIn;
+    }
+    
     private void Update()
     {
         if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false)
@@ -95,7 +102,6 @@ public class LevelTextManager : MonoBehaviour
         {
             titleText.gameObject.SetActive(false);
             subtitleText.gameObject.SetActive(false);
-            _lerpDirection = LerpDirection.Neither;
         }
 
         switch (_lerpDirection)
@@ -106,10 +112,17 @@ public class LevelTextManager : MonoBehaviour
                 subtitleText.color = textColor;
                 break;
             case LerpDirection.FadeOut:
+                _lerpTime += .002f; 
                 titleText.color = Color.Lerp(textColor, transparentColor, _lerpTime);
                 subtitleText.color = titleText.color;
+                if (titleText.color.a <= 0)
+                {
+                    titleText.gameObject.SetActive(false);
+                    subtitleText.gameObject.SetActive(false);
+                }
                 break;  
             case LerpDirection.FadeIn:
+                _lerpTime += .006f; 
                 titleText.color = Color.Lerp(transparentColor, textColor, _lerpTime);
                 subtitleText.color = titleText.color;
                 break;
