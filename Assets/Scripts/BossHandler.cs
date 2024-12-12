@@ -138,8 +138,19 @@ public class BossHandler : MonoBehaviour
 
         if (!(_targetTime <= 0.0f)) return;
         //_characterAttack.TakeDamagePlayer(atk);
-        _animator.SetTrigger("JumpAttack1");
-        _targetTime = 2f;
+        var atkNum = Random.Range(0, 2);
+        Debug.Log(atkNum);
+
+        if (atkNum == 0)
+        {
+            _animator.SetTrigger("JumpAttack1");
+        }
+        else if (atkNum == 1)
+        {
+            _animator.SetTrigger("HandSwipe");
+        }
+        
+        _targetTime = 4f;
     }
     
     private void PickPatrolPoints()
