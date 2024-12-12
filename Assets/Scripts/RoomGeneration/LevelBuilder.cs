@@ -33,6 +33,8 @@ public class LevelBuilder : MonoBehaviour
     public List<GameObject> discardedRooms; // Rooms that were unable to spawn
     public List<GameObject> possibleConnectors; // Connectors that can spawn.
     public List<GameObject> spawnedRooms; // Rooms that have ALREADY spawned.
+    public List<GameObject> spawnedBossRooms; //Boss rooms that have spawned.
+    public List<Transform> bossRoomSpawnPoints;
     public List<Transform> spawnPoints; // Doors that rooms can spawn on
     public RoomInfo spawningRoomInfo; // The RoomInfo component of the room currently being spawned
     public RoomInfo previouslySpawnedRoomInfo; // The RoomInfo component of the last room spawned in.
@@ -157,15 +159,39 @@ public class LevelBuilder : MonoBehaviour
         {
             yield return new WaitForSeconds(.1f);
             GameObject connectorPathReference = null;
-            spawnRandomNumber = RandomiseNumber(spawnPoints.Count); //  RNG for where to spawn connectors
+            
+           
+            Vector3 spawnPointPosition = Vector3.zero; //    Position that the room will use to spawn on
+            switch (_spawnMode)
+            {
+                case SpawnMode.Normal:
+                    spawnRandomNumber = RandomiseNumber(spawnPoints.Count); //  RNG for where to spawn connectors
+                    spawnPointPosition = spawnPoints[spawnRandomNumber].position;
+                    break;
+                case SpawnMode.BossRooms:
+                    spawnRandomNumber = RandomiseNumber(bossRoomSpawnPoints.Count); //  RNG for where to spawn connectors
+                    spawnPointPosition = bossRoomSpawnPoints[spawnRandomNumber].position;
+                    break;
+            }
             Debug.Log("Spawn Random Number: " + spawnRandomNumber);
-            Vector3 spawnPointPosition = spawnPoints[spawnRandomNumber].position; //    Position that the room will use to spawn on
             Vector3 newSpawnPoint = Vector3.zero; //    Where the connecting room will spawn
 
-            GameObject previouslySpawnedRoom = spawnPoints[spawnRandomNumber].root.gameObject; //
-            previouslySpawnedRoomInfo = previouslySpawnedRoom.GetComponent<RoomInfo>(); //    Getting the roomInfo components;
-
-            switch (spawnPoints[spawnRandomNumber].gameObject.tag) //  Get the tag of the randomly generated spawn point.
+            GameObject previouslySpawnedRoom = null;
+            string doorTag = "";
+            switch (_spawnMode)
+            {
+                case SpawnMode.Normal:
+                    previouslySpawnedRoom = spawnPoints[spawnRandomNumber].root.gameObject; 
+                    doorTag = spawnPoints[spawnRandomNumber].gameObject.tag;
+                    break;
+                case SpawnMode.BossRooms:
+                    previouslySpawnedRoom = bossRoomSpawnPoints[spawnRandomNumber].root.gameObject;
+                    doorTag = bossRoomSpawnPoints[spawnRandomNumber].gameObject.tag;
+                    break;
+            }
+            previouslySpawnedRoomInfo = previouslySpawnedRoom.GetComponent<RoomInfo>(); // Getting the roomInfo components;
+            
+            switch (doorTag) // Get the tag of the randomly generated spawn point.
             {
                 case "Left Door":
                     Debug.Log("LEFT");
@@ -204,7 +230,7 @@ public class LevelBuilder : MonoBehaviour
             StartCoroutine(SpawnRooms(newSpawnPoint)); // Spawn the room on the connector
             if (_spawnMode == SpawnMode.BossRooms)
             {
-                spawnPoints.Clear();
+                bossRoomSpawnPoints.Clear();
             }
         }
 //        MapTargetGroup.Instance.AddRoomsToTargetGroup();
@@ -220,11 +246,9 @@ public class LevelBuilder : MonoBehaviour
              roomRandomNumber = RandomiseNumber(possibleRooms.Count); // Spawn a random room from the list of possible rooms
                 break;
             case SpawnMode.BossRooms:
-                roomRandomNumber = 0;
+                roomRandomNumber++;
                 break;
         }
-       
-        //GameObject roomToSpawn; 
         if (roomToSpawn != null)
         {
             previouslySpawnedRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
@@ -272,47 +296,95 @@ public class LevelBuilder : MonoBehaviour
     { 
         _spawningRoomIntersectionCheck = spawningRoomInfo.intersectionCheck;
         Debug.Log(_spawningRoomIntersectionCheck.gameObject.name + " is checking for spawning room intersections");
-       
-        foreach (var door in spawningRoomInfo.allDoors) // Adding doors of the spawned room to the list of possible spawn points
+
+        switch (_spawnMode)
         {
-            spawnPoints.Add(door.transform);
-        } 
+            case SpawnMode.Normal:
+                foreach (var door in spawningRoomInfo.allDoors) // Adding doors of the spawned room to the list of possible spawn points
+                {
+                    spawnPoints.Add(door.transform);
+                } 
+                break;   
+            case SpawnMode.BossRooms:
+                foreach (var door in spawningRoomInfo.allDoors) // Adding doors of the spawned room to the list of possible spawn points
+                {
+                    bossRoomSpawnPoints.Add(door.transform);
+                } 
+                break;  
+        }
         if (spawningRoomInfo.rareRoom) 
         {
             possibleRooms.Remove(possibleRooms[roomRandomNumber]); // Remove the rare room from the list of rooms that can spawn
-        } 
-        spawnPoints.Remove(spawnPoints[spawnRandomNumber]); //  Remove the door the room spawned on from the spawn point list.
-        /*if (previouslySpawnedRoomInfo == null)
+        }
+        switch (_spawnMode)
         {
-            Destroy(spawningRoomInfo.gameObject);
-        }*/
+            case SpawnMode.Normal: 
+                spawnPoints.Remove(spawnPoints[spawnRandomNumber]); //  Remove the door the room spawned on from the spawn point list.
+                break;
+            case SpawnMode.BossRooms:
+                bossRoomSpawnPoints.Remove(bossRoomSpawnPoints[spawnRandomNumber]);
+                break;
+        }
+        
         switch (spawnedConnectorInfo.spawnedOnSide) //  Removing spawn points based on where the room spawned.
         {
             case "Left":
-                //Debug.Log("HI LEFT");
-                spawnPoints.Remove(spawningRoomInfo.doorR.transform);
-                spawnPoints.Remove(previouslySpawnedRoomInfo.doorL.transform);
+                switch (_spawnMode)
+                {
+                    case SpawnMode.Normal: 
+                        spawnPoints.Remove(spawningRoomInfo.doorR.transform);
+                        spawnPoints.Remove(previouslySpawnedRoomInfo.doorL.transform);
+                        break;
+                    case SpawnMode.BossRooms:
+                        bossRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
+                        bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorL.transform);
+                        break;
+                }
                 spawningRoomInfo.canHaveRightRoom = false;
                 previouslySpawnedRoomInfo.canHaveLeftRoom = false;
                 break;
             case "Right":
-                //Debug.Log("HI RIGHT");
-                spawnPoints.Remove(spawningRoomInfo.doorL.transform);
-                spawnPoints.Remove(previouslySpawnedRoomInfo.doorR.transform);
+                switch (_spawnMode)
+                {
+                    case SpawnMode.Normal:
+                        spawnPoints.Remove(spawningRoomInfo.doorL.transform);
+                        spawnPoints.Remove(previouslySpawnedRoomInfo.doorR.transform);
+                        break;
+                    case SpawnMode.BossRooms:
+                        bossRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
+                        bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorR.transform);
+                        break;
+                }
                 spawningRoomInfo.canHaveLeftRoom = false;
                 previouslySpawnedRoomInfo.canHaveRightRoom = false;
                 break;
             case "Top":
-               // Debug.Log("HI TOP");
-                spawnPoints.Remove(spawningRoomInfo.doorB.transform);
-                spawnPoints.Remove(previouslySpawnedRoomInfo.doorT.transform);
+                switch (_spawnMode)
+                {
+                    case SpawnMode.Normal:
+                         spawnPoints.Remove(spawningRoomInfo.doorB.transform);
+                         spawnPoints.Remove(previouslySpawnedRoomInfo.doorT.transform);
+                        break;
+                    case SpawnMode.BossRooms:
+                        bossRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
+                        bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorT.transform);
+                        break;
+                }
                 spawningRoomInfo.canHaveBottomRoom = false;
                 previouslySpawnedRoomInfo.canHaveTopRoom = false;
                 break;
             case "Bottom":
-                //Debug.Log("HI BOTTOM");
-                spawnPoints.Remove(spawningRoomInfo.doorT.transform);
-                spawnPoints.Remove(previouslySpawnedRoomInfo.doorB.transform);
+                switch (_spawnMode)
+                {
+                    case SpawnMode.Normal:
+                         spawnPoints.Remove(spawningRoomInfo.doorT.transform);
+                         spawnPoints.Remove(previouslySpawnedRoomInfo.doorB.transform);
+                        break;
+                    case SpawnMode.BossRooms:
+                        bossRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
+                        bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorB.transform);
+                        break;
+                }
                 spawningRoomInfo.canHaveTopRoom = false;
                 previouslySpawnedRoomInfo.canHaveBottomRoom = false;
                 break;
@@ -351,6 +423,15 @@ public class LevelBuilder : MonoBehaviour
   {
       if (_spawnMode != SpawnMode.BossRooms)
       {
+          foreach (var room in _startingRoom.GetComponent<RoomInfo>().allDoors)
+          {
+              spawnPoints.Remove(room.transform);
+          }
+          roomRandomNumber = -1;
+          foreach (var spawnPoint in spawnPoints)
+          {
+              bossRoomSpawnPoints.Add(spawnPoint);
+          }
           _numberOfRoomsToSpawn = possibleBossRooms.Count;
           possibleRooms.Clear();
           _spawnMode = SpawnMode.BossRooms;
@@ -360,23 +441,26 @@ public class LevelBuilder : MonoBehaviour
           }
           StartCoroutine(SpawnConnector());
       }
-
-      if (possibleRooms.Count == 0)
+      if (spawnedBossRooms.Count == 3)
       {
           bossRoomGeneratingFinished = true;
       }
   }
 
-  public void ReAddBossRooms()
+  public void RegenerateBossRooms()
   {
+      foreach (var room in spawnedBossRooms)
+      {
+          Destroy(room);
+      }
+      spawnedBossRooms.Clear();
+      roomRandomNumber = 0;
       possibleRooms.Clear();
       foreach (var room in possibleBossRooms)
       {
-          if (!spawnedRooms.Contains(room) || !possibleRooms.Contains(room))
-          { 
-             possibleRooms.Add(room);
-          }
+          possibleRooms.Add(room);
       }
+      SpawnBossRoom();
   }
   
     int RandomiseNumber(int setSize)

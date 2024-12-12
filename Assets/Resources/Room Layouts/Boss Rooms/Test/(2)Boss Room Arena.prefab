@@ -2102,7 +2102,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomLength: 40
   roomHeight: 30
-  rareRoom: 1
+  rareRoom: 0
+  bossRoom: 1
   intersectionCheck: {fileID: 0}
   allDoors: []
   allWalls: []
@@ -2130,6 +2131,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4b462f8e08dbe84b9cc860a7b5928ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _layers: 
+  _wallLayers: 
+  _doorLayers: 
+  _allChildren: []
+  _allWalls: []
+  _allDoors: []
   layerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -2560,7 +2567,7 @@ PrefabInstance:
     - target: {fileID: 1116453098056227650, guid: 3b2c9c78620e3974b8e296947a04e364,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 1116453098056227650, guid: 3b2c9c78620e3974b8e296947a04e364,
         type: 3}

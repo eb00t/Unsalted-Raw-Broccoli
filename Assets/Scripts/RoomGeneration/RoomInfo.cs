@@ -22,6 +22,7 @@ public class RoomInfo : MonoBehaviour
     public float roomLength; //
     public float roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
     public bool rareRoom = false;
+    public bool bossRoom = false;
 
 
     [field: Header("Debugging")] 
@@ -100,6 +101,10 @@ public class RoomInfo : MonoBehaviour
         }
         
         LevelBuilder.Instance.spawnedRooms.Add(gameObject); //  Add to the list of rooms already in the level
+        if (bossRoom)
+        {
+            LevelBuilder.Instance.spawnedBossRooms.Add(gameObject);
+        }
         CameraManager.Instance.virtualCameras.Add(_roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
@@ -119,11 +124,12 @@ public class RoomInfo : MonoBehaviour
         if (rareRoom)
         {
             LevelBuilder.Instance.possibleRooms.Add(Resources.Load<GameObject>(_roomPath));
-            if (gameObject.name.Contains("(1)") || gameObject.name.Contains("(2)") || gameObject.name.Contains("(3)"))
-            {
-                LevelBuilder.Instance.roomRandomNumber--;
-                LevelBuilder.Instance.ReAddBossRooms();
-            }
+        }
+        if (bossRoom)
+        {
+            LevelBuilder.Instance.spawnedBossRooms.Remove(gameObject);
+            LevelBuilder.Instance.roomRandomNumber--;
+            //LevelBuilder.Instance.RegenerateBossRooms();
         }
         if (LevelBuilder.Instance.discardedRooms.Contains(gameObject))
         {

@@ -85,7 +85,7 @@ public class BlackoutManager : MonoBehaviour
                 blackoutImage.color = Color.Lerp(blackoutColor, transparentColor, _lerpTime);
                 if (blackoutImage.color.a <= 0)
                 {
-                    gameObject.SetActive(false);
+                    blackoutImage.gameObject.SetActive(false);
                 }
                 break;  
             case LerpDirection.FadeIn:
