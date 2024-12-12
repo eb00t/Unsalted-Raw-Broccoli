@@ -56,14 +56,14 @@ public class BlackoutManager : MonoBehaviour
 
     public void LowerOpacity()
     {
-        gameObject.SetActive(true);
+        blackoutImage.gameObject.SetActive(true);
         _lerpTime = 0;
        _lerpDirection = LerpDirection.FadeOut;
     }
 
     public void RaiseOpacity()
     {
-        gameObject.SetActive(true);
+        blackoutImage.gameObject.SetActive(true);
         _lerpTime = 0;
         _lerpDirection = LerpDirection.FadeIn;
     }
