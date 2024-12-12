@@ -9,24 +9,18 @@ using UnityEngine.UI;
 public class BlackoutManager : MonoBehaviour
 {
     public static BlackoutManager Instance { get; private set; }
-    
+
     public Image blackoutImage;
     public Color blackoutColor;
     public Color transparentColor;
     private float _lerpTime;
     private bool _fadedOut;
-    private float _failSafeTimer;
+    private float _failSafeTimer = 10;
+    private bool _loading = true;
 
     private void OnEnable()
     {
-        _failSafeTimer = 10;
-        StartCoroutine(Failsafe());
-    }
-
-    private void OnDisable()
-    {
-        StopCoroutine(Failsafe());
-        _failSafeTimer = 10;
+        _failSafeTimer = LevelBuilder.Instance.howManyRoomsToSpawn * 2;
     }
 
     private enum LerpDirection
@@ -35,7 +29,9 @@ public class BlackoutManager : MonoBehaviour
         FadeOut,
         FadeIn,
     }
+
     private LerpDirection _lerpDirection;
+
     void Awake()
     {
         _lerpDirection = LerpDirection.Neither;
@@ -44,8 +40,9 @@ public class BlackoutManager : MonoBehaviour
         {
             blackoutImage = transform.Find("Blackout").gameObject.GetComponent<Image>();
         }
+
         gameObject.SetActive(true);
-        
+
         if (Instance != null)
         {
             Debug.LogError("More than one Blackout Manager script in the scene.");
@@ -56,9 +53,10 @@ public class BlackoutManager : MonoBehaviour
 
     public void LowerOpacity()
     {
+        _loading = false;
         blackoutImage.gameObject.SetActive(true);
         _lerpTime = 0;
-       _lerpDirection = LerpDirection.FadeOut;
+        _lerpDirection = LerpDirection.FadeOut;
     }
 
     public void RaiseOpacity()
@@ -87,26 +85,27 @@ public class BlackoutManager : MonoBehaviour
                 {
                     blackoutImage.gameObject.SetActive(false);
                 }
-                break;  
+
+                break;
             case LerpDirection.FadeIn:
                 blackoutImage.color = Color.Lerp(transparentColor, blackoutColor, _lerpTime);
                 break;
         }
-        
-        _lerpTime += .002f; 
-        
-    }
 
-    IEnumerator Failsafe()
-    {
-        yield return new WaitForSecondsRealtime(1);
-        _failSafeTimer--;
-        if (_failSafeTimer <= 0)
+        _lerpTime += .002f;
+        
+        if (_loading)
         {
-            Debug.LogError("Failsafe timer has expired, reloading scene to fix errors.");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            Debug.Log(_failSafeTimer);
+            _failSafeTimer -= Time.deltaTime;
+            if (_failSafeTimer <= 0)
+            {
+                Debug.LogError("Failsafe timer has expired, reloading scene to fix errors.");
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
         }
     }
-        
-    }
+}
+    
+
 
