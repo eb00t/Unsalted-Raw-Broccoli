@@ -45,7 +45,7 @@ public class LevelBuilder : MonoBehaviour
     public Transform spawnRoomDoorB;
     private GameObject _connectorToSpawn;
     public int roomRandomNumber;
-    private int spawnRandomNumber;
+    public int spawnRandomNumber;
     private IntersectionRaycast _spawningRoomIntersectionCheck;
     private ConnectorIntersectionRaycast _spawnedConnectorIntersectionCheck;
     public List<GameObject> _spawnedConnectors;
@@ -55,12 +55,14 @@ public class LevelBuilder : MonoBehaviour
     private string _multiFloorRoomPath, _bossRoomPath;
     public string floorSpecificRoomPath;
     private float _spawnTimer;
-    private enum SpawnMode
+
+    public enum SpawnMode
     {
         Normal,
         BossRooms,
     }
-    private SpawnMode _spawnMode;
+
+    public SpawnMode _spawnMode;
     private void Awake()
     {
         if (Instance != null)
@@ -337,7 +339,11 @@ public class LevelBuilder : MonoBehaviour
                         break;
                     case SpawnMode.BossRooms:
                         bossRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
-                        bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorL.transform);
+                        spawningRoomInfo.allDoors.Remove(spawningRoomInfo.doorR.gameObject);
+                        if (previouslySpawnedRoomInfo != null)
+                        {
+                            bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorL.transform);
+                        }
                         break;
                 }
                 spawningRoomInfo.canHaveRightRoom = false;
@@ -352,7 +358,12 @@ public class LevelBuilder : MonoBehaviour
                         break;
                     case SpawnMode.BossRooms:
                         bossRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
-                        bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorR.transform);
+                        spawningRoomInfo.allDoors.Remove(spawningRoomInfo.doorL.gameObject);
+                        if (previouslySpawnedRoomInfo != null)
+                        {
+                            bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorR.transform);
+                        }
+
                         break;
                 }
                 spawningRoomInfo.canHaveLeftRoom = false;
@@ -367,7 +378,11 @@ public class LevelBuilder : MonoBehaviour
                         break;
                     case SpawnMode.BossRooms:
                         bossRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
-                        bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorT.transform);
+                        spawningRoomInfo.allDoors.Remove(spawningRoomInfo.doorB.gameObject);
+                        if (previouslySpawnedRoomInfo != null)
+                        {
+                            bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorT.transform);
+                        }
                         break;
                 }
                 spawningRoomInfo.canHaveBottomRoom = false;
@@ -382,7 +397,11 @@ public class LevelBuilder : MonoBehaviour
                         break;
                     case SpawnMode.BossRooms:
                         bossRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
-                        bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorB.transform);
+                        spawningRoomInfo.allDoors.Remove(spawningRoomInfo.doorT.gameObject);
+                        if (previouslySpawnedRoomInfo != null)
+                        {
+                            bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorB.transform);
+                        }
                         break;
                 }
                 spawningRoomInfo.canHaveTopRoom = false;
@@ -462,8 +481,8 @@ public class LevelBuilder : MonoBehaviour
       }
       SpawnBossRoom();
   }
-  
-    int RandomiseNumber(int setSize)
+
+  public int RandomiseNumber(int setSize)
     {
         int rng = Random.Range(0, setSize);
         return rng;

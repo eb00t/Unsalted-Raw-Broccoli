@@ -46,26 +46,26 @@ public class IntersectionRaycast : MonoBehaviour
         _quarterRoomHeight = _roomInfo.roomHeight / 4;
         
         MessUpLayers();
-        
-        _rayCastLength = _roomInfo.roomLength + 12;
-        _rayCastHeight = _roomInfo.roomHeight + 12;
 
-        Vector3 cornerTL = new Vector3(_roomInfo.wallL.position.x, _roomInfo.wallL.position.y + _halfRoomHeight, _roomInfo.wallL.position.z);
-        Vector3 cornerTR = new Vector3(_roomInfo.wallR.position.x, _roomInfo.wallL.position.y + _halfRoomHeight, _roomInfo.wallL.position.z);
-        Vector3 cornerBL = new Vector3(_roomInfo.wallL.position.x, _roomInfo.wallR.position.y - _halfRoomHeight, _roomInfo.wallR.position.z);
-        Vector3 cornerBR = new Vector3(_roomInfo.wallR.position.x, _roomInfo.wallR.position.y - _halfRoomHeight, _roomInfo.wallR.position.z);
+        _rayCastLength = _roomInfo.roomLength + 1;
+        _rayCastHeight = _roomInfo.roomHeight + 1;
+
+        Vector3 cornerTL = new Vector3(_roomInfo.wallL.position.x - 1, _roomInfo.wallL.position.y + _halfRoomHeight + 1, _roomInfo.wallL.position.z);
+        Vector3 cornerTR = new Vector3(_roomInfo.wallR.position.x + 1, _roomInfo.wallL.position.y + _halfRoomHeight + 1, _roomInfo.wallL.position.z);
+        Vector3 cornerBL = new Vector3(_roomInfo.wallL.position.x, _roomInfo.wallR.position.y - _halfRoomHeight - 1, _roomInfo.wallR.position.z);
+        Vector3 cornerBR = new Vector3(_roomInfo.wallR.position.x, _roomInfo.wallR.position.y - _halfRoomHeight + 1, _roomInfo.wallR.position.z);
         Vector3 adjHorizRayPos = new Vector3(_roomInfo.wallL.position.x + 0.5f, _roomInfo.wallL.position.y, _roomInfo.wallL.position.z);
         Vector3 adjVertiRayPos = new Vector3(_roomInfo.wallT.position.x, _roomInfo.wallT.position.y - 0.5f, _roomInfo.wallT.position.z);
         //RAYCAST SETUP
         
-        _topLeftRay = new Ray(cornerTL, Vector3.up);
-        _topRightRay = new Ray(cornerTR, Vector3.up);
-        _bottomLeftRay = new Ray(cornerBL, Vector3.down);
-        _bottomRightRay = new Ray(cornerBR, Vector3.down);
-        _leftTopRay = new Ray(cornerTL, Vector3.left);
-        _rightTopRay = new Ray(cornerTR, Vector3.right);
-        _leftBottomRay = new Ray(cornerBL, Vector3.left);
-        _rightBottomRay = new Ray(cornerBR, Vector3.right);
+        _topLeftRay = new Ray(cornerTL, Vector3.down);
+        _topRightRay = new Ray(cornerTR, Vector3.down);
+        //_bottomLeftRay = new Ray(cornerBL, Vector3.up);
+        //_bottomRightRay = new Ray(cornerBR, Vector3.up);
+        _leftTopRay = new Ray(cornerTL, Vector3.right);
+        //_rightTopRay = new Ray(cornerTR, Vector3.left);
+        _leftBottomRay = new Ray(cornerBL, Vector3.right);
+        //_rightBottomRay = new Ray(cornerBR, Vector3.left);
         _horizMiddleRay = new Ray(adjHorizRayPos, Vector3.right);
         _verticMiddleRay = new Ray(adjVertiRayPos, Vector3.down);
     }
@@ -120,24 +120,18 @@ public class IntersectionRaycast : MonoBehaviour
     {
         CheckForInternalIntersection(); //_roomInfo.connectorSpawnedOff.GetComponent<ConnectorRoomInfo>());
     }
+
     private bool FireInternalRayCast()
     {
-        /*Vector3 quarterHeight = new Vector3(_horizMiddleRay.origin.x, _horizMiddleRay.origin.y - _quarterRoomHeight, _horizMiddleRay.origin.z); //QUARTER HEIGHT FROM THE TOP DOWN
-        Vector3 threeQuarterHeight = new Vector3(_horizMiddleRay.origin.x, _horizMiddleRay.origin.y + _quarterRoomHeight, _horizMiddleRay.origin.z);
-        Vector3 quarterLength = new Vector3(_horizMiddleRay.origin.x - _quarterRoomLength, _horizMiddleRay.origin.y, _horizMiddleRay.origin.z); // QUARTER LENGTH FROM THE LEFT
-        Vector3 threeQuarterLength = new Vector3(_horizMiddleRay.origin.x + _quarterRoomLength, _horizMiddleRay.origin.y, _horizMiddleRay.origin.z);
-        Ray quarterHeightRay = new Ray(quarterHeight, Vector3.right); //QUARTER HEIGHT FROM THE TOP DOWN
-        Ray threeQuarterHeightRay = new Ray(threeQuarterHeight, Vector3.right);
-        Ray quarterLengthRay = new Ray(quarterLength, Vector3.down); // QUARTER LENGTH FROM THE LEFT
-        Ray threeQuarterLengthRay = new Ray(threeQuarterLength, Vector3.down);*/
         bool discard = false;
         if (Physics.Raycast(_horizMiddleRay, out RaycastHit horizHit, _roomInfo.roomLength + .1f, layerMask))
         {
             Debug.Log("HORIZ RAY HIT!");
             if (horizHit.transform.root.gameObject.GetComponent<RoomInfo>())
             {
-               discard = true;
+                discard = true;
             }
+
             if (horizHit.transform.root.gameObject.GetComponent<ConnectorRoomInfo>())
             {
                 Debug.Log("Horizontal Ray from: " + gameObject.name + " hit " + horizHit.collider.gameObject.name);
@@ -145,6 +139,7 @@ public class IntersectionRaycast : MonoBehaviour
                 {
                     connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
                 }
+
                 discard = true;
             }
         }
@@ -156,23 +151,102 @@ public class IntersectionRaycast : MonoBehaviour
                 Debug.Log("Vertical Ray from: " + gameObject.name + " hit " + vertHit.collider.gameObject.name);
                 discard = true;
             }
+
             if (vertHit.transform.root.gameObject.GetComponent<ConnectorRoomInfo>())
             {
                 foreach (var connector in _roomInfo.attachedConnectors)
                 {
                     connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
                 }
+
                 Debug.Log("Vertical Ray from: " + gameObject.name + " hit " + vertHit.collider.gameObject.name);
                 discard = true;
             }
-            
-        }
-        else
-        {
-            discard = false;
-        }
+            else if (Physics.Raycast(_topLeftRay, out RaycastHit topWallHit, _roomInfo.roomLength + 1, layerMask))
+            {
+                Debug.Log("TOP WALL RAY HIT!");
+                if (topWallHit.transform.root.gameObject.GetComponent<RoomInfo>())
+                {
+                    Debug.Log("Top Ray from: " + gameObject.name + " hit " + topWallHit.collider.gameObject.name);
+                    discard = true;
+                }
 
-       
+                if (topWallHit.transform.root.gameObject.GetComponent<ConnectorRoomInfo>())
+                {
+                    foreach (var connector in _roomInfo.attachedConnectors)
+                    {
+                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
+                    }
+
+                    Debug.Log("Top Ray from: " + gameObject.name + " hit " + topWallHit.collider.gameObject.name);
+                    discard = true;
+                }
+            }
+            else if (Physics.Raycast(_bottomLeftRay, out RaycastHit bottomWallHit, _roomInfo.roomLength + 1, layerMask))
+            {
+                Debug.Log("BOTTOM WALL RAY HIT!");
+                if (bottomWallHit.transform.root.gameObject.GetComponent<RoomInfo>())
+                {
+                    Debug.Log("Bottom Ray from: " + gameObject.name + " hit " + bottomWallHit.collider.gameObject.name);
+                    discard = true;
+                }
+
+                if (bottomWallHit.transform.root.gameObject.GetComponent<ConnectorRoomInfo>())
+                {
+                    foreach (var connector in _roomInfo.attachedConnectors)
+                    {
+                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
+                    }
+
+                    Debug.Log("Bottom Ray from: " + gameObject.name + " hit " + bottomWallHit.collider.gameObject.name);
+                    discard = true;
+                }
+            }  
+            else if (Physics.Raycast(_leftTopRay, out RaycastHit leftWallHit, _roomInfo.roomHeight + 1, layerMask))
+            {
+                Debug.Log("LEFT WALL RAY HIT!");
+                if (leftWallHit.transform.root.gameObject.GetComponent<RoomInfo>())
+                {
+                    Debug.Log("Left Ray from: " + gameObject.name + " hit " + leftWallHit.collider.gameObject.name);
+                    discard = true;
+                }
+
+                if (leftWallHit.transform.root.gameObject.GetComponent<ConnectorRoomInfo>())
+                {
+                    foreach (var connector in _roomInfo.attachedConnectors)
+                    {
+                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
+                    }
+
+                    Debug.Log("Bottom Ray from: " + gameObject.name + " hit " + leftWallHit.collider.gameObject.name);
+                    discard = true;
+                }
+            }
+            else if (Physics.Raycast(_leftTopRay, out RaycastHit rightWallHit, _roomInfo.roomHeight + 1, layerMask))
+            {
+                Debug.Log("RIGHT WALL RAY HIT!");
+                if (rightWallHit.transform.root.gameObject.GetComponent<RoomInfo>())
+                {
+                    Debug.Log("Right Ray from: " + gameObject.name + " hit " + leftWallHit.collider.gameObject.name);
+                    discard = true;
+                }
+
+                if (leftWallHit.transform.root.gameObject.GetComponent<ConnectorRoomInfo>())
+                {
+                    foreach (var connector in _roomInfo.attachedConnectors)
+                    {
+                        connector.GetComponent<ConnectorRoomInfo>().markedForDiscard = true;
+                    }
+
+                    Debug.Log("Right Ray from: " + gameObject.name + " hit " + rightWallHit.collider.gameObject.name);
+                    discard = true;
+                }
+            }
+            else
+            {
+                discard = false;
+            }
+        }
 
         if (_roomInfo.canBeDiscarded == false)
         {
@@ -182,8 +256,10 @@ public class IntersectionRaycast : MonoBehaviour
         {
             return discard;
         }
+
     }
     
+
 
     public void CheckForInternalIntersection()
     {
@@ -225,14 +301,14 @@ public class IntersectionRaycast : MonoBehaviour
     
     void Update()
     {
-        /*Debug.DrawRay(_leftTopRay.origin, _leftTopRay.direction * (_rayCastLength), Color.red);
-        Debug.DrawRay(_rightTopRay.origin, _rightTopRay.direction * (_rayCastLength), Color.green);
-        Debug.DrawRay(_leftBottomRay.origin, _leftBottomRay.direction * (_rayCastLength), Color.red);
+        Debug.DrawRay(_leftTopRay.origin, _leftTopRay.direction * (_rayCastLength), Color.red);
+        Debug.DrawRay(_rightTopRay.origin, _rightTopRay.direction * (_rayCastLength), Color.red);
+        Debug.DrawRay(_leftBottomRay.origin, _leftBottomRay.direction * (_rayCastLength), Color.green);
         Debug.DrawRay(_rightBottomRay.origin, _rightBottomRay.direction * (_rayCastLength), Color.green);
         Debug.DrawRay(_topLeftRay.origin, _topLeftRay.direction * (_rayCastHeight), Color.blue);
-        Debug.DrawRay(_bottomLeftRay.origin, _bottomLeftRay.direction * (_rayCastHeight), Color.yellow);
-        Debug.DrawRay(_topRightRay.origin, _topRightRay.direction * (_rayCastHeight), Color.blue);
-        Debug.DrawRay(_bottomRightRay.origin, _bottomRightRay.direction * (_rayCastHeight), Color.yellow);*/
+        Debug.DrawRay(_bottomLeftRay.origin, _bottomLeftRay.direction * (_rayCastHeight), Color.blue);
+        Debug.DrawRay(_topRightRay.origin, _topRightRay.direction * (_rayCastHeight), Color.yellow);
+        Debug.DrawRay(_bottomRightRay.origin, _bottomRightRay.direction * (_rayCastHeight), Color.yellow);
         Debug.DrawRay(_horizMiddleRay.origin, _horizMiddleRay.direction * (_roomInfo.roomLength), Color.magenta);
         Debug.DrawRay(_verticMiddleRay.origin, _verticMiddleRay.direction * (_roomInfo.roomHeight), Color.magenta);
     }

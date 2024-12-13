@@ -129,7 +129,11 @@ public class RoomInfo : MonoBehaviour
         {
             LevelBuilder.Instance.spawnedBossRooms.Remove(gameObject);
             LevelBuilder.Instance.roomRandomNumber--;
-            //LevelBuilder.Instance.RegenerateBossRooms();
+            LevelBuilder.Instance.bossRoomSpawnPoints.Clear();
+            foreach (var door in LevelBuilder.Instance.spawnedBossRooms[LevelBuilder.Instance.roomRandomNumber].GetComponent<RoomInfo>().allDoors) 
+            {
+                LevelBuilder.Instance.bossRoomSpawnPoints.Add(door.transform);
+            }
         }
         if (LevelBuilder.Instance.discardedRooms.Contains(gameObject))
         {
@@ -143,6 +147,19 @@ public class RoomInfo : MonoBehaviour
                 connector.GetComponent<ConnectorRoomInfo>().attachedRooms.Remove(gameObject);
             }
         }
+
+        switch (LevelBuilder.Instance._spawnMode)
+        {
+            case LevelBuilder.SpawnMode.Normal:
+                LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.spawnPoints.Count);
+                break;
+            case LevelBuilder.SpawnMode.BossRooms:
+                LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.bossRoomSpawnPoints.Count);
+                break;
+            default:
+               break; 
+        }
+        
     }
 
 }
