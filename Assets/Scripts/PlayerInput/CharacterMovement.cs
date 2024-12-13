@@ -23,12 +23,17 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private bool doubleJumpPerformed;
     [SerializeField] private Vector3 Velocity;
 
+    private bool dashAllowed = true;
+    private bool startDashTimer = false;
+    private float dashTimer = 0f;
+    [SerializeField] private float dashBreak = 10f;
+
     private float input;
     [SerializeField] private bool startSlide;
     [SerializeField] private bool startSlideTimer;
     [SerializeField] private bool sliding = false;
     public bool slideAllowed = false;
-    [SerializeField] private float timer = 0f;
+    [SerializeField] private float slideTimer = 0f;
 
     [SerializeField] bool isWallJumping = false;
     [SerializeField] private float wallJumpingCounter;
@@ -88,7 +93,7 @@ public class CharacterMovement : MonoBehaviour
             Invoke(nameof(stopWallJump), wallJumpingDuration);
         }
 
-        if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter <= 0f && !doubleJumpPerformed)
+        if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter <= 0f && !doubleJumpPerformed && !PlayerAnimator.GetBool("WallCling"))
         {
             doubleJumpPerformed = true;
             Vector3 jump = new Vector3(rb.velocity.x, jumpForce, 0f);
@@ -121,20 +126,24 @@ public class CharacterMovement : MonoBehaviour
     public void Dash(InputAction.CallbackContext ctx)
     {
         if (uiOpen) return;
-        if (ctx.performed && grounded) // MAKE A COOLDOWN
+        if (ctx.performed && grounded && Mathf.Abs(rb.velocity.x) <= 9.8f) // MAKE A COOLDOWN
         {
             Vector3 dashDir = new Vector3(input, 0f, 0f);
-            rb.AddForce(dashDir * dashSpeed * Time.deltaTime, ForceMode.Impulse);
+            Vector3 dashForce = new Vector3(rb.velocity.x + (Mathf.Sign(input) * dashSpeed * Time.deltaTime), rb.velocity.y, 0f);
+            //rb.AddForce(dashDir * dashSpeed * Time.deltaTime, ForceMode.Impulse);
+            rb.velocity = dashForce;
             if (input != 0)
             {
                 PlayerAnimator.SetBool("Dash", true);
             }
+            dashAllowed = false;
+            startDashTimer = true;
         }
     }
 
     public void Update()
     {
-        
+        PlayerAnimator.SetBool("WallJump", isWallJumping);
         Velocity = rb.velocity;
         PlayerAnimator.SetFloat("XVelocity", rb.velocity.x);
         PlayerAnimator.SetFloat("YVelocity", rb.velocity.y);
@@ -144,7 +153,7 @@ public class CharacterMovement : MonoBehaviour
         
         wallJump();
 
-        if (Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(Velocity.x))
+        if (Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(input))
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
@@ -154,13 +163,24 @@ public class CharacterMovement : MonoBehaviour
         
         if (startSlideTimer)
         {
-            timer += 10f * Time.deltaTime;
-            Debug.Log(timer);
-            if(timer >= holdTime)
+            slideTimer += 10f * Time.deltaTime;
+            Debug.Log(slideTimer);
+            if(slideTimer >= holdTime)
             {
                 startSlide = true;
-                timer = 0f;
+                slideTimer = 0f;
                 startSlideTimer = false;
+            }
+        }
+
+        if (startDashTimer)
+        {
+            dashTimer += 10f * Time.deltaTime;
+            if(dashTimer >= dashBreak)
+            {
+                dashAllowed = true;
+                dashTimer = 0f;
+                startDashTimer = false;
             }
         }
     }
@@ -248,7 +268,7 @@ public class CharacterMovement : MonoBehaviour
             startSlide = false;
             slideAllowed = false;
             sliding = false;
-            timer = 0f;
+            slideTimer = 0f;
             PlayerAnimator.SetBool("WallCling", false);
         }
     }

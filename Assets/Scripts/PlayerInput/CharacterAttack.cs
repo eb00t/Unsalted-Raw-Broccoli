@@ -32,7 +32,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void LightAttack(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed)
+        if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
             Debug.Log("LightAttack");
             _playerAnimator.SetBool("LightAttack1", true);
@@ -42,7 +42,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void LightAttack1(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed)
+        if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
             Debug.Log("LightAttack1");
             _playerAnimator.SetBool("LightAttack2", true);
