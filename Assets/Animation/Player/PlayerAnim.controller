@@ -114,8 +114,8 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: WallCling
     m_EventTreshold: 0
-  - m_ConditionMode: 3
-    m_ConditionEvent: YVelocity
+  - m_ConditionMode: 1
+    m_ConditionEvent: WallJump
     m_EventTreshold: 0.1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -8119621979190435299}
@@ -145,6 +145,8 @@ AnimatorState:
   - {fileID: 6922956994912396575}
   - {fileID: -7514972786167553701}
   - {fileID: 2742577445120488880}
+  - {fileID: -8452232492508688778}
+  - {fileID: -1963374160650418791}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -160,6 +162,34 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &-8452232492508688778
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: WallCling
+    m_EventTreshold: 0
+  - m_ConditionMode: 1
+    m_ConditionEvent: WallJump
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -8119621979190435299}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &-8388504101674898431
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -628,10 +658,10 @@ AnimatorStateMachine:
     m_Position: {x: 980, y: -770, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6230240114760911234}
-    m_Position: {x: 230, y: -840, z: 0}
+    m_Position: {x: 160, y: -1020, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3869628701528688999}
-    m_Position: {x: 0, y: -720, z: 0}
+    m_Position: {x: -70, y: -740, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2376008284655496002}
     m_Position: {x: 540, y: -660, z: 0}
@@ -643,16 +673,16 @@ AnimatorStateMachine:
     m_Position: {x: 690, y: 300, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8119621979190435299}
-    m_Position: {x: 550, y: -800, z: 0}
+    m_Position: {x: 550, y: -820, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5577471614825493614}
     m_Position: {x: 470, y: 0, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2905384426953651056}
-    m_Position: {x: 720, y: -980, z: 0}
+    m_Position: {x: 610, y: -1010, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8629501720406669573}
-    m_Position: {x: 110, y: -560, z: 0}
+    m_Position: {x: 200, y: -580, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 8405219177249572654}
@@ -1103,7 +1133,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0
   m_TransitionOffset: 0
   m_ExitTime: 0.625
   m_HasExitTime: 0
@@ -1225,6 +1255,34 @@ AnimatorStateTransition:
   m_TransitionOffset: 0
   m_ExitTime: 0.75
   m_HasExitTime: 1
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
+--- !u!1101 &-1963374160650418791
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 4
+    m_ConditionEvent: YVelocity
+    m_EventTreshold: -0.1
+  - m_ConditionMode: 2
+    m_ConditionEvent: WallCling
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -6230240114760911234}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -1434,6 +1492,12 @@ AnimatorController:
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
   - m_Name: DoubleJump
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: WallJump
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -2167,7 +2231,7 @@ AnimatorStateTransition:
   m_TransitionOffset: 0
   m_ExitTime: 0.75
   m_HasExitTime: 0
-  m_HasFixedDuration: 1
+  m_HasFixedDuration: 0
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
@@ -2335,6 +2399,15 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 1
     m_ConditionEvent: DoubleJump
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: WallCling
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: WallJump
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: Grounded
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2905384426953651056}

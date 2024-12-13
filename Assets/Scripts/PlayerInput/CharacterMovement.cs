@@ -88,7 +88,7 @@ public class CharacterMovement : MonoBehaviour
             Invoke(nameof(stopWallJump), wallJumpingDuration);
         }
 
-        if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter <= 0f && !doubleJumpPerformed)
+        if(ctx.performed && !grounded && !startSlideTimer && !sliding && wallJumpingCounter <= 0f && !doubleJumpPerformed && !PlayerAnimator.GetBool("WallCling"))
         {
             doubleJumpPerformed = true;
             Vector3 jump = new Vector3(rb.velocity.x, jumpForce, 0f);
@@ -134,7 +134,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void Update()
     {
-        
+        PlayerAnimator.SetBool("WallJump", isWallJumping);
         Velocity = rb.velocity;
         PlayerAnimator.SetFloat("XVelocity", rb.velocity.x);
         PlayerAnimator.SetFloat("YVelocity", rb.velocity.y);
