@@ -27,6 +27,7 @@ public class RoomInfo : MonoBehaviour
 
     [field: Header("Debugging")] 
     public IntersectionRaycast intersectionCheck;
+    public List<GameObject> doorSpawnPoints;
     public List<GameObject> allDoors;
     public List<GameObject> allWalls;
     public Transform doorL, doorR, doorB, doorT;
@@ -48,6 +49,7 @@ public class RoomInfo : MonoBehaviour
         {
             if (door.tag.Contains("Door")) 
             {
+                doorSpawnPoints.Add(door.gameObject);
                 allDoors.Add(door.gameObject);
             }
 
@@ -116,7 +118,7 @@ public class RoomInfo : MonoBehaviour
     private void OnDestroy()
     {
         LevelBuilder.Instance.spawnedRooms.Remove(gameObject);
-        foreach (var door in allDoors)
+        foreach (var door in doorSpawnPoints)
         {
            LevelBuilder.Instance.spawnPoints.Remove(door.transform); 
         }
@@ -130,7 +132,7 @@ public class RoomInfo : MonoBehaviour
             LevelBuilder.Instance.spawnedBossRooms.Remove(gameObject);
             LevelBuilder.Instance.roomRandomNumber--;
             LevelBuilder.Instance.bossRoomSpawnPoints.Clear();
-            foreach (var door in LevelBuilder.Instance.spawnedBossRooms[LevelBuilder.Instance.roomRandomNumber].GetComponent<RoomInfo>().allDoors) 
+            foreach (var door in LevelBuilder.Instance.spawnedBossRooms[LevelBuilder.Instance.roomRandomNumber].GetComponent<RoomInfo>().doorSpawnPoints) 
             {
                 LevelBuilder.Instance.bossRoomSpawnPoints.Add(door.transform);
             }

@@ -47,13 +47,13 @@ public class IntersectionRaycast : MonoBehaviour
         
         MessUpLayers();
 
-        _rayCastLength = _roomInfo.roomLength + 1;
-        _rayCastHeight = _roomInfo.roomHeight + 1;
+        _rayCastLength = _roomInfo.roomLength + 2;
+        _rayCastHeight = _roomInfo.roomHeight + 2;
 
-        Vector3 cornerTL = new Vector3(_roomInfo.wallL.position.x - 1, _roomInfo.wallL.position.y + _halfRoomHeight + 1, _roomInfo.wallL.position.z);
-        Vector3 cornerTR = new Vector3(_roomInfo.wallR.position.x + 1, _roomInfo.wallL.position.y + _halfRoomHeight + 1, _roomInfo.wallL.position.z);
-        Vector3 cornerBL = new Vector3(_roomInfo.wallL.position.x, _roomInfo.wallR.position.y - _halfRoomHeight - 1, _roomInfo.wallR.position.z);
-        Vector3 cornerBR = new Vector3(_roomInfo.wallR.position.x, _roomInfo.wallR.position.y - _halfRoomHeight + 1, _roomInfo.wallR.position.z);
+        Vector3 cornerTL = new Vector3(_roomInfo.wallL.position.x - 0.5f, _roomInfo.wallL.position.y + _halfRoomHeight + 1, _roomInfo.wallL.position.z);
+        Vector3 cornerTR = new Vector3(_roomInfo.wallR.position.x + 0.5f, _roomInfo.wallL.position.y + _halfRoomHeight + 1, _roomInfo.wallL.position.z);
+        Vector3 cornerBL = new Vector3(_roomInfo.wallL.position.x - 0.5f, _roomInfo.wallR.position.y - _halfRoomHeight - 1, _roomInfo.wallR.position.z);
+        Vector3 cornerBR = new Vector3(_roomInfo.wallR.position.x, _roomInfo.wallR.position.y - _halfRoomHeight + 0.5f, _roomInfo.wallR.position.z);
         Vector3 adjHorizRayPos = new Vector3(_roomInfo.wallL.position.x + 0.5f, _roomInfo.wallL.position.y, _roomInfo.wallL.position.z);
         Vector3 adjVertiRayPos = new Vector3(_roomInfo.wallT.position.x, _roomInfo.wallT.position.y - 0.5f, _roomInfo.wallT.position.z);
         //RAYCAST SETUP
@@ -92,7 +92,7 @@ public class IntersectionRaycast : MonoBehaviour
             _allWalls.Add(wall.transform);
             wall.gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
         }
-        foreach (var door in _roomInfo.allDoors)
+        foreach (var door in _roomInfo.doorSpawnPoints)
         {
             _doorLayers.Add(door.gameObject.layer);
             _allDoors.Add(door.transform);
@@ -270,11 +270,11 @@ public class IntersectionRaycast : MonoBehaviour
         {
             Debug.Log(name + " is trying to spawn in occupied space.");
             _roomInfo.markedForDiscard = true;
-            foreach (var room in _roomInfo.allDoors)
+            foreach (var room in _roomInfo.doorSpawnPoints)
             {
                 LevelBuilder.Instance.spawnPoints.Remove(room.transform);
             }
-            _roomInfo.allDoors.Clear();
+            _roomInfo.doorSpawnPoints.Clear();
             
             if (!LevelBuilder.Instance.discardedRooms.Contains(gameObject))
             {

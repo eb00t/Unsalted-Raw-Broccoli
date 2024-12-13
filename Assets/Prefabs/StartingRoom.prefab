@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4098691903834176068
 Transform:
   m_ObjectHideFlags: 0
@@ -70,8 +70,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 962819615
-  m_SortingLayer: -2
+  m_SortingLayerID: -1966148577
+  m_SortingLayer: -1
   m_SortingOrder: -99
   m_Sprite: {fileID: -1318071632, guid: 2b112732d075b3d4e95e947264828e41, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -100,7 +100,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1623144102253641188
 Transform:
   m_ObjectHideFlags: 0
@@ -476,7 +476,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8725102326969321160
 Transform:
   m_ObjectHideFlags: 0
@@ -530,8 +530,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 962819615
-  m_SortingLayer: -2
+  m_SortingLayerID: -1966148577
+  m_SortingLayer: -1
   m_SortingOrder: -99
   m_Sprite: {fileID: -655876274, guid: 2b112732d075b3d4e95e947264828e41, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -560,7 +560,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7146970172868292725
 Transform:
   m_ObjectHideFlags: 0
@@ -765,7 +765,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: ba02e6b88d5290f45aba435b9f509e28, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -814,7 +814,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.97000027, y: 2.8900008, z: 0.2}
   m_Center: {x: -0.00000011920929, y: -0.00000011920929, z: 0}
@@ -1210,6 +1210,11 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: -2
       objectReference: {fileID: 0}
+    - target: {fileID: 572329323071170727, guid: 0e60639cc3f11644b8bcdf57bf321cca,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ba02e6b88d5290f45aba435b9f509e28, type: 2}
     - target: {fileID: 770869169868465855, guid: 0e60639cc3f11644b8bcdf57bf321cca,
         type: 3}
       propertyPath: m_Enabled
@@ -1278,7 +1283,7 @@ PrefabInstance:
     - target: {fileID: 6000249968262883224, guid: 0e60639cc3f11644b8bcdf57bf321cca,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6611371729783940968, guid: 0e60639cc3f11644b8bcdf57bf321cca,
         type: 3}
@@ -1365,11 +1370,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8351449639074473439, guid: 0e60639cc3f11644b8bcdf57bf321cca,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ba02e6b88d5290f45aba435b9f509e28, type: 2}
+    - target: {fileID: 8814134562462800084, guid: 0e60639cc3f11644b8bcdf57bf321cca,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8855018918862309514, guid: 0e60639cc3f11644b8bcdf57bf321cca,
         type: 3}
       propertyPath: m_Priority
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 8968267380580788796, guid: 0e60639cc3f11644b8bcdf57bf321cca,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ba02e6b88d5290f45aba435b9f509e28, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

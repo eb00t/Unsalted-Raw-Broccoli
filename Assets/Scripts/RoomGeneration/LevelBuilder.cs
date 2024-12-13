@@ -302,13 +302,13 @@ public class LevelBuilder : MonoBehaviour
         switch (_spawnMode)
         {
             case SpawnMode.Normal:
-                foreach (var door in spawningRoomInfo.allDoors) // Adding doors of the spawned room to the list of possible spawn points
+                foreach (var door in spawningRoomInfo.doorSpawnPoints) // Adding doors of the spawned room to the list of possible spawn points
                 {
                     spawnPoints.Add(door.transform);
                 } 
                 break;   
             case SpawnMode.BossRooms:
-                foreach (var door in spawningRoomInfo.allDoors) // Adding doors of the spawned room to the list of possible spawn points
+                foreach (var door in spawningRoomInfo.doorSpawnPoints) // Adding doors of the spawned room to the list of possible spawn points
                 {
                     bossRoomSpawnPoints.Add(door.transform);
                 } 
@@ -339,7 +339,7 @@ public class LevelBuilder : MonoBehaviour
                         break;
                     case SpawnMode.BossRooms:
                         bossRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
-                        spawningRoomInfo.allDoors.Remove(spawningRoomInfo.doorR.gameObject);
+                        spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorR.gameObject);
                         if (previouslySpawnedRoomInfo != null)
                         {
                             bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorL.transform);
@@ -358,7 +358,7 @@ public class LevelBuilder : MonoBehaviour
                         break;
                     case SpawnMode.BossRooms:
                         bossRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
-                        spawningRoomInfo.allDoors.Remove(spawningRoomInfo.doorL.gameObject);
+                        spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorL.gameObject);
                         if (previouslySpawnedRoomInfo != null)
                         {
                             bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorR.transform);
@@ -378,7 +378,7 @@ public class LevelBuilder : MonoBehaviour
                         break;
                     case SpawnMode.BossRooms:
                         bossRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
-                        spawningRoomInfo.allDoors.Remove(spawningRoomInfo.doorB.gameObject);
+                        spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorB.gameObject);
                         if (previouslySpawnedRoomInfo != null)
                         {
                             bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorT.transform);
@@ -397,7 +397,7 @@ public class LevelBuilder : MonoBehaviour
                         break;
                     case SpawnMode.BossRooms:
                         bossRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
-                        spawningRoomInfo.allDoors.Remove(spawningRoomInfo.doorT.gameObject);
+                        spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorT.gameObject);
                         if (previouslySpawnedRoomInfo != null)
                         {
                             bossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorB.transform);
@@ -442,7 +442,7 @@ public class LevelBuilder : MonoBehaviour
   {
       if (_spawnMode != SpawnMode.BossRooms)
       {
-          foreach (var room in _startingRoom.GetComponent<RoomInfo>().allDoors)
+          foreach (var room in _startingRoom.GetComponent<RoomInfo>().doorSpawnPoints)
           {
               spawnPoints.Remove(room.transform);
           }
