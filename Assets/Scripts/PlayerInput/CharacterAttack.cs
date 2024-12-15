@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,6 +20,7 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private List<Transform> enemies;
     [SerializeField] private Transform nearestEnemy;
     
+    
     [SerializeField] private Slider healthSlider;
     
     private void Start()
@@ -36,7 +38,7 @@ public class CharacterAttack : MonoBehaviour
         {
             Debug.Log("LightAttack");
             _playerAnimator.SetBool("LightAttack1", true);
-            InitiateAttack();
+            //InitiateAttack();
         }
     }
 
@@ -46,7 +48,7 @@ public class CharacterAttack : MonoBehaviour
         {
             Debug.Log("LightAttack1");
             _playerAnimator.SetBool("LightAttack2", true);
-            InitiateAttack();
+            //InitiateAttack();
         }
     }
 
@@ -76,6 +78,7 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
+    /*
     private void InitiateAttack()
     {
         CountEnemies();
@@ -110,19 +113,46 @@ public class CharacterAttack : MonoBehaviour
             {
                 nearestEnemy.GetComponent<BossHandler>().TakeDamageEnemy(charAtk);
             }
+            else if (nearestEnemy.GetComponent<Boss_TwoHands>())
+            {
+                nearestEnemy.GetComponent<Boss_TwoHands>().TakeDamageEnemy(charAtk);
+            }
         }
     }
+    */
 
+    /*
     private void CountEnemies()
     {
         enemies.Clear();
         
         foreach (var e in GameObject.FindGameObjectsWithTag("Enemy"))
         {
-            if (e.GetComponent<EnemyHandler>() || e.GetComponent<BossHandler>())
+            if (e.GetComponent<EnemyHandler>() || e.GetComponent<BossHandler>() || e.GetComponent<Boss_TwoHands>())
             {
                 enemies.Add(e.transform);
             }
+        }
+    }
+    */
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            if (other.GetComponentInParent<EnemyHandler>())
+            {
+                other.GetComponentInParent<EnemyHandler>().TakeDamageEnemy(charAtk);
+            }
+            if (other.GetComponent<BossHandler>())
+            {
+                other.GetComponent<BossHandler>().TakeDamageEnemy(charAtk);
+            }
+            if (other.GetComponentInParent<Boss_TwoHands>())
+            {
+                other.GetComponentInParent<Boss_TwoHands>().TakeDamageEnemy(charAtk);
+            }
+            Debug.Log("EnemyHit");
         }
     }
 }

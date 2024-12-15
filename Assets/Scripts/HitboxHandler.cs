@@ -11,7 +11,7 @@ public class HitboxHandler : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         Debug.Log("player hit");
         var characterAttack = other.GetComponentInChildren<CharacterAttack>();
-        var atk = GetComponentInParent<BossHandler>().bossAtk;
+        var atk = GetComponentInParent<Boss_TwoHands>().bossAtk;
         characterAttack.TakeDamagePlayer(atk);
     }
 }
