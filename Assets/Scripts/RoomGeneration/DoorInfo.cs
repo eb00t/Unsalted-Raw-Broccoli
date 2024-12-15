@@ -43,28 +43,37 @@ private void Awake()
                 Debug.Log(name + " hit a connector! " + "(" + hit.transform.gameObject.name + ")");
                 _roomInfo.attachedConnectors.Add(hit.transform.gameObject);
                 hasDoor = true;
+                _roomInfo.usableDoors.Add(gameObject);
             } 
             else if (hit.transform.gameObject.tag.Contains("Door"))
             {
                 var transformPosition = hit.transform.position;
                 if (transformPosition.y == gameObject.transform.position.y)
                 {
-                    Debug.Log(name + " hit another door! " + "(" + hit.transform.gameObject.name + ")");
+                    //Debug.Log(name + " hit another door! " + "(" + hit.transform.gameObject.name + ")");
                     hasDoor = true;
                     hit.transform.gameObject.GetComponent<DoorInfo>().hasDoor = true;
+                    _roomInfo.usableDoors.Add(gameObject);
                 }
             }
         }
         if (hasDoor) //TODO: Animate this
         {
-            Vector3 transformPos = new Vector3(_initialPosition.x, _initialPosition.y, _initialPosition.z + 2.99f);
-            transform.position = transformPos;
+            OpenDoor();
         }
         _roomInfo.gameObject.GetComponent<IntersectionRaycast>().FixDoorLayers();
     }
 
-    private void Update()
-    {
-        //throw new NotImplementedException();
-    }
+   public void OpenDoor()
+   {
+       Vector3 transformPos = new Vector3(_initialPosition.x, _initialPosition.y, _initialPosition.z + 2.99f);
+       transform.position = transformPos;
+   }
+
+   public void CloseDoor()
+   {
+       transform.position = _initialPosition;
+   }
+
+
 }

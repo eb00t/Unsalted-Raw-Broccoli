@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using TreeEditor;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
@@ -44,6 +43,12 @@ public class EnemyHandler : MonoBehaviour
         Patrol,
         Chase,
         Attack
+    }
+
+    private void Awake()
+    {
+        RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        roomScripting.enemies.Add(gameObject);
     }
 
     private void Start()
@@ -240,4 +245,11 @@ public class EnemyHandler : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+
+        RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        roomScripting.enemies.Remove(gameObject);
+
+    }
 }

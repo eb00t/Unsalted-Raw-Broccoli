@@ -28,21 +28,22 @@ public class RoomInfo : MonoBehaviour
     [field: Header("Debugging")] 
     public IntersectionRaycast intersectionCheck;
     public List<GameObject> doorSpawnPoints;
+    public List<GameObject> usableDoors;
     public List<GameObject> allDoors;
     public List<GameObject> allWalls;
     public Transform doorL, doorR, doorB, doorT;
     public Transform wallL, wallR, wallB, wallT;
     public List<GameObject> attachedConnectors;
     public GameObject connectorSpawnedOff;
-    public bool markedForDiscard;
-    private CinemachineVirtualCamera _roomCam;
+    public bool markedForDiscard; 
+    public CinemachineVirtualCamera roomCam;
     public bool canBeDiscarded = true;
     private string _roomPath;
     void Awake()
     {
         //_roomPath = AssetDatabase.GetAssetPath(gameObject);
         //Debug.Log(_roomPath);
-        _roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
+        roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
         intersectionCheck = GetComponent<IntersectionRaycast>();
         attachedConnectors.Clear();
         foreach (var door in gameObject.GetComponentsInChildren<Transform>())
@@ -107,7 +108,7 @@ public class RoomInfo : MonoBehaviour
         {
             LevelBuilder.Instance.spawnedBossRooms.Add(gameObject);
         }
-        CameraManager.Instance.virtualCameras.Add(_roomCam.GetComponent<CinemachineVirtualCamera>());
+        CameraManager.Instance.virtualCameras.Add(roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
         Debug.Log(gameObject + " Distance between left/right walls and centre: " + distToRoomCentre.x);
@@ -122,7 +123,7 @@ public class RoomInfo : MonoBehaviour
         {
            LevelBuilder.Instance.spawnPoints.Remove(door.transform); 
         }
-        CameraManager.Instance.virtualCameras.Remove(_roomCam.GetComponent<CinemachineVirtualCamera>());
+        CameraManager.Instance.virtualCameras.Remove(roomCam.GetComponent<CinemachineVirtualCamera>());
         if (rareRoom)
         {
             LevelBuilder.Instance.possibleRooms.Add(Resources.Load<GameObject>(_roomPath));
