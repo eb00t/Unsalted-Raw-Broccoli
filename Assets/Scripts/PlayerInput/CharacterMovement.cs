@@ -21,6 +21,7 @@ public class CharacterMovement : MonoBehaviour
 
     [SerializeField] private bool grounded;
     [SerializeField] private bool doubleJumpPerformed;
+    [SerializeField] public bool crouching;
     [SerializeField] private Vector3 Velocity;
 
     private bool dashAllowed = true;
@@ -53,6 +54,10 @@ public class CharacterMovement : MonoBehaviour
     public void Crouch(InputAction.CallbackContext ctx)
     {
         if (uiOpen) return;
+        if (grounded)
+        {
+            crouching = true;
+        }
     }
 
     public void XAxis(InputAction.CallbackContext ctx)
@@ -143,6 +148,10 @@ public class CharacterMovement : MonoBehaviour
 
     public void Update()
     {
+        if (!grounded)
+        {
+            crouching = false;
+        }
         PlayerAnimator.SetBool("WallJump", isWallJumping);
         Velocity = rb.velocity;
         PlayerAnimator.SetFloat("XVelocity", rb.velocity.x);

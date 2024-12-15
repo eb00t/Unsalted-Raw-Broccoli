@@ -1,25 +1,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 public class SemiSolidPlatform : MonoBehaviour
 {
     private BoxCollider _boxCollider;
-    private LayerMask _layerToIgnore;
-
-    public bool canFall;
-    private bool FallThrough;
-    private Rigidbody rigid;
-    public int fallSpeed;
+    public GameObject playerFeet;
+    public CharacterMovement characterMovement;
+    public LayerMask interactableObjects;
+    public LayerMask layersToExclude, layersToInclude;
+    public LayerMask _layerToIgnore;
+    public bool collisionOff;
     private void Awake()
     {
         _boxCollider = GetComponent<BoxCollider>();
+        collisionOff = false;
     }
 
-    private void OnTriggerEnter(Collider other)
+    void Start()
+    {
+        if (playerFeet == null)
+        {
+            playerFeet = GameObject.FindWithTag("Player Ground Position");
+        }
+        characterMovement = playerFeet.transform.root.gameObject.GetComponent<CharacterMovement>();
+    }
+    
+   /* private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
@@ -30,17 +40,6 @@ public class SemiSolidPlatform : MonoBehaviour
             _layerToIgnore = LayerMask.GetMask("Enemy");
         }
         TurnOffCollision(_layerToIgnore);
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (canFall)
-        {
-            if (FallThrough && other.gameObject.layer == LayerMask.NameToLayer("Player"))
-            {
-                 TurnOffCollision(_layerToIgnore);
-            }
-        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -54,59 +53,37 @@ public class SemiSolidPlatform : MonoBehaviour
             _layerToIgnore = LayerMask.GetMask("Enemy");
         }
         TurnOnCollision(_layerToIgnore);
-        FallThrough = true;
-    }
-    private void OnCollisionEnter(Collision collision)
-    {
-        rigid = collision.rigidbody.GetComponent<Rigidbody>();
-        if (canFall)
-        {
-            if (FallThrough && collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-            {
-                rigid.drag = fallSpeed;
-            }
-            else
-            {
-                rigid.drag = 0;
-                FallThrough = false;
-                TurnOnCollision(_layerToIgnore);
-            }
-            TurnOffCollision(_layerToIgnore);
-        }
-
-        else if (canFall == false)
-        {
-            TurnOnCollision(_layerToIgnore);
-            rigid.drag = 0;
-        }
-        
-    }
+    }*/
     
-    private void OnCollisionExit(Collision collisionExit)
-    {
-        rigid = collisionExit.rigidbody.GetComponent<Rigidbody>();
-        
-          if (FallThrough == false &&  collisionExit.gameObject.layer == LayerMask.NameToLayer("Player"))
-            {
-                rigid.drag = 0;
-            }
-            else
-            {
-                FallThrough = true;
-            } 
-            FallThrough = false;
-            TurnOnCollision(_layerToIgnore);
-
-    }
     public void TurnOffCollision(LayerMask layerMask)
     {
+        collisionOff = true;
         _boxCollider.excludeLayers += layerMask;
     }
-
     public void TurnOnCollision(LayerMask layerMask)
     {
+        collisionOff = false;
         _boxCollider.excludeLayers -= layerMask;
     }
 
-    
+
+    private void Update()
+    {
+        if (playerFeet.transform.position.y < transform.position.y && collisionOff == false)
+        {
+            _layerToIgnore = LayerMask.GetMask("Player");
+            TurnOffCollision(_layerToIgnore);
+        }
+        else if (playerFeet.transform.position.y > transform.position.y && collisionOff)
+        {
+            _layerToIgnore = LayerMask.GetMask("Player");
+            TurnOnCollision(_layerToIgnore);
+        }
+
+        if (characterMovement.crouching)
+        {
+            _layerToIgnore = LayerMask.GetMask("Player");
+            TurnOffCollision(_layerToIgnore);
+        }
+    }
 }

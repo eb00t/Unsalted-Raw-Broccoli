@@ -96,7 +96,7 @@ public class BlackoutManager : MonoBehaviour
         
         if (_loading)
         {
-            Debug.Log(_failSafeTimer);
+            //Debug.Log(_failSafeTimer);
             _failSafeTimer -= Time.deltaTime;
             if (_failSafeTimer <= 0)
             {
