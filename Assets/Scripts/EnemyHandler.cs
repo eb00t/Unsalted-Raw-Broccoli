@@ -1,10 +1,6 @@
 using System;
-using System.Collections;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -16,26 +12,27 @@ public class EnemyHandler : MonoBehaviour
     [Header("Enemy Stats")]
     private int _health = 100;
     [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int enemyAtk = 10;
+    public int enemyAtk = 10;
     [SerializeField] private float chaseRange = 5;
     [SerializeField] private float attackRange = 2;
     [SerializeField] private float maxPatrolRange = 15;
     [SerializeField] private float minPatrolRange = 6;
+    [SerializeField] private float atkDelay = 3;
     private float _targetTime;
     
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
     private NavMeshAgent _agent;
-    private Transform _canvasTransform;
-    
-    private CharacterAttack _characterAttack;
     
     private Vector3 _patrolTarget, _patrol1, _patrol2;
     private States _state =  States.Idle;
     [SerializeField] private bool _isIdle;
+    private bool _isAttacking;
 
     [SerializeField] private bool debugPatrol;
+    
+    [SerializeField] private BoxCollider atkHitbox;
 
     private enum States
     {
@@ -45,11 +42,13 @@ public class EnemyHandler : MonoBehaviour
         Attack
     }
 
+    /*
     private void Awake()
     {
         RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         roomScripting.enemies.Add(gameObject);
     }
+    */
 
     private void Start()
     {
@@ -58,11 +57,9 @@ public class EnemyHandler : MonoBehaviour
         _healthSlider.value = maxHealth;
         _health = maxHealth;
         _healthSlider.gameObject.SetActive(false);
-
-        _canvasTransform = GetComponentInChildren<Canvas>().transform;
+        _animator = GetComponent<Animator>();
         
         _target = GameObject.FindGameObjectWithTag("Player").transform;
-        _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateRotation = false;
         
@@ -111,18 +108,23 @@ public class EnemyHandler : MonoBehaviour
         }
         
         var velocity = _agent.velocity;
+        
+        _animator.SetFloat("vel", Mathf.Abs(velocity.x));
 
         var localScale = GetComponentInChildren<SpriteRenderer>().transform.localScale;
         
-        localScale = velocity.x switch
+        if (velocity.x > 0.1f)
         {
-            > 0.1f => new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z),
-            < -0.1f => new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z),
-            _ => localScale
-        };
+            localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
+            atkHitbox.center = new Vector3(1.2f, -0.1546797f, 0);
+        }
+        else if (velocity.x < -0.1f)
+        {
+            localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
+            atkHitbox.center = new Vector3(-1.2f, -0.1546797f, 0);
+        }
+        
         GetComponentInChildren<SpriteRenderer>().transform.localScale = localScale;
-        
-        
     }
 
     private void Patrol()
@@ -184,9 +186,11 @@ public class EnemyHandler : MonoBehaviour
         _agent.isStopped = true;
         _targetTime -= Time.deltaTime;
 
-        if (!(_targetTime <= 0.0f)) return;
-        _characterAttack.TakeDamagePlayer(enemyAtk);
-        _targetTime = 2f;
+        if (_targetTime <= 0.0f)
+        {
+            _animator.SetTrigger("Attack");
+            _targetTime = atkDelay;
+        }
     }
 
     private void PickPatrolPoints()
@@ -245,6 +249,7 @@ public class EnemyHandler : MonoBehaviour
         }
     }
 
+    /*
     private void OnDisable()
     {
 
@@ -252,4 +257,5 @@ public class EnemyHandler : MonoBehaviour
         roomScripting.enemies.Remove(gameObject);
 
     }
+    */
 }
