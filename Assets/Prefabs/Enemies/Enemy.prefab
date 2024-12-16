@@ -51,14 +51,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  enemyAtk: 3
-  chaseRange: 15
+  enemyAtk: 5
+  atkDelay: 1.8
+  chaseRange: 8
   attackRange: 3
   maxPatrolRange: 10
   minPatrolRange: 6
-  atkDelay: 1.8
   _isIdle: 0
   debugPatrol: 0
+  debugRange: 0
   atkHitbox: {fileID: 3665861034403590735}
 --- !u!195 &9145869978663843985
 NavMeshAgent:
@@ -231,7 +232,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1973299437338840528
 Transform:
   m_ObjectHideFlags: 0
@@ -241,7 +242,7 @@ Transform:
   m_GameObject: {fileID: 4567322726946766161}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.79, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

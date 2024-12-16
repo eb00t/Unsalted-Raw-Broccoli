@@ -11,27 +11,28 @@ public class EnemyHandler : MonoBehaviour
 {
     [Header("Enemy Stats")]
     private int _health = 100;
-    [SerializeField] private int maxHealth = 100;
-    public int enemyAtk = 10;
-    [SerializeField] private float chaseRange = 5;
-    [SerializeField] private float attackRange = 2;
-    [SerializeField] private float maxPatrolRange = 15;
-    [SerializeField] private float minPatrolRange = 6;
-    [SerializeField] private float atkDelay = 3;
-    private float _targetTime;
+    [SerializeField] private int maxHealth;
+    public int enemyAtk;
+    [SerializeField] private float atkDelay;
+    [SerializeField] private float chaseRange;
+    [SerializeField] private float attackRange;
+    [SerializeField] private float maxPatrolRange;
+    [SerializeField] private float minPatrolRange;
     
+    private float _targetTime;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
     private NavMeshAgent _agent;
-    
     private Vector3 _patrolTarget, _patrol1, _patrol2;
-    private States _state =  States.Idle;
-    [SerializeField] private bool _isIdle;
-    private bool _isAttacking;
-
-    [SerializeField] private bool debugPatrol;
+    private States _state = States.Idle;
     
+    [Header("Debugging")]
+    [SerializeField] private bool _isIdle;
+    [SerializeField] private bool debugPatrol;
+    [SerializeField] private bool debugRange;
+    
+    [Header("References")]
     [SerializeField] private BoxCollider atkHitbox;
 
     private enum States
@@ -227,12 +228,15 @@ public class EnemyHandler : MonoBehaviour
     {
         var position = transform.position;
         //PickPatrolPoints();
-        
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(position, attackRange);
-        
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(position, chaseRange);
+
+        if (debugRange)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(position, attackRange);
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(position, chaseRange);
+        }
 
         if (debugPatrol)
         {
@@ -250,9 +254,7 @@ public class EnemyHandler : MonoBehaviour
     
     private void OnDisable()
     {
-
         RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         roomScripting.enemies.Remove(gameObject);
-
     }
 }

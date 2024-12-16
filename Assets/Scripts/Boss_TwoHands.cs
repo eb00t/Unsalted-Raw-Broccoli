@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
@@ -14,24 +15,23 @@ using Random = UnityEngine.Random;
 public class Boss_TwoHands : MonoBehaviour
 {
     [Header("Enemy Stats")]
-    private int _health = 100;
-    [SerializeField] private int maxHealth = 100;
-    public int bossAtk = 10;
-    [SerializeField] private float chaseRange = 5;
-    [SerializeField] private float atkRange = 2;
-    [SerializeField] private float maxPatrolRange = 15;
-    [SerializeField] private float minPatrolRange = 6;
-    private float _targetTime;
+    [SerializeField] private int maxHealth;
+    [SerializeField] private float chaseRange;
+    [SerializeField] private float atkRange;
+    [SerializeField] private float maxPatrolRange;
+    [SerializeField] private float minPatrolRange;
+    public int bossAtk;
+    private int _health;
     
+    private float _targetTime;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
     private NavMeshAgent _agent;
-    
-    private CharacterAttack _characterAttack;
-    
     private States _state =  States.Idle;
-    [SerializeField] private Transform hand1, hand2;
+
+    [Header("Debugging")] 
+    [SerializeField] private bool debugRange;
     
     private enum States
     {
@@ -48,7 +48,6 @@ public class Boss_TwoHands : MonoBehaviour
         _health = maxHealth;
         
         _target = GameObject.FindGameObjectWithTag("Player").transform;
-        _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         _healthSlider.gameObject.SetActive(false);
         _animator = GetComponent<Animator>();
     }
@@ -147,12 +146,15 @@ public class Boss_TwoHands : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        var position = transform.position;
+        if (debugRange)
+        {
+            var position = transform.position;
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(position, atkRange);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(position, atkRange);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(position, chaseRange);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(position, chaseRange);
+        }
     }
 }
