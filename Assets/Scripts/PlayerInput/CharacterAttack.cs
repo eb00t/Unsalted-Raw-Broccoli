@@ -22,6 +22,7 @@ public class CharacterAttack : MonoBehaviour
     
     
     [SerializeField] private Slider healthSlider;
+    [SerializeField] private GameObject diedScreen;
     
     private void Start()
     {
@@ -74,8 +75,13 @@ public class CharacterAttack : MonoBehaviour
         {
             _currentHealth = 0;
             healthSlider.value = 0;
-            //Die();
+            Die();
         }
+    }
+
+    private void Die()
+    {
+        diedScreen.SetActive(true);
     }
 
     /*
@@ -88,8 +94,8 @@ public class CharacterAttack : MonoBehaviour
             foreach (var eh in enemies)
             {
                 var dist = Vector3.Distance(transform.position, eh.transform.position);
-                
-                
+
+
                 if (nearestEnemy == null)
                 {
                     nearestEnemy = eh;
