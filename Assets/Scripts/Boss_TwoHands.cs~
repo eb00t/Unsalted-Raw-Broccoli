@@ -111,9 +111,8 @@ public class Boss_TwoHands : MonoBehaviour
 
     private void Attack()
     {
-        _healthSlider.gameObject.SetActive(true);
         _targetTime -= Time.deltaTime;
-        
+
         if (!(_targetTime <= 0.0f)) return;
         //_characterAttack.TakeDamagePlayer(atk);
         var atkNum = Random.Range(0, 2);
