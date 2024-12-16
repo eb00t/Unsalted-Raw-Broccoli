@@ -21,7 +21,6 @@ public class FMODEvents : MonoBehaviour
     
     [field: Header("Music")]
     [field: SerializeField] public EventReference Music { get; private set; }
-   
     [field: Header("SFX")]
     [field: SerializeField] public EventReference DoorSlam { get; private set; }
     

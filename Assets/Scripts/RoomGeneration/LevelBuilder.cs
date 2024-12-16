@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FMOD.Studio;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;

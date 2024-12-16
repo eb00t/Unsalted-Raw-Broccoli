@@ -40,6 +40,12 @@ public class Boss_TwoHands : MonoBehaviour
         Attack
     }
 
+    private void Awake()
+    {
+        RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        roomScripting.enemies.Add(gameObject);
+    }
+
     private void Start()
     {
         _healthSlider = GetComponentInChildren<Slider>();
@@ -156,5 +162,11 @@ public class Boss_TwoHands : MonoBehaviour
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(position, chaseRange);
         }
+    }
+    
+    private void OnDisable()
+    {
+        RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        roomScripting.enemies.Remove(gameObject);
     }
 }

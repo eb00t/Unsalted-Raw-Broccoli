@@ -44,6 +44,12 @@ public class BossHandler : MonoBehaviour
         Attack
     }
 
+    private void Awake()
+    {
+        RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        roomScripting.enemies.Add(gameObject);
+    }
+
     private void Start()
     {
         _healthSlider = GetComponentInChildren<Slider>();
@@ -206,6 +212,12 @@ public class BossHandler : MonoBehaviour
             Gizmos.DrawWireCube(_patrol1, v);
             Gizmos.DrawWireCube(_patrol2, v);
         }
+    }
+    
+    private void OnDisable()
+    {
+        RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        roomScripting.enemies.Remove(gameObject);
     }
 
 }
