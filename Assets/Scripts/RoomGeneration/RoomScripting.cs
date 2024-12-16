@@ -49,7 +49,6 @@ public class RoomScripting : MonoBehaviour
             {
                 OpenAllRoomDoors();
             }
-           
             else if (_enemyCount <= 0)
             {
                 OpenAllRoomDoors();
@@ -69,6 +68,7 @@ public class RoomScripting : MonoBehaviour
         foreach (var door in _roomInfo.usableDoors)
         {
             door.GetComponent<DoorInfo>().OpenDoor();
+            door.GetComponent<DoorInfo>().closed = false;
         }
     }
 
@@ -77,6 +77,7 @@ public class RoomScripting : MonoBehaviour
         foreach (var door in _roomInfo.usableDoors)
         {
             door.GetComponent<DoorInfo>().CloseDoor();
+            door.GetComponent<DoorInfo>().closed = true;
         }
     }
 

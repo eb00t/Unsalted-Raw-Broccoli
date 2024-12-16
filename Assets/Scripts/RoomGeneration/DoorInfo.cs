@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class DoorInfo : MonoBehaviour
 {
     public bool hasDoor = false;
     private RoomInfo _roomInfo;
     private Vector3 _initialPosition;
+    public bool closed;
     private float _lerpTime;
 private void Awake()
     {
@@ -65,14 +67,25 @@ private void Awake()
     }
 
    public void OpenDoor()
-   {
+   { 
        Vector3 transformPos = new Vector3(_initialPosition.x, _initialPosition.y, _initialPosition.z + 2.99f);
        transform.position = transformPos;
+       if (closed)
+       {
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DoorSlam, transform.position);
+       }
+      
    }
 
    public void CloseDoor()
    {
-       transform.position = _initialPosition;
+      transform.position = _initialPosition;
+       if (!closed)
+       { 
+           AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DoorSlam, transform.position);
+       }
+     
+       
    }
 
 
