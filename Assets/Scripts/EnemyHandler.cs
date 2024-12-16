@@ -41,14 +41,12 @@ public class EnemyHandler : MonoBehaviour
         Chase,
         Attack
     }
-
-    /*
+    
     private void Awake()
     {
         RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         roomScripting.enemies.Add(gameObject);
     }
-    */
 
     private void Start()
     {
@@ -249,7 +247,7 @@ public class EnemyHandler : MonoBehaviour
         }
     }
 
-    /*
+    
     private void OnDisable()
     {
 
@@ -257,5 +255,4 @@ public class EnemyHandler : MonoBehaviour
         roomScripting.enemies.Remove(gameObject);
 
     }
-    */
 }
