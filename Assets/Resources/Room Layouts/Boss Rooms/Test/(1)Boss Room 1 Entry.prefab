@@ -1593,7 +1593,6 @@ GameObject:
   - component: {fileID: 6295029239680877341}
   - component: {fileID: 7564641656213552662}
   - component: {fileID: 1225484906624395684}
-  - component: {fileID: 1452646476325702240}
   m_Layer: 6
   m_Name: (1)Boss Room 1 Entry
   m_TagString: Untagged
@@ -1699,6 +1698,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemies: []
   allDoors: []
+  allDoorsClosed: 0
   _playerIsInRoom: 0
   _roomCam: {fileID: 0}
 --- !u!65 &7564641656213552662
@@ -1735,18 +1735,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomType: 0
---- !u!114 &1452646476325702240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5505037665781202948}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09cdc4c36876e824d875ef139a433e7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5550653316941902909
 GameObject:
   m_ObjectHideFlags: 0

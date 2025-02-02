@@ -37,6 +37,7 @@ public class AudioManager : MonoBehaviour
     private EventInstance _ambienceEventInstance;
     public EventInstance loadingEventInstance;
     public EventInstance MusicEventInstance;
+    public int nowPlaying = 0;
     //Add any more sort of background-ish sound effects here if necessary.
 
     private void Awake()
@@ -150,11 +151,19 @@ public class AudioManager : MonoBehaviour
         MusicEventInstance = CreateEventInstance(musicEventReference);
         MusicEventInstance.start();
     }
-
+    public void SetMusicParameter(string parameterName, float parameterValue)
+    {
+        /*This is used to change anything related to ambience, e.g. changing any effects,
+        or changing the volume or frequency of certain sounds in the ambient track.
+        These are set up inside FMOD.*/
+        MusicEventInstance.setParameterByName(parameterName, parameterValue);
+        nowPlaying = (int)parameterValue;
+    }
     public void SetMusicArea(MusicArea area)
     {
        //Same story for changing music as changing ambience.
         MusicEventInstance.setParameterByName("Track", (float)area);
+        nowPlaying = (int)area;
     }
 
     public void Pause() //Two functions to prevent any issues

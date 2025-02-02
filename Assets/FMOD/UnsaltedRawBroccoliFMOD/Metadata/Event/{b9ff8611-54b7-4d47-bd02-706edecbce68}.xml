@@ -64,15 +64,23 @@
 	<object class="GroupTrack" id="{96bd509a-4830-4748-9e3c-82e1956bb533}">
 		<relationship name="modules">
 			<destination>{242ef0b0-3a04-4144-8ac7-73556a993882}</destination>
+			<destination>{80ae1d51-2f0d-4d15-9cfd-2d74e0720a62}</destination>
+			<destination>{0cf62235-13c6-4544-8958-a521af1dc2c5}</destination>
 		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{62be9a26-a453-4b5a-b4dc-550377749875}</destination>
 		</relationship>
 	</object>
-	<object class="Timeline" id="{044404e0-4c8f-40e8-b54c-34f5d2f4a850}" />
+	<object class="Timeline" id="{044404e0-4c8f-40e8-b54c-34f5d2f4a850}">
+		<property name="isProxyEnabled">
+			<value>false</value>
+		</property>
+	</object>
 	<object class="ParameterProxy" id="{71dae290-7bb6-4388-9cd0-74cf01b988d9}">
 		<relationship name="modules">
 			<destination>{242ef0b0-3a04-4144-8ac7-73556a993882}</destination>
+			<destination>{80ae1d51-2f0d-4d15-9cfd-2d74e0720a62}</destination>
+			<destination>{0cf62235-13c6-4544-8958-a521af1dc2c5}</destination>
 		</relationship>
 		<relationship name="preset">
 			<destination>{3e00046f-ecc8-4d3f-9d74-71d31643196a}</destination>
@@ -101,6 +109,22 @@
 	<object class="EventSound" id="{242ef0b0-3a04-4144-8ac7-73556a993882}">
 		<relationship name="event">
 			<destination>{3ca0468d-fee8-4a23-80a9-f62b5581df58}</destination>
+		</relationship>
+	</object>
+	<object class="EventSound" id="{80ae1d51-2f0d-4d15-9cfd-2d74e0720a62}">
+		<property name="start">
+			<value>1</value>
+		</property>
+		<relationship name="event">
+			<destination>{28511a54-053e-4c6e-aab4-dcd90146739d}</destination>
+		</relationship>
+	</object>
+	<object class="EventSound" id="{0cf62235-13c6-4544-8958-a521af1dc2c5}">
+		<property name="start">
+			<value>2</value>
+		</property>
+		<relationship name="event">
+			<destination>{3216d139-5a77-4f9e-ab1d-f6ee5ddae42d}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{62be9a26-a453-4b5a-b4dc-550377749875}">

@@ -11,6 +11,7 @@ public class RoomScripting : MonoBehaviour
     private int _enemyCount;
     public List<GameObject> enemies;
     public List<GameObject> allDoors;
+    public bool allDoorsClosed;
     private RoomInfo _roomInfo;
     private bool _roomCleared;
     public bool _playerIsInRoom;
@@ -55,6 +56,15 @@ public class RoomScripting : MonoBehaviour
                 _roomCleared = true;
             }
 
+            if (_enemyCount >= 2)
+            {
+                AudioManager.Instance.SetMusicParameter("Combat Weight", 1);
+            }
+            else
+            {
+                AudioManager.Instance.SetMusicParameter("Combat Weight", 0);
+            }
+
             if (_roomCleared)
             {
                 StopCoroutine(CheckIfRoomHasEnemies());
@@ -70,6 +80,11 @@ public class RoomScripting : MonoBehaviour
             door.GetComponent<DoorInfo>().OpenDoor();
             door.GetComponent<DoorInfo>().closed = false;
         }
+        if (allDoorsClosed && _playerIsInRoom)
+        {
+            AudioManager.Instance.SetMusicParameter("Music Track", 0);
+        }
+        allDoorsClosed = false;
     }
 
     void CloseAllRoomDoors()
@@ -79,6 +94,15 @@ public class RoomScripting : MonoBehaviour
             door.GetComponent<DoorInfo>().CloseDoor();
             door.GetComponent<DoorInfo>().closed = true;
         }
+        if (allDoorsClosed == false && _roomInfo.bossRoom == false)
+        {
+            AudioManager.Instance.SetMusicParameter("Music Track", 1);
+        }
+        else if (allDoorsClosed == false && _roomInfo.bossRoom)
+        {
+            AudioManager.Instance.SetMusicParameter("Music Track", 2);
+        }
+        allDoorsClosed = true;
     }
 
     void Update()
