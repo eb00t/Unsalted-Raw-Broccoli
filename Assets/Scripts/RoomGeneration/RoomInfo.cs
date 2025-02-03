@@ -21,7 +21,7 @@ public class RoomInfo : MonoBehaviour
     [NonSerialized] public bool canSpawnOnBottom;
     public float roomLength; //
     public float roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
-    public bool rareRoom = false;
+    public bool specialRoom = false;
     public bool bossRoom = false;
 
 
@@ -108,6 +108,7 @@ public class RoomInfo : MonoBehaviour
         {
             LevelBuilder.Instance.spawnedBossRooms.Add(gameObject);
         }
+        
         CameraManager.Instance.virtualCameras.Add(roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
@@ -124,7 +125,7 @@ public class RoomInfo : MonoBehaviour
            LevelBuilder.Instance.spawnPoints.Remove(door.transform); 
         }
         CameraManager.Instance.virtualCameras.Remove(roomCam.GetComponent<CinemachineVirtualCamera>());
-        if (rareRoom)
+        if (specialRoom)
         {
             LevelBuilder.Instance.possibleRooms.Add(Resources.Load<GameObject>(_roomPath));
         }
@@ -153,7 +154,7 @@ public class RoomInfo : MonoBehaviour
 
         switch (LevelBuilder.Instance._spawnMode)
         {
-            case LevelBuilder.SpawnMode.Normal:
+            case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms:
                 LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.spawnPoints.Count);
                 break;
             case LevelBuilder.SpawnMode.BossRooms:

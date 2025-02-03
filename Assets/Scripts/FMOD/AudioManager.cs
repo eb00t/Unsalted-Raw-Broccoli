@@ -158,6 +158,7 @@ public class AudioManager : MonoBehaviour
         These are set up inside FMOD.*/
         MusicEventInstance.setParameterByName(parameterName, parameterValue);
         nowPlaying = (int)parameterValue;
+        Debug.Log("Now playing: " + parameterName + " " + parameterValue);
     }
     public void SetMusicArea(MusicArea area)
     {
