@@ -58,11 +58,14 @@ public class LevelBuilder : MonoBehaviour
     public string floorSpecificRoomPath;
     private float _spawnTimer;
     private string _specialRoomPath;
+    private GameObject _shop;
+    public bool shopSpawned;
     public enum SpawnMode
     {
         Normal,
         BossRooms,
         SpecialRooms,
+        Shop,
     }
 
     public SpawnMode _spawnMode;
@@ -116,6 +119,7 @@ public class LevelBuilder : MonoBehaviour
         floorSpecificRoomPath = "YOU SHOULDN'T SEE THIS"; //Path for floor exclusive rooms
         _multiFloorRoomPath = "Room Layouts/Multi Floor Rooms"; //TODO: Path for rooms used in multiple floors 
         _specialRoomPath = "Room Layouts/Special Rooms";
+        _shop = Resources.Load<GameObject>("Room Layouts/Shop/Shop");
         _bossRoomPath = "YOU STILL SHOULDN'T SEE THIS";
         string connectorPath = "Room Layouts/Connectors";
         switch (currentFloor)
@@ -175,7 +179,7 @@ public class LevelBuilder : MonoBehaviour
             Vector3 spawnPointPosition = Vector3.zero; //    Position that the room will use to spawn on
             switch (_spawnMode)
             {
-                case SpawnMode.Normal or SpawnMode.SpecialRooms:
+                case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shop:
                     spawnRandomNumber = RandomiseNumber(spawnPoints.Count); //  RNG for where to spawn connectors
                     spawnPointPosition = spawnPoints[spawnRandomNumber].position;
                     break;
@@ -191,7 +195,7 @@ public class LevelBuilder : MonoBehaviour
             string doorTag = "";
             switch (_spawnMode)
             {
-                case SpawnMode.Normal or SpawnMode.SpecialRooms:
+                case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shop:
                     previouslySpawnedRoom = spawnPoints[spawnRandomNumber].root.gameObject; 
                     doorTag = spawnPoints[spawnRandomNumber].gameObject.tag;
                     break;
@@ -251,11 +255,15 @@ public class LevelBuilder : MonoBehaviour
     IEnumerator SpawnRooms(Vector3 newSpawnPoint)
     {
         yield return new WaitForSeconds(0.1f);
-        switch (_spawnMode)
+        switch (_spawnMode) // Picking a random room from the pool of possible rooms
         {
             case SpawnMode.Normal:
                 roomRandomNumber = RandomiseNumber(possibleRooms.Count); // Spawn a random room from the list of possible rooms
                 spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
+                break;
+            case SpawnMode.Shop: // Only one shop
+                roomRandomNumber = 0;
+                spawningRoomInfo = _shop.GetComponent<RoomInfo>();
                 break;
             case SpawnMode.SpecialRooms:
                 roomRandomNumber = RandomiseNumber(possibleSpecialRooms.Count);
@@ -304,6 +312,9 @@ public class LevelBuilder : MonoBehaviour
             case SpawnMode.Normal:
                 roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //  Instantiate the room at the spawnpoint's position
                 break;
+            case SpawnMode.Shop:
+                roomToSpawn = Instantiate(_shop, realSpawnPosition, Quaternion.identity); //There is only one type of shop
+                break;
             case SpawnMode.SpecialRooms:
                 roomToSpawn = Instantiate(possibleSpecialRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //  Instantiate the special room at the spawnpoint's position
                 break;
@@ -328,7 +339,7 @@ public class LevelBuilder : MonoBehaviour
 
         switch (_spawnMode)
         {
-            case SpawnMode.Normal or SpawnMode.SpecialRooms:
+            case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shop:
                 foreach (var door in spawningRoomInfo.doorSpawnPoints) // Adding doors of the spawned room to the list of possible spawn points
                 {
                     spawnPoints.Add(door.transform);
@@ -347,7 +358,7 @@ public class LevelBuilder : MonoBehaviour
         }
         switch (_spawnMode)
         {
-            case SpawnMode.Normal or SpawnMode.SpecialRooms: 
+            case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shop: 
                 spawnPoints.Remove(spawnPoints[spawnRandomNumber]); //  Remove the door the room spawned on from the spawn point list.
                 break;
             case SpawnMode.BossRooms:
@@ -360,7 +371,7 @@ public class LevelBuilder : MonoBehaviour
             case "Left":
                 switch (_spawnMode)
                 {
-                    case SpawnMode.Normal or SpawnMode.SpecialRooms: 
+                    case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shop: 
                         spawnPoints.Remove(spawningRoomInfo.doorR.transform);
                         spawnPoints.Remove(previouslySpawnedRoomInfo.doorL.transform);
                         break;
@@ -379,7 +390,7 @@ public class LevelBuilder : MonoBehaviour
             case "Right":
                 switch (_spawnMode)
                 {
-                    case SpawnMode.Normal or SpawnMode.SpecialRooms:
+                    case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shop:
                         spawnPoints.Remove(spawningRoomInfo.doorL.transform);
                         spawnPoints.Remove(previouslySpawnedRoomInfo.doorR.transform);
                         break;
@@ -399,7 +410,7 @@ public class LevelBuilder : MonoBehaviour
             case "Top":
                 switch (_spawnMode)
                 {
-                    case SpawnMode.Normal or SpawnMode.SpecialRooms:
+                    case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shop:
                          spawnPoints.Remove(spawningRoomInfo.doorB.transform);
                          spawnPoints.Remove(previouslySpawnedRoomInfo.doorT.transform);
                         break;
@@ -418,7 +429,7 @@ public class LevelBuilder : MonoBehaviour
             case "Bottom":
                 switch (_spawnMode)
                 {
-                    case SpawnMode.Normal or SpawnMode.SpecialRooms:
+                    case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shop:
                          spawnPoints.Remove(spawningRoomInfo.doorT.transform);
                          spawnPoints.Remove(previouslySpawnedRoomInfo.doorB.transform);
                         break;
@@ -439,14 +450,13 @@ public class LevelBuilder : MonoBehaviour
 
     IEnumerator WaitASec()
     {
-        if (_spawnMode == SpawnMode.SpecialRooms)
+        if (_spawnMode is SpawnMode.SpecialRooms or SpawnMode.Shop) //If a special room is the most recent, switch the spawn mode back to normal rooms, so it can roll again.
         {
             _spawnMode = SpawnMode.Normal;
         }
-        if (_spawnMode != SpawnMode.BossRooms)
+        if (_spawnMode != SpawnMode.BossRooms) //Special rooms will not spawn when boss rooms are being spawned
         {
-            int rareSpawn;
-            rareSpawn = RandomiseNumber(2);
+            var rareSpawn = RandomiseNumber(10); //TEMP NUMBER; CHANGE
             switch (rareSpawn)
             {
                 case 0:
@@ -457,10 +467,25 @@ public class LevelBuilder : MonoBehaviour
                         _spawnMode = SpawnMode.Normal;
                     }
                     break;
+                case 1 or 2 or 3 or 4:
+                    if (shopSpawned == false)
+                    {
+                        _spawnMode = SpawnMode.Shop;
+                    }
+                    else
+                    {
+                        _spawnMode = SpawnMode.Normal;
+                    }
+                    break;
                 default:
                     _spawnMode = SpawnMode.Normal;
                     break;
             }
+        }
+
+        if (roomsRemaining == 1 && shopSpawned == false)
+        {
+            _spawnMode = SpawnMode.Shop;
         }
 
         yield return new WaitForSeconds(1f);
@@ -513,7 +538,7 @@ public class LevelBuilder : MonoBehaviour
           bossRoomGeneratingFinished = true;
       }
   }
-
+  
   public void RegenerateBossRooms()
   {
       foreach (var room in spawnedBossRooms)

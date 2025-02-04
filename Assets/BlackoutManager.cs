@@ -20,7 +20,7 @@ public class BlackoutManager : MonoBehaviour
 
     private void OnEnable()
     {
-        _failSafeTimer = LevelBuilder.Instance.howManyRoomsToSpawn * 2;
+        _failSafeTimer = 15;
     }
 
     private enum LerpDirection

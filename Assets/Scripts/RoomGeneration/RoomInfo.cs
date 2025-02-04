@@ -23,6 +23,7 @@ public class RoomInfo : MonoBehaviour
     public float roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
     public bool specialRoom = false;
     public bool bossRoom = false;
+    public bool shop = false;
 
 
     [field: Header("Debugging")] 
@@ -127,7 +128,11 @@ public class RoomInfo : MonoBehaviour
         CameraManager.Instance.virtualCameras.Remove(roomCam.GetComponent<CinemachineVirtualCamera>());
         if (specialRoom)
         {
-            LevelBuilder.Instance.possibleRooms.Add(Resources.Load<GameObject>(_roomPath));
+            LevelBuilder.Instance.possibleSpecialRooms.Add(Resources.Load<GameObject>(_roomPath));
+        }
+        if (shop)
+        {
+            LevelBuilder.Instance.shopSpawned = false;
         }
         if (bossRoom)
         {
@@ -154,7 +159,7 @@ public class RoomInfo : MonoBehaviour
 
         switch (LevelBuilder.Instance._spawnMode)
         {
-            case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms:
+            case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms or LevelBuilder.SpawnMode.Shop:
                 LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.spawnPoints.Count);
                 break;
             case LevelBuilder.SpawnMode.BossRooms:
