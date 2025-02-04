@@ -138,10 +138,15 @@ public class RoomInfo : MonoBehaviour
         {
             LevelBuilder.Instance.spawnedBossRooms.Remove(gameObject);
             LevelBuilder.Instance.roomRandomNumber--;
-            LevelBuilder.Instance.bossRoomSpawnPoints.Clear();
-            foreach (var door in LevelBuilder.Instance.spawnedBossRooms[LevelBuilder.Instance.roomRandomNumber].GetComponent<RoomInfo>().doorSpawnPoints) 
+            //LevelBuilder.Instance.
+            switch (LevelBuilder.Instance.roomRandomNumber)
             {
-                LevelBuilder.Instance.bossRoomSpawnPoints.Add(door.transform);
+                case -1:
+                    LevelBuilder.Instance.secondBossRoomSpawnPoints.Clear();
+                    break;
+                case 0:
+                    LevelBuilder.Instance.thirdBossRoomSpawnPoints.Clear();
+                    break;
             }
         }
         if (LevelBuilder.Instance.discardedRooms.Contains(gameObject))
@@ -163,10 +168,19 @@ public class RoomInfo : MonoBehaviour
                 LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.spawnPoints.Count);
                 break;
             case LevelBuilder.SpawnMode.BossRooms:
-                LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.bossRoomSpawnPoints.Count);
+                switch (LevelBuilder.Instance.roomRandomNumber)
+                {
+                    case 0:
+                        LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.firstBossRoomSpawnPoints.Count);
+                        break;
+                    case 1:
+                        LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.secondBossRoomSpawnPoints.Count);
+                        break;
+                    case 2:
+                        LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.thirdBossRoomSpawnPoints.Count);
+                        break;
+                }
                 break;
-            default:
-               break; 
         }
         
     }
