@@ -508,12 +508,19 @@ public class LevelBuilder : MonoBehaviour
                                 {
                                     secondBossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorT.transform);
                                 }
+                                else
+                                {
+                                    Destroy(spawningRoomInfo.gameObject);
+                                }
                                 break;
                             case 2:
                                 thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
                                 if (previouslySpawnedRoomInfo != null)
                                 {
                                     thirdBossRoomSpawnPoints.Remove(previouslySpawnedRoomInfo.doorT.transform);
+                                }else
+                                {
+                                    Destroy(spawningRoomInfo.gameObject);
                                 }
                                 break;
                         }

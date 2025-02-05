@@ -170,13 +170,13 @@ public class RoomInfo : MonoBehaviour
             case LevelBuilder.SpawnMode.BossRooms:
                 switch (LevelBuilder.Instance.roomRandomNumber)
                 {
-                    case 0:
+                    case -1:
                         LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.firstBossRoomSpawnPoints.Count);
                         break;
-                    case 1:
+                    case 0:
                         LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.secondBossRoomSpawnPoints.Count);
                         break;
-                    case 2:
+                    case 1:
                         LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.thirdBossRoomSpawnPoints.Count);
                         break;
                 }

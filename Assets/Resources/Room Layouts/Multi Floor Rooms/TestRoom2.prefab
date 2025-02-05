@@ -2103,7 +2103,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 0da38a3bf1b20504bb3302b13e509018, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &4867659657443873702
 GameObject:
@@ -3409,8 +3409,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomLength: 30
   roomHeight: 20
-  rareRoom: 0
+  specialRoom: 0
   bossRoom: 0
+  shop: 0
   intersectionCheck: {fileID: 2577646143545009483}
   doorSpawnPoints: []
   usableDoors: []
@@ -3477,6 +3478,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemies: []
   allDoors: []
+  allDoorsClosed: 0
   _playerIsInRoom: 0
   _roomCam: {fileID: 0}
 --- !u!1 &7347630290567613744
