@@ -8,6 +8,7 @@ public class DoorInfo : MonoBehaviour
 {
     public bool hasDoor = false;
     private RoomInfo _roomInfo;
+    private ConnectorRoomInfo _connectorRoomInfo;
     private Vector3 _initialPosition;
     public bool closed;
     private float _lerpTime;
@@ -44,6 +45,8 @@ private void Awake()
             {
                 Debug.Log(name + " hit a connector! " + "(" + hit.transform.gameObject.name + ")");
                 _roomInfo.attachedConnectors.Add(hit.transform.gameObject);
+                _connectorRoomInfo = hit.transform.GetComponent<ConnectorRoomInfo>();
+                _connectorRoomInfo.attachedRooms.Add(transform.root.gameObject);
                 hasDoor = true;
                 _roomInfo.usableDoors.Add(gameObject);
             } 

@@ -70,7 +70,7 @@ public class IntersectionRaycast : MonoBehaviour //TODO: GET CO-ORDINATES OF EVE
         _verticMiddleRay = new Ray(adjVertiRayPos, Vector3.down);
     }
 
-    void MessUpLayers()
+    void MessUpLayers() // Changes all layers of children to ensure they don't trigger the raycasts.
     {
         Debug.Log("Messing up layers of " + gameObject.name);
         foreach (var child in _allChildren)
@@ -78,7 +78,7 @@ public class IntersectionRaycast : MonoBehaviour //TODO: GET CO-ORDINATES OF EVE
             child.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
         } 
     }
-    void FixLayers()
+    void FixLayers() // Return layers to normal
     {
         Debug.Log("Fixing layers of " + gameObject.name);
         for(int i = 0; i < _allChildren.Count; i++)
@@ -258,7 +258,7 @@ public class IntersectionRaycast : MonoBehaviour //TODO: GET CO-ORDINATES OF EVE
         }
 
     }
-    
+
 
 
     public void CheckForInternalIntersection()
@@ -274,25 +274,22 @@ public class IntersectionRaycast : MonoBehaviour //TODO: GET CO-ORDINATES OF EVE
             {
                 LevelBuilder.Instance.spawnPoints.Remove(room.transform);
             }
+
             _roomInfo.doorSpawnPoints.Clear();
-            
+
             if (!LevelBuilder.Instance.discardedRooms.Contains(gameObject))
             {
                 LevelBuilder.Instance.discardedRooms.Add(gameObject);
             }
             LevelBuilder.Instance.CleanUpBadRooms();
-        } 
-        _collider.enabled = true;
-        if (discard == false)
-        {
-            gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
-            if (!_checkedTwice)
-            {
-                //StartCoroutine(SecondRoundInternalCheck());
-            }
+            _collider.enabled = true;
+        
         }
+
         FixLayers();
     }
+    
+
     public IEnumerator SecondRoundInternalCheck()
     {
         yield return new WaitForSecondsRealtime(1f);

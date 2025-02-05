@@ -138,22 +138,28 @@ public class RoomInfo : MonoBehaviour
         {
             LevelBuilder.Instance.spawnedBossRooms.Remove(gameObject);
             LevelBuilder.Instance.roomRandomNumber--;
-            //LevelBuilder.Instance.
             switch (LevelBuilder.Instance.roomRandomNumber)
             {
                 case -1:
+                    LevelBuilder.Instance.firstBossRoomSpawnPoints = new List<Transform>(LevelBuilder.Instance.spawnPoints);
                     LevelBuilder.Instance.secondBossRoomSpawnPoints.Clear();
                     break;
                 case 0:
                     LevelBuilder.Instance.thirdBossRoomSpawnPoints.Clear();
+                    LevelBuilder.Instance.otherConnectorSideRoomInfo = LevelBuilder.Instance.spawnedBossRooms[0].GetComponent<RoomInfo>();
+                    break;
+                case 1:
+                    LevelBuilder.Instance.otherConnectorSideRoomInfo = LevelBuilder.Instance.spawnedBossRooms[1].GetComponent<RoomInfo>();
                     break;
             }
         }
+       
         if (LevelBuilder.Instance.discardedRooms.Contains(gameObject))
         {
             LevelBuilder.Instance.discardedRooms.Remove(gameObject);
             LevelBuilder.Instance.roomsDiscarded += 1;
         }
+        
         foreach (var connector in attachedConnectors)
         {
             if (connector != null)
