@@ -278,7 +278,7 @@ public class LevelBuilder : MonoBehaviour
 
     IEnumerator SpawnRooms(Vector3 newSpawnPoint)
     {
-        yield return new WaitForSeconds(0.1f);
+       
         switch (_spawnMode) // Picking a random room from the pool of possible rooms
         {
             case SpawnMode.Normal:
@@ -345,6 +345,7 @@ public class LevelBuilder : MonoBehaviour
         roomsRemaining--;
         //Debug.Log("Rooms left to spawn: " + roomsRemaining);
         UpdateSpawnWalls();
+        yield return null;
     }
 
     void UpdateSpawnWalls()

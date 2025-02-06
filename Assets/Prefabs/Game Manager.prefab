@@ -561,7 +561,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5617660318742304912}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0424e335075e17640829afd684b4f5d1, type: 3}
+  m_Script: {fileID: 11500000, guid: 43346f61d2c523c44b7e61d57a618b08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   howManyRoomsToSpawn: 5
@@ -569,26 +569,32 @@ MonoBehaviour:
   currentFloor: 0
   possibleRooms: []
   possibleBossRooms: []
+  possibleSpecialRooms: []
   roomsRemaining: 0
   discardedRooms: []
   possibleConnectors: []
   spawnedRooms: []
   spawnedBossRooms: []
-  bossRoomSpawnPoints: []
+  firstBossRoomSpawnPoints: []
+  secondBossRoomSpawnPoints: []
+  thirdBossRoomSpawnPoints: []
   spawnPoints: []
   spawningRoomInfo: {fileID: 0}
-  previouslySpawnedRoomInfo: {fileID: 0}
+  otherConnectorSideRoomInfo: {fileID: 0}
   spawnedConnectorInfo: {fileID: 0}
   spawnRoomDoorL: {fileID: 0}
   spawnRoomDoorR: {fileID: 0}
   spawnRoomDoorT: {fileID: 0}
   spawnRoomDoorB: {fileID: 0}
   roomRandomNumber: 0
-  _spawnedConnectors: []
+  spawnRandomNumber: 0
+  spawnedConnectors: []
   roomToSpawn: {fileID: 0}
   roomGeneratingFinished: 0
   bossRoomGeneratingFinished: 0
   floorSpecificRoomPath: 
+  shopSpawned: 0
+  _spawnMode: 0
 --- !u!114 &543560988434361953
 MonoBehaviour:
   m_ObjectHideFlags: 0
