@@ -9,6 +9,12 @@ public class CharacterAttack : MonoBehaviour
 {
     private MeshCollider _attackCollider;
     private Animator _playerAnimator;
+
+    // Combo variables
+    [SerializeField] private float timer = 0f;
+    [SerializeField] private float timer1 = 0f;
+    [SerializeField] private bool[] lightCombo = new bool[4];
+    [SerializeField] private float maxInputDelay = 10f;
     
     [Header("Stats")]
     private int _currentHealth = 100;
@@ -37,9 +43,34 @@ public class CharacterAttack : MonoBehaviour
     {
         if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
-            Debug.Log("LightAttack");
-            _playerAnimator.SetBool("LightAttack1", true);
+            //Debug.Log("LightAttack");
+            //_playerAnimator.SetBool("LightAttack1", true);
             //InitiateAttack();
+
+            // Start of combo
+            
+
+            if (lightCombo[0])
+            {
+                if (timer <= maxInputDelay && timer > 0f)
+                {
+                    if (timer1 <= maxInputDelay && timer1 > 0f)
+                    {
+                        lightCombo[2] = true;
+                    }
+                    lightCombo[1] = true;
+                }
+            }
+            lightCombo[0] = true;
+            if (lightCombo[2])
+            {
+                timer1 = 0f; lightCombo[1] = false;
+                timer = 0f; lightCombo[0] = false;
+
+                Debug.Log("LightAttack");
+                _playerAnimator.SetBool("LightAttack1", true);
+                lightCombo[2] = false;
+            }
         }
     }
 
@@ -47,9 +78,35 @@ public class CharacterAttack : MonoBehaviour
     {
         if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
-            Debug.Log("LightAttack1");
-            _playerAnimator.SetBool("LightAttack2", true);
+            //Debug.Log("LightAttack1");
+            //_playerAnimator.SetBool("LightAttack2", true);
             //InitiateAttack();
+
+            if (lightCombo[1])
+            {
+                if (timer1 <= maxInputDelay && timer1 > 0f)
+                {
+                    lightCombo[3] = true;
+                }
+            }
+            if (lightCombo[3])
+            {
+                timer1 = 0f; lightCombo[1] = false;
+                timer = 0f; lightCombo[0] = false;
+
+                Debug.Log("LightAttack1");
+                _playerAnimator.SetBool("LightAttack2", true);
+                lightCombo[3] = false;
+            }
+        }
+    }
+
+    public void HeavyAttack(InputAction.CallbackContext ctx)
+    {
+        if(ctx.performed && _playerAnimator.GetBool("Grounded"))
+        {
+            Debug.Log("HeavyAttack");
+            _playerAnimator.SetBool("HeavyAttack", true);
         }
     }
 
@@ -161,4 +218,33 @@ public class CharacterAttack : MonoBehaviour
             Debug.Log("EnemyHit");
         }
     }
+
+    private void Update()
+    {
+        if (lightCombo[0])
+        {
+            if (!lightCombo[1])
+            {
+                timer += 1f * Time.deltaTime;
+            }
+            if (lightCombo[1])
+            {
+                timer1 += 1f * Time.deltaTime;
+                if(timer1 >= maxInputDelay)
+                {
+                    lightCombo[0] = false;
+                    lightCombo[1] = false;
+                    timer = 0f;
+                    timer1 = 0f;
+                }
+            }
+            if(timer >= maxInputDelay && !lightCombo[1])
+            {
+                lightCombo[0] = false;
+                timer = 0f;
+            }
+        }
+        
+    }
 }
+
