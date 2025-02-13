@@ -519,17 +519,11 @@ public class LevelBuilder : MonoBehaviour
                 otherConnectorSideRoomInfo.canHaveBottomRoom = false;
                 break;
         }
-    }
-
-    IEnumerator WaitASec()
-    {
-        if (_spawnMode is SpawnMode.SpecialRooms or SpawnMode.Shop) //If a special room is the most recent, switch the spawn mode back to normal rooms, so it can roll again.
-        {
-            _spawnMode = SpawnMode.Normal;
-        }
+        var rareSpawn = RandomiseNumber(10); //TEMP NUMBER; CHANGE
+        Debug.Log("Rare spawn number: " + rareSpawn);
         if (_spawnMode != SpawnMode.BossRooms) //Special rooms will not spawn when boss rooms are being spawned
         {
-            var rareSpawn = RandomiseNumber(10); //TEMP NUMBER; CHANGE
+           
             switch (rareSpawn)
             {
                 case < 3:
@@ -543,6 +537,7 @@ public class LevelBuilder : MonoBehaviour
                 case > 3  and < 6:
                     if (shopSpawned == false)
                     {
+                        Debug.Log("SHOP SPAWNING");
                         _spawnMode = SpawnMode.Shop;
                         shopSpawned = true;
                     }
@@ -557,12 +552,15 @@ public class LevelBuilder : MonoBehaviour
             }
         }
 
-        if (roomsRemaining == 1 && shopSpawned == false)
+        if (spawnedRooms.Count == 21 && shopSpawned == false)
         {
             _spawnMode = SpawnMode.Shop;
             shopSpawned = true;
         }
+    }
 
+    IEnumerator WaitASec()
+    {
         yield return new WaitForSeconds(1f);
         for (int i = spawnedRooms.Count; i < spawnedRooms.Count; i--)
         {
