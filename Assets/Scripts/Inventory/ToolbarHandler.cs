@@ -9,15 +9,17 @@ public class ToolbarHandler : MonoBehaviour
     public int slotNo;
     [SerializeField] private GameObject[] slots;
     private InventoryStore _inventoryStore;
+    [SerializeField] private Consumable[] activeConsumables;
 
     private void Start()
     {
         _inventoryStore = GetComponent<InventoryStore>();
     }
 
-    private void AddToToolbar(Sprite newSprite, string txt)
+    private void AddToToolbar(Sprite newSprite, string txt, Consumable consumable)
     {
         slots[slotNo].GetComponentInChildren<TextMeshProUGUI>().text = ""; // set amount held
+        activeConsumables[slotNo] = consumable;
         
         foreach (var s in slots[slotNo].GetComponentsInChildren<Image>())
         {
@@ -42,7 +44,7 @@ public class ToolbarHandler : MonoBehaviour
         var s = consumable.uiIcon;
         var t = consumable.title;
         
-        AddToToolbar(s, t);
+        AddToToolbar(s, t, consumable);
     }
 
     public void SlotItemActivated(InputAction.CallbackContext context)
@@ -54,16 +56,28 @@ public class ToolbarHandler : MonoBehaviour
         {
             case (0, 1): // up (0)
                 // use consumable in slot 0, and so on for each case
-                Debug.Log("item 0 used");
+                CheckItemEffect(0);
                 break;
             case (1, 0): // right (1)
-                Debug.Log("item 1 used");
+                CheckItemEffect(1);
                 break;
             case (0, -1): // down (2)
-                Debug.Log("item 2 used");
+                CheckItemEffect(2);
                 break;
             case (-1, 0): // left (3)
-                Debug.Log("item 3 used");
+                CheckItemEffect(3);
+                break;
+        }
+    }
+
+    private void CheckItemEffect(int num)
+    {
+        var effectIndex = activeConsumables[num].effectIndex;
+
+        switch (effectIndex)
+        {
+            case 0:
+                // e.g. increase player health
                 break;
         }
     }
