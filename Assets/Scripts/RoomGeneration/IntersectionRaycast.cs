@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 [RequireComponent(typeof(RoomInfo))]
-public class IntersectionRaycast : MonoBehaviour //TODO: GET CO-ORDINATES OF EVERY ROOM AND REMOVE ANY THAT ARE TOO CLOSE TO EACH OTHER (I.E. INTERSECTING)
+public class IntersectionRaycast : MonoBehaviour 
 {
     private Ray _firstRay, _secondRay; //Which rays are being used to check for rooms in the way.
     private Ray _leftTopRay, _rightTopRay, _leftBottomRay, _rightBottomRay;
@@ -283,10 +283,12 @@ public class IntersectionRaycast : MonoBehaviour //TODO: GET CO-ORDINATES OF EVE
             }
             LevelBuilder.Instance.CleanUpBadRooms();
             _collider.enabled = true;
-        
         }
-
-        FixLayers();
+        else
+        {
+            FixLayers();
+        }
+       
     }
     
 

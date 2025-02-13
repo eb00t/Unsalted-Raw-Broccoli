@@ -580,6 +580,7 @@ public class LevelBuilder : MonoBehaviour
         else
         {
             Debug.Log("No rooms left to discard!");
+            yield return new WaitForSecondsRealtime(.5f);
             SpawnBossRoom();
             roomGeneratingFinished = true;
             AudioManager.Instance.SetEventParameter(AudioManager.Instance.loadingEventInstance, "Level Loaded", 1);

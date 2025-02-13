@@ -42,8 +42,6 @@ public class RoomInfo : MonoBehaviour
     private string _roomPath;
     void Awake()
     {
-        //_roomPath = AssetDatabase.GetAssetPath(gameObject);
-        //Debug.Log(_roomPath);
         roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
         intersectionCheck = GetComponent<IntersectionRaycast>();
         attachedConnectors.Clear();
