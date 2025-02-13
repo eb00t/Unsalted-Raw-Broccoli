@@ -116,16 +116,29 @@ public class Boss_TwoHands : MonoBehaviour
         
         if (!(_targetTime <= 0.0f)) return;
         //_characterAttack.TakeDamagePlayer(atk);
-        var atkNum = Random.Range(0, 2);
+        var atkNum = Random.Range(0, 6);
         Debug.Log(atkNum);
 
-        if (atkNum == 0)
+        switch (atkNum)
         {
-            _animator.SetTrigger("Hand1Swipe");
-        }
-        else if (atkNum == 1)
-        {
-            _animator.SetTrigger("Hand2Swipe");
+            case 0:
+                _animator.SetTrigger("HandPoundLeft");
+                break;
+            case 1:
+                _animator.SetTrigger("HandPoundRight");
+                break;
+            case 2:
+                _animator.SetTrigger("HandClap");
+                break;
+            case 3:
+                _animator.SetTrigger("HandPound");
+                break;
+            case 4:
+                _animator.SetTrigger("HandSlideLeft");
+                break;
+            case 5:
+                _animator.SetTrigger("HandSlideRight");
+                break;
         }
         
         _targetTime = 4f;
@@ -165,9 +178,11 @@ public class Boss_TwoHands : MonoBehaviour
         }
     }
     
+    
     private void OnDisable()
     {
         RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         roomScripting.enemies.Remove(gameObject);
     }
+    
 }
