@@ -552,7 +552,7 @@ public class LevelBuilder : MonoBehaviour
             }
         }
 
-        if (spawnedRooms.Count == 21 && shopSpawned == false)
+        if (spawnedRooms.Count == _numberOfRoomsToSpawn - 1 && shopSpawned == false)
         {
             _spawnMode = SpawnMode.Shop;
             shopSpawned = true;
