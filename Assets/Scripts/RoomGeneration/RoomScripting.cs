@@ -14,7 +14,8 @@ public class RoomScripting : MonoBehaviour
     public bool allDoorsClosed;
     private RoomInfo _roomInfo;
     private bool _roomCleared;
-    public bool _playerIsInRoom;
+    public bool playerIsInRoom;
+    private bool _musicHasChanged;
     public CinemachineVirtualCamera _roomCam;
 
     private void Start()
@@ -42,11 +43,11 @@ public class RoomScripting : MonoBehaviour
     {
         while (true)
         {
-            if (_enemyCount > 0 && _playerIsInRoom)
+            if (_enemyCount > 0 && playerIsInRoom)
             {
                 CloseAllRoomDoors();
             }
-            else if (_playerIsInRoom == false)
+            else if (playerIsInRoom == false)
             {
                 OpenAllRoomDoors();
             }
@@ -80,7 +81,7 @@ public class RoomScripting : MonoBehaviour
             door.GetComponent<DoorInfo>().OpenDoor();
             door.GetComponent<DoorInfo>().closed = false;
         }
-        if (allDoorsClosed && _playerIsInRoom)
+        if (allDoorsClosed && playerIsInRoom)
         {
             AudioManager.Instance.SetMusicParameter("Music Track", 0);
         }
@@ -105,16 +106,39 @@ public class RoomScripting : MonoBehaviour
         allDoorsClosed = true;
     }
 
+    void EnterSpecialRoom()
+    {
+        if (_roomInfo.shop)
+        {
+            AudioManager.Instance.SetMusicParameter("Music Track", 3);
+            _musicHasChanged = true;
+        }
+    }
+
+    void ExitSpecialRoom()
+    {
+        AudioManager.Instance.SetMusicParameter("Music Track", 0);
+        _musicHasChanged = false;
+    }
+    
     void Update()
     {
         _enemyCount = enemies.Count;
         if (_roomCam.Priority > 9)
         {
-            _playerIsInRoom = true;
+            playerIsInRoom = true;
+            if (_musicHasChanged == false)
+            {
+                EnterSpecialRoom();
+            }
         }
         else
         {
-            _playerIsInRoom = false;
+            playerIsInRoom = false;
+            if (_musicHasChanged)
+            {
+                ExitSpecialRoom();
+            }
         }
     }
     

@@ -552,7 +552,7 @@ public class LevelBuilder : MonoBehaviour
             }
         }
 
-        if (spawnedRooms.Count == _numberOfRoomsToSpawn && shopSpawned == false) //Spawned rooms will always be 1 more than the expected value due to the starting room not being spawned with code, but still counted.
+        if (spawnedRooms.Count == (_numberOfRoomsToSpawn - 1) && shopSpawned == false) 
         {
             _spawnMode = SpawnMode.Shop;
             shopSpawned = true;

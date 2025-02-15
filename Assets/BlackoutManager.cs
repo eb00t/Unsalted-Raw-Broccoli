@@ -15,12 +15,12 @@ public class BlackoutManager : MonoBehaviour
     public Color transparentColor;
     private float _lerpTime;
     private bool _fadedOut;
-    private float _failSafeTimer = 10;
+    private float _failSafeTimer = 15;
     private bool _loading = true;
 
     private void OnEnable()
     {
-        _failSafeTimer = 15;
+        _failSafeTimer = LevelBuilder.Instance.howManyRoomsToSpawn + 6;
     }
 
     private enum LerpDirection
