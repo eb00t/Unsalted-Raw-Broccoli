@@ -9,18 +9,23 @@ public class ToolbarHandler : MonoBehaviour
     public int slotNo;
     [SerializeField] private GameObject[] slots;
     private InventoryStore _inventoryStore;
-    [SerializeField] private Consumable[] activeConsumables;
+    [SerializeField] private Consumable[] activeConsumables = new Consumable[3];
+    private GameObject _player;
+    private CharacterAttack _characterAttack;
 
     private void Start()
     {
         _inventoryStore = GetComponent<InventoryStore>();
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
     }
 
     private void AddToToolbar(Sprite newSprite, string txt, Consumable consumable)
     {
+        Debug.Log(slotNo);
         slots[slotNo].GetComponentInChildren<TextMeshProUGUI>().text = ""; // set amount held
         activeConsumables[slotNo] = consumable;
-        
+
         foreach (var s in slots[slotNo].GetComponentsInChildren<Image>())
         {
             if (s.name == "Image")
@@ -33,23 +38,26 @@ public class ToolbarHandler : MonoBehaviour
                         t.text = txt;
                     }
                 }
+
                 s.enabled = true;
             }
         }
     }
-    
+
     public void InvItemSelected(IndexHolder indexHolder)
     {
         var consumable = _inventoryStore.items[indexHolder.InventoryIndex].GetComponent<Consumable>();
         var s = consumable.uiIcon;
         var t = consumable.title;
-        
+
         AddToToolbar(s, t, consumable);
     }
 
     public void SlotItemActivated(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
+        if (_player.GetComponent<CharacterMovement>().uiOpen) return;
+
         var dir = context.ReadValue<Vector2>();
 
         switch (dir.x, dir.y)
@@ -72,12 +80,25 @@ public class ToolbarHandler : MonoBehaviour
 
     private void CheckItemEffect(int num)
     {
-        var effectIndex = activeConsumables[num].effectIndex;
+        var effect = activeConsumables[num].consumableEffect;
 
-        switch (effectIndex)
+        switch (effect)
         {
-            case 0:
-                // e.g. increase player health
+            case ConsumableEffect.None:
+                Debug.Log("Item has no effect assigned.");
+                break;
+            case ConsumableEffect.Heal:
+                Debug.Log("Healing item used");
+                if (_characterAttack.currentHealth + (_characterAttack.maxHealth / 2) >= _characterAttack.maxHealth)
+                {
+                    _characterAttack.currentHealth = _characterAttack.maxHealth;
+                }
+                else if (_characterAttack.currentHealth + (_characterAttack.maxHealth / 2) < _characterAttack.maxHealth)
+                {
+                    _characterAttack.currentHealth += _characterAttack.maxHealth / 2; 
+                }
+                
+                _characterAttack.TakeDamagePlayer(0); // to update ui
                 break;
         }
     }

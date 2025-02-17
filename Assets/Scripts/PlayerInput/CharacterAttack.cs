@@ -17,8 +17,8 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private float maxInputDelay = 10f;
     
     [Header("Stats")]
-    private int _currentHealth = 100;
-    [SerializeField] private int maxHealth = 100;
+    public int currentHealth = 100;
+    public int maxHealth = 100;
     [SerializeField] private int charAtk = 10;
     [SerializeField] private float atkRange = 3;
     
@@ -36,7 +36,7 @@ public class CharacterAttack : MonoBehaviour
         _playerAnimator = GameObject.FindGameObjectWithTag("PlayerRenderer").GetComponent<Animator>();
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
-        _currentHealth = maxHealth;
+        currentHealth = maxHealth;
     }
 
     public void LightAttack(InputAction.CallbackContext ctx)
@@ -123,14 +123,14 @@ public class CharacterAttack : MonoBehaviour
 
     public void TakeDamagePlayer(int damage)
     {
-        if (_currentHealth - damage > 0)
+        if (currentHealth - damage > 0)
         {
-            _currentHealth -= damage;
-            healthSlider.value = _currentHealth;
+            currentHealth -= damage;
+            healthSlider.value = currentHealth;
         }
         else
         {
-            _currentHealth = 0;
+            currentHealth = 0;
             healthSlider.value = 0;
             Die();
         }

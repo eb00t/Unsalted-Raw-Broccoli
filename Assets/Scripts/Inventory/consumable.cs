@@ -9,5 +9,5 @@ public class Consumable : MonoBehaviour
 	public int maxHold;
 	public int totalStored;
 	public Sprite uiIcon;
-	public int effectIndex;
+	public ConsumableEffect consumableEffect;
 }

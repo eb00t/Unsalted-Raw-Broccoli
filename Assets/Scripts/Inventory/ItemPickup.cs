@@ -10,12 +10,13 @@ public class ItemPickup : MonoBehaviour
     private Transform _player;
     public bool canPickup;
     private CharacterMovement _characterMovement;
-    [SerializeField] private InventoryStore inventoryStore;
+    private InventoryStore _inventoryStore;
 
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         _characterMovement = _player.GetComponent<CharacterMovement>();
+        _inventoryStore = GameObject.FindGameObjectWithTag("UIManager").GetComponent<InventoryStore>();
     }
 
     private void Update()
@@ -38,8 +39,8 @@ public class ItemPickup : MonoBehaviour
 
     public void AddItemToInventory()
     {
-        inventoryStore.items.Add(gameObject);
-        inventoryStore.RefreshList();
+        _inventoryStore.items.Add(gameObject);
+        _inventoryStore.RefreshList();
         popUpGUI.SetActive(false);
         gameObject.SetActive(false);
         canPickup = false;
