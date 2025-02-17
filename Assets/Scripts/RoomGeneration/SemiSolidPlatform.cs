@@ -9,15 +9,14 @@ public class SemiSolidPlatform : MonoBehaviour
 {
     private BoxCollider _boxCollider;
     public GameObject playerFeet;
-    public CharacterMovement characterMovement;
-    public LayerMask interactableObjects;
-    public LayerMask layersToExclude, layersToInclude;
     public LayerMask _layerToIgnore;
     public bool collisionOff;
+    public bool canDropThrough;
     private void Awake()
     {
         _boxCollider = GetComponent<BoxCollider>();
         collisionOff = false;
+        _layerToIgnore = LayerMask.GetMask("Player");
     }
 
     void Start()
@@ -26,35 +25,12 @@ public class SemiSolidPlatform : MonoBehaviour
         {
             playerFeet = GameObject.FindWithTag("Player Ground Position");
         }
-        characterMovement = playerFeet.transform.root.gameObject.GetComponent<CharacterMovement>();
-    }
-    
-   /* private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            _layerToIgnore = LayerMask.GetMask("Player");
-        }
-        else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-        {
-            _layerToIgnore = LayerMask.GetMask("Enemy");
-        }
-        TurnOffCollision(_layerToIgnore);
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            _layerToIgnore = LayerMask.GetMask("Player");
-        }
-        else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-        {
-            _layerToIgnore = LayerMask.GetMask("Enemy");
-        }
-        TurnOnCollision(_layerToIgnore);
-    }*/
-    
+
+
+
+
     public void TurnOffCollision(LayerMask layerMask)
     {
         collisionOff = true;
@@ -69,21 +45,19 @@ public class SemiSolidPlatform : MonoBehaviour
 
     private void Update()
     {
-        if (playerFeet.transform.position.y < transform.position.y && collisionOff == false)
+        if (Input.GetKeyDown(KeyCode.LeftControl) && canDropThrough)
         {
             _layerToIgnore = LayerMask.GetMask("Player");
             TurnOffCollision(_layerToIgnore);
-        }
-        else if (playerFeet.transform.position.y > transform.position.y && collisionOff)
-        {
-            _layerToIgnore = LayerMask.GetMask("Player");
-            TurnOnCollision(_layerToIgnore);
         }
 
-        if (characterMovement.crouching)
+        if (playerFeet.transform.position.y < transform.position.y && collisionOff == false)
         {
-            _layerToIgnore = LayerMask.GetMask("Player");
             TurnOffCollision(_layerToIgnore);
+        }
+        else if (playerFeet.transform.position.y > transform.position.y && canDropThrough == false && collisionOff)
+        {
+            TurnOnCollision(_layerToIgnore);
         }
     }
 }
