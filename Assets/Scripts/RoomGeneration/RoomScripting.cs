@@ -15,7 +15,9 @@ public class RoomScripting : MonoBehaviour
     private RoomInfo _roomInfo;
     private bool _roomCleared;
     public bool playerIsInRoom;
+    public bool roomHadEnemies;
     private bool _musicHasChanged;
+    private bool _lootSpawned;
     public CinemachineVirtualCamera _roomCam;
 
     private void Start()
@@ -27,7 +29,6 @@ public class RoomScripting : MonoBehaviour
         {
             door.AddComponent<DoorInfo>();
         }
-
         StartCoroutine(CheckIfRoomHasEnemies());
     }
 
@@ -43,6 +44,10 @@ public class RoomScripting : MonoBehaviour
     {
         while (true)
         {
+            if (_enemyCount > 0)
+            {
+                roomHadEnemies = true;
+            }
             if (_enemyCount > 0 && playerIsInRoom)
             {
                 CloseAllRoomDoors();
@@ -68,6 +73,11 @@ public class RoomScripting : MonoBehaviour
 
             if (_roomCleared)
             {
+                if (roomHadEnemies && _lootSpawned == false)
+                {
+                    _lootSpawned = true;
+                    LootManager.Instance.SpawnLootInCurrentRoom(gameObject);
+                }
                 StopCoroutine(CheckIfRoomHasEnemies());
             }
             yield return new WaitForSeconds(1f);
