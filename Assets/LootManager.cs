@@ -26,12 +26,25 @@ public class LootManager : MonoBehaviour
 
     public void SpawnLootInCurrentRoom(GameObject room)
     {
-       int spawnChance = RandomiseNumber(_willLootSpawn);
+        int spawnChance = RandomiseNumber(_willLootSpawn);
         if (spawnChance == 0)
         {
             Debug.Log("Rolled a zero; spawning loot.");
             int chosenLoot = RandomiseNumber(possibleLoot.Count);
-            GameObject lootToSpawn = Instantiate(possibleLoot[chosenLoot], room.transform.position, Quaternion.identity);
+            float offsetSpawnPos;
+            int leftOffset = RandomiseNumber(2);
+            Debug.Log(leftOffset);
+            if (leftOffset == 0)
+            {
+                offsetSpawnPos = room.transform.position.x - room.GetComponent<RoomInfo>().roomLength / 4;
+            }
+            else
+            {
+                offsetSpawnPos = room.transform.position.x + room.GetComponent<RoomInfo>().roomLength / 4;
+            }
+            Vector3 realSpawnPos = new Vector3(offsetSpawnPos, room.transform.position.y, room.transform.position.z);
+            GameObject lootToSpawn = Instantiate(possibleLoot[chosenLoot], realSpawnPos, Quaternion.identity);
+            possibleLoot.Remove(possibleLoot[chosenLoot]);
         }
         else
         {
