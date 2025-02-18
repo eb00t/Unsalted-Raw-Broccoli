@@ -7,12 +7,13 @@ public class globalStatsScript : MonoBehaviour
 {
     public float deathCounter;
     public TextMeshProUGUI totalDeaths;
-   // public GameObject deathScreen;
+    //public GameObject deathScreen;
 
     void OnEnable()
     {
         oneDeath();
-        Debug.Log("AWAKE CALLED");
+        loadData();
+       // Debug.Log("AWAKE CALLED");
     }
 
     void Start()
@@ -29,13 +30,12 @@ public class globalStatsScript : MonoBehaviour
 
     void Update()
         {
-            //  saveData();
+              saveData();
         }
 
     public void oneDeath()
     {
         //Adds a death to the counter
-
         deathCounter += 1;
         totalDeaths.text = "Total Deaths = " + deathCounter;
     }
