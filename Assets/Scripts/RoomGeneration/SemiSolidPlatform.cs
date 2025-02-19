@@ -54,6 +54,7 @@ public class SemiSolidPlatform : MonoBehaviour
         if (playerFeet.transform.position.y < transform.position.y && collisionOff == false)
         {
             TurnOffCollision(_layerToIgnore);
+            
         }
         else if (playerFeet.transform.position.y > transform.position.y && canDropThrough == false && collisionOff)
         {
