@@ -120,19 +120,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerFeet: {fileID: 0}
-  characterMovement: {fileID: 0}
-  interactableObjects:
+  layerToIgnore:
     serializedVersion: 2
     m_Bits: 0
-  layersToExclude:
+  groundLayer:
     serializedVersion: 2
-    m_Bits: 0
-  layersToInclude:
+    m_Bits: 1024
+  ignoreLayer:
     serializedVersion: 2
-    m_Bits: 0
-  _layerToIgnore:
-    serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4
   collisionOff: 0
   canDropThrough: 0
 --- !u!1 &4732079700339211372
@@ -201,4 +197,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2f3afe05e7b09348be30be3d3526b18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  up: 0
