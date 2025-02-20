@@ -29,6 +29,7 @@ public class CharacterAttack : MonoBehaviour
     
     [SerializeField] private Slider healthSlider;
     [SerializeField] private GameObject diedScreen;
+    [SerializeField] private MenuHandler menuHandler;
     
     private void Start()
     {
@@ -139,6 +140,7 @@ public class CharacterAttack : MonoBehaviour
     private void Die()
     {
         diedScreen.SetActive(true);
+        menuHandler.SwitchSelected(diedScreen.GetComponentInChildren<Button>().gameObject);
     }
 
     /*
