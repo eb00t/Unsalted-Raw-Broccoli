@@ -1,5 +1,3 @@
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -7,11 +5,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuHandler : MonoBehaviour
-// TODO: selectedInv needs to be set by another script as inventory items are generated at runtime
 {
-	[SerializeField] private GameObject selectedMenu, selectedEquip;
+	[SerializeField] private GameObject selectedMenu, selectedEquip, slots;
 	[SerializeField] private EventSystem eventSystem;
-	private bool _isEquip, _isInventory, _isInvInteractable;
 	private InventoryStore _inventoryStore;
 	private ToolbarHandler _toolbarHandler;
 	[SerializeField] private GameObject grid;
@@ -38,22 +34,40 @@ public class MenuHandler : MonoBehaviour
 			characterMovement.uiOpen = false;
 		}
 	}
-	
 
-	private void ToggleEquip()
+	public void ToggleEquip()
 	{
+		foreach (var s in slots.GetComponentsInChildren<Button>())
+		{
+			s.interactable = true;
+		}
+		
+		foreach (var b in grid.GetComponentsInChildren<Button>())
+		{
+			b.interactable = true;
+		}
+		
 		invGui.SetActive(true);
 		menuGui.SetActive(false);
 		SwitchSelected(selectedEquip);
 	}
-
-	// things to track: Inventory, ToolBar, Menu, QuitPopup
-	public void Back(InputAction.CallbackContext context) // switch to just close everything and open what is needed ?
+	
+	public void Back(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
 		
 		if (invGui.activeSelf)
 		{
+			foreach (var b in grid.GetComponentsInChildren<Button>())
+			{
+				b.interactable = false;
+			}
+			
+			foreach (var s in slots.GetComponentsInChildren<Button>())
+			{
+				s.interactable = true;
+			}
+			
 			invGui.SetActive(false);
 			menuGui.SetActive(true);
 			SwitchSelected(selectedMenu);
@@ -108,7 +122,12 @@ public class MenuHandler : MonoBehaviour
 			foreach (var b in grid.GetComponentsInChildren<Button>())
 			{
 				b.interactable = true;
-				_isInvInteractable = true;
+			}
+			
+			foreach (var s in slots.GetComponentsInChildren<Button>())
+			{
+				Debug.Log(s.name);
+				s.interactable = false;
 			}
 
 			_toolbarHandler.slotNo = slot;

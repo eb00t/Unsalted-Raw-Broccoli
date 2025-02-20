@@ -9,20 +9,21 @@ public class ToolbarHandler : MonoBehaviour
     public int slotNo;
     [SerializeField] private GameObject[] slots;
     private InventoryStore _inventoryStore;
-    [SerializeField] private Consumable[] activeConsumables = new Consumable[3];
+    [SerializeField] private Consumable[] activeConsumables = new Consumable[5];
     private GameObject _player;
     private CharacterAttack _characterAttack;
+    private MenuHandler _menuHandler;
 
     private void Start()
     {
         _inventoryStore = GetComponent<InventoryStore>();
         _player = GameObject.FindGameObjectWithTag("Player");
         _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
+        _menuHandler = GetComponent<MenuHandler>();
     }
 
     private void AddToToolbar(Sprite newSprite, string txt, Consumable consumable)
     {
-        Debug.Log(slotNo);
         slots[slotNo].GetComponentInChildren<TextMeshProUGUI>().text = ""; // set amount held
         activeConsumables[slotNo] = consumable;
 
@@ -51,6 +52,8 @@ public class ToolbarHandler : MonoBehaviour
         var t = consumable.title;
 
         AddToToolbar(s, t, consumable);
+        
+        _menuHandler.ToggleEquip();
     }
 
     public void SlotItemActivated(InputAction.CallbackContext context)
