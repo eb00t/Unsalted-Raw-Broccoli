@@ -36,6 +36,7 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 
+	/*
 	public void ToggleInventory()
 	{
 		inventoryGui.SetActive(!inventoryGui.activeSelf);
@@ -47,6 +48,7 @@ public class MenuHandler : MonoBehaviour
 			_isInvInteractable = false;
 		}
 	}
+	*/
 
 	private void ToggleEquip()
 	{
@@ -85,12 +87,12 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (_isInventory && _isInvInteractable)
 		{
-			ToggleInventory();
+			//ToggleInventory();
 			SwitchSelected(selectedEquip);
 		}
 		else if (_isInventory && !_isInvInteractable)
 		{
-			ToggleInventory();
+			//ToggleInventory();
 			ToggleEquip();
 		}
 		else if (!_isEquip && !_isInventory && menu.activeSelf)
@@ -110,7 +112,7 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 
-	private void SwitchSelected(GameObject g)
+	public void SwitchSelected(GameObject g)
 	{
 		eventSystem.SetSelectedGameObject(null);
 		eventSystem.SetSelectedGameObject(g);
@@ -130,7 +132,7 @@ public class MenuHandler : MonoBehaviour
 				}
 			}
 
-			ToggleInventory();
+			//ToggleInventory();
 
 			foreach (var b in grid.GetComponentsInChildren<Button>())
 			{
