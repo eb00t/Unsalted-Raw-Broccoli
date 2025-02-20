@@ -5,6 +5,7 @@ using TMPro;
 
 public class globalStatsScript : MonoBehaviour
 {
+    //Death Counter
     public float deathCounter;
     public TextMeshProUGUI totalDeaths;
     //public GameObject deathScreen;
@@ -30,9 +31,10 @@ public class globalStatsScript : MonoBehaviour
 
     void Update()
         {
-              saveData();
+        saveData();
         }
 
+    //Death Counter
     public void oneDeath()
     {
         //Adds a death to the counter
@@ -56,7 +58,6 @@ public class globalStatsScript : MonoBehaviour
         {
             PlayerPrefs.DeleteKey("DeathCounter");
         }
-
     }
 
 
