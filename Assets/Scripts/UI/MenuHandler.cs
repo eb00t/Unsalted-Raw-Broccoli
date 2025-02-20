@@ -36,7 +36,7 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 
-	/*
+	
 	public void ToggleInventory()
 	{
 		inventoryGui.SetActive(!inventoryGui.activeSelf);
@@ -48,7 +48,7 @@ public class MenuHandler : MonoBehaviour
 			_isInvInteractable = false;
 		}
 	}
-	*/
+	
 
 	private void ToggleEquip()
 	{
@@ -132,7 +132,7 @@ public class MenuHandler : MonoBehaviour
 				}
 			}
 
-			//ToggleInventory();
+			ToggleInventory();
 
 			foreach (var b in grid.GetComponentsInChildren<Button>())
 			{
