@@ -35,6 +35,9 @@ public class EnemyHandler : MonoBehaviour
     [Header("References")]
     [SerializeField] private BoxCollider atkHitbox;
 
+    private int knockbackDir = 0;
+    [SerializeField] private Vector3 knockbackPower = new Vector3(10f, 1f, 0f);
+
     private enum States
     {
         Idle,
@@ -206,6 +209,14 @@ public class EnemyHandler : MonoBehaviour
         {
             _health -= damage;
             _healthSlider.value = _health;
+
+            // Stun
+            _agent.velocity = Vector3.zero;
+            if (transform.position.x > _target.position.x)
+            {
+                knockbackDir = 1;
+            } else knockbackDir = -1;
+            _agent.velocity += new Vector3(knockbackPower.x * knockbackDir, knockbackPower.y, knockbackPower.z);
         }
         else
         {

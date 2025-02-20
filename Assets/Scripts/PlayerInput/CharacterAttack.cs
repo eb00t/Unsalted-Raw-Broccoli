@@ -15,6 +15,7 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private float timer1 = 0f;
     [SerializeField] private bool[] lightCombo = new bool[4];
     [SerializeField] private float maxInputDelay = 10f;
+    [HideInInspector] public bool animEnd;
     
     [Header("Stats")]
     public int currentHealth = 100;
@@ -47,29 +48,48 @@ public class CharacterAttack : MonoBehaviour
             //Debug.Log("LightAttack");
             //_playerAnimator.SetBool("LightAttack1", true);
             //InitiateAttack();
+            animEnd = false;
 
-            // Start of combo
-            
+            // Start of chain
+            if (!lightCombo[0])
+            {
+                Debug.Log("LightAttack");
+                _playerAnimator.SetBool("LightAttack1", true);
+            }
 
             if (lightCombo[0])
             {
+                
+
                 if (timer <= maxInputDelay && timer > 0f)
                 {
-                    if (timer1 <= maxInputDelay && timer1 > 0f)
+                    Debug.Log("LightPunch");
+                    _playerAnimator.SetBool("LightPunch", true);
+                    if (lightCombo[1])
                     {
-                        lightCombo[2] = true;
+                        if (timer1 <= maxInputDelay && timer1 > 0f)
+                        {
+                            if (animEnd)
+                            {
+                                
+                                lightCombo[2] = true;
+                            }
+                        }
                     }
                     lightCombo[1] = true;
                 }
             }
+            
             lightCombo[0] = true;
-            if (lightCombo[2])
+            if (lightCombo[2] && animEnd)
             {
+                Debug.Log("LightAttack2");
+                _playerAnimator.SetBool("LightAttack2", true);
+
                 timer1 = 0f; lightCombo[1] = false;
                 timer = 0f; lightCombo[0] = false;
 
-                Debug.Log("LightAttack");
-                _playerAnimator.SetBool("LightAttack1", true);
+                
                 lightCombo[2] = false;
             }
         }
@@ -95,6 +115,7 @@ public class CharacterAttack : MonoBehaviour
                 timer1 = 0f; lightCombo[1] = false;
                 timer = 0f; lightCombo[0] = false;
 
+                _playerAnimator.StopPlayback();
                 Debug.Log("LightAttack1");
                 _playerAnimator.SetBool("LightAttack2", true);
                 lightCombo[3] = false;

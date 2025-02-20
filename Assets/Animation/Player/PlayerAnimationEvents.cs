@@ -37,4 +37,9 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         charMovement.allowMovement = true;
     }
+
+    private void signalAnimationEnd()
+    {
+        charAttack.animEnd = true;
+    }
 }
