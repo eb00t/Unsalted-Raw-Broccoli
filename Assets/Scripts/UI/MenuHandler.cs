@@ -25,6 +25,7 @@ public class MenuHandler : MonoBehaviour
 
 	private void Update()
 	{
+		// update if ui is open or not in player movement script
 		if (invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf)
 		{
 			characterMovement.uiOpen = true;
@@ -35,6 +36,7 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 
+	// opens equip menu (with inventory), hides other menus and resets interaction bool to prevent unwanted ui navigation
 	public void ToggleEquip()
 	{
 		foreach (var s in slots.GetComponentsInChildren<Button>())
@@ -44,7 +46,7 @@ public class MenuHandler : MonoBehaviour
 		
 		foreach (var b in grid.GetComponentsInChildren<Button>())
 		{
-			b.interactable = true;
+			b.interactable = false;
 		}
 		
 		invGui.SetActive(true);
@@ -52,6 +54,7 @@ public class MenuHandler : MonoBehaviour
 		SwitchSelected(selectedEquip);
 	}
 	
+	// when Button East/Backspace is pressed close current menu and open previous menus
 	public void Back(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
@@ -81,6 +84,7 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 
+	// toggle pause menu
 	public void Pause(InputAction.CallbackContext context)
 	{
 		if (invGui.activeSelf) return;
@@ -101,12 +105,14 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 
+	// switches controller navigation to a new object
 	public void SwitchSelected(GameObject g)
 	{
 		eventSystem.SetSelectedGameObject(null);
 		eventSystem.SetSelectedGameObject(g);
 	}
 
+	// If player has items, switches navigation to inventory to add item to selected toolbar index when toolbar button is pressed
 	public void SlotSelected(int slot)
 	{
 		if (_inventoryStore.items.Count > 0)
@@ -139,12 +145,12 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 
-	public void SceneReload()
+	public void SceneReload() // reloads scene
 	{
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 
-	public void Quit()
+	public void Quit() // quits game
 	{
 		Application.Quit();
 	}
