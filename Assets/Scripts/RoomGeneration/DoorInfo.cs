@@ -73,6 +73,7 @@ private void Awake()
    { 
        Vector3 transformPos = new Vector3(_initialPosition.x, _initialPosition.y, _initialPosition.z + 2.99f);
        transform.position = transformPos;
+       Debug.Log("Opening door (" + gameObject.name + ") in " + transform.root.name);
        if (closed)
        {
             AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DoorSlam, transform.position);
@@ -83,6 +84,7 @@ private void Awake()
    public void CloseDoor()
    {
       transform.position = _initialPosition;
+      Debug.Log("Closing door (" + gameObject.name + ") in " + transform.root.name);
        if (!closed)
        { 
            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DoorSlam, transform.position);

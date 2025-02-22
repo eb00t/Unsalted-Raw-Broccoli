@@ -10,13 +10,14 @@ public class CameraManager : MonoBehaviour
     public static CameraManager Instance { get; private set; }
     
     private CinemachineBrain _cinemachineBrain;
-    private enum CameraMode
+    public enum CameraMode
     {
         Default,
         Map
     }
+    public CameraMode mode = CameraMode.Default;
     public CinemachineVirtualCamera playerCam;
-    private CinemachineVirtualCamera _currentCamera;
+    public CinemachineVirtualCamera currentCamera;
     public List<CinemachineVirtualCamera> virtualCameras;
 
     private void Awake()

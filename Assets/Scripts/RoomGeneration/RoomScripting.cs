@@ -15,7 +15,9 @@ public class RoomScripting : MonoBehaviour
     private RoomInfo _roomInfo;
     private bool _roomCleared;
     public bool playerIsInRoom;
+    public bool playerHasEnteredRoom;
     public bool roomHadEnemies;
+    public List<GameObject> spawnersInRoom;
     private bool _musicHasChanged;
     private bool _lootSpawned;
     public CinemachineVirtualCamera _roomCam;
@@ -136,7 +138,9 @@ public class RoomScripting : MonoBehaviour
         _enemyCount = enemies.Count;
         if (_roomCam.Priority > 9)
         {
+            CameraManager.Instance.currentCamera = _roomCam;
             playerIsInRoom = true;
+            playerHasEnteredRoom = true;
             if (_musicHasChanged == false)
             {
                 EnterSpecialRoom();

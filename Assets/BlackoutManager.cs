@@ -13,6 +13,7 @@ public class BlackoutManager : MonoBehaviour
     public Image blackoutImage;
     public Color blackoutColor;
     public Color transparentColor;
+    public bool blackoutComplete;
     private float _lerpTime;
     private bool _fadedOut;
     private float _failSafeTimer = 15;
@@ -61,6 +62,7 @@ public class BlackoutManager : MonoBehaviour
 
     public void RaiseOpacity()
     {
+        blackoutComplete = false;
         blackoutImage.gameObject.SetActive(true);
         _lerpTime = 0;
         _lerpDirection = LerpDirection.FadeIn;
@@ -103,6 +105,11 @@ public class BlackoutManager : MonoBehaviour
                 Debug.LogError("Failsafe timer has expired, reloading scene to fix errors.");
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
+        }
+        
+        if (blackoutImage.color.a <= 0)
+        {
+            blackoutComplete = true;
         }
     }
 }

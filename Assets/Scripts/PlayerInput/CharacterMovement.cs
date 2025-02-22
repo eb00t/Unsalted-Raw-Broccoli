@@ -192,6 +192,18 @@ public class CharacterMovement : MonoBehaviour
                 startDashTimer = false;
             }
         }
+        
+        //Stop player moving while game is loading
+        if (BlackoutManager.Instance.blackoutComplete == false)
+        {
+            allowMovement = false;
+            Velocity = Vector3.zero;
+            walkAllowed = false;
+        } else if (BlackoutManager.Instance.blackoutComplete && uiOpen == false)
+        {
+            allowMovement = true;
+            walkAllowed = true;
+        }
     }
 
     public void FixedUpdate()

@@ -3604,8 +3604,8 @@ GameObject:
   - component: {fileID: -5584443085902809798}
   - component: {fileID: 9176868600192144386}
   - component: {fileID: 7005754275908445315}
-  - component: {fileID: 3710111660546247646}
   - component: {fileID: 8971922321872896140}
+  - component: {fileID: 3710111660546247646}
   m_Layer: 6
   m_Name: TestRoom1
   m_TagString: Untagged
@@ -3764,8 +3764,22 @@ MonoBehaviour:
   allDoors: []
   allDoorsClosed: 0
   playerIsInRoom: 0
+  playerHasEnteredRoom: 0
   roomHadEnemies: 0
   _roomCam: {fileID: 0}
+--- !u!114 &8971922321872896140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5479053291480077666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9afaf4f726222064f809f68f97c9c83a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomType: 0
 --- !u!65 &3710111660546247646
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3787,19 +3801,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0000002, y: 1, z: 1.0000002}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8971922321872896140
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5479053291480077666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9afaf4f726222064f809f68f97c9c83a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomType: 0
 --- !u!1 &5496778360339259473
 GameObject:
   m_ObjectHideFlags: 0
