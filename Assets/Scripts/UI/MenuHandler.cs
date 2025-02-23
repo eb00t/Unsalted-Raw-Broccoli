@@ -117,13 +117,7 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (_inventoryStore.items.Count > 0)
 		{
-			foreach (var b in grid.GetComponentsInChildren<IndexHolder>())
-			{
-				if (b.InventoryIndex == 0)
-				{
-					SwitchSelected(b.gameObject);
-				}
-			}
+			SwitchSelected(grid.GetComponentInChildren<Button>().gameObject);
 			
 			foreach (var b in grid.GetComponentsInChildren<Button>())
 			{
@@ -132,7 +126,6 @@ public class MenuHandler : MonoBehaviour
 			
 			foreach (var s in slots.GetComponentsInChildren<Button>())
 			{
-				Debug.Log(s.name);
 				s.interactable = false;
 			}
 

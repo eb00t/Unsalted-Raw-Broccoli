@@ -1,7 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
 
 public class ItemPickup : MonoBehaviour
 {
@@ -39,8 +36,7 @@ public class ItemPickup : MonoBehaviour
 
     public void AddItemToInventory()
     {
-        _inventoryStore.items.Add(gameObject);
-        _inventoryStore.RefreshList();
+        _inventoryStore.AddNewItem(gameObject);
         popUpGUI.SetActive(false);
         gameObject.SetActive(false);
         canPickup = false;

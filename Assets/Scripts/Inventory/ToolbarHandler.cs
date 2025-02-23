@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -69,11 +68,9 @@ public class ToolbarHandler : MonoBehaviour
     public void InvItemSelected(IndexHolder indexHolder)
     {
         // gets the consumable script on gameobject, gets the image and title, calls method to add inv item to toolbar
-        var consumable = _inventoryStore.items[indexHolder.InventoryIndex].GetComponent<Consumable>();
-        var s = consumable.uiIcon;
-        var t = consumable.title;
+        var consumable = indexHolder.consumable;
 
-        AddToToolbar(s, t, consumable);
+        AddToToolbar(consumable.uiIcon, consumable.title, consumable);
         
         _menuHandler.ToggleEquip(); // once item is added go back to equip menu (slots gameobject)
     }
@@ -141,24 +138,25 @@ public class ToolbarHandler : MonoBehaviour
         if (_activeConsumable + direction > equippedConsumables.Count - 1)
         {
             _activeConsumable = 0;
-            Debug.Log("Index higher than list length, resetting to 0.");
+            //Debug.LogWarning("Index higher than list length, resetting to 0.");
         }
         else if (_activeConsumable + direction < 0)
         {
             _activeConsumable = equippedConsumables.Count - 1; 
-            Debug.Log("Index is lower than 0, resetting to list length.");
+            //Debug.LogWarning("Index is lower than 0, resetting to list length.");
         }
         else
         {
             if (_activeConsumable + direction > equippedConsumables.Count - 1) return;
             
             _activeConsumable += direction;
-            Debug.Log("Moving to next index");
+            //Debug.Log("Moving to next index");
         }
         
         UpdateCurrentTool();
     }
 
+    // updates the sprite image, text and if image should be enabled or disabled (to prevent a white box appearing)
     private void UpdateCurrentTool()
     {
         if (equippedConsumables.Count == 0)
