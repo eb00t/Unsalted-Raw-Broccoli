@@ -35,45 +35,38 @@ public class InventoryStore : MonoBehaviour
     public void AddNewItem(GameObject item)
     {
         var consumable = item.GetComponent<Consumable>();
-        var canPass = false;
 
+        // checks if item added exists in inventory, if so it increases the number held and returns
         if (items.Count > 0)
         {
             foreach (var x in items)
             {
                 Debug.Log(consumable.title + x.GetComponent<Consumable>().title);
-                if (consumable.title == x.GetComponent<Consumable>().title)
+                
+                if (consumable.title != x.GetComponent<Consumable>().title) continue;
+                
+                foreach (var b in grid.GetComponentsInChildren<IndexHolder>())
                 {
-                    foreach (var b in grid.GetComponentsInChildren<IndexHolder>())
-                    {
-                        if (b != null)
-                        {
-                            if (b.consumable.title == consumable.title)
-                            {
-                                b.numHeld++;
-                                return;
-                            }
-                        }
-                    }
+                    if (b == null) continue;
+                    if (b.consumable.title != consumable.title) continue;
+                    
+                    b.numHeld++;
+                    return;
                 }
             }
-            canPass = true;
         }
-        else
-        {
-            canPass = true;
-        }
-
-        if (!canPass) return;
+        
+        // if the item did not exist in inventory already then a new inventory button is created
         items.Add(item);
-        Debug.Log("Passed check");
         var newBlock = Instantiate(block, block.position, block.rotation, grid);
         newBlock.GetComponentInChildren<TextMeshProUGUI>().text = consumable.title;
+        
         var indexHolder = newBlock.GetComponent<IndexHolder>();
         //indexHolder.InventoryIndex = i;
         indexHolder.consumable = consumable;
         indexHolder.numHeld++;
         
+        // updates the onclick for the new inventory item button
         newBlock.GetComponent<Button>().onClick.AddListener(delegate
         {
             _toolbarHandler.InvItemSelected(indexHolder);
