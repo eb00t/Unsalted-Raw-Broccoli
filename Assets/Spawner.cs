@@ -38,7 +38,6 @@ public class Spawner : MonoBehaviour
         GameObject enemyToSpawn = spawnQueue[0];
         enemyToSpawn = Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
         enemyToSpawn.transform.parent = gameObject.transform.root;
-        _roomScripting.enemies.Add(enemyToSpawn);
         spawnedEnemies.Add(enemyToSpawn);
         spawnQueue.Remove(spawnQueue[0]);
     }
