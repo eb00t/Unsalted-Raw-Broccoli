@@ -13,27 +13,34 @@ public class Spawner : MonoBehaviour
     public SpawnMode spawnMode = SpawnMode.Random;
     public int waves = 1;
     private int _rng;
-    public List<GameObject> spawnQueue, possibleEnemies;
+    public RoomScripting _roomScripting;
+    public List<GameObject> spawnQueue, possibleEnemies, spawnedEnemies;
     void Start()
     {
-        waves = RandomiseNumber(3);
+        _roomScripting = transform.root.GetComponent<RoomScripting>();
+        //waves = RandomiseNumber(3);
         if (spawnMode == SpawnMode.Random)
         {
-            foreach (var enemy in Resources.LoadAll<GameObject>("Enemies"))
+            foreach (var enemy in Resources.LoadAll<GameObject>("Enemies/Normal Enemies"))
             {
                 possibleEnemies.Add(enemy);
-                for (int i = 0; i < waves; i++)
-                {
-                    _rng = RandomiseNumber(possibleEnemies.Count);
-                    spawnQueue.Add(possibleEnemies[_rng]);
-                }
+            }
+            for (int i = 0; i < waves; i++)
+            {
+                _rng = RandomiseNumber(possibleEnemies.Count);
+                spawnQueue.Add(possibleEnemies[_rng]);
             }
         }
     }
 
-    void SpawnEnemies()
+    public void SpawnEnemies()
     {
-        
+        GameObject enemyToSpawn = spawnQueue[0];
+        enemyToSpawn = Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+        enemyToSpawn.transform.parent = gameObject.transform.root;
+        _roomScripting.enemies.Add(enemyToSpawn);
+        spawnedEnemies.Add(enemyToSpawn);
+        spawnQueue.Remove(spawnQueue[0]);
     }
     
     private int RandomiseNumber(int setSize)

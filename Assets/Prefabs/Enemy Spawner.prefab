@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7483631368925362006}
   m_Layer: 0
   m_Name: Enemy Spawner
-  m_TagString: Untagged
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,7 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnMode: 0
-  waves: 0
-  rng: 0
+  waves: 1
+  _roomScripting: {fileID: 0}
   spawnQueue: []
   possibleEnemies: []
+  spawnedEnemies: []

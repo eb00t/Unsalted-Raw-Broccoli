@@ -9,21 +9,30 @@ using UnityEngine.Serialization;
 public class RoomScripting : MonoBehaviour
 {
     private int _enemyCount;
+    public int currentWave;
     public List<GameObject> enemies;
     public List<GameObject> allDoors;
+    public List<GameObject> spawners;
     public bool allDoorsClosed;
     private RoomInfo _roomInfo;
     private bool _roomCleared;
     public bool playerIsInRoom;
     public bool playerHasEnteredRoom;
     public bool roomHadEnemies;
-    public List<GameObject> spawnersInRoom;
     private bool _musicHasChanged;
     private bool _lootSpawned;
     public CinemachineVirtualCamera _roomCam;
 
     private void Start()
     {
+        currentWave = 0;
+        foreach (var spawner in transform.GetComponentsInChildren<Transform>())
+        {
+            if (spawner.CompareTag("Spawner"))
+            {
+                spawners.Add(spawner.gameObject);
+            }
+        }
         _roomInfo = GetComponent<RoomInfo>();
         _roomCam = _roomInfo.roomCam;
         allDoors = new List<GameObject>(_roomInfo.allDoors);
@@ -50,15 +59,11 @@ public class RoomScripting : MonoBehaviour
             {
                 roomHadEnemies = true;
             }
-            if (_enemyCount > 0 && playerIsInRoom)
+            if (_enemyCount > 0 && playerIsInRoom && allDoorsClosed == false)
             {
                 CloseAllRoomDoors();
             }
-            else if (playerIsInRoom == false)
-            {
-                OpenAllRoomDoors();
-            }
-            else if (_enemyCount <= 0)
+            else if (_enemyCount <= 0 && allDoorsClosed)
             {
                 OpenAllRoomDoors();
                 _roomCleared = true;
@@ -68,7 +73,7 @@ public class RoomScripting : MonoBehaviour
             {
                 AudioManager.Instance.SetMusicParameter("Combat Weight", 1);
             }
-            else
+            else if (_enemyCount < 2)
             {
                 AudioManager.Instance.SetMusicParameter("Combat Weight", 0);
             }
@@ -93,10 +98,7 @@ public class RoomScripting : MonoBehaviour
             door.GetComponent<DoorInfo>().OpenDoor();
             door.GetComponent<DoorInfo>().closed = false;
         }
-        if (allDoorsClosed && playerIsInRoom)
-        {
-            AudioManager.Instance.SetMusicParameter("Music Track", 0);
-        }
+        AudioManager.Instance.SetMusicParameter("Music Track", 0);
         allDoorsClosed = false;
     }
 
@@ -116,6 +118,10 @@ public class RoomScripting : MonoBehaviour
             AudioManager.Instance.SetMusicParameter("Music Track", 2);
         }
         allDoorsClosed = true;
+        foreach (var spawner in spawners)
+        {
+            spawner.GetComponent<Spawner>().SpawnEnemies();
+        }
     }
 
     void EnterSpecialRoom()
@@ -136,7 +142,7 @@ public class RoomScripting : MonoBehaviour
     void Update()
     {
         _enemyCount = enemies.Count;
-        if (_roomCam.Priority > 9)
+        if (_roomCam.Priority > 9 && allDoorsClosed == false)
         {
             CameraManager.Instance.currentCamera = _roomCam;
             playerIsInRoom = true;
