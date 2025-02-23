@@ -1,17 +1,20 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 using Vector2 = UnityEngine.Vector2;
 
 public class ToolbarHandler : MonoBehaviour
 {
     public int slotNo;
-    [SerializeField] private GameObject[] slots;
-    [SerializeField] private Consumable[] activeConsumables = new Consumable[5]; // keeps track of which consumable is in what slot
+    [SerializeField] private List<GameObject> slots;
+    //[SerializeField] private List<Consumable> activeConsumables; // keeps track of which consumable is in what slot
     [SerializeField] private List<Consumable> equippedConsumables; // allows flexibility for cycling consumables
-    [SerializeField] private int _activeConsumable = 0;
+    private int _activeConsumable = 0;
     
     private InventoryStore _inventoryStore;
     private GameObject _player;
@@ -19,6 +22,7 @@ public class ToolbarHandler : MonoBehaviour
     private MenuHandler _menuHandler;
     [SerializeField] private Image toolbarImg;
     [SerializeField] private TextMeshProUGUI toolbarTxt;
+    [SerializeField] private GameObject grid;
 
     private void Start()
     {
@@ -31,7 +35,7 @@ public class ToolbarHandler : MonoBehaviour
     private void AddToToolbar(Sprite newSprite, string txt, Consumable consumable)
     {
         slots[slotNo].GetComponentInChildren<TextMeshProUGUI>().text = ""; // set amount held
-        activeConsumables[slotNo] = consumable; // update what consumables are equipped
+        slots[slotNo].GetComponent<IndexHolder>().consumable = consumable; // update what consumables are equipped
 
         // find image and set to consumable set sprite and consumable set title, then enable the image
         foreach (var s in slots[slotNo].GetComponentsInChildren<Image>()) 
@@ -50,16 +54,6 @@ public class ToolbarHandler : MonoBehaviour
                 s.enabled = true;
             }
         }
-
-        /*
-        if (equippedConsumables[_activeConsumable])
-        {
-            toolbarImg.sprite = newSprite;
-            toolbarTxt.text = txt;
-            toolbarImg.enabled = true;
-            _activeConsumable = equippedConsumables.IndexOf(consumable);
-        }
-        */
 
         UpdateToolBar();
     }
@@ -110,6 +104,8 @@ public class ToolbarHandler : MonoBehaviour
         if (equippedConsumables.Count <= 0 || equippedConsumables[_activeConsumable] == null) return;
         var effect = equippedConsumables[_activeConsumable].consumableEffect;
 
+        _inventoryStore.UpdateItemsHeld(equippedConsumables[_activeConsumable]);
+
         switch (effect)
         {
             case ConsumableEffect.None:
@@ -128,6 +124,8 @@ public class ToolbarHandler : MonoBehaviour
                 _characterAttack.TakeDamagePlayer(0); // to update ui
                 break;
         }
+        
+        UpdateCurrentTool();
     }
 
     private void CycleToolbar(int direction) // -1 = left, 1 = right
@@ -163,14 +161,21 @@ public class ToolbarHandler : MonoBehaviour
         {
             toolbarImg.enabled = false;
             toolbarImg.sprite = null;
-            toolbarTxt.text = "";
+            toolbarTxt.text = "-";
         }
         else
         {
             var con = equippedConsumables[_activeConsumable];
             toolbarImg.enabled = true;
             toolbarImg.sprite = con.uiIcon;
-            toolbarTxt.text = con.title;
+
+            foreach (var b in grid.GetComponentsInChildren<IndexHolder>())
+            {
+                if (b.consumable == con)
+                {
+                    toolbarTxt.text = b.numHeld.ToString();
+                }
+            }
         }
     }
 
@@ -179,15 +184,48 @@ public class ToolbarHandler : MonoBehaviour
     {
         equippedConsumables.Clear();
 
-        foreach (var ac in activeConsumables)
+        foreach (var ac in slots)
         {
-            if (ac != null)
+            var consumable = ac.GetComponent<IndexHolder>().consumable;
+            
+            if (consumable != null)
             {
-                equippedConsumables.Add(ac);
+                equippedConsumables.Add(consumable);
             }
         }
 
         _activeConsumable = 0;
         UpdateCurrentTool();
+    }
+
+    public void UpdateActiveConsumables()
+    {
+        foreach (var ac in slots)
+        {
+            var consumable = ac.GetComponent<IndexHolder>().consumable;
+
+            if (_inventoryStore.items.Count > 0 & consumable != null)
+            {
+                foreach (var i in _inventoryStore.items)
+                {
+                    if (i.GetComponent<Consumable>().title == consumable.title)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            foreach (var s in ac.GetComponentsInChildren<Image>())
+            {
+                if (s.name == "Image")
+                {
+                    s.sprite = null;
+                    s.enabled = false;
+                }
+            }
+
+            ac.GetComponent<IndexHolder>().consumable = null;
+            UpdateToolBar();
+        }
     }
 }

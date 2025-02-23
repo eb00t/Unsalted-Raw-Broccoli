@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -51,6 +53,14 @@ public class InventoryStore : MonoBehaviour
                     if (b.consumable.title != consumable.title) continue;
                     
                     b.numHeld++;
+                    foreach (var img in b.GetComponentsInChildren<Image>())
+                    {
+                        if (img.name == "Image")
+                        {
+                            img.GetComponentInChildren<TextMeshProUGUI>().text = b.numHeld.ToString();
+                        }
+                    }
+
                     return;
                 }
             }
@@ -77,7 +87,39 @@ public class InventoryStore : MonoBehaviour
             if (s.name == "Image")
             {
                 s.sprite = consumable.uiIcon;
+                s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
             }
         }
+    }
+
+    public void UpdateItemsHeld(Consumable consumable)
+    {
+        foreach (var b in grid.GetComponentsInChildren<IndexHolder>())
+        {
+            if (b.consumable.title != consumable.title) continue;
+            if (b.numHeld - 1 <= 0)
+            {
+                foreach (var item in items.ToList())
+                {
+                    if (item.GetComponent<Consumable>().title != b.consumable.title) continue;
+                    items.Remove(item);
+                    Destroy(b.gameObject);
+                }
+            }
+            else
+            {
+                b.numHeld--;
+                
+                foreach (var img in b.GetComponentsInChildren<Image>())
+                {
+                    if (img.name == "Image")
+                    {
+                        img.GetComponentInChildren<TextMeshProUGUI>().text = b.numHeld.ToString();
+                    }
+                }
+            }
+        }
+        
+        _toolbarHandler.UpdateActiveConsumables();
     }
 }
