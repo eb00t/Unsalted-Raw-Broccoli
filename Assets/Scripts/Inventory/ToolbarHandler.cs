@@ -9,20 +9,26 @@ using Vector2 = UnityEngine.Vector2;
 
 public class ToolbarHandler : MonoBehaviour
 {
+    [Header("Navigation Tracking")]
     public int slotNo;
-    [SerializeField] private List<GameObject> slots;
-    //[SerializeField] private List<Consumable> activeConsumables; // active consumables are now tracked in the children of slots gameobject
-    [SerializeField] private List<Consumable> equippedConsumables; // allows flexibility for cycling consumables
     private int _activeConsumable;
+    
+    [Header("Item Tracking")]
+    [SerializeField] private List<GameObject> slots;
+    [SerializeField] private List<Consumable> equippedConsumables; // allows flexibility for cycling consumables
+    
+    [Header("UI References")]
+    [SerializeField] private GameObject grid;
+    [SerializeField] private Image toolbarImg, infoImg;
+    [SerializeField] private TextMeshProUGUI toolbarTxt, infoTxt, numHeldTxt;
     
     private InventoryStore _inventoryStore;
     private GameObject _player;
     private CharacterAttack _characterAttack;
     private MenuHandler _menuHandler;
     private CharacterMovement _characterMovement;
-    [SerializeField] private Image toolbarImg;
-    [SerializeField] private TextMeshProUGUI toolbarTxt;
-    [SerializeField] private GameObject grid;
+    private GameObject _lastSelected;
+    public bool isInfoOpen;
 
     private void Start()
     {
@@ -270,5 +276,26 @@ public class ToolbarHandler : MonoBehaviour
         }
         
         UpdateActiveConsumables();
+    }
+
+    private void Update()
+    {
+        if (!isInfoOpen) return;
+        if (EventSystem.current.currentSelectedGameObject == _lastSelected) return;
+        _lastSelected = EventSystem.current.currentSelectedGameObject;
+        UpdateInfo();
+    }
+
+    private void UpdateInfo()
+    {
+        if (EventSystem.current.currentSelectedGameObject == null) return;
+        
+        var indexHolder = EventSystem.current.currentSelectedGameObject.GetComponentInChildren<IndexHolder>();
+
+        if (indexHolder.consumable == null) return;
+        
+        infoTxt.text = indexHolder.consumable.description;
+        numHeldTxt.text = indexHolder.numHeld.ToString();
+        infoImg.sprite = indexHolder.consumable.uiIcon;
     }
 }

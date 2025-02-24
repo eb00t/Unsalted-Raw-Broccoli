@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -6,17 +7,19 @@ using UnityEngine.UI;
 
 public class MenuHandler : MonoBehaviour
 {
-	[SerializeField] private GameObject selectedMenu, selectedEquip, slots;
-	[SerializeField] private EventSystem eventSystem;
+	[Header("Code References")]
+	[SerializeField] private CharacterMovement characterMovement;
 	private InventoryStore _inventoryStore;
 	private ToolbarHandler _toolbarHandler;
-	[SerializeField] private GameObject grid;
-
-	[SerializeField] private CharacterMovement characterMovement;
 	
-	// to track what to do on back button press
-	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui;
-	private GameObject _prompt;
+	[Header("UI References")]
+	[SerializeField] private GameObject grid;
+	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui;
+	
+	[Header("Navigation")]
+	[SerializeField] private EventSystem eventSystem;
+	[SerializeField] private GameObject selectedMenu, selectedEquip, slots;
+	
 
 	private void Start()
 	{
@@ -51,6 +54,8 @@ public class MenuHandler : MonoBehaviour
 		}
 		
 		invGui.SetActive(true);
+		infoGui.SetActive(false);
+		_toolbarHandler.isInfoOpen = false;
 		menuGui.SetActive(false);
 		SwitchSelected(selectedEquip);
 	}
@@ -73,6 +78,8 @@ public class MenuHandler : MonoBehaviour
 			}
 			
 			invGui.SetActive(false);
+			infoGui.SetActive(false);
+			_toolbarHandler.isInfoOpen = false;
 			menuGui.SetActive(true);
 			SwitchSelected(selectedMenu);
 		}
@@ -131,6 +138,8 @@ public class MenuHandler : MonoBehaviour
 			}
 
 			_toolbarHandler.slotNo = slot;
+			infoGui.SetActive(true);
+			_toolbarHandler.isInfoOpen = true;
 		}
 		else
 		{
