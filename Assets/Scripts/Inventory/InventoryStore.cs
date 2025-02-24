@@ -43,7 +43,7 @@ public class InventoryStore : MonoBehaviour
         {
             foreach (var x in items)
             {
-                Debug.Log(consumable.title + x.GetComponent<Consumable>().title);
+                //Debug.Log(consumable.title + x.GetComponent<Consumable>().title);
                 
                 if (consumable.title != x.GetComponent<Consumable>().title) continue;
                 

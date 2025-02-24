@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Vector2 = UnityEngine.Vector2;
 
@@ -12,14 +11,15 @@ public class ToolbarHandler : MonoBehaviour
 {
     public int slotNo;
     [SerializeField] private List<GameObject> slots;
-    //[SerializeField] private List<Consumable> activeConsumables; // keeps track of which consumable is in what slot
+    //[SerializeField] private List<Consumable> activeConsumables; // active consumables are now tracked in the children of slots gameobject
     [SerializeField] private List<Consumable> equippedConsumables; // allows flexibility for cycling consumables
-    private int _activeConsumable = 0;
+    private int _activeConsumable;
     
     private InventoryStore _inventoryStore;
     private GameObject _player;
     private CharacterAttack _characterAttack;
     private MenuHandler _menuHandler;
+    private CharacterMovement _characterMovement;
     [SerializeField] private Image toolbarImg;
     [SerializeField] private TextMeshProUGUI toolbarTxt;
     [SerializeField] private GameObject grid;
@@ -29,6 +29,7 @@ public class ToolbarHandler : MonoBehaviour
         _inventoryStore = GetComponent<InventoryStore>();
         _player = GameObject.FindGameObjectWithTag("Player");
         _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
+        _characterMovement = _player.GetComponent<CharacterMovement>();
         _menuHandler = GetComponent<MenuHandler>();
     }
 
@@ -74,7 +75,7 @@ public class ToolbarHandler : MonoBehaviour
     {
         if (!context.performed) return;
         // prevents player from using items when navigating the ui as dpad can be used aswell as thumbstick
-        if (_player.GetComponent<CharacterMovement>().uiOpen) return;
+        if (_characterMovement.uiOpen) return;
 
         var dir = context.ReadValue<Vector2>();
 
@@ -200,21 +201,35 @@ public class ToolbarHandler : MonoBehaviour
 
     public void UpdateActiveConsumables()
     {
+        // checks what consumables are in the toolbar (held in children of slots gameobject),
+        // then 
         foreach (var ac in slots)
         {
             var consumable = ac.GetComponent<IndexHolder>().consumable;
-
+            
+            // compares what is in the toolbar to what items are held in inventory
             if (_inventoryStore.items.Count > 0 & consumable != null)
             {
+                var _isInInventory = false;
+                
                 foreach (var i in _inventoryStore.items)
                 {
                     if (i.GetComponent<Consumable>().title == consumable.title)
                     {
-                        return;
+                        // if the item is in the inventory then stop loop
+                        _isInInventory = true;
+                        break;
                     }
                 }
+                
+                // the current slot is not processed if item is in inventory, moves onto next slot
+                if (_isInInventory)
+                {
+                    continue;
+                }
             }
-
+            
+            // if the checked consumable is not in the inventory then remove the consumable from the toolbar
             foreach (var s in ac.GetComponentsInChildren<Image>())
             {
                 if (s.name == "Image")
@@ -225,7 +240,28 @@ public class ToolbarHandler : MonoBehaviour
             }
 
             ac.GetComponent<IndexHolder>().consumable = null;
-            UpdateToolBar();
         }
+        
+        UpdateToolBar();
+    }
+
+    public void RemoveFromToolbar(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        if (!_characterMovement.uiOpen) return;
+        
+        Debug.Log("Checking to remove item");
+
+        foreach (var slot in slots)
+        {
+            Debug.Log(EventSystem.current.currentSelectedGameObject.name);
+            if (EventSystem.current.currentSelectedGameObject == slot)
+            {
+                Debug.Log("Match found");
+                slot.GetComponent<IndexHolder>().consumable = null;
+            }
+        }
+        
+        UpdateActiveConsumables();
     }
 }
