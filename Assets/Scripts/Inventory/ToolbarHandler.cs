@@ -32,9 +32,31 @@ public class ToolbarHandler : MonoBehaviour
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _menuHandler = GetComponent<MenuHandler>();
     }
+    
+    // triggered when a player clicks on an item when browsing the inventory menu
+    public void InvItemSelected(IndexHolder indexHolder)
+    {
+        // gets the consumable script on gameobject, gets the image and title, calls method to add inv item to toolbar
+        var consumable = indexHolder.consumable;
 
+        AddToToolbar(consumable.uiIcon, consumable.title, consumable);
+        
+        _menuHandler.ToggleEquip(); // once item is added go back to equip menu (slots gameobject)
+    }
+
+    // adds consumable to equip menu slot
     private void AddToToolbar(Sprite newSprite, string txt, Consumable consumable)
     {
+        foreach (var slot in slots)
+        {
+            if (slot.GetComponent<IndexHolder>().consumable == null) continue;
+            
+            if (slot.GetComponent<IndexHolder>().consumable.title == consumable.title)
+            {
+                slot.GetComponent<IndexHolder>().consumable = null;
+            }
+        }
+        
         slots[slotNo].GetComponentInChildren<TextMeshProUGUI>().text = ""; // set amount held
         slots[slotNo].GetComponent<IndexHolder>().consumable = consumable; // update what consumables are equipped
 
@@ -56,18 +78,7 @@ public class ToolbarHandler : MonoBehaviour
             }
         }
 
-        UpdateToolBar();
-    }
-
-    // triggered when a player clicks on an item when browsing the inventory menu
-    public void InvItemSelected(IndexHolder indexHolder)
-    {
-        // gets the consumable script on gameobject, gets the image and title, calls method to add inv item to toolbar
-        var consumable = indexHolder.consumable;
-
-        AddToToolbar(consumable.uiIcon, consumable.title, consumable);
-        
-        _menuHandler.ToggleEquip(); // once item is added go back to equip menu (slots gameobject)
+        UpdateActiveConsumables();
     }
 
     // triggers when a direction on the dpad is pressed
@@ -180,7 +191,7 @@ public class ToolbarHandler : MonoBehaviour
         }
     }
 
-    // removes all items from EquippedConsumables list and adds items from ActiveConsumables if not null
+    // removes all items from EquippedConsumables list and adds items from indexholders in slots if not null
     private void UpdateToolBar() 
     {
         equippedConsumables.Clear();
@@ -210,20 +221,20 @@ public class ToolbarHandler : MonoBehaviour
             // compares what is in the toolbar to what items are held in inventory
             if (_inventoryStore.items.Count > 0 & consumable != null)
             {
-                var _isInInventory = false;
+                var isInInventory = false;
                 
                 foreach (var i in _inventoryStore.items)
                 {
                     if (i.GetComponent<Consumable>().title == consumable.title)
                     {
                         // if the item is in the inventory then stop loop
-                        _isInInventory = true;
+                        isInInventory = true;
                         break;
                     }
                 }
                 
                 // the current slot is not processed if item is in inventory, moves onto next slot
-                if (_isInInventory)
+                if (isInInventory)
                 {
                     continue;
                 }
@@ -249,15 +260,11 @@ public class ToolbarHandler : MonoBehaviour
     {
         if (!context.performed) return;
         if (!_characterMovement.uiOpen) return;
-        
-        Debug.Log("Checking to remove item");
 
         foreach (var slot in slots)
         {
-            Debug.Log(EventSystem.current.currentSelectedGameObject.name);
             if (EventSystem.current.currentSelectedGameObject == slot)
             {
-                Debug.Log("Match found");
                 slot.GetComponent<IndexHolder>().consumable = null;
             }
         }
