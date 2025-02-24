@@ -8,7 +8,8 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(RoomInfo))]
 public class RoomScripting : MonoBehaviour
 {
-    private int _enemyCount;
+    public int _enemyCount;
+    public int enabledSpawnerCount;
     public int currentWave;
     public List<GameObject> enemies;
     public List<GameObject> allDoors;
@@ -55,7 +56,7 @@ public class RoomScripting : MonoBehaviour
     {
         while (true)
         {
-            if (_enemyCount > 0)
+            if (enabledSpawnerCount > 0 || enemies.Count > 0)
             {
                 roomHadEnemies = true;
             }
@@ -63,7 +64,7 @@ public class RoomScripting : MonoBehaviour
             {
                 CloseAllRoomDoors();
             }
-            else if (_enemyCount <= 0 && allDoorsClosed)
+            else if (_enemyCount <= 0 && allDoorsClosed && enabledSpawnerCount <= 0)
             {
                 OpenAllRoomDoors();
                 _roomCleared = true;
@@ -85,8 +86,10 @@ public class RoomScripting : MonoBehaviour
                     _lootSpawned = true;
                     LootManager.Instance.SpawnLootInCurrentRoom(gameObject);
                 }
+
                 StopCoroutine(CheckIfRoomHasEnemies());
             }
+
             yield return new WaitForSeconds(1f);
         }
     }
@@ -142,6 +145,7 @@ public class RoomScripting : MonoBehaviour
     void Update()
     {
         _enemyCount = enemies.Count;
+        enabledSpawnerCount = spawners.Count;
         if (_roomCam.Priority > 9 && allDoorsClosed == false)
         {
             CameraManager.Instance.currentCamera = _roomCam;

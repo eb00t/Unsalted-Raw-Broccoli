@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class Spawner : MonoBehaviour
 {
@@ -13,11 +17,16 @@ public class Spawner : MonoBehaviour
     public SpawnMode spawnMode = SpawnMode.Random;
     public int waves = 1;
     private int _rng;
-    public RoomScripting _roomScripting;
+    public RoomScripting roomScripting;
     public List<GameObject> spawnQueue, possibleEnemies, spawnedEnemies;
+    public bool disabled;
     void Start()
     {
-        _roomScripting = transform.root.GetComponent<RoomScripting>();
+        roomScripting = transform.root.GetComponent<RoomScripting>();
+        for (int i = 0; i < waves; i++)
+        {
+            roomScripting._enemyCount++;
+        }
         //waves = RandomiseNumber(3);
         if (spawnMode == SpawnMode.Random)
         {
@@ -31,17 +40,33 @@ public class Spawner : MonoBehaviour
                 spawnQueue.Add(possibleEnemies[_rng]);
             }
         }
+        SpawnEnemies();
     }
 
     public void SpawnEnemies()
     {
-        GameObject enemyToSpawn = spawnQueue[0];
-        enemyToSpawn = Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
-        enemyToSpawn.transform.parent = gameObject.transform.root;
-        spawnedEnemies.Add(enemyToSpawn);
-        spawnQueue.Remove(spawnQueue[0]);
+        if (!disabled)
+        { 
+            GameObject enemyToSpawn = spawnQueue[0];
+            enemyToSpawn = Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+            enemyToSpawn.GetComponent<EnemyHandler>().roomScripting = roomScripting;
+            enemyToSpawn.GetComponent<EnemyHandler>()._spawner = this;
+            enemyToSpawn.transform.parent = gameObject.transform;
+            spawnedEnemies.Add(enemyToSpawn);
+            spawnQueue.Remove(spawnQueue[0]);
+            if (spawnQueue.Count == 0)
+            {
+                DisableSpawner();
+            }
+        }
     }
-    
+
+    void DisableSpawner()
+    {
+        disabled = true;
+        roomScripting.spawners.Remove(gameObject);
+    }
+
     private int RandomiseNumber(int setSize)
     {
         int rng = Random.Range(0, setSize);

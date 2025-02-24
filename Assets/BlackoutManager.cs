@@ -19,7 +19,7 @@ public class BlackoutManager : MonoBehaviour
     private float _failSafeTimer = 15;
     private bool _loading = true;
 
-    private void OnEnable()
+    private void Start()
     {
         _failSafeTimer = LevelBuilder.Instance.howManyRoomsToSpawn + 6;
     }

@@ -49,6 +49,7 @@ MonoBehaviour:
   timer1: 0
   lightCombo: 00000000
   maxInputDelay: 10
+  animEnd: 0
   currentHealth: 100
   maxHealth: 250
   charAtk: 10
@@ -57,6 +58,7 @@ MonoBehaviour:
   nearestEnemy: {fileID: 0}
   healthSlider: {fileID: 0}
   diedScreen: {fileID: 0}
+  menuHandler: {fileID: 0}
 --- !u!64 &3621395720539083714
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -276,7 +278,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7748169234227478159}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 3
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -308,7 +310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowMovement: 1
-  acceleration: 10
+  acceleration: 15
   maxSpeed: 10
   jumpForce: 20
   dashSpeed: 1500
@@ -327,7 +329,7 @@ MonoBehaviour:
   isWallJumping: 0
   wallJumpingCounter: 0
   wallJumpingTime: 0.2
-  wallJumpForce: {x: 450, y: 500}
+  wallJumpForce: {x: 1350, y: 1500}
   wallJumpingDuration: 0.2
   uiOpen: 0
 --- !u!65 &7947488834224069209

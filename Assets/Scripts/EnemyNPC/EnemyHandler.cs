@@ -26,6 +26,8 @@ public class EnemyHandler : MonoBehaviour
     private NavMeshAgent _agent;
     private Vector3 _patrolTarget, _patrol1, _patrol2;
     private States _state = States.Idle;
+    [NonSerialized]public RoomScripting roomScripting;
+    public Spawner _spawner;
     
     [Header("Debugging")]
     [SerializeField] private bool _isIdle;
@@ -45,15 +47,11 @@ public class EnemyHandler : MonoBehaviour
         Chase,
         Attack
     }
-    
-    private void Awake()
-    {
-        RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
-        roomScripting.enemies.Add(gameObject);
-    }
-
     private void Start()
     {
+        roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        roomScripting.enemies.Add(gameObject);
+        gameObject.transform.parent = gameObject.transform.root;
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -67,6 +65,7 @@ public class EnemyHandler : MonoBehaviour
         
         PickPatrolPoints();
         _patrolTarget = _patrol1;
+        gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
     }
 
     private void Update()
@@ -265,7 +264,8 @@ public class EnemyHandler : MonoBehaviour
     
     private void OnDisable()
     {
-        RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         roomScripting.enemies.Remove(gameObject);
+        roomScripting._enemyCount--;
+        _spawner.spawnedEnemies.Remove(gameObject);
     }
 }
