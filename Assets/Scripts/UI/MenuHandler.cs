@@ -16,6 +16,7 @@ public class MenuHandler : MonoBehaviour
 	
 	// to track what to do on back button press
 	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui;
+	private GameObject _prompt;
 
 	private void Start()
 	{

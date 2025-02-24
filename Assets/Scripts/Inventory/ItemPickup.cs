@@ -11,15 +11,17 @@ public class ItemPickup : MonoBehaviour
     private CharacterMovement _characterMovement;
     private InventoryStore _inventoryStore;
     private Consumable _consumable;
+    private RectTransform _rectTransform;
 
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _inventoryStore = GameObject.FindGameObjectWithTag("UIManager").GetComponent<InventoryStore>();
-        _prompt = GameObject.FindGameObjectWithTag("Prompt");
+        _prompt = GameObject.FindGameObjectWithTag("Prompt").gameObject;
         _text = _prompt.GetComponentInChildren<TextMeshProUGUI>();
         _consumable = GetComponent<Consumable>();
+        _rectTransform = _prompt.GetComponent<RectTransform>();
     }
 
     private void Update()
@@ -30,13 +32,15 @@ public class ItemPickup : MonoBehaviour
         
         if (dist <= range)
         {
-            _prompt.SetActive(true);
+            //_prompt.SetActive(true);
+            _rectTransform.anchoredPosition = new Vector3(0, 200, 0);
             _text.text = "Pick up " + _consumable.title + "[O] / Backspace";
             canPickup = true;
         }
         else
         {
-            _prompt.SetActive(false);
+            //_prompt.SetActive(false);
+            _rectTransform.anchoredPosition = new Vector3(0, -200, 0);
             _text.text = "";
             canPickup = false;
         }
@@ -45,7 +49,8 @@ public class ItemPickup : MonoBehaviour
     public void AddItemToInventory()
     {
         _inventoryStore.AddNewItem(gameObject);
-        _prompt.SetActive(false);
+        _rectTransform.anchoredPosition = new Vector3(0, -200, 0);
+        //_prompt.SetActive(false);
         gameObject.SetActive(false);
         canPickup = false;
     }
