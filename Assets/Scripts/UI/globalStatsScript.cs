@@ -20,11 +20,13 @@ public class globalStatsScript : MonoBehaviour
     void Start()
     {
         loadData();
-
+        
         if (PlayerPrefs.GetFloat("DeathCounter") != null)
         {
             deathCounter = PlayerPrefs.GetFloat("DeathCounter");
         }
+
+        oneDeath();
 
         totalDeaths.text = "Total Deaths = " + deathCounter;
     }
@@ -38,7 +40,7 @@ public class globalStatsScript : MonoBehaviour
     public void oneDeath()
     {
         //Adds a death to the counter
-        deathCounter += 1;
+        deathCounter++; //= 1;
         totalDeaths.text = "Total Deaths = " + deathCounter;
     }
 
@@ -55,9 +57,10 @@ public class globalStatsScript : MonoBehaviour
         }
 
     public void deleteData()
-        {
-            PlayerPrefs.DeleteKey("DeathCounter");
-        }
+    {
+        PlayerPrefs.DeleteKey("DeathCounter");
+        Debug.Log("DELETE");
+    }
     }
 
 
