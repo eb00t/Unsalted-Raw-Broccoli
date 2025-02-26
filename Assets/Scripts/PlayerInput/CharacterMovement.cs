@@ -23,6 +23,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private bool doubleJumpPerformed;
     [SerializeField] public bool crouching;
     [SerializeField] private Vector3 Velocity;
+    private GameObject _playerGroundPosition;
 
     private bool dashAllowed = true;
     private bool startDashTimer = false;
@@ -47,6 +48,7 @@ public class CharacterMovement : MonoBehaviour
     public void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        _playerGroundPosition = transform.Find("GroundPos").gameObject;
         groundCheck = GetComponent<BoxCollider>();
         PlayerAnimator = GetComponentInChildren<Animator>();
     }
@@ -236,7 +238,7 @@ public class CharacterMovement : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (uiOpen) return;
-        if (other.gameObject.layer == 10)
+        if (other.gameObject.layer == 10 && _playerGroundPosition.transform.position.y > other.gameObject.transform.position.y && Velocity.y <= 0f)
         {
             grounded = true;
             startSlide = false;
