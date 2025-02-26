@@ -59,6 +59,7 @@ MonoBehaviour:
   healthSlider: {fileID: 0}
   diedScreen: {fileID: 0}
   menuHandler: {fileID: 0}
+  hitFlash: {fileID: 0}
 --- !u!64 &3621395720539083714
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -278,7 +279,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7748169234227478159}
   serializedVersion: 4
-  m_Mass: 3
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -310,9 +311,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowMovement: 1
-  acceleration: 15
-  maxSpeed: 10
-  jumpForce: 20
+  acceleration: 17
+  maxSpeed: 12
+  jumpForce: 23
   dashSpeed: 1500
   slideSpeed: 10
   holdTime: 10
@@ -327,9 +328,9 @@ MonoBehaviour:
   slideAllowed: 0
   slideTimer: 0
   isWallJumping: 0
-  wallJumpingCounter: 0
+  wallJumpingCounter: 0.2
   wallJumpingTime: 0.2
-  wallJumpForce: {x: 1350, y: 1500}
+  wallJumpForce: {x: 900, y: 1000}
   wallJumpingDuration: 0.2
   uiOpen: 0
 --- !u!65 &7947488834224069209
