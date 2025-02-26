@@ -65,7 +65,10 @@ public class EnemyHandler : MonoBehaviour
         
         PickPatrolPoints();
         _patrolTarget = _patrol1;
-        gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+        if (gameObject.name.Contains("Stalker"))
+        {
+            gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+        }
     }
 
     private void Update()
