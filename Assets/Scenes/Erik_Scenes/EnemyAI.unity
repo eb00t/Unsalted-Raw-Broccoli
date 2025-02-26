@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028301, g: 0.22571309, b: 0.30692127, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,6 +123,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!224 &353654778 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8717900428224520400, guid: be0837aec09a647439c7c7019ae6383f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1966187642}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &400926107
 GameObject:
   m_ObjectHideFlags: 0
@@ -397,18 +403,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &516226975 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8360254132147243036, guid: be0837aec09a647439c7c7019ae6383f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1966187642}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 831e877eb868e884eac1f78d0ef379b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &587372683
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,7 +625,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ActionEvents.Array.data[8].m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 516226975}
+      objectReference: {fileID: 1805956248}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -715,7 +709,7 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[8].m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: ShopHandler, Assembly-CSharp
+      value: MenuHandler, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
@@ -787,11 +781,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Input
       objectReference: {fileID: 0}
-    - target: {fileID: 7901646215181566762, guid: 5a9b12290cab1464785c4858bd2bb3a4,
-        type: 3}
-      propertyPath: m_TagString
-      value: Shop
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -850,28 +839,18 @@ PrefabInstance:
       objectReference: {fileID: 1805956246}
     - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
-      propertyPath: currentHealth
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
-        type: 3}
       propertyPath: enemyHandlers.Array.data[0]
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3621395720539083714, guid: 4bd14efd408c3b943816001b9eeae0eb,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5293791565655745629, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -56.45
+      value: -54.23
       objectReference: {fileID: 0}
     - target: {fileID: 5293791565655745629, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.11
+      value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 5293791565655745629, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
@@ -912,11 +891,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6931550250588402113, guid: 4bd14efd408c3b943816001b9eeae0eb,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7748169234227478159, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
@@ -1142,11 +1116,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 430240694378309256, guid: 82d96a92435624859a85308310350400,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 543019165611569556, guid: 82d96a92435624859a85308310350400,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -1157,28 +1126,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2432039581203836904, guid: 82d96a92435624859a85308310350400,
+    - target: {fileID: 1008153939546854380, guid: 82d96a92435624859a85308310350400,
         type: 3}
-      propertyPath: m_text
-      value: 'Keyboard:
-
-        Backspace: Bac/Close menu
-
-        Esc: Open/Close
-        pause menu
-
-        Enter: Select
-
-
-        Controller:
-
-        Button East:
-        Back
-
-        Menu Button: Open/close pause menu
-
-        Button South: Select'
-      objectReference: {fileID: 0}
+      propertyPath: grid
+      value: 
+      objectReference: {fileID: 353654778}
     - target: {fileID: 2597838233644864828, guid: 82d96a92435624859a85308310350400,
         type: 3}
       propertyPath: m_AnchorMax.x

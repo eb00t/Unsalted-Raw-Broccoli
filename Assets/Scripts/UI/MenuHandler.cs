@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -11,6 +10,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private CharacterMovement characterMovement;
 	private InventoryStore _inventoryStore;
 	private ToolbarHandler _toolbarHandler;
+	private GameObject _player;
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
@@ -19,12 +19,14 @@ public class MenuHandler : MonoBehaviour
 	[Header("Navigation")]
 	[SerializeField] private EventSystem eventSystem;
 	[SerializeField] private GameObject selectedMenu, selectedEquip, slots;
-	
+
+	public GameObject shopGUI;
 
 	private void Start()
 	{
 		_inventoryStore = GetComponent<InventoryStore>();
 		_toolbarHandler = GetComponent<ToolbarHandler>();
+		_player = GameObject.FindGameObjectWithTag("Player");
 	}
 
 	private void Update()
@@ -33,6 +35,10 @@ public class MenuHandler : MonoBehaviour
 		if (invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf)
 		{
 			characterMovement.uiOpen = true;
+		}
+		else if (shopGUI != null)
+		{
+			characterMovement.uiOpen = shopGUI.activeSelf;
 		}
 		else
 		{
@@ -58,6 +64,31 @@ public class MenuHandler : MonoBehaviour
 		_toolbarHandler.isInfoOpen = false;
 		menuGui.SetActive(false);
 		SwitchSelected(selectedEquip);
+	}
+	
+	public void ToggleShop(InputAction.CallbackContext context)
+	{
+		if (!context.performed) return;
+		if (shopGUI == null) return;
+		
+		var shopHandler = shopGUI.GetComponentInParent<ShopHandler>();
+		
+		if (shopGUI.activeSelf)
+		{
+			shopGUI.SetActive(false);
+		}
+		else if (!shopGUI.activeSelf)
+		{
+			if (characterMovement.uiOpen) return;
+			if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
+			
+			shopGUI.SetActive(true);
+
+			if (shopHandler.itemsHeld.Count > 0)
+			{
+				SwitchSelected(shopHandler.grid.GetComponentInChildren<Button>().gameObject);
+			}
+		}
 	}
 	
 	// when Button East/Backspace is pressed close current menu and open previous menus
