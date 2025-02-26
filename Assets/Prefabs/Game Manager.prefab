@@ -518,6 +518,7 @@ MonoBehaviour:
   blackoutImage: {fileID: 8280652906272484090}
   blackoutColor: {r: 0, g: 0, b: 0, a: 1}
   transparentColor: {r: 0, g: 0, b: 0, a: 0}
+  blackoutComplete: 0
 --- !u!1 &5617660318742304912
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,8 +609,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 606101abb5edc2f489d0b7ccf16b8e9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mode: 0
   playerCam: {fileID: 0}
+  currentCamera: {fileID: 0}
   virtualCameras: []
+  defaultProfile: {fileID: 11400000, guid: b5682d53ce46be34487c8d198be37d2d, type: 2}
+  connectorProfile: {fileID: 11400000, guid: 6fd8c6bcbdc0111409ffc4b203d4f591, type: 2}
 --- !u!114 &5404688144565359110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -622,6 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8e672bbff7e80f4db4ab45c0d4115d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  possibleLoot: []
 --- !u!1 &6937896342876284815
 GameObject:
   m_ObjectHideFlags: 0

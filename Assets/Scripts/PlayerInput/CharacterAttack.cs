@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -31,6 +32,7 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private Slider healthSlider;
     [SerializeField] private GameObject diedScreen;
     [SerializeField] private MenuHandler menuHandler;
+    public GameObject hitFlash;
     
     private void Start()
     {
@@ -39,6 +41,8 @@ public class CharacterAttack : MonoBehaviour
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
         currentHealth = maxHealth;
+        hitFlash = GameObject.FindWithTag("Hit Flash");
+        hitFlash.SetActive(false);
     }
 
     public void LightAttack(InputAction.CallbackContext ctx)
@@ -149,6 +153,7 @@ public class CharacterAttack : MonoBehaviour
         {
             currentHealth -= damage;
             healthSlider.value = currentHealth;
+            hitFlash.SetActive(true);
         }
         else
         {

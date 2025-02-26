@@ -1412,6 +1412,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
+      propertyPath: hitFlash
+      value: 
+      objectReference: {fileID: 1693891471}
+    - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
       propertyPath: diedScreen
       value: 
       objectReference: {fileID: 524628063}
@@ -1520,6 +1525,7 @@ GameObject:
   - component: {fileID: 1126311858}
   - component: {fileID: 1126311859}
   - component: {fileID: 1126311860}
+  - component: {fileID: 1126311861}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1610,14 +1616,15 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_Cameras: []
+  m_Cameras:
+  - {fileID: 126181746}
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -1686,6 +1693,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nonRigidbodyVelocity: 0
   attenuationObject: {fileID: 684189450}
+--- !u!114 &1126311861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1126311854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: b5682d53ce46be34487c8d198be37d2d, type: 2}
 --- !u!1 &1372199756
 GameObject:
   m_ObjectHideFlags: 0
@@ -1948,6 +1972,12 @@ Transform:
   - {fileID: 646074663}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1693891471 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9190577389152938215, guid: 82d96a92435624859a85308310350400,
+    type: 3}
+  m_PrefabInstance: {fileID: 524628061}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1780000814
 GameObject:
   m_ObjectHideFlags: 0
