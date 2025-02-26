@@ -8,4 +8,5 @@ public class Consumable : MonoBehaviour
 	[TextArea(3, 10)]
 	public string description; // 191 characters is the absolute maximum
 	public Sprite uiIcon;
+	public bool isInstantUse;
 }

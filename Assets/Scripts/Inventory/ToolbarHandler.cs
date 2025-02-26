@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Vector2 = UnityEngine.Vector2;
 
+
+// TODO: Item type that gets used as soon as its picked up
 public class ToolbarHandler : MonoBehaviour
 {
     [Header("Navigation Tracking")]

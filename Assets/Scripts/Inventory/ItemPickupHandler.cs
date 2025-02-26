@@ -10,6 +10,7 @@ public class ItemPickupHandler : MonoBehaviour
     private GameObject _prompt;
     private RectTransform _rectTransform;
     private TextMeshProUGUI _text;
+    public bool isPlrNearShop;
     
     private void Start()
     {
@@ -23,6 +24,7 @@ public class ItemPickupHandler : MonoBehaviour
     private void Update()
     {
         if (_characterMovement.uiOpen) return;
+        if (isPlrNearShop) return;
         
         var itemCount = 0;
         
@@ -51,7 +53,7 @@ public class ItemPickupHandler : MonoBehaviour
         }
     }
 
-    
+
     public void PickUpItem(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
