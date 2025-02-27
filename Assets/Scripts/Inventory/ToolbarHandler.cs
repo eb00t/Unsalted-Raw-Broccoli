@@ -123,30 +123,37 @@ public class ToolbarHandler : MonoBehaviour
     private void CheckItemEffect()
     {
         if (equippedConsumables.Count <= 0 || equippedConsumables[_activeConsumable] == null) return;
-        var effect = equippedConsumables[_activeConsumable].consumableEffect;
 
         _inventoryStore.UpdateItemsHeld(equippedConsumables[_activeConsumable]);
 
-        switch (effect)
+        UseItemEffect(equippedConsumables[_activeConsumable]);
+        
+        UpdateCurrentTool();
+    }
+
+    public void UseItemEffect(Consumable consumable)
+    {
+        switch (consumable.consumableEffect)
         {
             case ConsumableEffect.None:
                 Debug.Log("Item has no effect assigned.");
                 break;
             case ConsumableEffect.Heal: // Heals player by 50% of their maximum health
-                if (_characterAttack.currentHealth + (_characterAttack.maxHealth / 2) >= _characterAttack.maxHealth)
+                var currentHealth = _characterAttack.currentHealth;
+                var maxHealth = _characterAttack.maxHealth;
+                
+                if (currentHealth + (maxHealth / 2) >= maxHealth)
                 {
-                    _characterAttack.currentHealth = _characterAttack.maxHealth;
+                    _characterAttack.currentHealth = maxHealth;
                 }
-                else if (_characterAttack.currentHealth + (_characterAttack.maxHealth / 2) < _characterAttack.maxHealth)
+                else if (currentHealth + (maxHealth / 2) < maxHealth)
                 {
-                    _characterAttack.currentHealth += _characterAttack.maxHealth / 2; 
+                    _characterAttack.currentHealth += maxHealth / 2; 
                 }
                 
                 _characterAttack.TakeDamagePlayer(0); // to update ui
                 break;
         }
-        
-        UpdateCurrentTool();
     }
 
     private void CycleToolbar(int direction) // -1 = left, 1 = right
