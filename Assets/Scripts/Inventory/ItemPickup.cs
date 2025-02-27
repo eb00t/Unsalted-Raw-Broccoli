@@ -29,7 +29,7 @@ public class ItemPickup : MonoBehaviour
     }
     public void AddItemToInventory()
     {
-        _inventoryStore.AddNewItem(gameObject);
+        _inventoryStore.AddNewItem(gameObject.GetComponent<Consumable>());
         gameObject.SetActive(false);
         canPickup = false;
     }

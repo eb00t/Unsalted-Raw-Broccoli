@@ -151,9 +151,13 @@ public class CharacterAttack : MonoBehaviour
     {
         if (currentHealth - damage > 0)
         {
+            if (currentHealth - damage < currentHealth)
+            {
+                hitFlash.SetActive(true);
+            }
+            
             currentHealth -= damage;
             healthSlider.value = currentHealth;
-            hitFlash.SetActive(true);
         }
         else
         {

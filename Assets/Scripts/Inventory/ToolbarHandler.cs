@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEditor;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Vector2 = UnityEngine.Vector2;
@@ -21,8 +22,8 @@ public class ToolbarHandler : MonoBehaviour
     
     [Header("UI References")]
     [SerializeField] private GameObject grid;
-    [SerializeField] private Image toolbarImg, infoImg;
-    [SerializeField] private TextMeshProUGUI toolbarTxt, infoTxt, numHeldTxt;
+    [SerializeField] private Image toolbarImg;
+    [SerializeField] private TextMeshProUGUI toolbarTxt, infoTxt, numHeldTxt, infoTitle;
     
     private InventoryStore _inventoryStore;
     private GameObject _player;
@@ -297,7 +298,8 @@ public class ToolbarHandler : MonoBehaviour
         if (indexHolder.consumable == null) return;
         
         infoTxt.text = indexHolder.consumable.description;
+        infoTitle.text = indexHolder.consumable.title;
         numHeldTxt.text = indexHolder.numHeld.ToString();
-        infoImg.sprite = indexHolder.consumable.uiIcon;
+        //infoImg.sprite = indexHolder.consumable.uiIcon;
     }
 }

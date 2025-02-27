@@ -1,12 +1,17 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.Composites;
 using UnityEngine.UI;
 
 public class ShopHandler : MonoBehaviour
 {
+    
+    // TODO: add item hold limits
 	public List<GameObject> itemsHeld;
-	[SerializeField] private List<int> itemStock; // foreach in items held add stock number (how much to sell)
+	[SerializeField] private List<int> itemStock; // each index directly relates to itemsheld index
+	[SerializeField] private List<int> itemPrice; // each index directly relates to itemsheld index
 	[SerializeField] private Transform block;
 	public Transform grid;
 	[SerializeField] private float range;
@@ -14,23 +19,24 @@ public class ShopHandler : MonoBehaviour
 	private GameObject _prompt, _player, _uiManager;
 	private RectTransform _promptRT;
 	private TextMeshProUGUI _promptText;
-	public GameObject shopGUI;
+	private GameObject _shopGUI;
 	private CharacterMovement _characterMovement;
 	private ItemPickupHandler _itemPickupHandler;
+	private CurrencyManager _currencyManager;
 
 	private void Start()
 	{
 		_player = GameObject.FindGameObjectWithTag("Player");
 		_prompt = GameObject.FindGameObjectWithTag("Prompt");
 		_uiManager = GameObject.FindGameObjectWithTag("UIManager");
-
-		shopGUI = GetComponentInChildren<Canvas>(true).gameObject;
-		_uiManager.GetComponent<MenuHandler>().shopGUI = shopGUI;
+		_shopGUI = GetComponentInChildren<Canvas>(true).gameObject;
+		_uiManager.GetComponent<MenuHandler>().shopGUI = _shopGUI;
 
 		_promptRT = _prompt.GetComponent<RectTransform>();
 		_promptText = _prompt.GetComponentInChildren<TextMeshProUGUI>();
 		_characterMovement = _player.GetComponent<CharacterMovement>();
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+		_currencyManager = _uiManager.GetComponent<CurrencyManager>();
 
 		RefreshShop();
 	}
@@ -82,6 +88,7 @@ public class ShopHandler : MonoBehaviour
 		var indexHolder = newBlock.GetComponent<IndexHolder>();
 		indexHolder.consumable = itemConsumable;
 		indexHolder.numHeld = itemStock[i];
+		indexHolder.price = itemPrice[i];
         
 		
 		// updates the onclick for the new inventory item button
@@ -103,10 +110,27 @@ public class ShopHandler : MonoBehaviour
 
 	private void ShopItemSelected(IndexHolder indexHolder)
 	{
-		// gets the consumable script on gameobject, gets the image and title, calls method to add inv item to toolbar
+		// if player does not have enough money then return
+		if (_currencyManager.currencyHeld - indexHolder.price < 0) return;
+		if (indexHolder.numHeld <= 0) return;
+			
+		_currencyManager.UpdateCurrency(-indexHolder.price);
+		// gets the consumable script on gameobject, updates the stock held
 		var consumable = indexHolder.consumable;
+		indexHolder.numHeld--;
 		
-		// TODO: needs to add item selected to inventory and deduct currency
+		// add item to inventory when bought
+		var inventoryStore = _uiManager.GetComponent<InventoryStore>();
+		inventoryStore.AddNewItem(indexHolder.consumable);
+		
+		// update ui text for amount held in stock
+		foreach (var i in grid.GetComponentsInChildren<Button>())
+		{
+			if (i.GetComponent<IndexHolder>().consumable == consumable)
+			{
+				i.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
+			}
+		}
 	}
 	
 	// EventSystem.current.currentSelectedGameObject == slot

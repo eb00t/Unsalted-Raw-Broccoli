@@ -29,14 +29,12 @@ public class InventoryStore : MonoBehaviour
         
         for (var i = 0; i < items.Count; i++)
         {
-	        AddNewItem(items[i]);
+	        AddNewItem(items[i].GetComponent<Consumable>());
         }
     }
     
-    public void AddNewItem(GameObject item)
+    public void AddNewItem(Consumable consumable)
     {
-        var consumable = item.GetComponent<Consumable>();
-
         // checks if item added exists in inventory, if so it increases the number held and returns
         if (items.Count > 0)
         {
@@ -66,7 +64,7 @@ public class InventoryStore : MonoBehaviour
         }
         
         // if the item did not exist in inventory already then a new inventory button is created
-        items.Add(item);
+        items.Add(consumable.gameObject);
         var newBlock = Instantiate(block, block.position, block.rotation, grid);
         newBlock.GetComponentInChildren<TextMeshProUGUI>().text = consumable.title;
         
