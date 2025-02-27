@@ -7,8 +7,6 @@ using UnityEngine.UI;
 
 public class ShopHandler : MonoBehaviour
 {
-    
-    // TODO: add item hold limits
 	public List<GameObject> itemsHeld;
 	[SerializeField] private List<int> itemStock; // each index directly relates to itemsheld index
 	[SerializeField] private List<int> itemPrice; // each index directly relates to itemsheld index

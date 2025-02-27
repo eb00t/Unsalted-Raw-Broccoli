@@ -124,9 +124,9 @@ public class ToolbarHandler : MonoBehaviour
     {
         if (equippedConsumables.Count <= 0 || equippedConsumables[_activeConsumable] == null) return;
 
-        _inventoryStore.UpdateItemsHeld(equippedConsumables[_activeConsumable]);
-
         UseItemEffect(equippedConsumables[_activeConsumable]);
+        
+        _inventoryStore.UpdateItemsHeld(equippedConsumables[_activeConsumable]);
         
         UpdateCurrentTool();
     }

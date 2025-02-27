@@ -42,9 +42,6 @@ public class ItemPickup : MonoBehaviour
         {
             _inventoryStore.AddNewItem(gameObject.GetComponent<Consumable>());
         }
-        
-        gameObject.SetActive(false);
-        canPickup = false;
     }
 
     private void OnDrawGizmosSelected()

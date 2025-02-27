@@ -48,28 +48,37 @@ public class InventoryStore : MonoBehaviour
                 {
                     if (b == null) continue;
                     if (b.consumable.title != consumable.title) continue;
+                    if (b.numHeld >= consumable.maximumHold) return;
                     
                     b.numHeld++;
+                    _toolbarHandler.UpdateActiveConsumables();
+                    
                     foreach (var img in b.GetComponentsInChildren<Image>())
                     {
                         if (img.name == "Image")
                         {
-                            img.GetComponentInChildren<TextMeshProUGUI>().text = b.numHeld.ToString();
+                            img.GetComponentInChildren<TextMeshProUGUI>().text = b.numHeld + "/" + b.consumable.maximumHold;
                         }
                     }
+                    
+                    consumable.gameObject.SetActive(false);
+                    consumable.gameObject.GetComponent<ItemPickup>().canPickup = false;
 
                     return;
                 }
             }
         }
         
+        
         // if the item did not exist in inventory already then a new inventory button is created
         items.Add(consumable.gameObject);
+        consumable.gameObject.SetActive(false);
+        consumable.gameObject.GetComponent<ItemPickup>().canPickup = false;
+        
         var newBlock = Instantiate(block, block.position, block.rotation, grid);
         newBlock.GetComponentInChildren<TextMeshProUGUI>().text = consumable.title;
         
         var indexHolder = newBlock.GetComponent<IndexHolder>();
-        //indexHolder.InventoryIndex = i;
         indexHolder.consumable = consumable;
         indexHolder.numHeld++;
         
@@ -84,7 +93,7 @@ public class InventoryStore : MonoBehaviour
             if (s.name == "Image")
             {
                 s.sprite = consumable.uiIcon;
-                s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
+                s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld + "/" + indexHolder.consumable.maximumHold;
             }
         }
     }
@@ -111,7 +120,7 @@ public class InventoryStore : MonoBehaviour
                 {
                     if (img.name == "Image")
                     {
-                        img.GetComponentInChildren<TextMeshProUGUI>().text = b.numHeld.ToString();
+                        img.GetComponentInChildren<TextMeshProUGUI>().text = b.numHeld + "/" + b.consumable.maximumHold;
                     }
                 }
             }
