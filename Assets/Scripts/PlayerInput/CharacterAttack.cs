@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
@@ -21,7 +22,9 @@ public class CharacterAttack : MonoBehaviour
     [Header("Stats")]
     public int currentHealth = 100;
     public int maxHealth = 100;
-    [SerializeField] private int charAtk = 10;
+    public int baseAtk;
+    public int charAtk = 10;
+    public int isInvincible;
     [SerializeField] private float atkRange = 3;
     
     [Header("Tracking")]
@@ -41,6 +44,7 @@ public class CharacterAttack : MonoBehaviour
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
         currentHealth = maxHealth;
+        baseAtk = charAtk;
         hitFlash = GameObject.FindWithTag("Hit Flash");
         hitFlash.SetActive(false);
     }
@@ -149,21 +153,28 @@ public class CharacterAttack : MonoBehaviour
 
     public void TakeDamagePlayer(int damage)
     {
-        if (currentHealth - damage > 0)
+        if (isInvincible <= 0)
         {
-            if (currentHealth - damage < currentHealth)
+            if (currentHealth - damage > 0)
             {
-                hitFlash.SetActive(true);
+                if (currentHealth - damage < currentHealth)
+                {
+                    hitFlash.SetActive(true);
+                }
+
+                currentHealth -= damage;
+                healthSlider.value = currentHealth;
             }
-            
-            currentHealth -= damage;
-            healthSlider.value = currentHealth;
+            else
+            {
+                currentHealth = 0;
+                healthSlider.value = 0;
+                Die();
+            }
         }
         else
         {
-            currentHealth = 0;
-            healthSlider.value = 0;
-            Die();
+            isInvincible--;
         }
     }
 

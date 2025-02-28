@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -156,9 +157,28 @@ public class ToolbarHandler : MonoBehaviour
                 _characterAttack.TakeDamagePlayer(0); // to update ui
                 break;
             case ConsumableEffect.GiveCurrency:
-                _currencyManager.UpdateCurrency(consumable.currencyAmount);
+                _currencyManager.UpdateCurrency((int)consumable.effectAmount);
+                break;
+            case ConsumableEffect.DamageBuff:
+                Debug.Log("Damage Buff Activated");
+                StartCoroutine(ActivateAtkBuff(consumable.effectDuration, consumable.effectAmount));
+                break;
+            case ConsumableEffect.Invincibility:
+                if (_characterAttack.isInvincible >= 3) return;
+                _characterAttack.isInvincible += (int)consumable.effectAmount;
                 break;
         }
+    }
+
+    private IEnumerator ActivateAtkBuff(float dur, float amount)
+    {
+        var atkIncrease = (float)_characterAttack.baseAtk / 100 * amount; // converts percentage to value
+
+        if (_characterAttack.charAtk > _characterAttack.baseAtk + (int)atkIncrease) yield break;
+        
+        _characterAttack.charAtk = _characterAttack.baseAtk + (int)atkIncrease;
+        yield return new WaitForSecondsRealtime(dur);
+        _characterAttack.charAtk = _characterAttack.baseAtk;
     }
 
     private void CycleToolbar(int direction) // -1 = left, 1 = right
