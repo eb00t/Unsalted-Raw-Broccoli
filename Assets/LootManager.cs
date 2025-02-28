@@ -51,6 +51,20 @@ public class LootManager : MonoBehaviour
             Debug.Log("No loot spawning.");
         }
     }
+
+    public void SpawnRandomLootHere(Vector3 here)
+    {
+        int chosenLoot = RandomiseNumber(possibleLoot.Count);
+        GameObject lootToSpawn = Instantiate(possibleLoot[chosenLoot], here, Quaternion.identity);
+        possibleLoot.Remove(possibleLoot[chosenLoot]);
+    }
+
+    public void SpawnSpecificLootHere(Vector3 here, string path)
+    {
+        GameObject chosenLoot = Resources.Load<GameObject>(path);
+        GameObject lootToSpawn = Instantiate(chosenLoot, here, Quaternion.identity);
+        possibleLoot.Remove(chosenLoot);
+    }
     
     private int RandomiseNumber(int setSize)
     {

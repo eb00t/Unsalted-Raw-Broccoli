@@ -24,6 +24,7 @@ public class RoomInfo : MonoBehaviour
     public bool specialRoom = false;
     public bool bossRoom = false;
     public bool shop = false;
+    public bool lootRoom = false;
 
 
     [field: Header("Debugging")] 
@@ -107,6 +108,11 @@ public class RoomInfo : MonoBehaviour
         {
             LevelBuilder.Instance.spawnedBossRooms.Add(gameObject);
         }
+
+        if (lootRoom)
+        {
+            LevelBuilder.Instance.spawnedLootRooms.Add(gameObject);
+        }
         
         CameraManager.Instance.virtualCameras.Add(roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
@@ -131,6 +137,10 @@ public class RoomInfo : MonoBehaviour
         if (shop)
         {
             LevelBuilder.Instance.shopSpawned = false;
+        }
+        if (lootRoom)
+        {
+            LevelBuilder.Instance.spawnedLootRooms.Remove(gameObject);
         }
         if (bossRoom)
         {
@@ -168,7 +178,7 @@ public class RoomInfo : MonoBehaviour
 
         switch (LevelBuilder.Instance._spawnMode)
         {
-            case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms or LevelBuilder.SpawnMode.Shop:
+            case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms or LevelBuilder.SpawnMode.Shop or LevelBuilder.SpawnMode.LootRoom:
                 LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.spawnPoints.Count);
                 break;
             case LevelBuilder.SpawnMode.BossRooms:
