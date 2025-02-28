@@ -13,7 +13,6 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         charAttack = GameObject.FindGameObjectWithTag("PlayerAttackBox").GetComponent<CharacterAttack>();
         charMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterMovement>();
-        _footstepEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.Footsteps);
     }
 
     // Update is called once per frame
@@ -49,6 +48,7 @@ public class PlayerAnimationEvents : MonoBehaviour
 
     public void PlayFootstepSound()
     {
+        _footstepEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.Footsteps);
         _footstepEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y - 4.96f, transform.position.z).To3DAttributes());
         _footstepEvent.start();
         _footstepEvent.release();
