@@ -30,6 +30,7 @@ public class ToolbarHandler : MonoBehaviour
     private CharacterAttack _characterAttack;
     private MenuHandler _menuHandler;
     private CharacterMovement _characterMovement;
+    private CurrencyManager _currencyManager;
     private GameObject _lastSelected;
     public bool isInfoOpen;
 
@@ -40,8 +41,9 @@ public class ToolbarHandler : MonoBehaviour
         _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _menuHandler = GetComponent<MenuHandler>();
+        _currencyManager = GetComponent<CurrencyManager>();
     }
-    
+
     // triggered when a player clicks on an item when browsing the inventory menu
     public void InvItemSelected(IndexHolder indexHolder)
     {
@@ -152,6 +154,9 @@ public class ToolbarHandler : MonoBehaviour
                 }
                 
                 _characterAttack.TakeDamagePlayer(0); // to update ui
+                break;
+            case ConsumableEffect.GiveCurrency:
+                _currencyManager.UpdateCurrency(consumable.currencyAmount);
                 break;
         }
     }

@@ -8,7 +8,9 @@ public class Consumable : MonoBehaviour
 	public Sprite uiIcon;
 	public bool isInstantUse;
 	public int maximumHold;
+	public int currencyAmount;
 	
 	[TextArea(3, 10)]
 	public string description;
+	
 }

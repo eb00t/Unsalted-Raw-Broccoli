@@ -34,9 +34,13 @@ public class ItemPickup : MonoBehaviour
     }
     public void AddItemToInventory()
     {
+        var consumable = gameObject.GetComponent<Consumable>();
         if (gameObject.GetComponent<Consumable>().isInstantUse)
         {
-            _toolbarHandler.UseItemEffect(gameObject.GetComponent<Consumable>());
+            _toolbarHandler.UseItemEffect(consumable);
+            
+            GetComponent<ItemPickup>().canPickup = false;
+            gameObject.SetActive(false);
         }
         else
         {

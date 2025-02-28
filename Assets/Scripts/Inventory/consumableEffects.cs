@@ -2,5 +2,6 @@ public enum ConsumableEffect
 {
     None,
     Heal,
-    RouletteHeal
+    RouletteHeal,
+    GiveCurrency
 }
