@@ -12,13 +12,23 @@ public class PlayerStatus : MonoBehaviour
     {
         if (statuses.Count > 0)
         {
-            foreach (var status in statuses) // makes sure timer resets if status is reapplied
+            // avoids multiple of same status
+            foreach (var status in statuses)
             {
-                Destroy(status);
+                if (status == null) continue;
+                var sT = status.GetComponent<Consumable>();
+
+                if (sT.consumableEffect != consumable.consumableEffect) continue;
+                
+                if (Mathf.Approximately(sT.effectAmount, consumable.effectAmount))
+                {
+                    Destroy(status);
+                }
             }
         }
         
         var newStatus = Instantiate(statusPrefab, statusPrefab.position, statusPrefab.rotation, statusHolder);
+        CopyComponent(newStatus.gameObject, consumable);
         statuses.Add(newStatus.gameObject);
         var statusTimer = newStatus.GetComponent<StatusTimer>(); 
         statusTimer.targetTime = consumable.effectDuration;
@@ -26,36 +36,40 @@ public class PlayerStatus : MonoBehaviour
 
         foreach (var i in newStatus.GetComponentsInChildren<Image>())
         {
-            if (i.name == "Fill")
+            switch (i.name)
             {
-                i.sprite = consumable.statusIcon;
-                i.color = new Color(consumable.statusColor.r, consumable.statusColor.g, consumable.statusColor.b, 1f);
-            }
-            else if (i.name == "Background")
-            {
-                i.sprite = consumable.statusIcon;
+                case "Fill":
+                    i.sprite = consumable.statusIcon;
+                    i.color = new Color(consumable.statusColor.r, consumable.statusColor.g, consumable.statusColor.b, 1f);
+                    break;
+                case "Background":
+                    i.sprite = consumable.statusIcon;
                 
-                Color.RGBToHSV(consumable.statusColor, out var h, out var s, out var v);
-                v = Mathf.Clamp01(v - 0.65f);
-                i.color = Color.HSVToRGB(h, s, v);
+                    Color.RGBToHSV(consumable.statusColor, out var h, out var s, out var v);
+                    v = Mathf.Clamp01(v - 0.65f);
+                    i.color = Color.HSVToRGB(h, s, v);
+                    break;
             }
         }
         statusTimer.isTimerStarted = true;
     }
 
-    private void RefreshStatuses()
+    // copies a consumable component to the specified gameobject
+    private void CopyComponent(GameObject destination, Consumable consumable)
     {
-        foreach (var n in statusHolder.GetComponentsInChildren<Transform>())
+        var copy = destination.AddComponent<Consumable>();
+        
+        foreach (var field in consumable.GetType().GetFields())
         {
-            if (n != statusHolder)
-            {
-                Destroy(n.gameObject);
-            }
+            field.SetValue(copy, field.GetValue(consumable));
         }
 
-        foreach (var t in statuses)
+        foreach (var property in consumable.GetType().GetProperties())
         {
-            AddNewStatus(t.GetComponent<Consumable>());
+            if (property.CanWrite)
+            {
+                property.SetValue(copy, property.GetValue(consumable));
+            }
         }
     }
 }

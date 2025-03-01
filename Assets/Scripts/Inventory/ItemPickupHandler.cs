@@ -31,7 +31,7 @@ public class ItemPickupHandler : MonoBehaviour
         foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
         {
             var ip = item.GetComponent<ItemPickup>();
-
+            if (ip == null) continue;
             if (!ip.canPickup) continue;
             itemCount++;
         }

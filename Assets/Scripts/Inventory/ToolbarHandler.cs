@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEditor;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using Vector2 = UnityEngine.Vector2;
 
 
@@ -35,6 +37,7 @@ public class ToolbarHandler : MonoBehaviour
     private PlayerStatus _playerStatus;
     private GameObject _lastSelected;
     public bool isInfoOpen;
+    [SerializeField] private List<int> _activeAtkBuffs;
 
     private void Start()
     {
@@ -45,6 +48,7 @@ public class ToolbarHandler : MonoBehaviour
         _menuHandler = GetComponent<MenuHandler>();
         _currencyManager = GetComponent<CurrencyManager>();
         _playerStatus = GetComponent<PlayerStatus>();
+        _activeAtkBuffs = new List<int>();
     }
 
     // triggered when a player clicks on an item when browsing the inventory menu
@@ -128,7 +132,7 @@ public class ToolbarHandler : MonoBehaviour
     private void CheckItemEffect()
     {
         if (equippedConsumables.Count <= 0 || equippedConsumables[_activeConsumable] == null) return;
-
+        
         UseItemEffect(equippedConsumables[_activeConsumable]);
         
         _inventoryStore.UpdateItemsHeld(equippedConsumables[_activeConsumable]);
@@ -163,14 +167,25 @@ public class ToolbarHandler : MonoBehaviour
 
     private IEnumerator ActivateAtkBuff(Consumable consumable)
     {
-        var atkIncrease = (float)_characterAttack.baseAtk / 100 * consumable.effectAmount; // converts percentage to value
+        var atkIncrease = (int)((float)_characterAttack.baseAtk / 100 * consumable.effectAmount); // converts percentage to value
 
-        if (_characterAttack.charAtk > _characterAttack.baseAtk + (int)atkIncrease) yield break; // doesnt override stronger buff
+        if (_activeAtkBuffs.Count > 0)
+        {
+            if (_activeAtkBuffs.Contains(atkIncrease))
+            {
+                _playerStatus.AddNewStatus(consumable);
+                yield break;
+            }
+        }
         
+        _activeAtkBuffs.Add(atkIncrease);
+
+        _characterAttack.charAtk = _characterAttack.baseAtk + _activeAtkBuffs.Sum();
         _playerStatus.AddNewStatus(consumable);
-        _characterAttack.charAtk = _characterAttack.baseAtk + (int)atkIncrease;
+        Debug.Log(_activeAtkBuffs.Sum());
         yield return new WaitForSecondsRealtime(consumable.effectDuration);
-        _characterAttack.charAtk = _characterAttack.baseAtk;
+        _activeAtkBuffs.Remove(atkIncrease);
+        _characterAttack.charAtk = _activeAtkBuffs.Sum() + _characterAttack.baseAtk;
     }
 
     private void CycleToolbar(int direction) // -1 = left, 1 = right
