@@ -159,6 +159,12 @@ public class CharacterAttack : MonoBehaviour
             {
                 if (currentHealth - damage < currentHealth)
                 {
+                    hitFlash.GetComponent<Image>().color = Color.red;
+                    hitFlash.SetActive(true);
+                }
+                else if (currentHealth - damage > currentHealth)
+                {
+                    hitFlash.GetComponent<Image>().color = Color.green;
                     hitFlash.SetActive(true);
                 }
 

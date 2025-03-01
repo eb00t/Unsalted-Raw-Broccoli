@@ -32,6 +32,7 @@ public class ToolbarHandler : MonoBehaviour
     private MenuHandler _menuHandler;
     private CharacterMovement _characterMovement;
     private CurrencyManager _currencyManager;
+    private PlayerStatus _playerStatus;
     private GameObject _lastSelected;
     public bool isInfoOpen;
 
@@ -43,6 +44,7 @@ public class ToolbarHandler : MonoBehaviour
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _menuHandler = GetComponent<MenuHandler>();
         _currencyManager = GetComponent<CurrencyManager>();
+        _playerStatus = GetComponent<PlayerStatus>();
     }
 
     // triggered when a player clicks on an item when browsing the inventory menu
@@ -141,43 +143,33 @@ public class ToolbarHandler : MonoBehaviour
             case ConsumableEffect.None:
                 Debug.Log("Item has no effect assigned.");
                 break;
-            case ConsumableEffect.Heal: // Heals player by 50% of their maximum health
-                var currentHealth = _characterAttack.currentHealth;
-                var maxHealth = _characterAttack.maxHealth;
-                
-                if (currentHealth + (maxHealth / 2) >= maxHealth)
-                {
-                    _characterAttack.currentHealth = maxHealth;
-                }
-                else if (currentHealth + (maxHealth / 2) < maxHealth)
-                {
-                    _characterAttack.currentHealth += maxHealth / 2; 
-                }
-                
-                _characterAttack.TakeDamagePlayer(0); // to update ui
+            case ConsumableEffect.Heal: // Heals player by a percentage of their maximum health
+                var newHealth = (float)_characterAttack.maxHealth / 100 * consumable.effectAmount;
+                _characterAttack.TakeDamagePlayer((int)-newHealth);
                 break;
-            case ConsumableEffect.GiveCurrency:
+            case ConsumableEffect.GiveCurrency: // gives the player money
                 _currencyManager.UpdateCurrency((int)consumable.effectAmount);
                 break;
-            case ConsumableEffect.DamageBuff:
-                Debug.Log("Damage Buff Activated");
-                StartCoroutine(ActivateAtkBuff(consumable.effectDuration, consumable.effectAmount));
+            case ConsumableEffect.DamageBuff: // provides the player a non-stackable attack buff
+                StartCoroutine(ActivateAtkBuff(consumable));
                 break;
-            case ConsumableEffect.Invincibility:
+            case ConsumableEffect.Invincibility: // gives player up to 3 hits without taking damage
                 if (_characterAttack.isInvincible >= 3) return;
+                //_playerStatus.AddNewStatus(consumable);
                 _characterAttack.isInvincible += (int)consumable.effectAmount;
                 break;
         }
     }
 
-    private IEnumerator ActivateAtkBuff(float dur, float amount)
+    private IEnumerator ActivateAtkBuff(Consumable consumable)
     {
-        var atkIncrease = (float)_characterAttack.baseAtk / 100 * amount; // converts percentage to value
+        var atkIncrease = (float)_characterAttack.baseAtk / 100 * consumable.effectAmount; // converts percentage to value
 
-        if (_characterAttack.charAtk > _characterAttack.baseAtk + (int)atkIncrease) yield break;
+        if (_characterAttack.charAtk > _characterAttack.baseAtk + (int)atkIncrease) yield break; // doesnt override stronger buff
         
+        _playerStatus.AddNewStatus(consumable);
         _characterAttack.charAtk = _characterAttack.baseAtk + (int)atkIncrease;
-        yield return new WaitForSecondsRealtime(dur);
+        yield return new WaitForSecondsRealtime(consumable.effectDuration);
         _characterAttack.charAtk = _characterAttack.baseAtk;
     }
 
