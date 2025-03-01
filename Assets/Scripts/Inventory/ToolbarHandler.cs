@@ -37,7 +37,7 @@ public class ToolbarHandler : MonoBehaviour
     private PlayerStatus _playerStatus;
     private GameObject _lastSelected;
     public bool isInfoOpen;
-    [SerializeField] private List<int> _activeAtkBuffs;
+    private List<int> _activeAtkBuffs;
 
     private void Start()
     {
@@ -154,6 +154,12 @@ public class ToolbarHandler : MonoBehaviour
             case ConsumableEffect.GiveCurrency: // gives the player money
                 _currencyManager.UpdateCurrency((int)consumable.effectAmount);
                 break;
+            case ConsumableEffect.Poison: //  attacks have a chance to proc poison on enemies
+                _playerStatus.AddNewStatus(consumable);
+                break;
+            case ConsumableEffect.Ice: // attacks have a chance to freeze enemies for a time
+                _playerStatus.AddNewStatus(consumable);
+                break;
             case ConsumableEffect.DamageBuff: // provides the player a non-stackable attack buff
                 StartCoroutine(ActivateAtkBuff(consumable));
                 break;
@@ -162,6 +168,12 @@ public class ToolbarHandler : MonoBehaviour
                 //_playerStatus.AddNewStatus(consumable);
                 _characterAttack.isInvincible += (int)consumable.effectAmount;
                 break;
+            case ConsumableEffect.RouletteHeal: // ?
+                break;
+            case ConsumableEffect.HorseFact: // enemy deaths in vicinity have a chance to show fact about a horse
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -179,11 +191,11 @@ public class ToolbarHandler : MonoBehaviour
         }
         
         _activeAtkBuffs.Add(atkIncrease);
-
         _characterAttack.charAtk = _characterAttack.baseAtk + _activeAtkBuffs.Sum();
         _playerStatus.AddNewStatus(consumable);
-        Debug.Log(_activeAtkBuffs.Sum());
+        
         yield return new WaitForSecondsRealtime(consumable.effectDuration);
+        
         _activeAtkBuffs.Remove(atkIncrease);
         _characterAttack.charAtk = _activeAtkBuffs.Sum() + _characterAttack.baseAtk;
     }
