@@ -5,20 +5,42 @@ using UnityEngine.SceneManagement;
 
 public class NextLevelTrigger : MonoBehaviour
 {
-//TODO: THIS CODE IS ABSOLUTE DOGSHIT, AND DOES NOT DO WHAT IT IS SUPPOSED TO. PLEASE FIX WHEN POSSIBLE
+    
+    public enum SceneToLoad
+    {
+        Intermission,
+        NextFloor,
+        TitleScreen
+    }
+    public SceneToLoad sceneToLoad;
+    
     void OnTriggerEnter(Collider other)
     {
+        string scene = "";
+        switch (sceneToLoad)
+        {
+            case SceneToLoad.Intermission:
+                scene = "Intermission";
+                break;
+            case SceneToLoad.NextFloor:
+                scene = "MainScene";
+                break;
+            case SceneToLoad.TitleScreen:
+                scene = "StartScreen";
+                break;
+            
+        }
         if (other.CompareTag("Player"))
         {
             BlackoutManager.Instance.RaiseOpacity();
             gameObject.GetComponent<BoxCollider>().enabled = false;
-            StartCoroutine(LoadNextScene());
+            StartCoroutine(LoadNextScene(scene));
         }
     }
     
-     IEnumerator LoadNextScene()
+     IEnumerator LoadNextScene(string scene)
     {
         yield return new WaitForSecondsRealtime(3f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(scene);
     }
 }

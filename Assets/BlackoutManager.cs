@@ -18,7 +18,8 @@ public class BlackoutManager : MonoBehaviour
     private bool _fadedOut;
     private float _failSafeTimer = 15;
     private bool _loading = true;
-
+    private float _timer = 2;
+    
     private void Start()
     {
         _failSafeTimer = LevelBuilder.Instance.howManyRoomsToSpawn + 6;
@@ -58,6 +59,7 @@ public class BlackoutManager : MonoBehaviour
         blackoutImage.gameObject.SetActive(true);
         _lerpTime = 0;
         _lerpDirection = LerpDirection.FadeOut;
+        _timer = 2;
     }
 
     public void RaiseOpacity()
@@ -70,10 +72,19 @@ public class BlackoutManager : MonoBehaviour
 
     private void Update()
     {
-        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false)
+        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
         {
             _fadedOut = true;
             LowerOpacity();
+        } 
+        else if (LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.Intermission && _fadedOut == false)
+        {
+            _timer -= Time.deltaTime;
+            if (_timer <= 0)
+            {
+                _fadedOut = true;
+                LowerOpacity();
+            }
         }
 
         switch (_lerpDirection)
@@ -85,6 +96,7 @@ public class BlackoutManager : MonoBehaviour
                 blackoutImage.color = Color.Lerp(blackoutColor, transparentColor, _lerpTime);
                 if (blackoutImage.color.a <= 0)
                 {
+                   
                     blackoutImage.gameObject.SetActive(false);
                 }
 

@@ -17,6 +17,7 @@ public class LevelBuilder : MonoBehaviour
         Floor1,
         Floor2,
         Floor3,
+        Intermission,
     }
 
     [field: Header("Configuration")] 
@@ -102,15 +103,18 @@ public class LevelBuilder : MonoBehaviour
 
     IEnumerator DelayStart()
     {
-        yield return new WaitForSecondsRealtime(.5f);
-        roomsRemaining = _numberOfRoomsToSpawn;
-        _startingRoom = GameObject.FindWithTag("StartingRoom");
-        otherConnectorSideRoomInfo = _startingRoom.GetComponent<RoomInfo>();
-        GetStartingRoomWalls();
-        possibleRooms = new List<GameObject>();
-        spawnedConnectors = new List<GameObject>();
-        AddRoomsToList();
-        StartCoroutine(SpawnConnector());
+        if (currentFloor != LevelMode.Intermission)
+        {
+            yield return new WaitForSecondsRealtime(.5f);
+            roomsRemaining = _numberOfRoomsToSpawn;
+            _startingRoom = GameObject.FindWithTag("StartingRoom");
+            otherConnectorSideRoomInfo = _startingRoom.GetComponent<RoomInfo>();
+            GetStartingRoomWalls();
+            possibleRooms = new List<GameObject>();
+            spawnedConnectors = new List<GameObject>();
+            AddRoomsToList();
+            StartCoroutine(SpawnConnector());
+        }
     }
     void GetStartingRoomWalls()
     {

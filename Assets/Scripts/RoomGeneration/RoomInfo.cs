@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(IntersectionRaycast))]
+
 public class RoomInfo : MonoBehaviour
 {
     [field: Header("Configuration")] 

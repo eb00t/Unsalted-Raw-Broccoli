@@ -49,6 +49,9 @@ public class LevelTextManager : MonoBehaviour
             case LevelBuilder.LevelMode.Floor3:
                 titleText.text = ("FLOOR 3");
                 break;
+            case LevelBuilder.LevelMode.Intermission:
+                titleText.text = ("");
+                break;
         }
 
         if (subtitleText == null)
@@ -69,6 +72,9 @@ public class LevelTextManager : MonoBehaviour
                 break;
             case LevelBuilder.LevelMode.Floor3:
                 subtitleText.text = ("...");
+                break;
+            case LevelBuilder.LevelMode.Intermission:
+                subtitleText.text = ("");
                 break;
         }
     }
