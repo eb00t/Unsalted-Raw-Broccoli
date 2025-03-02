@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class CharacterAttack : MonoBehaviour
 {
@@ -25,7 +22,8 @@ public class CharacterAttack : MonoBehaviour
     public int baseAtk;
     public int charAtk = 10;
     public int isInvincible;
-    [SerializeField] private float atkRange = 3;
+    public bool isPoison;
+    public bool isIce;
     
     [Header("Tracking")]
     [SerializeField] private List<Transform> enemies;
@@ -246,23 +244,32 @@ public class CharacterAttack : MonoBehaviour
     }
     */
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) // apologies for how messy this method is, hopefully will fix in future
     {
-        if (other.CompareTag("Enemy"))
+        if (!other.CompareTag("Enemy")) return;
+        
+        if (other.GetComponentInParent<EnemyHandler>())
         {
-            if (other.GetComponentInParent<EnemyHandler>())
+            other.GetComponentInParent<EnemyHandler>().TakeDamageEnemy(charAtk);
+            
+            if (isPoison)
             {
-                other.GetComponentInParent<EnemyHandler>().TakeDamageEnemy(charAtk);
+                other.GetComponentInParent<EnemyHandler>().TriggerStatusEffect(ConsumableEffect.Poison);
             }
-            if (other.GetComponent<BossHandler>())
+            else if (isIce)
             {
-                other.GetComponent<BossHandler>().TakeDamageEnemy(charAtk);
+                var atkNum = Random.Range(0, 10);
+                if (atkNum > 2) return;
+                other.GetComponentInParent<EnemyHandler>().TriggerStatusEffect(ConsumableEffect.Ice);
             }
-            if (other.GetComponentInParent<Boss_TwoHands>())
-            {
-                other.GetComponentInParent<Boss_TwoHands>().TakeDamageEnemy(charAtk);
-            }
-            Debug.Log("EnemyHit");
+        }
+        if (other.GetComponent<BossHandler>())
+        {
+            other.GetComponent<BossHandler>().TakeDamageEnemy(charAtk);
+        }
+        if (other.GetComponentInParent<Boss_TwoHands>())
+        {
+            other.GetComponentInParent<Boss_TwoHands>().TakeDamageEnemy(charAtk);
         }
     }
 

@@ -155,9 +155,11 @@ public class ToolbarHandler : MonoBehaviour
                 _currencyManager.UpdateCurrency((int)consumable.effectAmount);
                 break;
             case ConsumableEffect.Poison: //  attacks have a chance to proc poison on enemies
+                StartCoroutine(ActivateStatusEffect(consumable));
                 _playerStatus.AddNewStatus(consumable);
                 break;
             case ConsumableEffect.Ice: // attacks have a chance to freeze enemies for a time
+                StartCoroutine(ActivateStatusEffect(consumable));
                 _playerStatus.AddNewStatus(consumable);
                 break;
             case ConsumableEffect.DamageBuff: // provides the player a non-stackable attack buff
@@ -199,6 +201,25 @@ public class ToolbarHandler : MonoBehaviour
         
         _activeAtkBuffs.Remove(atkIncrease);
         _characterAttack.charAtk = _activeAtkBuffs.Sum() + _characterAttack.baseAtk;
+    }
+
+    private IEnumerator ActivateStatusEffect(Consumable consumable)
+    {
+        switch (consumable.consumableEffect)
+        {
+            case ConsumableEffect.Ice:
+                _characterAttack.isIce = true;
+                yield return new WaitForSecondsRealtime(consumable.effectDuration);
+                _characterAttack.isIce = false;
+                break;
+            case ConsumableEffect.Poison:
+                _characterAttack.isPoison = true;
+                yield return new WaitForSecondsRealtime(consumable.effectDuration);
+                _characterAttack.isPoison = false;
+                break;
+        }
+
+        
     }
 
     private void CycleToolbar(int direction) // -1 = left, 1 = right

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -18,6 +19,11 @@ public class EnemyHandler : MonoBehaviour
     [SerializeField] private float attackRange;
     [SerializeField] private float maxPatrolRange;
     [SerializeField] private float minPatrolRange;
+    [SerializeField] private float freezeDuration;
+    [SerializeField] private float freezeCooldown;
+    [SerializeField] private int poisonResistance;
+    private int _poisonBuildup;
+    private bool _isFrozen, _canFreeze, _isPoisoned;
     
     private float _targetTime;
     private Slider _healthSlider;
@@ -36,6 +42,7 @@ public class EnemyHandler : MonoBehaviour
     
     [Header("References")]
     [SerializeField] private BoxCollider atkHitbox;
+    [SerializeField] private Image healthFillImage;
 
     private int knockbackDir = 0;
     [SerializeField] private Vector3 knockbackPower = new Vector3(10f, 1f, 0f);
@@ -45,7 +52,8 @@ public class EnemyHandler : MonoBehaviour
         Idle,
         Patrol,
         Chase,
-        Attack
+        Attack,
+        Frozen
     }
     private void Start()
     {
@@ -69,29 +77,38 @@ public class EnemyHandler : MonoBehaviour
         {
             gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
         }
+
+        _canFreeze = true;
     }
 
     private void Update()
     {
         var distance = Vector3.Distance(transform.position, _target.position);
 
-        if (distance < attackRange)
+        if (_isFrozen)
         {
-            _state = States.Attack;
-        }
-        else if (distance < chaseRange)
-        {
-            _state = States.Chase;
-        }
-        else if (!_isIdle)
-        {
-            _state = States.Patrol;
+            _state = States.Frozen;
         }
         else
         {
-            _state = States.Idle;
+            if (distance < attackRange)
+            {
+                _state = States.Attack;
+            }
+            else if (distance < chaseRange)
+            {
+                _state = States.Chase;
+            }
+            else if (!_isIdle)
+            {
+                _state = States.Patrol;
+            }
+            else
+            {
+                _state = States.Idle;
+            }
         }
-
+        
         switch (_state)
         {
             case States.Idle:
@@ -106,6 +123,10 @@ public class EnemyHandler : MonoBehaviour
                 break;
             case States.Attack:
                 Attack();
+                break;
+            case States.Frozen:
+                _agent.isStopped = true;
+                Frozen();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -129,6 +150,8 @@ public class EnemyHandler : MonoBehaviour
         }
         
         GetComponentInChildren<SpriteRenderer>().transform.localScale = localScale;
+
+        
     }
 
     private void Patrol()
@@ -139,27 +162,6 @@ public class EnemyHandler : MonoBehaviour
         _healthSlider.gameObject.SetActive(false);
 
         _agent.SetDestination(_patrolTarget);
-        
-        /*
-                  var dist = Mathf.Abs(transform.position.x - _patrolTarget.x);
-          
-                  if (dist <= 0.1f)
-                  {
-                      _patrolTarget = (_patrolTarget == _patrol1) ? _patrol2 : _patrol1;
-                  }
-          
-                  var x = Mathf.MoveTowards(transform.position.x, _patrolTarget.x, speed * Time.deltaTime);
-                  transform.position = new Vector3(x, transform.position.y, transform.position.z);
-          
-                  if (_patrolTarget.x > transform.position.x)
-                  {
-                      transform.rotation = Quaternion.Euler(0, 180, 0);
-                  }
-                  else if (_patrolTarget.x < transform.position.x)
-                  {
-                      transform.rotation = Quaternion.identity;
-                  }
-                  */
     }
 
     private void Chase()
@@ -167,21 +169,6 @@ public class EnemyHandler : MonoBehaviour
         _agent.isStopped = false;
         _healthSlider.gameObject.SetActive(true);
         _agent.SetDestination(_target.position);
-        
-        /*
-        if (_target.position.x > transform.position.x)
-        {
-            // right
-            transform.Translate(transform.right * (speed * Time.deltaTime));
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
-        else
-        {
-            // left
-            transform.Translate(-transform.right * (speed * Time.deltaTime));
-            transform.rotation = Quaternion.identity;
-        }
-        */
     }
 
     private void Attack()
@@ -195,6 +182,50 @@ public class EnemyHandler : MonoBehaviour
             _animator.SetTrigger("Attack");
             _targetTime = atkDelay;
         }
+    }
+
+    private void Frozen()
+    {
+        if (!_canFreeze) return;
+        StartCoroutine(BeginFreeze());
+    }
+
+    private IEnumerator BeginFreeze()
+    {
+        StartCoroutine(StartCooldown());
+        healthFillImage.color = Color.cyan;
+        _agent.velocity = Vector3.zero;
+        yield return new WaitForSecondsRealtime(freezeDuration);
+        healthFillImage.color = new Color(1f, .48f, .48f, 1);
+        _isFrozen = false;
+    }
+
+    private IEnumerator StartCooldown()
+    {
+        _canFreeze = false;
+        yield return new WaitForSecondsRealtime(freezeCooldown);
+        _canFreeze = true;
+    }
+
+    private IEnumerator TakePoisonDamage()
+    {
+        if (_poisonBuildup > 0)
+        {
+            _isPoisoned = true;
+            healthFillImage.color = new Color(0, .83f, .109f, 1f);
+            var damageToTake = maxHealth / 100 * 3;
+            _poisonBuildup -= 5;
+            TakeDamageEnemy(damageToTake);
+        }
+        else
+        {
+            _isPoisoned = false;
+            healthFillImage.color = new Color(1f, .48f, .48f, 1);
+            yield break;
+        }
+        
+        yield return new WaitForSecondsRealtime(2f);
+        StartCoroutine(TakePoisonDamage());
     }
 
     private void PickPatrolPoints()
@@ -212,6 +243,7 @@ public class EnemyHandler : MonoBehaviour
             _health -= damage;
             _healthSlider.value = _health;
 
+            if (_isFrozen) return;
             // Stun
             _agent.velocity = Vector3.zero;
             if (transform.position.x > _target.position.x)
@@ -230,10 +262,7 @@ public class EnemyHandler : MonoBehaviour
     
     private void Die()
     {
-        //animator.SetTrigger("isDead");
-        
         gameObject.SetActive(false);
-        //Destroy(gameObject);
     }
     
 
@@ -263,12 +292,31 @@ public class EnemyHandler : MonoBehaviour
             Gizmos.DrawWireCube(_patrol2, v);
         }
     }
-
     
     private void OnDisable()
     {
         roomScripting.enemies.Remove(gameObject);
         roomScripting._enemyCount--;
         _spawner.spawnedEnemies.Remove(gameObject);
+    }
+
+    public void TriggerStatusEffect(ConsumableEffect effect)
+    {
+        switch (effect)
+        {
+            case ConsumableEffect.Ice:
+                if (!_canFreeze) return;
+                _isFrozen = true;
+                break;
+            case ConsumableEffect.Poison:
+                if (_isPoisoned) return;
+                _poisonBuildup += 10;
+                
+                if (_poisonBuildup >= poisonResistance)
+                {
+                    StartCoroutine(TakePoisonDamage());
+                }
+                break;
+        }
     }
 }
