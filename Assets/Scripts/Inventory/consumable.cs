@@ -10,6 +10,7 @@ public class Consumable : MonoBehaviour
 	public Sprite uiIcon;
 	public Sprite statusIcon;
 	public Color statusColor;
+	public string statusText;
 	public bool isInstantUse;
 	public int maximumHold;
 	

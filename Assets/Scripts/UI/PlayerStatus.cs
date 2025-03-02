@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,7 +34,7 @@ public class PlayerStatus : MonoBehaviour
         statuses.Add(newStatus.gameObject);
         var statusTimer = newStatus.GetComponent<StatusTimer>(); 
         statusTimer.targetTime = consumable.effectDuration;
-        statusTimer.consumableEffect = consumable.consumableEffect;
+        newStatus.GetComponentInChildren<TextMeshProUGUI>().text = consumable.statusText;
 
         foreach (var i in newStatus.GetComponentsInChildren<Image>())
         {
@@ -69,6 +71,23 @@ public class PlayerStatus : MonoBehaviour
             if (property.CanWrite)
             {
                 property.SetValue(copy, property.GetValue(consumable));
+            }
+        }
+    }
+
+    public void UpdateStatuses(int amount)
+    {
+        if (statuses.Count <= 0) return;
+        foreach (var s in statuses)
+        {
+            if (s.GetComponent<Consumable>().consumableEffect != ConsumableEffect.Invincibility) continue;
+            if (amount > 0)
+            {
+                s.GetComponentInChildren<TextMeshProUGUI>().text = amount.ToString();
+            }
+            else
+            {
+                Destroy(s);
             }
         }
     }

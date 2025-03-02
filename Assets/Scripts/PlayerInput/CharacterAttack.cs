@@ -34,13 +34,18 @@ public class CharacterAttack : MonoBehaviour
     
     [SerializeField] private Slider healthSlider;
     [SerializeField] private GameObject diedScreen;
-    [SerializeField] private MenuHandler menuHandler;
+    private GameObject _uiManager;
+    private MenuHandler _menuHandler;
+    private PlayerStatus _playerStatus;
     public GameObject hitFlash;
     
     private void Start()
     {
         _attackCollider = GetComponent<MeshCollider>();
         _playerAnimator = GameObject.FindGameObjectWithTag("PlayerRenderer").GetComponent<Animator>();
+        _uiManager = GameObject.FindGameObjectWithTag("UIManager");
+        _menuHandler = _uiManager.GetComponent<MenuHandler>();
+        _playerStatus = _uiManager.GetComponent<PlayerStatus>();
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
         currentHealth = maxHealth;
@@ -153,41 +158,34 @@ public class CharacterAttack : MonoBehaviour
 
     public void TakeDamagePlayer(int damage)
     {
-        if (isInvincible <= 0)
+        if (isInvincible > 0)
         {
-            if (currentHealth - damage > 0)
-            {
-                if (currentHealth - damage < currentHealth)
-                {
-                    hitFlash.GetComponent<Image>().color = Color.red;
-                    hitFlash.SetActive(true);
-                }
-                else if (currentHealth - damage > currentHealth)
-                {
-                    hitFlash.GetComponent<Image>().color = Color.green;
-                    hitFlash.SetActive(true);
-                }
+            isInvincible--;
+            _playerStatus.UpdateStatuses(isInvincible);
+            return;
+        }
 
-                currentHealth -= damage;
-                healthSlider.value = currentHealth;
-            }
-            else
-            {
-                currentHealth = 0;
-                healthSlider.value = 0;
-                Die();
-            }
+        if (currentHealth <= damage)
+        {
+            currentHealth = 0;
+            healthSlider.value = 0;
+            Die();
         }
         else
         {
-            isInvincible--;
+            var hitColor = (currentHealth - damage < currentHealth) ? Color.red : Color.green;
+            hitFlash.GetComponent<Image>().color = hitColor;
+            hitFlash.SetActive(true);
+
+            currentHealth -= damage;
+            healthSlider.value = currentHealth;
         }
     }
 
     private void Die()
     {
         diedScreen.SetActive(true);
-        menuHandler.SwitchSelected(diedScreen.GetComponentInChildren<Button>().gameObject);
+        _menuHandler.SwitchSelected(diedScreen.GetComponentInChildren<Button>().gameObject);
     }
 
     /*

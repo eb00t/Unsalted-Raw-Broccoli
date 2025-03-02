@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class InventoryStore : MonoBehaviour
 {
     [SerializeField] private Transform block;
-    [SerializeField] private Transform grid;
+    public Transform grid;
     public List<GameObject> items;
     private ToolbarHandler _toolbarHandler;
     

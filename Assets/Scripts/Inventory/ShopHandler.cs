@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,7 @@ public class ShopHandler : MonoBehaviour
 	private CharacterMovement _characterMovement;
 	private ItemPickupHandler _itemPickupHandler;
 	private CurrencyManager _currencyManager;
+	private InventoryStore _inventoryStore;
 
 	private void Start()
 	{
@@ -29,6 +31,7 @@ public class ShopHandler : MonoBehaviour
 		_uiManager = GameObject.FindGameObjectWithTag("UIManager");
 		_shopGUI = GetComponentInChildren<Canvas>(true).gameObject;
 		_uiManager.GetComponent<MenuHandler>().shopGUI = _shopGUI;
+		_inventoryStore = _uiManager.GetComponent<InventoryStore>();
 
 		_promptRT = _prompt.GetComponent<RectTransform>();
 		_promptText = _prompt.GetComponentInChildren<TextMeshProUGUI>();
@@ -80,7 +83,7 @@ public class ShopHandler : MonoBehaviour
 		var itemConsumable = item.GetComponent<Consumable>();
 		
 		var newBlock = Instantiate(block, block.position, block.rotation, grid);
-		newBlock.GetComponentInChildren<TextMeshProUGUI>().text = itemConsumable.title;
+		newBlock.GetComponentInChildren<TextMeshProUGUI>().text = "Cost: " + itemPrice[i];
 		newBlock.GetComponent<Button>().interactable = true;
         
 		var indexHolder = newBlock.GetComponent<IndexHolder>();
@@ -98,11 +101,9 @@ public class ShopHandler : MonoBehaviour
 
 		foreach (var s in newBlock.GetComponentsInChildren<Image>())
 		{
-			if (s.name == "Image")
-			{
-				s.sprite = itemConsumable.uiIcon;
-				s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
-			}
+			if (s.name != "Image") continue;
+			s.sprite = itemConsumable.uiIcon;
+			s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
 		}
 	}
 
@@ -111,7 +112,13 @@ public class ShopHandler : MonoBehaviour
 		// if player does not have enough money then return
 		if (_currencyManager.currencyHeld - indexHolder.price < 0) return;
 		if (indexHolder.numHeld <= 0) return;
-			
+
+		foreach (var n in _inventoryStore.grid.GetComponentsInChildren<IndexHolder>())
+		{
+			if (n.consumable.title != indexHolder.consumable.title) continue;
+			if (n.numHeld == n.consumable.maximumHold) return;
+		}
+
 		_currencyManager.UpdateCurrency(-indexHolder.price);
 		// gets the consumable script on gameobject, updates the stock held
 		var consumable = indexHolder.consumable;
@@ -130,6 +137,4 @@ public class ShopHandler : MonoBehaviour
 			}
 		}
 	}
-	
-	// EventSystem.current.currentSelectedGameObject == slot
 }

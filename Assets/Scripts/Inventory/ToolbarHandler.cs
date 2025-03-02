@@ -165,8 +165,9 @@ public class ToolbarHandler : MonoBehaviour
                 break;
             case ConsumableEffect.Invincibility: // gives player up to 3 hits without taking damage
                 if (_characterAttack.isInvincible >= 3) return;
-                //_playerStatus.AddNewStatus(consumable);
                 _characterAttack.isInvincible += (int)consumable.effectAmount;
+                consumable.statusText = _characterAttack.isInvincible.ToString();
+                _playerStatus.AddNewStatus(consumable);
                 break;
             case ConsumableEffect.RouletteHeal: // ?
                 break;

@@ -63,6 +63,7 @@ public class ItemPickupHandler : MonoBehaviour
         {
             var ip = item.GetComponent<ItemPickup>();
             
+            if (ip == null) continue;
             if (ip.canPickup)
             {
                 ip.AddItemToInventory();
