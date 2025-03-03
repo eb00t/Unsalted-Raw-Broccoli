@@ -2,17 +2,19 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 
 // Adapted from https://github.com/Chaker-Gamra/2.5D-Platformer-Game/blob/master/Assets/Scripts/Enemy/Enemy.cs
 
-public class EnemyHandler : MonoBehaviour
+public class EnemyHandler : MonoBehaviour, IDamageable
 {
     [Header("Enemy Stats")]
-    private int _health = 100;
     [SerializeField] private int maxHealth;
+    private int _health;
     public int enemyAtk;
     [SerializeField] private float atkDelay;
     [SerializeField] private float chaseRange;
@@ -22,30 +24,31 @@ public class EnemyHandler : MonoBehaviour
     [SerializeField] private float freezeDuration;
     [SerializeField] private float freezeCooldown;
     [SerializeField] private int poisonResistance;
+    [SerializeField] private bool canFreeze; // if by default set to false the enemy will never freeze
     private int _poisonBuildup;
-    private bool _isFrozen, _canFreeze, _isPoisoned;
+    private bool _isFrozen, _isPoisoned;
     
+    [Header("Values")]
+    [SerializeField] private Vector3 knockbackPower = new Vector3(10f, 1f, 0f);
+    private int _knockbackDir = 0;
     private float _targetTime;
-    private Slider _healthSlider;
-    private Animator _animator;
-    private Transform _target;
-    private NavMeshAgent _agent;
     private Vector3 _patrolTarget, _patrol1, _patrol2;
     private States _state = States.Idle;
-    [NonSerialized]public RoomScripting roomScripting;
-    public Spawner _spawner;
     
     [Header("Debugging")]
-    [SerializeField] private bool _isIdle;
+    [SerializeField] private bool isIdle;
     [SerializeField] private bool debugPatrol;
     [SerializeField] private bool debugRange;
     
     [Header("References")]
     [SerializeField] private BoxCollider atkHitbox;
     [SerializeField] private Image healthFillImage;
-
-    private int knockbackDir = 0;
-    [SerializeField] private Vector3 knockbackPower = new Vector3(10f, 1f, 0f);
+    [NonSerialized] public RoomScripting roomScripting;
+    public Spawner _spawner;
+    private Slider _healthSlider;
+    private Animator _animator;
+    private Transform _target;
+    private NavMeshAgent _agent;
 
     private enum States
     {
@@ -77,8 +80,6 @@ public class EnemyHandler : MonoBehaviour
         {
             gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
         }
-
-        _canFreeze = true;
     }
 
     private void Update()
@@ -99,7 +100,7 @@ public class EnemyHandler : MonoBehaviour
             {
                 _state = States.Chase;
             }
-            else if (!_isIdle)
+            else if (!isIdle)
             {
                 _state = States.Patrol;
             }
@@ -150,8 +151,6 @@ public class EnemyHandler : MonoBehaviour
         }
         
         GetComponentInChildren<SpriteRenderer>().transform.localScale = localScale;
-
-        
     }
 
     private void Patrol()
@@ -186,7 +185,7 @@ public class EnemyHandler : MonoBehaviour
 
     private void Frozen()
     {
-        if (!_canFreeze) return;
+        if (!canFreeze) return;
         StartCoroutine(BeginFreeze());
     }
 
@@ -202,9 +201,9 @@ public class EnemyHandler : MonoBehaviour
 
     private IEnumerator StartCooldown()
     {
-        _canFreeze = false;
+        canFreeze = false;
         yield return new WaitForSecondsRealtime(freezeCooldown);
-        _canFreeze = true;
+        canFreeze = true;
     }
 
     private IEnumerator TakePoisonDamage()
@@ -215,7 +214,7 @@ public class EnemyHandler : MonoBehaviour
             healthFillImage.color = new Color(0, .83f, .109f, 1f);
             var damageToTake = maxHealth / 100 * 3;
             _poisonBuildup -= 5;
-            TakeDamageEnemy(damageToTake);
+            TakeDamage(damageToTake);
         }
         else
         {
@@ -236,7 +235,7 @@ public class EnemyHandler : MonoBehaviour
         _patrol2 = new Vector3(-ranDist, position.y, position.z);
     }
 
-    public void TakeDamageEnemy(int damage)
+    public void TakeDamage(int damage)
     {
         if (_health - damage > 0)
         {
@@ -248,9 +247,9 @@ public class EnemyHandler : MonoBehaviour
             _agent.velocity = Vector3.zero;
             if (transform.position.x > _target.position.x)
             {
-                knockbackDir = 1;
-            } else knockbackDir = -1;
-            _agent.velocity += new Vector3(knockbackPower.x * knockbackDir, knockbackPower.y, knockbackPower.z);
+                _knockbackDir = 1;
+            } else _knockbackDir = -1;
+            _agent.velocity += new Vector3(knockbackPower.x * _knockbackDir, knockbackPower.y, knockbackPower.z);
         }
         else
         {
@@ -305,7 +304,7 @@ public class EnemyHandler : MonoBehaviour
         switch (effect)
         {
             case ConsumableEffect.Ice:
-                if (!_canFreeze) return;
+                if (!canFreeze) return;
                 _isFrozen = true;
                 break;
             case ConsumableEffect.Poison:

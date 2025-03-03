@@ -244,32 +244,22 @@ public class CharacterAttack : MonoBehaviour
     }
     */
 
-    private void OnTriggerEnter(Collider other) // apologies for how messy this method is, hopefully will fix in future
+    private void OnTriggerEnter(Collider other) // gets takedamage and trigger status methods from all enemy types
     {
         if (!other.CompareTag("Enemy")) return;
+
+        var damageable = other.GetComponentInParent<IDamageable>();
+        if (damageable == null) return;
         
-        if (other.GetComponentInParent<EnemyHandler>())
+       damageable.TakeDamage(charAtk);
+        
+        if (isPoison)
         {
-            other.GetComponentInParent<EnemyHandler>().TakeDamageEnemy(charAtk);
-            
-            if (isPoison)
-            {
-                other.GetComponentInParent<EnemyHandler>().TriggerStatusEffect(ConsumableEffect.Poison);
-            }
-            else if (isIce)
-            {
-                var atkNum = Random.Range(0, 10);
-                if (atkNum > 2) return;
-                other.GetComponentInParent<EnemyHandler>().TriggerStatusEffect(ConsumableEffect.Ice);
-            }
+            damageable.TriggerStatusEffect(ConsumableEffect.Poison);
         }
-        if (other.GetComponent<BossHandler>())
+        else if (isIce && Random.Range(0, 10) <= 2) // hits have 30% chance to trigger ice effect
         {
-            other.GetComponent<BossHandler>().TakeDamageEnemy(charAtk);
-        }
-        if (other.GetComponentInParent<Boss_TwoHands>())
-        {
-            other.GetComponentInParent<Boss_TwoHands>().TakeDamageEnemy(charAtk);
+            damageable.TriggerStatusEffect(ConsumableEffect.Ice);
         }
     }
 

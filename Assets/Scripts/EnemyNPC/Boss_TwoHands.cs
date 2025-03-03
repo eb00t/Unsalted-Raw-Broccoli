@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 
 // Adapted from https://github.com/Chaker-Gamra/2.5D-Platformer-Game/blob/master/Assets/Scripts/Enemy/Enemy.cs
 
-public class Boss_TwoHands : MonoBehaviour
+public class Boss_TwoHands : MonoBehaviour, IDamageable
 {
     [Header("Enemy Stats")]
     [SerializeField] private int maxHealth;
@@ -20,15 +20,23 @@ public class Boss_TwoHands : MonoBehaviour
     [SerializeField] private float atkRange;
     [SerializeField] private float maxPatrolRange;
     [SerializeField] private float minPatrolRange;
+    [SerializeField] private float freezeDuration;
+    [SerializeField] private float freezeCooldown;
+    [SerializeField] private int poisonResistance;
+    [SerializeField] private bool canFreeze; // if by default set to false the enemy will never freeze
+    private int _poisonBuildup;
+    private bool _isFrozen, _isPoisoned;
     public int bossAtk;
     private int _health;
-    
-    private float _targetTime;
+    private States _state =  States.Idle;
+
+    [Header("References")] 
+    [SerializeField] private Image healthFillImage;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
     private NavMeshAgent _agent;
-    private States _state =  States.Idle;
+    private float _targetTime;
 
     [Header("Debugging")] 
     [SerializeField] private bool debugRange;
@@ -37,7 +45,8 @@ public class Boss_TwoHands : MonoBehaviour
     {
         Idle,
         Chase,
-        Attack
+        Attack,
+        Frozen
     }
 
     private void Awake()
@@ -61,18 +70,26 @@ public class Boss_TwoHands : MonoBehaviour
     private void Update()
     {
         var distance = Vector3.Distance(transform.position, _target.position);
-
-        if (distance < atkRange)
+        
+        
+        if (_isFrozen)
         {
-            _state = States.Attack;
-        }
-        else if (distance < chaseRange)
-        {
-            _state = States.Chase;
+            _state = States.Frozen;
         }
         else
         {
-            _state = States.Idle;
+            if (distance < atkRange)
+            {
+                _state = States.Attack;
+            }
+            else if (distance < chaseRange)
+            {
+                _state = States.Chase;
+            }
+            else
+            {
+                _state = States.Idle;
+            }
         }
 
         switch (_state)
@@ -86,22 +103,12 @@ public class Boss_TwoHands : MonoBehaviour
             case States.Attack:
                 Attack();
                 break;
+            case States.Frozen:
+                Frozen();
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
-        /*
-        var velocity = _agent.velocity;
-        var localScale = transform.localScale;
-        
-        localScale = velocity.x switch
-        {
-            > 0.1f => new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z),
-            < -0.1f => new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z),
-            _ => localScale
-        };
-        transform.localScale = localScale;
-        */
     }
 
     private void Chase()
@@ -115,9 +122,7 @@ public class Boss_TwoHands : MonoBehaviour
         _targetTime -= Time.deltaTime;
         
         if (!(_targetTime <= 0.0f)) return;
-        //_characterAttack.TakeDamagePlayer(atk);
         var atkNum = Random.Range(0, 6);
-        Debug.Log(atkNum);
 
         switch (atkNum)
         {
@@ -144,7 +149,51 @@ public class Boss_TwoHands : MonoBehaviour
         _targetTime = 4f;
     }
     
-    public void TakeDamageEnemy(int damage)
+    private void Frozen()
+    {
+        if (!canFreeze) return;
+        StartCoroutine(BeginFreeze());
+    }
+
+    private IEnumerator BeginFreeze()
+    {
+        StartCoroutine(StartCooldown());
+        healthFillImage.color = Color.cyan;
+        _agent.velocity = Vector3.zero;
+        yield return new WaitForSecondsRealtime(freezeDuration);
+        healthFillImage.color = new Color(1f, .48f, .48f, 1);
+        _isFrozen = false;
+    }
+
+    private IEnumerator StartCooldown()
+    {
+        canFreeze = false;
+        yield return new WaitForSecondsRealtime(freezeCooldown);
+        canFreeze = true;
+    }
+
+    private IEnumerator TakePoisonDamage()
+    {
+        if (_poisonBuildup > 0)
+        {
+            _isPoisoned = true;
+            healthFillImage.color = new Color(0, .83f, .109f, 1f);
+            var damageToTake = maxHealth / 100 * 3;
+            _poisonBuildup -= 5;
+            TakeDamage(damageToTake);
+        }
+        else
+        {
+            _isPoisoned = false;
+            healthFillImage.color = new Color(1f, .48f, .48f, 1);
+            yield break;
+        }
+        
+        yield return new WaitForSecondsRealtime(2f);
+        StartCoroutine(TakePoisonDamage());
+    }
+    
+    public void TakeDamage(int damage)
     {
         if (_health - damage > 0)
         {
@@ -156,6 +205,26 @@ public class Boss_TwoHands : MonoBehaviour
             _health = 0;
             _healthSlider.value = 0;
             Die();
+        }
+    }
+    
+    public void TriggerStatusEffect(ConsumableEffect effect)
+    {
+        switch (effect)
+        {
+            case ConsumableEffect.Ice:
+                if (!canFreeze) return;
+                _isFrozen = true;
+                break;
+            case ConsumableEffect.Poison:
+                if (_isPoisoned) return;
+                _poisonBuildup += 10;
+                
+                if (_poisonBuildup >= poisonResistance)
+                {
+                    StartCoroutine(TakePoisonDamage());
+                }
+                break;
         }
     }
     
@@ -184,5 +253,4 @@ public class Boss_TwoHands : MonoBehaviour
         RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         roomScripting.enemies.Remove(gameObject);
     }
-    
 }
