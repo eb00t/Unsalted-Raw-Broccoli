@@ -369,9 +369,14 @@ MonoBehaviour:
   maxHealth: 100
   chaseRange: 20
   atkRange: 20
-  maxPatrolRange: 15
   minPatrolRange: 6
-  bossAtk: 10
+  maxPatrolRange: 15
+  freezeDuration: 2
+  freezeCooldown: 30
+  poisonResistance: 60
+  canFreeze: 1
+  attack: 25
+  healthFillImage: {fileID: 3786656424194055331}
   debugRange: 0
 --- !u!1 &4248103763576319546
 GameObject:
@@ -439,7 +444,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5bff6285508ddb4a8c62036e274d8f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 1
 --- !u!1 &4252946660425650022
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,7 +898,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5bff6285508ddb4a8c62036e274d8f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 1
 --- !u!1 &7758759880416685355
 GameObject:
   m_ObjectHideFlags: 0

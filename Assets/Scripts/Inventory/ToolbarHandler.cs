@@ -145,7 +145,7 @@ public class ToolbarHandler : MonoBehaviour
         switch (consumable.consumableEffect)
         {
             case ConsumableEffect.None:
-                Debug.Log("Item has no effect assigned.");
+                Debug.LogWarning("Item has no effect assigned.");
                 break;
             case ConsumableEffect.Heal: // Heals player by a percentage of their maximum health
                 var newHealth = (float)_characterAttack.maxHealth / 100 * consumable.effectAmount;
@@ -172,8 +172,10 @@ public class ToolbarHandler : MonoBehaviour
                 _playerStatus.AddNewStatus(consumable);
                 break;
             case ConsumableEffect.RouletteHeal: // ?
+                Debug.LogWarning("Roulette heal has no effect.");
                 break;
             case ConsumableEffect.HorseFact: // enemy deaths in vicinity have a chance to show fact about a horse
+                Debug.LogWarning("Horse fact has no effect.");
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -218,8 +220,6 @@ public class ToolbarHandler : MonoBehaviour
                 _characterAttack.isPoison = false;
                 break;
         }
-
-        
     }
 
     private void CycleToolbar(int direction) // -1 = left, 1 = right

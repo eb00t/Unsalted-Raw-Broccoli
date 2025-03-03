@@ -13,20 +13,16 @@ using Random = UnityEngine.Random;
 public class EnemyHandler : MonoBehaviour, IDamageable
 {
     [Header("Enemy Stats")]
-    [SerializeField] private int maxHealth;
-    private int _health;
-    public int enemyAtk;
-    [SerializeField] private float atkDelay;
+    [SerializeField] private int maxHealth, poisonResistance;
+    [SerializeField] private float atkDelay, attackRange;
     [SerializeField] private float chaseRange;
-    [SerializeField] private float attackRange;
-    [SerializeField] private float maxPatrolRange;
-    [SerializeField] private float minPatrolRange;
-    [SerializeField] private float freezeDuration;
-    [SerializeField] private float freezeCooldown;
-    [SerializeField] private int poisonResistance;
-    [SerializeField] private bool canFreeze; // if by default set to false the enemy will never freeze
-    private int _poisonBuildup;
+    [SerializeField] private float minPatrolRange, maxPatrolRange;
+    [SerializeField] private float freezeDuration, freezeCooldown;
+    [SerializeField] private bool canFreeze, canFly; // if by default set to false the enemy will never freeze
+    public int attack;
+    private int _poisonBuildup, _health;
     private bool _isFrozen, _isPoisoned;
+    private float _originalHeight, _heightOffset;
     
     [Header("Values")]
     [SerializeField] private Vector3 knockbackPower = new Vector3(10f, 1f, 0f);
@@ -36,9 +32,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private States _state = States.Idle;
     
     [Header("Debugging")]
-    [SerializeField] private bool isIdle;
-    [SerializeField] private bool debugPatrol;
-    [SerializeField] private bool debugRange;
+    [SerializeField] private bool isIdle, debugPatrol, debugRange;
     
     [Header("References")]
     [SerializeField] private BoxCollider atkHitbox;
@@ -49,6 +43,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Animator _animator;
     private Transform _target;
     private NavMeshAgent _agent;
+    
+    int IDamageable.Attack
+    {
+        get => attack;
+        set => attack = value;
+    }
 
     private enum States
     {
@@ -56,12 +56,14 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         Patrol,
         Chase,
         Attack,
+        FlyChase,
         Frozen
     }
+    
     private void Start()
     {
-        roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
-        roomScripting.enemies.Add(gameObject);
+        //roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        //roomScripting.enemies.Add(gameObject);
         gameObject.transform.parent = gameObject.transform.root;
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
@@ -73,6 +75,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateRotation = false;
+        _originalHeight = _agent.baseOffset;
+        _heightOffset = transform.position.y - _target.position.y;
         
         PickPatrolPoints();
         _patrolTarget = _patrol1;
@@ -98,15 +102,17 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             }
             else if (distance < chaseRange)
             {
-                _state = States.Chase;
+                _state = canFly ? States.FlyChase : States.Chase;
             }
             else if (!isIdle)
             {
                 _state = States.Patrol;
+                _agent.baseOffset = Mathf.Lerp(_agent.baseOffset, _originalHeight, Time.deltaTime * 2f);
             }
             else
             {
                 _state = States.Idle;
+                _agent.baseOffset = Mathf.Lerp(_agent.baseOffset, _originalHeight, Time.deltaTime * 2f);
             }
         }
         
@@ -128,6 +134,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             case States.Frozen:
                 _agent.isStopped = true;
                 Frozen();
+                break;
+            case States.FlyChase:
+                FlyChase();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -169,12 +178,37 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _healthSlider.gameObject.SetActive(true);
         _agent.SetDestination(_target.position);
     }
+    
+    private void FlyChase() // adjusts base offset of navmesh to make it appear that enemy is flying
+    {
+        _agent.isStopped = false;
+        _healthSlider.gameObject.SetActive(true);
+        
+        var newPosition = _target.position;
+        newPosition.y = transform.position.y; // ignore y movement
+
+        _agent.SetDestination(newPosition);
+
+        // change base offset to match player height
+        var targetHeight = _target.position.y + (_originalHeight - _target.position.y ) * 0.5f;
+        _agent.baseOffset = Mathf.Lerp(_agent.baseOffset, targetHeight, Time.deltaTime * 2f);
+        
+        _agent.baseOffset = Mathf.Max(_agent.baseOffset, 0f);
+    }
+
 
     private void Attack()
     {
         _agent.ResetPath();
         _agent.isStopped = true;
         _targetTime -= Time.deltaTime;
+
+        if (canFly)
+        {
+            var targetHeight = _target.position.y + (_originalHeight - _target.position.y) * 0.5f;
+            _agent.baseOffset = Mathf.Lerp(_agent.baseOffset, targetHeight, Time.deltaTime * 2f);
+            _agent.baseOffset = Mathf.Max(_agent.baseOffset, 0f);
+        }
 
         if (_targetTime <= 0.0f)
         {
@@ -259,11 +293,30 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
     }
     
+    public void TriggerStatusEffect(ConsumableEffect effect)
+    {
+        switch (effect)
+        {
+            case ConsumableEffect.Ice:
+                if (!canFreeze) return;
+                _isFrozen = true;
+                break;
+            case ConsumableEffect.Poison:
+                if (_isPoisoned) return;
+                _poisonBuildup += 10;
+                
+                if (_poisonBuildup >= poisonResistance)
+                {
+                    StartCoroutine(TakePoisonDamage());
+                }
+                break;
+        }
+    }
+    
     private void Die()
     {
         gameObject.SetActive(false);
     }
-    
 
     private void OnDrawGizmos()
     {
@@ -292,30 +345,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
     }
     
+    /*
     private void OnDisable()
     {
         roomScripting.enemies.Remove(gameObject);
         roomScripting._enemyCount--;
         _spawner.spawnedEnemies.Remove(gameObject);
     }
-
-    public void TriggerStatusEffect(ConsumableEffect effect)
-    {
-        switch (effect)
-        {
-            case ConsumableEffect.Ice:
-                if (!canFreeze) return;
-                _isFrozen = true;
-                break;
-            case ConsumableEffect.Poison:
-                if (_isPoisoned) return;
-                _poisonBuildup += 10;
-                
-                if (_poisonBuildup >= poisonResistance)
-                {
-                    StartCoroutine(TakePoisonDamage());
-                }
-                break;
-        }
-    }
+    */
 }

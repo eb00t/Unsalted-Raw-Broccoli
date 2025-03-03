@@ -51,22 +51,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  enemyAtk: 5
+  poisonResistance: 50
   atkDelay: 1.8
-  chaseRange: 8
   attackRange: 3
-  maxPatrolRange: 10
+  chaseRange: 8
   minPatrolRange: 6
+  maxPatrolRange: 10
   freezeDuration: 3
   freezeCooldown: 15
-  poisonResistance: 50
-  _spawner: {fileID: 0}
-  _isIdle: 0
+  canFreeze: 1
+  canFly: 0
+  attack: 10
+  knockbackPower: {x: 10, y: 1, z: 0}
+  isIdle: 0
   debugPatrol: 0
   debugRange: 0
   atkHitbox: {fileID: 3665861034403590735}
   healthFillImage: {fileID: 953913091542431065}
-  knockbackPower: {x: 10, y: 1, z: 0}
+  _spawner: {fileID: 0}
 --- !u!195 &9145869978663843985
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -238,7 +240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1973299437338840528
 Transform:
   m_ObjectHideFlags: 0
@@ -287,7 +289,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5bff6285508ddb4a8c62036e274d8f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
 --- !u!1 &4973278753106217272
 GameObject:
   m_ObjectHideFlags: 0

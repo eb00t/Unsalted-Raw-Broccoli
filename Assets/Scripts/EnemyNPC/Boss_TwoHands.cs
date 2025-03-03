@@ -18,16 +18,13 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable
     [SerializeField] private int maxHealth;
     [SerializeField] private float chaseRange;
     [SerializeField] private float atkRange;
-    [SerializeField] private float maxPatrolRange;
-    [SerializeField] private float minPatrolRange;
-    [SerializeField] private float freezeDuration;
-    [SerializeField] private float freezeCooldown;
+    [SerializeField] private float minPatrolRange, maxPatrolRange;
+    [SerializeField] private float freezeDuration, freezeCooldown;
     [SerializeField] private int poisonResistance;
     [SerializeField] private bool canFreeze; // if by default set to false the enemy will never freeze
-    private int _poisonBuildup;
+    public int attack;
+    private int _poisonBuildup, _health;
     private bool _isFrozen, _isPoisoned;
-    public int bossAtk;
-    private int _health;
     private States _state =  States.Idle;
 
     [Header("References")] 
@@ -40,13 +37,19 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable
 
     [Header("Debugging")] 
     [SerializeField] private bool debugRange;
-    
+
     private enum States
     {
         Idle,
         Chase,
         Attack,
         Frozen
+    }
+    
+    int IDamageable.Attack
+    {
+        get => attack;
+        set => attack = value;
     }
 
     private void Awake()
@@ -192,7 +195,7 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable
         yield return new WaitForSecondsRealtime(2f);
         StartCoroutine(TakePoisonDamage());
     }
-    
+
     public void TakeDamage(int damage)
     {
         if (_health - damage > 0)
