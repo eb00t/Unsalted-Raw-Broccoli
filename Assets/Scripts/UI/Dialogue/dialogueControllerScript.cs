@@ -42,6 +42,8 @@ public class dialogueControllerScript : MonoBehaviour
         }
         */
 
+        dialogueFinished();
+
         //Speed up dialogue
         if (Input.GetKeyDown(KeyCode.LeftControl) && dialogueCanvas.activeInHierarchy == true)
         {
@@ -59,8 +61,13 @@ public class dialogueControllerScript : MonoBehaviour
             //Answer is no
             answerN();
         }
+        else if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            noText.SetActive(false);
+            yesText.SetActive(false);
+        }
 
-        dialogueFinished();
+        //dialogueFinished();
     }
 
     void NextSentence()
