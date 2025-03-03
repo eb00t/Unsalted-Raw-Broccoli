@@ -62,8 +62,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        //roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
-        //roomScripting.enemies.Add(gameObject);
+        roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        roomScripting.enemies.Add(gameObject);
         gameObject.transform.parent = gameObject.transform.root;
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
@@ -345,12 +345,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
     }
     
-    /*
+    
     private void OnDisable()
     {
         roomScripting.enemies.Remove(gameObject);
         roomScripting._enemyCount--;
         _spawner.spawnedEnemies.Remove(gameObject);
     }
-    */
 }
