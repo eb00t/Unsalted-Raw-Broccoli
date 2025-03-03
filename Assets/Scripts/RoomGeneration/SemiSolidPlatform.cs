@@ -12,6 +12,7 @@ public class SemiSolidPlatform : MonoBehaviour
     public LayerMask _layerToIgnore;
     public bool collisionOff;
     public bool canDropThrough;
+    
     private void Awake()
     {
         _boxCollider = GetComponent<BoxCollider>();
@@ -49,16 +50,28 @@ public class SemiSolidPlatform : MonoBehaviour
         {
             _layerToIgnore = LayerMask.GetMask("Player");
             TurnOffCollision(_layerToIgnore);
+            if (LevelBuilder.Instance.bossRoomGeneratingFinished)
+            {
+                gameObject.layer = LayerMask.NameToLayer("Ground");
+            }
         }
 
         if (playerFeet.transform.position.y < transform.position.y && collisionOff == false)
         {
             TurnOffCollision(_layerToIgnore);
+            if (LevelBuilder.Instance.bossRoomGeneratingFinished)
+            {
+                gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            }
             
         }
         else if (playerFeet.transform.position.y > transform.position.y && canDropThrough == false && collisionOff)
         {
             TurnOnCollision(_layerToIgnore);
+            if (LevelBuilder.Instance.bossRoomGeneratingFinished)
+            {
+                gameObject.layer = LayerMask.NameToLayer("Ground");
+            }
         }
     }
 }

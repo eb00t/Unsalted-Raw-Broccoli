@@ -66,6 +66,7 @@ public class LevelBuilder : MonoBehaviour
     private GameObject _shop;
     public bool shopSpawned;
     public int lootRoomsToSpawn;
+    public bool spawnModeChangedByDestroy;
     public enum SpawnMode
     {
         Normal,
@@ -92,11 +93,13 @@ public class LevelBuilder : MonoBehaviour
     {
         _spawnMode = SpawnMode.Normal;
         _numberOfRoomsToSpawn = howManyRoomsToSpawn;
-        lootRoomsToSpawn = (int)Mathf.Floor((_numberOfRoomsToSpawn / 5) + 1);
+        lootRoomsToSpawn = (int)Mathf.Floor((_numberOfRoomsToSpawn / 10));
+        Debug.Log(lootRoomsToSpawn);
         if (lootRoomsToSpawn < 2)
         {
             lootRoomsToSpawn = 2;
         }
+        _numberOfRoomsToSpawn += lootRoomsToSpawn;
         Debug.Log("Loot rooms to spawn: " + lootRoomsToSpawn);
         StartCoroutine(DelayStart());
     }
@@ -548,9 +551,8 @@ public class LevelBuilder : MonoBehaviour
         }
         var rareSpawn = RandomiseNumber(12); //TEMP NUMBER; CHANGE
         Debug.Log("Rare spawn number: " + rareSpawn);
-        if (_spawnMode != SpawnMode.BossRooms) //Special rooms will not spawn when boss rooms are being spawned
+        if (_spawnMode != SpawnMode.BossRooms && spawnModeChangedByDestroy == false) //Special rooms will not spawn when boss rooms are being spawned
         {
-
             switch (rareSpawn)
             {
                 case < 3:
@@ -560,7 +562,6 @@ public class LevelBuilder : MonoBehaviour
                     {
                         _spawnMode = SpawnMode.Normal;
                     }
-
                     break;
                 case > 3 and < 6:
                     if (shopSpawned == false)
@@ -574,10 +575,11 @@ public class LevelBuilder : MonoBehaviour
                     }
                     break;
                 case > 7 and < 10:
-                    if (spawnedLootRooms.Count < lootRoomsToSpawn)
+                    if (lootRoomsToSpawn > 0)
                     {
                         Debug.Log("LOOT ROOM SPAWNING");
                         _spawnMode = SpawnMode.LootRoom;
+                        lootRoomsToSpawn--;
                     }
                     else
                     {
@@ -588,18 +590,22 @@ public class LevelBuilder : MonoBehaviour
                     _spawnMode = SpawnMode.Normal;
                     break;
             }
-        }
 
-        if (spawnedRooms.Count <= (_numberOfRoomsToSpawn - 1) && shopSpawned == false) 
-        {
-            _spawnMode = SpawnMode.Shop;
-            shopSpawned = true;
+            if (lootRoomsToSpawn > 0 && roomsRemaining - 1 < lootRoomsToSpawn)
+                //TODO: THIS DOESN'T WORK. EITHER IT SPAWNS AN EXTRA LOOT ROOM OR DOES NOTHING
+            {
+                Debug.Log("FORCED LOOT ROOM SPAWNING");
+                _spawnMode = SpawnMode.LootRoom;
+                lootRoomsToSpawn--;
+            }
+            
+            if (shopSpawned == false && roomsRemaining == 1)
+            {
+                Debug.Log("FORCED SHOP SPAWNING");
+                _spawnMode = SpawnMode.Shop;
+            }
         }
-
-        if (spawnedLootRooms.Count < lootRoomsToSpawn && spawnedRooms.Count <= (_numberOfRoomsToSpawn - 3))
-        {
-            _spawnMode = SpawnMode.LootRoom;
-        }
+        spawnModeChangedByDestroy = false;
     }
 
     IEnumerator WaitASec()

@@ -113,7 +113,11 @@ public class RoomInfo : MonoBehaviour
         {
             LevelBuilder.Instance.spawnedLootRooms.Add(gameObject);
         }
-        
+
+        if (shop)
+        {
+            LevelBuilder.Instance.shopSpawned = true;
+        }
         CameraManager.Instance.virtualCameras.Add(roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
         /*distToRoomCentre.x = (wallL.transform.localPosition.x - wallR.transform.localPosition.x);
@@ -137,10 +141,15 @@ public class RoomInfo : MonoBehaviour
         if (shop)
         {
             LevelBuilder.Instance.shopSpawned = false;
+            LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.Shop;
+            LevelBuilder.Instance.spawnModeChangedByDestroy = true;
         }
         if (lootRoom)
         {
             LevelBuilder.Instance.spawnedLootRooms.Remove(gameObject);
+            LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.LootRoom;
+            LevelBuilder.Instance.spawnModeChangedByDestroy = true;
+            LevelBuilder.Instance.lootRoomsToSpawn++;
         }
         if (bossRoom)
         {

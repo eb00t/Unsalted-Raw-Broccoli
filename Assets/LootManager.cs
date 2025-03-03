@@ -33,7 +33,7 @@ public class LootManager : MonoBehaviour
         int spawnChance = RandomiseNumber(_willLootSpawn);
         if (spawnChance == 0)
         {
-            Debug.Log("Rolled a zero; spawning loot.");
+            Debug.Log("Spawning loot.");
             int chosenLoot = RandomiseNumber(minorLoot.Count);
             float offsetSpawnPos;
             int leftOffset = RandomiseNumber(2);
@@ -48,6 +48,7 @@ public class LootManager : MonoBehaviour
             }
             Vector3 realSpawnPos = new Vector3(offsetSpawnPos, room.transform.position.y, room.transform.position.z);
             GameObject lootToSpawn = Instantiate(minorLoot[chosenLoot], realSpawnPos, Quaternion.identity);
+            lootToSpawn.SetActive(true);
         }
         else
         {
@@ -59,6 +60,7 @@ public class LootManager : MonoBehaviour
     {
         int chosenLoot = RandomiseNumber(majorLoot.Count);
         GameObject lootToSpawn = Instantiate(majorLoot[chosenLoot], here, Quaternion.identity);
+        lootToSpawn.SetActive(true);
         majorLoot.Remove(majorLoot[chosenLoot]);
     }
 
@@ -66,6 +68,7 @@ public class LootManager : MonoBehaviour
     {
         GameObject chosenLoot = Resources.Load<GameObject>(path);
         GameObject lootToSpawn = Instantiate(chosenLoot, here, Quaternion.identity);
+        lootToSpawn.SetActive(true);
         majorLoot.Remove(chosenLoot);
     }
     
