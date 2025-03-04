@@ -356,18 +356,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     public void ApplyKnockback(Vector2 KnockbackPower)
     {
         _agent.velocity = Vector3.zero;
-        gameObject.GetComponent<NavMeshAgent>().enabled = false;
-        gameObject.AddComponent<Rigidbody>();
         
         if (transform.position.x > _target.position.x)
         {
             _knockbackDir = 1;
         }
         else _knockbackDir = -1;
-        gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(KnockbackPower.x * _knockbackDir, KnockbackPower.y, 0f));
-        //_agent.velocity += new Vector3(KnockbackPower.x * _knockbackDir, KnockbackPower.y, 0f);
-
-        Destroy(gameObject.GetComponent<Rigidbody>());
-        gameObject.GetComponent<NavMeshAgent>().enabled = true;
+        _agent.velocity += new Vector3(KnockbackPower.x * _knockbackDir, KnockbackPower.y, 0f);
     }
 }
