@@ -25,8 +25,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private float _originalHeight, _heightOffset;
     
     [Header("Values")]
-    [SerializeField] private Vector3 knockbackPower = new Vector3(10f, 1f, 0f);
-    private int _knockbackDir = 0;
     private float _targetTime;
     private Vector3 _patrolTarget, _patrol1, _patrol2;
     private States _state = States.Idle;
@@ -36,6 +34,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     [Header("References")]
     [SerializeField] private BoxCollider atkHitbox;
+
     [SerializeField] private Image healthFillImage;
     [NonSerialized] public RoomScripting roomScripting;
     public Spawner _spawner;
@@ -49,6 +48,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         get => attack;
         set => attack = value;
     }
+
+
+    private int _knockbackDir = 0;
+    [Header("Knockback Types")]
+    [SerializeField] private Vector2 knockbackPowerLight = new Vector2(10f, 1f);
+    [SerializeField] private Vector2 knockbackPowerHeavy = new Vector2(20f, 3f);
+
 
     private enum States
     {
@@ -277,13 +283,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             _healthSlider.value = _health;
 
             if (_isFrozen) return;
-            // Stun
-            _agent.velocity = Vector3.zero;
-            if (transform.position.x > _target.position.x)
-            {
-                _knockbackDir = 1;
-            } else _knockbackDir = -1;
-            _agent.velocity += new Vector3(knockbackPower.x * _knockbackDir, knockbackPower.y, knockbackPower.z);
+
         }
         else
         {
@@ -351,5 +351,16 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         roomScripting.enemies.Remove(gameObject);
         roomScripting._enemyCount--;
         _spawner.spawnedEnemies.Remove(gameObject);
+    }
+
+    public void ApplyKnockback(Vector2 KnockbackPower)
+    {
+        _agent.velocity = Vector3.zero;
+        if (transform.position.x > _target.position.x)
+        {
+            _knockbackDir = 1;
+        }
+        else _knockbackDir = -1;
+        _agent.velocity += new Vector3(KnockbackPower.x * _knockbackDir, KnockbackPower.y, 0f);
     }
 }

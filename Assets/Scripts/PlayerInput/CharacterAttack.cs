@@ -36,7 +36,11 @@ public class CharacterAttack : MonoBehaviour
     private MenuHandler _menuHandler;
     private PlayerStatus _playerStatus;
     public GameObject hitFlash;
-    
+
+    [Header("Knockback Types")]
+    [SerializeField] private Vector2 knockbackPowerLight = new Vector2(10f, 1f);
+    [SerializeField] private Vector2 knockbackPowerHeavy = new Vector2(20f, 3f);
+
     private void Start()
     {
         _attackCollider = GetComponent<MeshCollider>();
@@ -56,6 +60,7 @@ public class CharacterAttack : MonoBehaviour
     {
         if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
+            gameObject.layer = 13;
             //Debug.Log("LightAttack");
             //_playerAnimator.SetBool("LightAttack1", true);
             //InitiateAttack();
@@ -106,7 +111,7 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
-    public void LightAttack1(InputAction.CallbackContext ctx)
+    /*public void LightAttack1(InputAction.CallbackContext ctx)
     {
         if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
@@ -132,12 +137,13 @@ public class CharacterAttack : MonoBehaviour
                 lightCombo[3] = false;
             }
         }
-    }
+    }*/
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
     {
         if(ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
+            gameObject.layer = 14;
             Debug.Log("HeavyAttack");
             _playerAnimator.SetBool("HeavyAttack", true);
         }
@@ -252,7 +258,17 @@ public class CharacterAttack : MonoBehaviour
         if (damageable == null) return;
         
        damageable.TakeDamage(charAtk);
-        
+        //Layer = Light
+        if (gameObject.layer == 13)
+        {
+            damageable.ApplyKnockback(knockbackPowerLight);
+        }
+        //Layer = Heavy
+        if (gameObject.layer == 14)
+        {
+            damageable.ApplyKnockback(knockbackPowerHeavy);
+        }
+
         if (isPoison)
         {
             damageable.TriggerStatusEffect(ConsumableEffect.Poison);

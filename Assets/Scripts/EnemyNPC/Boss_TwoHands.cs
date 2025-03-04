@@ -151,7 +151,7 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable
         
         _targetTime = 4f;
     }
-    
+   
     private void Frozen()
     {
         if (!canFreeze) return;
@@ -255,5 +255,10 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable
     {
         RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         roomScripting.enemies.Remove(gameObject);
+    }
+
+    void IDamageable.ApplyKnockback(Vector2 KnockbackPower)
+    {
+        throw new NotImplementedException();
     }
 }
