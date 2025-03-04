@@ -35,6 +35,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Animator _animator;
     private Transform _target;
     private NavMeshAgent _agent;
+    public Rigidbody rb;
     
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
     
@@ -64,6 +65,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
         RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         RoomScripting.enemies.Add(gameObject);
         gameObject.transform.parent = gameObject.transform.root;
@@ -329,14 +331,18 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     public void ApplyKnockback(Vector2 KnockbackPower)
     {
+        rb.velocity = _agent.velocity;
         _agent.velocity = Vector3.zero;
+        _agent.enabled = false;
+        
         if (_isFrozen) return;
         
-        if (transform.position.x > _target.position.x)
+        if (transform.parent.position.x > _target.position.x)
         {
             _knockbackDir = 1;
         }
         else _knockbackDir = -1;
-        _agent.velocity += new Vector3(KnockbackPower.x * _knockbackDir, KnockbackPower.y, 0f);
+        
+        rb.AddForce(new Vector2(KnockbackPower.x * _knockbackDir, KnockbackPower.y), ForceMode.Impulse);
     }
 }

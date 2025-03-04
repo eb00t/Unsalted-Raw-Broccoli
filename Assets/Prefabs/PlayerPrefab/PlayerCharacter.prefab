@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6010639566045349199}
   - component: {fileID: 3077880211322091115}
   - component: {fileID: 3621395720539083714}
+  - component: {fileID: 4292942453058374287}
   m_Layer: 0
   m_Name: PlayerAttack
   m_TagString: PlayerAttackBox
@@ -48,18 +49,23 @@ MonoBehaviour:
   timer: 0
   timer1: 0
   lightCombo: 00000000
+  heavyCombo: 00000000
   maxInputDelay: 10
   animEnd: 0
   currentHealth: 100
   maxHealth: 250
+  baseAtk: 0
   charAtk: 10
-  atkRange: 4
+  isInvincible: 0
+  isPoison: 0
+  isIce: 0
   enemies: []
   nearestEnemy: {fileID: 0}
   healthSlider: {fileID: 0}
   diedScreen: {fileID: 0}
-  menuHandler: {fileID: 0}
   hitFlash: {fileID: 0}
+  knockbackPowerLight: {x: 10, y: 1}
+  knockbackPowerHeavy: {x: 20, y: 3}
 --- !u!64 &3621395720539083714
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -82,6 +88,66 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &4292942453058374287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2372449923896005456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd438dd108a0f284aa931a2da434f1d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ImpulseDefinition:
+    m_ImpulseChannel: 1
+    m_ImpulseShape: 2
+    m_CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ImpulseDuration: 0.05
+    m_ImpulseType: 0
+    m_DissipationRate: 0.25
+    m_RawSignal: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_RepeatMode: 0
+    m_Randomize: 1
+    m_TimeEnvelope:
+      m_AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_AttackTime: 0
+      m_SustainTime: 0.2
+      m_DecayTime: 0.7
+      m_ScaleWithImpact: 1
+      m_HoldForever: 0
+    m_ImpactRadius: 100
+    m_DirectionMode: 0
+    m_DissipationMode: 2
+    m_DissipationDistance: 100
+    m_PropagationSpeed: 343
+  m_DefaultVelocity: {x: -0.5, y: 0, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_IgnoreTag: 
+  m_UseImpactDirection: 1
+  m_ScaleImpactWithMass: 0
+  m_ScaleImpactWithSpeed: 0
 --- !u!1 &6236704812322169508
 GameObject:
   m_ObjectHideFlags: 0

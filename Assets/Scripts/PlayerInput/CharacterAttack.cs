@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -41,6 +42,7 @@ public class CharacterAttack : MonoBehaviour
     [Header("Knockback Types")]
     [SerializeField] private Vector2 knockbackPowerLight = new Vector2(10f, 1f);
     [SerializeField] private Vector2 knockbackPowerHeavy = new Vector2(20f, 3f);
+    private CinemachineCollisionImpulseSource _impulseSource;
 
     private void Start()
     {
@@ -307,12 +309,18 @@ public class CharacterAttack : MonoBehaviour
         //Layer = Light
         if (gameObject.layer == 13)
         {
+            float randomTiny = Random.Range(-0.25f, 0.25f);
             damageable.ApplyKnockback(knockbackPowerLight);
+            _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.05f;
+            _impulseSource.GenerateImpulseWithVelocity(new Vector3(0.25f, randomTiny, 0));
         }
         //Layer = Heavy
         if (gameObject.layer == 14)
         {
+            float randomTiny = Random.Range(-1f, 1f);
             damageable.ApplyKnockback(knockbackPowerHeavy);
+            _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.1f;
+            _impulseSource.GenerateImpulseWithVelocity(new Vector3(2, randomTiny, 0));
         }
 
         if (isPoison)
