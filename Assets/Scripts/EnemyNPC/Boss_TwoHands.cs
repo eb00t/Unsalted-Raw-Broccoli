@@ -52,6 +52,9 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable
         set => attack = value;
     }
 
+    public RoomScripting RoomScripting { get; set; }
+    public Spawner Spawner { get; set; }
+
     private void Awake()
     {
         RoomScripting roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();

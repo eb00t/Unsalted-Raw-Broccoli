@@ -195,7 +195,7 @@ public class CharacterMovement : MonoBehaviour
             }
         }
         
-        
+        /*
         //Stop player moving while game is loading
         if (BlackoutManager.Instance.blackoutComplete == false)
         {
@@ -207,6 +207,7 @@ public class CharacterMovement : MonoBehaviour
             allowMovement = true;
             walkAllowed = true;
         }
+        */
     }
 
     public void FixedUpdate()

@@ -1650,6 +1650,7 @@ GameObject:
   m_Component:
   - component: {fileID: 107112823451984430}
   - component: {fileID: 8855018918862309514}
+  - component: {fileID: 4852900320859000664}
   m_Layer: 0
   m_Name: RoomCam
   m_TagString: Untagged
@@ -1666,7 +1667,7 @@ Transform:
   m_GameObject: {fileID: 4059042828215423937}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.000000119209275, z: -0, w: 1}
-  m_LocalPosition: {x: -0.00000029802334, y: 0, z: -10.5}
+  m_LocalPosition: {x: -0.00000035762798, y: 0, z: -11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1712,6 +1713,29 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 7035770709526874190}
+--- !u!114 &4852900320859000664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4059042828215423937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ApplyAfter: 2
+  m_ChannelMask: 1
+  m_Gain: 1
+  m_Use2DDistance: 1
+  m_UseCameraSpace: 1
+  m_ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_Duration: 1
+    m_NoiseOffsets: {x: -218.35718, y: -100.82593, z: -63.12381}
 --- !u!1 &4095025218177383063
 GameObject:
   m_ObjectHideFlags: 0
@@ -2569,7 +2593,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 0, z: -10.5}
+  m_FollowOffset: {x: 0, y: 0, z: -11}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
