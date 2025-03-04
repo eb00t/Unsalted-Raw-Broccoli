@@ -319,7 +319,7 @@ public class CharacterAttack : MonoBehaviour
         {
             float randomTiny = Random.Range(-1f, 1f);
             damageable.ApplyKnockback(knockbackPowerHeavy);
-            _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.1f;
+            _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;
             _impulseSource.GenerateImpulseWithVelocity(new Vector3(2, randomTiny, 0));
         }
 

@@ -344,5 +344,17 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         else _knockbackDir = -1;
         
         rb.AddForce(new Vector2(KnockbackPower.x * _knockbackDir, KnockbackPower.y), ForceMode.Impulse);
+        StartCoroutine(StunTimer(0.5f));
+    }
+
+    IEnumerator StunTimer(float stunTime)
+    {
+       yield return new WaitForSecondsRealtime(stunTime);
+       Unstun();
+    }
+
+    void Unstun()
+    {
+        _agent.enabled = true;
     }
 }
