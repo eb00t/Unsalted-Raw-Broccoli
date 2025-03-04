@@ -10,7 +10,7 @@ public class dialogueControllerScript : MonoBehaviour
     private int Index = 0;
     public float DialogueSpeed;
     public float fasterSpeed;
-    public GameObject dialogueCanvas, yesText, noText;
+    public GameObject dialogueCanvas, yesText, noText; // normalText, normalBox;
 
     //Bools
     public bool canText = false;
@@ -55,11 +55,14 @@ public class dialogueControllerScript : MonoBehaviour
         {
             //Answer is yes
             answerY();
+           // normalText.SetActive(false);
+            //normalBox.SetActive(false);
         }
         else if (Input.GetKeyDown(KeyCode.N)) //YesOrNo == false && 
         {
             //Answer is no
             answerN();
+          //  normalText.SetActive(false);
         }
         else if(Input.GetKeyDown(KeyCode.Escape))
         {
