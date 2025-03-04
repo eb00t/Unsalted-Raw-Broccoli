@@ -334,7 +334,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         Spawner.spawnedEnemies.Remove(gameObject);
     }
     
-    public void ApplyKnockback(Vector2 KnockbackPower)
+    public void ApplyKnockback(Vector2 knockbackPower)
     {
         /*
         _agent.velocity = Vector3.zero;

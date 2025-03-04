@@ -6,5 +6,5 @@ public interface IDamageable
     public Spawner Spawner { get; set; }
     void TakeDamage(int damage);
     void TriggerStatusEffect(ConsumableEffect effect);
-    void ApplyKnockback(Vector2 KnockbackPower);
+    void ApplyKnockback(Vector2 knockbackPower);
 }

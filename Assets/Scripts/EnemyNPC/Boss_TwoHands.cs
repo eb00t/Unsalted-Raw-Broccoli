@@ -260,7 +260,7 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable
         roomScripting.enemies.Remove(gameObject);
     }
 
-    void IDamageable.ApplyKnockback(Vector2 KnockbackPower)
+    void IDamageable.ApplyKnockback(Vector2 knockbackPower)
     {
         throw new NotImplementedException();
     }

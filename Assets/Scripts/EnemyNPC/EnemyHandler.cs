@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -15,10 +16,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [Header("Enemy Stats")]
     [SerializeField] private int maxHealth, poisonResistance;
     [SerializeField] private float atkDelay, attackRange;
-    [SerializeField] private float chaseRange, chaseDuration;
+    [SerializeField] private float chaseRange, chaseDuration, stunDelay;
     [SerializeField] private float minPatrolRange, maxPatrolRange;
     [SerializeField] private float freezeDuration, freezeCooldown;
-    [SerializeField] private bool canFreeze; // if by default set to false the enemy will never freeze
+    [SerializeField] private bool canFreeze, canBeStunned; // if by default set to false the enemy will never freeze or be stunned
     public int attack;
     private int _poisonBuildup, _health;
     private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen;
@@ -329,32 +330,45 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         Spawner.spawnedEnemies.Remove(gameObject);
     }
 
-    public void ApplyKnockback(Vector2 KnockbackPower)
+    public void ApplyKnockback(Vector2 knockbackPower)
     {
-        rb.velocity = _agent.velocity;
-        _agent.velocity = Vector3.zero;
-        _agent.enabled = false;
+        if (_isFrozen || !canBeStunned) return;
         
-        if (_isFrozen) return;
+        _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
         
-        if (transform.parent.position.x > _target.position.x)
-        {
-            _knockbackDir = 1;
-        }
-        else _knockbackDir = -1;
+        var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir, knockbackPower.y, 0);
+        _agent.velocity = knockbackForce; 
         
-        rb.AddForce(new Vector2(KnockbackPower.x * _knockbackDir, KnockbackPower.y), ForceMode.Impulse);
-        StartCoroutine(StunTimer(0.5f));
+        StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .5f));
+        StartCoroutine(StunTimer(.5f));
+        StartCoroutine(StunDelay());
     }
 
-    IEnumerator StunTimer(float stunTime)
+    private IEnumerator ApplyVerticalKnockback(float height, float dur)
+    {
+        var elapsedTime = 0f;
+        var startOffset = _agent.baseOffset;
+
+        while (elapsedTime < dur)
+        {
+            elapsedTime += Time.deltaTime;
+            _agent.baseOffset = startOffset + Mathf.Sin(elapsedTime / dur * Mathf.PI) * height;
+            yield return null;
+        }
+
+        _agent.baseOffset = startOffset;
+    }
+
+    private IEnumerator StunTimer(float stunTime)
     {
        yield return new WaitForSecondsRealtime(stunTime);
-       Unstun();
+       _agent.velocity = Vector3.zero;
     }
 
-    void Unstun()
+    private IEnumerator StunDelay()
     {
-        _agent.enabled = true;
+        canBeStunned = false;
+        yield return new WaitForSeconds(stunDelay);
+        canBeStunned = true;
     }
 }
