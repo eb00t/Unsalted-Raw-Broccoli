@@ -13,6 +13,7 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private float timer = 0f;
     [SerializeField] private float timer1 = 0f;
     [SerializeField] private bool[] lightCombo = new bool[4];
+    [SerializeField] private bool[] heavyCombo = new bool[4];
     [SerializeField] private float maxInputDelay = 10f;
     [HideInInspector] public bool animEnd;
     
@@ -141,11 +142,56 @@ public class CharacterAttack : MonoBehaviour
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
     {
-        if(ctx.performed && _playerAnimator.GetBool("Grounded"))
+        if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
             gameObject.layer = 14;
-            Debug.Log("HeavyAttack");
-            _playerAnimator.SetBool("HeavyAttack", true);
+            //Debug.Log("LightAttack");
+            //_playerAnimator.SetBool("LightAttack1", true);
+            //InitiateAttack();
+            animEnd = false;
+
+            // Start of chain
+            if (!heavyCombo[0])
+            {
+                Debug.Log("HeavyAttack");
+                _playerAnimator.SetBool("HeavyAttack", true);
+            }
+
+            if (heavyCombo[0])
+            {
+
+
+                if (timer <= maxInputDelay && timer > 0f)
+                {
+                    Debug.Log("HeavyAttack1");
+                    _playerAnimator.SetBool("HeavyAttack1", true);
+                    if (heavyCombo[1])
+                    {
+                        if (timer1 <= maxInputDelay && timer1 > 0f)
+                        {
+                            if (animEnd)
+                            {
+
+                                heavyCombo[2] = true;
+                            }
+                        }
+                    }
+                    heavyCombo[1] = true;
+                }
+            }
+
+            heavyCombo[0] = true;
+            if (heavyCombo[2] && animEnd)
+            {
+                Debug.Log("HeavyAttack2");
+                _playerAnimator.SetBool("HeavyAttack2", true);
+
+                timer1 = 0f; heavyCombo[1] = false;
+                timer = 0f; heavyCombo[0] = false;
+
+
+                heavyCombo[2] = false;
+            }
         }
     }
 
@@ -304,7 +350,31 @@ public class CharacterAttack : MonoBehaviour
                 timer = 0f;
             }
         }
-        
+
+        if (heavyCombo[0])
+        {
+            if (!heavyCombo[1])
+            {
+                timer += 1f * Time.deltaTime;
+            }
+            if (heavyCombo[1])
+            {
+                timer1 += 1f * Time.deltaTime;
+                if (timer1 >= maxInputDelay)
+                {
+                    heavyCombo[0] = false;
+                    heavyCombo[1] = false;
+                    timer = 0f;
+                    timer1 = 0f;
+                }
+            }
+            if (timer >= maxInputDelay && !heavyCombo[1])
+            {
+                heavyCombo[0] = false;
+                timer = 0f;
+            }
+        }
+
     }
 }
 
