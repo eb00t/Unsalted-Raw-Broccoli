@@ -9,9 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8810324875042115482}
-  - component: {fileID: 2909515014845518148}
-  - component: {fileID: 9145869978663843985}
   - component: {fileID: 1730301689728780009}
+  - component: {fileID: 3755830582083018366}
   m_Layer: 8
   m_Name: FlyingEnemy
   m_TagString: Enemy
@@ -38,59 +37,6 @@ Transform:
   - {fileID: 1973299437338840528}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2909515014845518148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2069409593576255661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2308ab9f6866004ebf515788c23a5b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 50
-  poisonResistance: 40
-  atkDelay: 1.8
-  attackRange: 3
-  chaseRange: 8
-  minPatrolRange: 6
-  maxPatrolRange: 10
-  freezeDuration: 4
-  freezeCooldown: 10
-  canFreeze: 1
-  canFly: 1
-  attack: 10
-  knockbackPower: {x: 10, y: 1, z: 0}
-  isIdle: 0
-  debugPatrol: 0
-  debugRange: 0
-  atkHitbox: {fileID: 3665861034403590735}
-  healthFillImage: {fileID: 953913091542431065}
-  _spawner: {fileID: 0}
---- !u!195 &9145869978663843985
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2069409593576255661}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 1
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 3
-  m_AutoTraverseOffMeshLink: 0
-  m_AutoBraking: 1
-  m_AutoRepath: 0
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 0
 --- !u!95 &1730301689728780009
 Animator:
   serializedVersion: 5
@@ -112,6 +58,36 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3755830582083018366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069409593576255661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d31418f1ddf1cf4ab75bf0b33fcda59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 50
+  poisonResistance: 40
+  atkDelay: 1.8
+  attackRange: 3
+  chaseRange: 8
+  chaseDuration: 2
+  minPatrolRange: 6
+  maxPatrolRange: 10
+  freezeDuration: 4
+  freezeCooldown: 10
+  canFreeze: 1
+  attack: 10
+  atkHitbox: {fileID: 3665861034403590735}
+  healthFillImage: {fileID: 953913091542431065}
+  isIdle: 0
+  debugPatrol: 0
+  debugRange: 0
+  moveSpeed: 1
 --- !u!1 &2464476070265717929
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,7 +194,7 @@ MonoBehaviour:
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.4
+  m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -240,7 +216,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1973299437338840528
 Transform:
   m_ObjectHideFlags: 0
@@ -613,7 +589,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 1
-  m_Value: 40
+  m_Value: 100
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
