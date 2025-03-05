@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class CharacterMovement : MonoBehaviour
 
     [SerializeField] private bool grounded;
     [SerializeField] private bool doubleJumpPerformed;
-    [SerializeField] public bool crouching;
+    public bool isCrouching;
     [SerializeField] private Vector3 Velocity;
     private GameObject _playerGroundPosition;
 
@@ -56,9 +57,16 @@ public class CharacterMovement : MonoBehaviour
     public void Crouch(InputAction.CallbackContext ctx)
     {
         if (uiOpen) return;
-        if (grounded)
+        if (ctx.ReadValue<float>() > 0)
         {
-            crouching = true;
+            if (grounded)
+            {
+                isCrouching = true;
+            }
+        }
+        else
+        {
+            isCrouching = false;
         }
     }
 
@@ -152,7 +160,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!grounded)
         {
-            crouching = false;
+            isCrouching = false;
         }
         PlayerAnimator.SetBool("WallJump", isWallJumping);
         Velocity = rb.velocity;
@@ -168,8 +176,6 @@ public class CharacterMovement : MonoBehaviour
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
-
-        
 
         
         if (startSlideTimer)
@@ -195,7 +201,6 @@ public class CharacterMovement : MonoBehaviour
             }
         }
         
-        /*
         //Stop player moving while game is loading
         if (BlackoutManager.Instance.blackoutComplete == false)
         {
@@ -207,7 +212,6 @@ public class CharacterMovement : MonoBehaviour
             allowMovement = true;
             walkAllowed = true;
         }
-        */
     }
 
     public void FixedUpdate()

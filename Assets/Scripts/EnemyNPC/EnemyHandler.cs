@@ -19,7 +19,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float chaseRange, chaseDuration, stunDelay;
     [SerializeField] private float minPatrolRange, maxPatrolRange;
     [SerializeField] private float freezeDuration, freezeCooldown;
-    [SerializeField] private bool canFreeze, canBeStunned; // if by default set to false the enemy will never freeze or be stunned
+    [SerializeField] private bool canFreeze, canBeStunned, isBomb; // if by default set to false the enemy will never freeze or be stunned
     public int attack;
     private int _poisonBuildup, _health;
     private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen;
@@ -86,6 +86,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (gameObject.name.Contains("Stalker"))
         {
             gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+        }
+
+        if (isBomb)
+        {
+            _targetTime = atkDelay;
         }
     }
 
@@ -194,13 +199,29 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
         _agent.ResetPath();
         _agent.isStopped = true;
+        
         _targetTime -= Time.deltaTime;
 
-        if (_targetTime <= 0.0f)
+        if (!(_targetTime <= 0.0f)) return;
+        
+        if (isBomb)
         {
-            _animator.SetTrigger("Attack");
-            _targetTime = atkDelay;
+            StartCoroutine(BeginExplode());
         }
+        else
+        {
+            _animator.SetTrigger("Attack"); 
+        }
+        
+        _targetTime = atkDelay;
+    }
+
+    private IEnumerator BeginExplode()
+    {
+        _animator.SetBool("isExplode", true);
+        yield return new WaitForSecondsRealtime(atkDelay);
+        _animator.SetBool("isExplode", false);
+        _animator.SetTrigger("Detonate");
     }
 
     private void Frozen()
@@ -322,13 +343,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
     }
     
-    
     private void OnDisable()
     {
         RoomScripting.enemies.Remove(gameObject);
         RoomScripting._enemyCount--;
         Spawner.spawnedEnemies.Remove(gameObject);
     }
+    
 
     public void ApplyKnockback(Vector2 knockbackPower)
     {

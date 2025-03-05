@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
@@ -12,6 +13,7 @@ public class SemiSolidPlatform : MonoBehaviour
     public LayerMask _layerToIgnore;
     public bool collisionOff;
     public bool canDropThrough;
+    private CharacterMovement _characterMovement;
     
     private void Awake()
     {
@@ -26,10 +28,8 @@ public class SemiSolidPlatform : MonoBehaviour
         {
             playerFeet = GameObject.FindWithTag("Player Ground Position");
         }
+        _characterMovement = playerFeet.GetComponentInParent<CharacterMovement>();
     }
-
-
-
 
 
     public void TurnOffCollision(LayerMask layerMask)
@@ -46,7 +46,7 @@ public class SemiSolidPlatform : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && canDropThrough)
+        if (_characterMovement.isCrouching && canDropThrough)
         {
             _layerToIgnore = LayerMask.GetMask("Player");
             TurnOffCollision(_layerToIgnore);
