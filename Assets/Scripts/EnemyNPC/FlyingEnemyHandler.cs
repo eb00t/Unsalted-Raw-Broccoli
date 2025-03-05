@@ -285,7 +285,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
         transform.position = new Vector3(transform.position.x, groundY, transform.position.z);
     
-        yield return new WaitForSeconds(2f); // Wait before removing
+        yield return new WaitForSeconds(2f);
 
         gameObject.SetActive(false);
     }
@@ -294,10 +294,10 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         if (Physics.Raycast(transform.position, Vector3.down, out var hit, Mathf.Infinity))
         {
-            return hit.point.y; // Return the y-position of the ground
+            return hit.point.y; // return y position of the raycast hit (ground)
         }
         
-        return transform.position.y; // Fallback in case no ground is found
+        return transform.position.y; // if no ground is found 
     }
 
     private void OnDrawGizmos()
