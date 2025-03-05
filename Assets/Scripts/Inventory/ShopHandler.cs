@@ -83,7 +83,6 @@ public class ShopHandler : MonoBehaviour
 		var itemConsumable = item.GetComponent<Consumable>();
 		
 		var newBlock = Instantiate(block, block.position, block.rotation, grid);
-		newBlock.GetComponentInChildren<TextMeshProUGUI>().text = "Cost: " + itemPrice[i];
 		newBlock.GetComponent<Button>().interactable = true;
         
 		var indexHolder = newBlock.GetComponent<IndexHolder>();
@@ -104,6 +103,12 @@ public class ShopHandler : MonoBehaviour
 			if (s.name != "Image") continue;
 			s.sprite = itemConsumable.uiIcon;
 			s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
+		}
+
+		foreach (var b in grid.GetComponentsInChildren<TextMeshProUGUI>())
+		{
+			if (b.name != "Price") continue;
+			b.text = "Cost: " + itemPrice[i];
 		}
 	}
 
