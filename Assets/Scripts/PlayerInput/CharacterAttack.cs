@@ -23,14 +23,10 @@ public class CharacterAttack : MonoBehaviour
     public int maxHealth = 100;
     public int baseAtk;
     public int charAtk = 10;
+    public int poiseDamageLight, poiseDamageHeavy;
     public int isInvincible;
     public bool isPoison;
     public bool isIce;
-    
-    [Header("Tracking")]
-    [SerializeField] private List<Transform> enemies;
-    [SerializeField] private Transform nearestEnemy;
-    
     
     [SerializeField] private Slider healthSlider;
     [SerializeField] private GameObject diedScreen;
@@ -40,8 +36,8 @@ public class CharacterAttack : MonoBehaviour
     public GameObject hitFlash;
 
     [Header("Knockback Types")]
-    [SerializeField] private Vector2 knockbackPowerLight = new Vector2(10f, 1f);
-    [SerializeField] private Vector2 knockbackPowerHeavy = new Vector2(20f, 3f);
+    public Vector2 knockbackPowerLight = new Vector2(10f, 1f);
+    public Vector2 knockbackPowerHeavy = new Vector2(20f, 3f);
     private CinemachineCollisionImpulseSource _impulseSource;
 
     private void Start()
@@ -240,64 +236,6 @@ public class CharacterAttack : MonoBehaviour
         _menuHandler.SwitchSelected(diedScreen.GetComponentInChildren<Button>().gameObject);
     }
 
-    /*
-    private void InitiateAttack()
-    {
-        CountEnemies();
-
-        if (enemies.Count > 0)
-        {
-            foreach (var eh in enemies)
-            {
-                var dist = Vector3.Distance(transform.position, eh.transform.position);
-
-
-                if (nearestEnemy == null)
-                {
-                    nearestEnemy = eh;
-                }
-                else if (dist <= Vector3.Distance(transform.position, nearestEnemy.transform.position))
-                {
-                    nearestEnemy = eh;
-                }
-            }
-        }
-
-        var dist1 = Vector3.Distance(transform.position, nearestEnemy.transform.position);
-
-        if (dist1 <= atkRange)
-        {
-            if (nearestEnemy.GetComponent<EnemyHandler>())
-            {
-                nearestEnemy.GetComponent<EnemyHandler>().TakeDamageEnemy(charAtk);
-            }
-            else if (nearestEnemy.GetComponent<BossHandler>())
-            {
-                nearestEnemy.GetComponent<BossHandler>().TakeDamageEnemy(charAtk);
-            }
-            else if (nearestEnemy.GetComponent<Boss_TwoHands>())
-            {
-                nearestEnemy.GetComponent<Boss_TwoHands>().TakeDamageEnemy(charAtk);
-            }
-        }
-    }
-    */
-
-    /*
-    private void CountEnemies()
-    {
-        enemies.Clear();
-        
-        foreach (var e in GameObject.FindGameObjectsWithTag("Enemy"))
-        {
-            if (e.GetComponent<EnemyHandler>() || e.GetComponent<BossHandler>() || e.GetComponent<Boss_TwoHands>())
-            {
-                enemies.Add(e.transform);
-            }
-        }
-    }
-    */
-
     private void OnTriggerEnter(Collider other) // gets takedamage and trigger status methods from all enemy types
     {
         if (!other.CompareTag("Enemy")) return;
@@ -305,12 +243,12 @@ public class CharacterAttack : MonoBehaviour
         var damageable = other.GetComponentInParent<IDamageable>();
         if (damageable == null) return;
         
-       damageable.TakeDamage(charAtk);
+       
         //Layer = Light
         if (gameObject.layer == 13)
         {
             float randomTiny = Random.Range(-0.25f, 0.25f);
-            damageable.ApplyKnockback(knockbackPowerLight);
+            damageable.TakeDamage(charAtk, poiseDamageLight, knockbackPowerLight);
             _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.05f;
             _impulseSource.GenerateImpulseWithVelocity(new Vector3(0.25f, randomTiny, 0));
         }
@@ -318,7 +256,7 @@ public class CharacterAttack : MonoBehaviour
         if (gameObject.layer == 14)
         {
             float randomTiny = Random.Range(-1f, 1f);
-            damageable.ApplyKnockback(knockbackPowerHeavy);
+            damageable.TakeDamage(charAtk, poiseDamageHeavy, knockbackPowerHeavy);
             _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;
             _impulseSource.GenerateImpulseWithVelocity(new Vector3(2, randomTiny, 0));
         }

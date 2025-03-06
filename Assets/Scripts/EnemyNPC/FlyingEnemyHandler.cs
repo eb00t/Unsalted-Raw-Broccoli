@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 {
     [Header("Enemy Stats")]
-    [SerializeField] private int maxHealth, poisonResistance;
+    [SerializeField] private int maxHealth, poisonResistance, poise;
     [SerializeField] private float atkDelay, attackRange;
     [SerializeField] private float chaseRange, chaseDuration;
     [SerializeField] private float minPatrolRange, maxPatrolRange;
@@ -42,6 +42,12 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         get => attack;
         set => attack = value;
+    }
+    
+    int IDamageable.Poise
+    {
+        get => poise;
+        set => poise = value;
     }
 
     public bool isPlayerInRange { get; set; }
@@ -189,7 +195,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         transform.position = Vector3.Lerp(transform.position, target, moveSpeed * Time.deltaTime);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
         if (_health - damage > 0)
         {
@@ -234,7 +240,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             healthFillImage.color = new Color(0, .83f, .109f, 1f);
             var damageToTake = maxHealth / 100 * 3;
             _poisonBuildup -= 5;
-            TakeDamage(damageToTake);
+            TakeDamage(damageToTake, null, null);
         }
         else
         {

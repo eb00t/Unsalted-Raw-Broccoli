@@ -14,14 +14,14 @@ using Random = UnityEngine.Random;
 public class EnemyHandler : MonoBehaviour, IDamageable
 {
     [Header("Enemy Stats")]
-    [SerializeField] private int maxHealth, poisonResistance;
+    [SerializeField] private int maxHealth, poisonResistance, poise;
     [SerializeField] private float atkDelay, attackRange;
-    [SerializeField] private float chaseRange, chaseDuration, stunDelay;
+    [SerializeField] private float chaseRange, chaseDuration;
     [SerializeField] private float minPatrolRange, maxPatrolRange;
     [SerializeField] private float freezeDuration, freezeCooldown;
     [SerializeField] private bool canFreeze, canBeStunned, isBomb; // if by default set to false the enemy will never freeze or be stunned
     public int attack;
-    private int _poisonBuildup, _health;
+    private int _poisonBuildup, _poiseBuildup, _health;
     private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen;
     
     [Header("Values")]
@@ -36,7 +36,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Animator _animator;
     private Transform _target;
     private NavMeshAgent _agent;
-    public Rigidbody rb;
+    private CharacterAttack _characterAttack;
     
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
     
@@ -45,16 +45,18 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         get => attack;
         set => attack = value;
     }
+    
+    int IDamageable.Poise
+    {
+        get => poise;
+        set => poise = value;
+    }
 
     public bool isPlayerInRange { get; set; }
     public RoomScripting RoomScripting { get; set; }
     public Spawner Spawner { get; set; }
 
-    private int _knockbackDir = 0;
-    [Header("Knockback Types")]
-    [SerializeField] private Vector2 knockbackPowerLight = new Vector2(10f, 1f);
-    [SerializeField] private Vector2 knockbackPowerHeavy = new Vector2(20f, 3f);
-
+    private int _knockbackDir;
 
     private enum States
     {
@@ -67,7 +69,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
         RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         RoomScripting.enemies.Add(gameObject);
         gameObject.transform.parent = gameObject.transform.root;
@@ -256,7 +257,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             healthFillImage.color = new Color(0, .83f, .109f, 1f);
             var damageToTake = maxHealth / 100 * 3;
             _poisonBuildup -= 5;
-            TakeDamage(damageToTake);
+            TakeDamage(damageToTake, null, null);
         }
         else
         {
@@ -277,7 +278,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _patrol2 = new Vector3(-ranDist, position.y, position.z);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
         if (_health - damage > 0)
         {
@@ -289,6 +290,21 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             _health = 0;
             _healthSlider.value = 0;
             Die();
+        }
+
+        if (_poiseBuildup >= poise)
+        {
+            if (knockback.HasValue)
+            {
+                ApplyKnockback(knockback.Value);
+            }
+        }
+        else
+        {
+            if (poiseDmg.HasValue)
+            {
+                _poiseBuildup += poiseDmg.Value;
+            }
         }
     }
     
@@ -350,12 +366,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         RoomScripting._enemyCount--;
         Spawner.spawnedEnemies.Remove(gameObject);
     }
-    
 
     public void ApplyKnockback(Vector2 knockbackPower)
     {
-        if (_isFrozen || !canBeStunned) return;
+        if (_isFrozen || _poiseBuildup < poise) return;
         
+        _poiseBuildup = 0;
         _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
         
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir, knockbackPower.y, 0);
@@ -363,7 +379,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .5f));
         StartCoroutine(StunTimer(.5f));
-        StartCoroutine(StunDelay());
     }
 
     private IEnumerator ApplyVerticalKnockback(float height, float dur)
@@ -385,12 +400,5 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
        yield return new WaitForSecondsRealtime(stunTime);
        _agent.velocity = Vector3.zero;
-    }
-
-    private IEnumerator StunDelay()
-    {
-        canBeStunned = false;
-        yield return new WaitForSeconds(stunDelay);
-        canBeStunned = true;
     }
 }

@@ -34,6 +34,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     
     private enum States { Idle, Attack }
 
+    public int Poise { get; set; }
+
     bool IDamageable.isPlayerInRange
     {
         get => _isPlayerInRange; 
@@ -265,7 +267,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         }
     }
     
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
         if (_health - damage > 0)
         {
@@ -288,7 +290,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             healthFillImage.color = new Color(0, .83f, .109f, 1f);
             var damageToTake = maxHealth / 100 * 3;
             _poisonBuildup -= 5;
-            TakeDamage(damageToTake);
+            TakeDamage(damageToTake, null, null);
         }
         else
         {

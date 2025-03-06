@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
@@ -51,6 +52,8 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable  // THIS IS THE OLD VERS
         get => attack;
         set => attack = value;
     }
+
+    public int Poise { get; set; }
 
     public bool isPlayerInRange { get; set; }
 
@@ -188,7 +191,7 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable  // THIS IS THE OLD VERS
             healthFillImage.color = new Color(0, .83f, .109f, 1f);
             var damageToTake = maxHealth / 100 * 3;
             _poisonBuildup -= 5;
-            TakeDamage(damageToTake);
+            TakeDamage(damageToTake, 0);
         }
         else
         {
@@ -201,7 +204,7 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable  // THIS IS THE OLD VERS
         StartCoroutine(TakePoisonDamage());
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, int poiseDmg)
     {
         if (_health - damage > 0)
         {
@@ -267,3 +270,4 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable  // THIS IS THE OLD VERS
         throw new NotImplementedException();
     }
 }
+*/
