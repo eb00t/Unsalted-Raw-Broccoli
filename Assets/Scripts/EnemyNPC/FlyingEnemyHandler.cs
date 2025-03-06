@@ -44,6 +44,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         set => attack = value;
     }
 
+    public bool isPlayerInRange { get; set; }
     public RoomScripting RoomScripting { get; set; }
     public Spawner Spawner { get; set; }
 

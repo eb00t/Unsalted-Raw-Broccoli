@@ -158,10 +158,6 @@ public class CharacterMovement : MonoBehaviour
 
     public void Update()
     {
-        if (!grounded)
-        {
-            isCrouching = false;
-        }
         PlayerAnimator.SetBool("WallJump", isWallJumping);
         Velocity = rb.velocity;
         PlayerAnimator.SetFloat("XVelocity", rb.velocity.x);

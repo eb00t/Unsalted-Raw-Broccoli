@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -9,25 +10,33 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 {
     [Header("Enemy Stats")]
     [SerializeField] private int maxHealth;
-    [SerializeField] private float atkRange, attackCooldown;
+    [SerializeField] private float attackCooldown;
     [SerializeField] private float handLerpSpeed, handHoverHeight;
     [SerializeField] private int poisonResistance;
     [SerializeField] private bool canFreeze; 
     private float _attackCdCounter;
     private States _state = States.Idle;
     private int _poisonBuildup, _health;
-    private bool _isFrozen, _isPoisoned, _canAttack;
+    private bool _isFrozen, _isPoisoned, _canAttack, _isPlayerInRange;
     public int attack;
 
     [Header("References")]
     [SerializeField] private Image healthFillImage;
     [SerializeField] private Transform leftHand, rightHand, groundPosition;
-    [SerializeField] private GameObject leftHandCollider, rightHandCollider;
+    [SerializeField] private GameObject lhColliderDown, rhColliderDown, lhColliderUp, rhColliderUp;
+    [SerializeField] private GameObject handDownL, handDownR, handUpL, handUpR;
     private Transform _target;
     private Vector3 _leftHandInitialPos, _rightHandInitialPos;
     private Slider _healthSlider;
     
     private enum States { Idle, Attack }
+
+    bool IDamageable.isPlayerInRange
+    {
+        get => _isPlayerInRange; 
+        set => _isPlayerInRange = value;
+    }
+    
     public RoomScripting RoomScripting { get; set; }
     public Spawner Spawner { get; set; }
     
@@ -51,22 +60,25 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        var distance = Vector3.Distance(transform.position, _target.position);
         _attackCdCounter -= Time.deltaTime;
 
-        if (distance < atkRange)
+        if (_isPlayerInRange)
         {
             _state = States.Attack;
         }
         else
         {
-            _state = States.Idle;
+            _healthSlider.gameObject.SetActive(false);
+            if (_state == States.Idle) return;
+            {
+                _state = States.Idle;
+            }
         }
 
         switch (_state)
         {
             case States.Idle:
-                _healthSlider.gameObject.SetActive(false);
+                StartCoroutine(Idle());
                 break;
             case States.Attack:
                 _healthSlider.gameObject.SetActive(true);
@@ -77,8 +89,24 @@ public class Boss2Hands : MonoBehaviour, IDamageable
                 throw new ArgumentOutOfRangeException();
         }
     }
+    
+    private IEnumerator Idle() // makes the hands hover up and down while idle
+    {
+        var hoverSpeed = 2f;
+        var height = 0.2f;
 
-    private IEnumerator Attack()
+        while (_state == States.Idle)
+        {
+            var hoverOffset = Mathf.Sin(Time.time * hoverSpeed) * height;
+        
+            leftHand.position = _leftHandInitialPos + new Vector3(0, hoverOffset, 0);
+            rightHand.position = _rightHandInitialPos + new Vector3(0, hoverOffset, 0);
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator Attack() // randomly pick an attack
     {
         _attackCdCounter = attackCooldown;
         
@@ -111,6 +139,9 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         {
             leftHand.position = Vector3.Lerp(leftStartPos, _leftHandInitialPos, elapsed);
             rightHand.position = Vector3.Lerp(rightStartPos, _rightHandInitialPos, elapsed);
+            
+            UpdateHandImg(false, false, true, true);
+            UpdateColliders(false, false, false, false);
 
             elapsed += Time.deltaTime * handLerpSpeed;
             yield return null;
@@ -123,6 +154,9 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         yield return StartCoroutine(ResetHands());
         _canAttack = false;
+        
+        UpdateColliders(true, true, false, false);
+        UpdateHandImg(true, true, false, false);
 
         var leftTargetPos = new Vector3(leftHand.position.x, groundPosition.position.y, leftHand.position.z);
         var rightTargetPos = new Vector3(rightHand.position.x, groundPosition.position.y, rightHand.position.z);
@@ -131,31 +165,32 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
         yield return new WaitForSecondsRealtime(0.5f);
 
-        leftHandCollider.SetActive(true);
-        rightHandCollider.SetActive(true);
+        UpdateColliders(false, false, true, true);
+        UpdateHandImg(false, false, true, true);
         
         var lungeTarget = _target.position;
         yield return StartCoroutine(MoveHands(lungeTarget, lungeTarget, 1f));
 
         yield return new WaitForSecondsRealtime(0.5f);
         
-        leftHandCollider.SetActive(false);
-        rightHandCollider.SetActive(false);
+        UpdateColliders(false, false, false, false);
+        
         _canAttack = true;
     }
 
+    // hand hovers over player for short duration then slams down
     private IEnumerator OverheadSlam()
     {
         yield return StartCoroutine(ResetHands());
         _canAttack = false;
 
+        UpdateHandImg(false, true, true, false);
         var hoverPosition = _target.position + Vector3.up * handHoverHeight;
         yield return StartCoroutine(MoveHands(null, hoverPosition, 1f));
 
         yield return new WaitForSecondsRealtime(1f);
         
-        leftHandCollider.SetActive(true);
-        rightHandCollider.SetActive(true);
+        UpdateColliders(true, true, false, false);
         
         var slamPosition = new Vector3(hoverPosition.x, groundPosition.position.y, hoverPosition.z);
         yield return StartCoroutine(MoveHands(null, slamPosition, 0.5f));
@@ -164,31 +199,39 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
         yield return new WaitForSecondsRealtime(0.5f);
         
-        leftHandCollider.SetActive(false);
-        rightHandCollider.SetActive(false);
+        UpdateHandImg(false, false, true, true);
+        UpdateColliders(false, false, false, false);
+        
         _canAttack = true;
     }
 
+    // both hands go beside the player and after a short duration the hands clap between 1 and 3 times
     private IEnumerator ClapAttack()
     {
         yield return StartCoroutine(ResetHands());
         _canAttack = false;
+        
+        UpdateHandImg(false, false, true, true);
 
         var leftWidePos = _target.position + Vector3.left * 5;
         var rightWidePos = _target.position + Vector3.right * 5;
-        yield return StartCoroutine(MoveHands(leftWidePos, rightWidePos, 1f));
-
-        yield return new WaitForSeconds(0.5f);
-
-        leftHandCollider.SetActive(true);
-        rightHandCollider.SetActive(true);
+        var clapCount = Random.Range(1, 4);
         var clapTarget = _target.position;
-        yield return StartCoroutine(MoveHands(clapTarget, clapTarget, 1f));
 
-        yield return new WaitForSecondsRealtime(0.5f);
-        
-        leftHandCollider.SetActive(false);
-        rightHandCollider.SetActive(false);
+        for (var i = 0; i <= clapCount; i++)
+        {
+            yield return StartCoroutine(MoveHands(leftWidePos, rightWidePos, 1f));
+            yield return new WaitForSeconds(0.5f);
+
+            UpdateColliders(false, false, true, true);
+            
+            yield return StartCoroutine(MoveHands(clapTarget, clapTarget, 1f));
+
+            yield return new WaitForSecondsRealtime(0.5f);
+
+            UpdateColliders(false, false, false, false);
+        }
+
         _canAttack = true;
     }
     
@@ -273,13 +316,21 @@ public class Boss2Hands : MonoBehaviour, IDamageable
                 break;
         }
     }
-    
-    private void OnDrawGizmosSelected()
-    {
-            var position = transform.position;
 
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(position, atkRange);
+    private void UpdateHandImg(bool handDL, bool handDR, bool handUL, bool handUR)
+    {
+        handDownL.SetActive(handDL);
+        handDownR.SetActive(handDR);
+        handUpL.SetActive(handUL);
+        handUpR.SetActive(handUR);
+    }
+    
+    private void UpdateColliders(bool colDL, bool colDR, bool colUL, bool colUR)
+    {
+        lhColliderDown.SetActive(colDL);
+        rhColliderDown.SetActive(colDR);
+        lhColliderUp.SetActive(colUL);
+        rhColliderUp.SetActive(colUR);
     }
 
     public void ApplyKnockback(Vector2 knockbackPower)

@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 
 // Adapted from https://github.com/Chaker-Gamra/2.5D-Platformer-Game/blob/master/Assets/Scripts/Enemy/Enemy.cs
 
-public class Boss_TwoHands : MonoBehaviour, IDamageable
+public class Boss_TwoHands : MonoBehaviour, IDamageable  // THIS IS THE OLD VERSION OF THE BOSS SCRIPT DO NOT USE 
 {
     [Header("Enemy Stats")]
     [SerializeField] private int maxHealth;
@@ -51,6 +51,8 @@ public class Boss_TwoHands : MonoBehaviour, IDamageable
         get => attack;
         set => attack = value;
     }
+
+    public bool isPlayerInRange { get; set; }
 
     public RoomScripting RoomScripting { get; set; }
     public Spawner Spawner { get; set; }
