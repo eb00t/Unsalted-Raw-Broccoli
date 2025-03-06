@@ -15,7 +15,7 @@ public class Spawner : MonoBehaviour
         Specific_NOT_IMPLEMENTED
     }
     public SpawnMode spawnMode = SpawnMode.Random;
-    public int waves = 1;
+    private int _waves, _waveCount = 1;
     private int _rng;
     public RoomScripting roomScripting;
     public List<GameObject> spawnQueue, possibleEnemies, spawnedEnemies;
@@ -24,18 +24,35 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         roomScripting = transform.root.GetComponent<RoomScripting>();
-        for (int i = 0; i < waves; i++)
+        for (int i = 0; i < _waves; i++)
         {
             roomScripting._enemyCount++;
         }
-        //waves = RandomiseNumber(3);
+        //_waves = RandomiseNumber(100);
+        switch (_waves)
+        {
+            case 0:
+                _waveCount = 0;
+                break;
+            case > 0 and < 74:
+                _waveCount = 1;
+                break;
+            case > 74 and < 98:
+                _waveCount = 2;
+                break;
+            case 100:
+                _waveCount = 3;
+                break;
+        }
+
+        Debug.Log("Wave count: " + _waveCount);
         if (spawnMode == SpawnMode.Random)
         {
             foreach (var enemy in Resources.LoadAll<GameObject>("Enemies/Normal Enemies"))
             {
                 possibleEnemies.Add(enemy);
             }
-            for (int i = 0; i < waves; i++)
+            for (int i = 0; i < _waveCount; i++)
             {
                 _rng = RandomiseNumber(possibleEnemies.Count);
                 spawnQueue.Add(possibleEnemies[_rng]);

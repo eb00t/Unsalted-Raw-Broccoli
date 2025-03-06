@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(RoomInfo))]
 public class RoomScripting : MonoBehaviour
 {
-    public int _enemyCount;
+    public int _enemyCount, lastEnemyCount = 0;
     public int enabledSpawnerCount;
     public int currentWave;
     public List<GameObject> enemies;
@@ -41,6 +41,7 @@ public class RoomScripting : MonoBehaviour
         {
             door.AddComponent<DoorInfo>();
         }
+        ChangeCombatWeight();
         StartCoroutine(CheckIfRoomHasEnemies());
     }
 
@@ -70,15 +71,6 @@ public class RoomScripting : MonoBehaviour
                 _roomCleared = true;
             }
 
-            if (_enemyCount >= 2)
-            {
-                AudioManager.Instance.SetMusicParameter("Combat Weight", 1);
-            }
-            else if (_enemyCount < 2)
-            {
-                AudioManager.Instance.SetMusicParameter("Combat Weight", 0);
-            }
-
             if (_roomCleared)
             {
                 if (roomHadEnemies && _lootSpawned == false)
@@ -90,6 +82,13 @@ public class RoomScripting : MonoBehaviour
                 StopCoroutine(CheckIfRoomHasEnemies());
             }
 
+            if (lastEnemyCount != _enemyCount)
+            {
+                ChangeCombatWeight();
+            }
+            Debug.Log("Last enemy count: " + lastEnemyCount);
+            lastEnemyCount = _enemyCount;
+            
             yield return new WaitForSeconds(1f);
         }
     }
@@ -127,6 +126,18 @@ public class RoomScripting : MonoBehaviour
         }
     }
 
+    void ChangeCombatWeight()
+    {
+        if (_enemyCount < 2)
+        {
+            AudioManager.Instance.SetMusicParameter("Combat Weight", 0);
+        }
+        else if (_enemyCount >= 2)
+        {
+            AudioManager.Instance.SetMusicParameter("Combat Weight", 1);
+        }
+    }
+    
     void EnterSpecialRoom()
     {
         if (_roomInfo.shop)
