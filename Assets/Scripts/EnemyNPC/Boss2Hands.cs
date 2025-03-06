@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -8,7 +9,8 @@ using UnityEngine.UI;
 
 public class Boss2Hands : MonoBehaviour, IDamageable
 {
-    [Header("Enemy Stats")]
+    [Header("Enemy Stats")] 
+    [SerializeField] private string bossName;
     [SerializeField] private int maxHealth;
     [SerializeField] private float attackCooldown;
     [SerializeField] private float handLerpSpeed, handHoverHeight;
@@ -25,6 +27,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private Transform leftHand, rightHand, groundPosition;
     [SerializeField] private GameObject lhColliderDown, rhColliderDown, lhColliderUp, rhColliderUp;
     [SerializeField] private GameObject handDownL, handDownR, handUpL, handUpR;
+    [SerializeField] private TextMeshProUGUI bossTitle;
     private Transform _target;
     private Vector3 _leftHandInitialPos, _rightHandInitialPos;
     private Slider _healthSlider;
@@ -56,6 +59,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _leftHandInitialPos = leftHand.position;
         _rightHandInitialPos = rightHand.position;
         _canAttack = true;
+        bossTitle.text = bossName;
     }
 
     private void Update()
