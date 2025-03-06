@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
+using FMOD;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.TextCore.Text;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
 
@@ -24,10 +26,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
     [Header("References")]
     [SerializeField] private Image healthFillImage;
-    [SerializeField] private Transform leftHand, rightHand, groundPosition;
+    [SerializeField] private Transform leftHand, rightHand, groundPosition, bossEyePosition;
     [SerializeField] private GameObject lhColliderDown, rhColliderDown, lhColliderUp, rhColliderUp;
     [SerializeField] private GameObject handDownL, handDownR, handUpL, handUpR;
     [SerializeField] private TextMeshProUGUI bossTitle;
+    private LineRenderer _lineRenderer;
     private Transform _target;
     private Vector3 _leftHandInitialPos, _rightHandInitialPos;
     private Slider _healthSlider;
@@ -62,6 +65,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _rightHandInitialPos = rightHand.position;
         _canAttack = true;
         bossTitle.text = bossName;
+        _lineRenderer = GetComponentInChildren<LineRenderer>();
     }
 
     private void Update()
@@ -116,7 +120,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         _attackCdCounter = attackCooldown;
         
-        var attackType = Random.Range(0, 3);
+        var attackType = Random.Range(0, 4);
 
         switch (attackType)
         {
@@ -129,6 +133,9 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             case 2:
                 yield return StartCoroutine(ClapAttack());
                 break;
+            case 3:
+                yield return StartCoroutine(LaserAttack());
+            break;
         }
     }
 
@@ -174,7 +181,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         UpdateColliders(false, false, true, true);
         UpdateHandImg(false, false, true, true);
         
-        var lungeTarget = _target.position;
+        var lungeTarget = new Vector3(_target.position.x, groundPosition.position.y, groundPosition.position.z);
+        
         yield return StartCoroutine(MoveHands(lungeTarget, lungeTarget, 1f));
 
         yield return new WaitForSecondsRealtime(0.5f);
@@ -238,6 +246,74 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             UpdateColliders(false, false, false, false);
         }
 
+        _canAttack = true;
+    }
+    
+    private IEnumerator LaserAttack() // aims laser at player that tracks, then it stops and starts doing damage
+    {
+        yield return StartCoroutine(ResetHands());
+        
+        _canAttack = false;
+        _lineRenderer.enabled = true;
+        _lineRenderer.SetPosition(0, bossEyePosition.position);
+        var laserStartPos = _lineRenderer.GetPosition(0);;
+        var chargeTime = 1.5f;
+        var fireTime = 1f;
+        var trackSpeed = 0.5f;
+        var delay = 0.1f;
+        var targetPos = new Vector3(0, 0, 0);
+        var elapsed = 0f;
+        
+        while (elapsed < chargeTime)
+        {
+            targetPos = _target.position;
+
+            _lineRenderer.SetPosition(0, laserStartPos); 
+            _lineRenderer.SetPosition(1, targetPos);
+            _lineRenderer.startColor = Color.white;
+            _lineRenderer.endColor = Color.white;
+        
+            elapsed += Time.deltaTime * trackSpeed;
+            yield return null;
+        }
+
+        yield return new WaitForSecondsRealtime(delay);
+        
+        elapsed = 0f;
+        var lastDamageTime = 0f;
+
+        while (elapsed < fireTime)
+        {
+            var dist = Vector3.Distance(targetPos, laserStartPos);
+            var direction = (targetPos - laserStartPos).normalized;
+            var laserEndPos = laserStartPos + direction * (dist + 5f);
+
+            _lineRenderer.SetPosition(1, laserEndPos);
+            _lineRenderer.endColor = Color.red;
+            var layerMask = LayerMask.GetMask("Player");
+            
+            if (Physics.Raycast(laserStartPos, direction, out var hit, 50f, layerMask))
+            {
+                if (hit.collider.CompareTag("Player"))
+                {
+                    var player = hit.collider.GetComponentInChildren<CharacterAttack>();
+                    if (player != null)
+                    {
+                        if (Time.time >= lastDamageTime + 0.25f) // makes sure player only takes damage at intervals
+                        {
+                            player.TakeDamagePlayer(attack);
+                            lastDamageTime = Time.time;
+                        }
+                    }
+                }
+            }
+            
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+
+        _lineRenderer.enabled = false;
         _canAttack = true;
     }
     
