@@ -64,8 +64,8 @@ MonoBehaviour:
   healthSlider: {fileID: 0}
   diedScreen: {fileID: 0}
   hitFlash: {fileID: 0}
-  knockbackPowerLight: {x: 10, y: 1}
-  knockbackPowerHeavy: {x: 20, y: 3}
+  knockbackPowerLight: {x: 1, y: 0.1}
+  knockbackPowerHeavy: {x: 8, y: 1}
 --- !u!64 &3621395720539083714
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -385,7 +385,7 @@ MonoBehaviour:
   holdTime: 10
   grounded: 0
   doubleJumpPerformed: 0
-  crouching: 0
+  isCrouching: 0
   Velocity: {x: 0, y: 0, z: 0}
   dashBreak: 10
   startSlide: 0

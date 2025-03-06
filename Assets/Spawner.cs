@@ -19,6 +19,7 @@ public class Spawner : MonoBehaviour
     private int _rng;
     public RoomScripting roomScripting;
     public List<GameObject> spawnQueue, possibleEnemies, spawnedEnemies;
+    public int basicWeight, stalkerWeight, bomberWeight, cameraWeight;
     public bool disabled;
     void Start()
     {
