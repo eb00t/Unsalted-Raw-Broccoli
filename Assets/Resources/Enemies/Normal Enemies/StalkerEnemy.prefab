@@ -57,7 +57,7 @@ MonoBehaviour:
   attackRange: 3
   chaseRange: 8
   chaseDuration: 2
-  minPatrolRange: 6
+  minPatrolRange: 5
   maxPatrolRange: 10
   freezeDuration: 3
   freezeCooldown: 15
@@ -65,14 +65,12 @@ MonoBehaviour:
   canBeStunned: 1
   isBomb: 0
   attack: 10
-  _poisonBuildup: 0
-  _poiseBuildup: 0
-  _health: 0
   atkHitbox: {fileID: 3665861034403590735}
   healthFillImage: {fileID: 953913091542431065}
   isIdle: 0
   debugPatrol: 0
   debugRange: 0
+  maxTimeToReachTarget: 5
 --- !u!195 &9145869978663843985
 NavMeshAgent:
   m_ObjectHideFlags: 0

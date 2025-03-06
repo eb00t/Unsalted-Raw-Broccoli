@@ -173,26 +173,49 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private void PickPatrolPoints()
     {
         var position = transform.position;
-        _patrol1 = new Vector3(position.x + Random.Range(minPatrolRange, maxPatrolRange), position.y, position.z);
-        _patrol2 = new Vector3(position.x - Random.Range(minPatrolRange, maxPatrolRange), position.y, position.z);
+        
+        var newPatrol1 = new Vector3(position.x + Random.Range(minPatrolRange, maxPatrolRange), position.y, position.z);
+        var newPatrol2 = new Vector3(position.x - Random.Range(minPatrolRange, maxPatrolRange), position.y, position.z);
+        
+        _patrol1 = newPatrol1;
+        _patrol2 = newPatrol2;
     }
 
     private void MoveTowards(Vector3 target)
     {
-        var direction = target - transform.position;
+        var direction = (target - transform.position).normalized;
+        var hitNormal = Vector3.zero;
+
+        if (Physics.SphereCast(transform.position, 0.5f, direction, out var hit, 1f))
+        {
+            if (!hit.collider.isTrigger)
+            {
+                hitNormal = hit.normal;
+                direction = Vector3.Reflect(direction, hitNormal).normalized; 
+                direction += hitNormal * 1.5f;
+                
+                if (Vector3.Dot(direction, (target - transform.position).normalized) < 0.2f)
+                {
+                    _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
+                    return;
+                }
+            }
+        }
+
+        if (Physics.Raycast(transform.position, direction, 1f))
+        {
+            _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
+            return;
+        }
+
+        transform.position += direction * (moveSpeed * Time.deltaTime);
+
         var localScale = _spriteTransform.localScale;
-        
-        if (direction.x > 0)
+        if (Mathf.Abs(direction.x) > 0.1f)
         {
-            localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
+            localScale.x = direction.x > 0 ? Mathf.Abs(localScale.x) : -Mathf.Abs(localScale.x);
         }
-        else if (direction.x < 0)
-        {
-            localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
-        }
-        
         _spriteTransform.localScale = localScale;
-        transform.position = Vector3.Lerp(transform.position, target, moveSpeed * Time.deltaTime);
     }
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
@@ -278,6 +301,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _animator.SetBool("isDead", true);
         StopAllCoroutines();
         StartCoroutine(FallToGround());
+
+        foreach (var hb in GetComponentsInChildren<BoxCollider>()) // stops player being able to hit enemy on death
+        {
+            hb.gameObject.SetActive(false);
+        }
     }
     
     private IEnumerator FallToGround()
@@ -333,6 +361,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             Gizmos.DrawWireCube(_patrol2, v);
         }
     }
+    
     
     private void OnDisable()
     {

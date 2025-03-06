@@ -37,8 +37,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Transform _target;
     private NavMeshAgent _agent;
     private CharacterAttack _characterAttack;
+    private SpriteRenderer _spriteRenderer;
     
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
+    [SerializeField] private float maxTimeToReachTarget = 5f;
+    private float _timeSinceLastMove;
+    private Vector3 _lastPosition;
+    private bool _isStuck;
     
     int IDamageable.Attack
     {
@@ -78,6 +83,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _health = maxHealth;
         _healthSlider.gameObject.SetActive(false);
         _animator = GetComponent<Animator>();
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _agent = GetComponent<NavMeshAgent>();
@@ -151,7 +157,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         _animator.SetFloat("vel", Mathf.Abs(velocity.x));
 
-        var localScale = GetComponentInChildren<SpriteRenderer>().transform.localScale;
+        var localScale = _spriteRenderer.transform.localScale;
         
         if (velocity.x > 0.1f)
         {
@@ -164,18 +170,50 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             atkHitbox.center = new Vector3(-1.2f, -0.1546797f, 0);
         }
         
-        GetComponentInChildren<SpriteRenderer>().transform.localScale = localScale;
+        _spriteRenderer.transform.localScale = localScale;
     }
 
     private void Patrol()
     {
-        if (_agent.pathPending || !(_agent.remainingDistance <= _agent.stoppingDistance)) return;
-        _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
+        CheckIfStuck();
+        if (_agent.pathPending && !_isStuck) return;
+        if (!(_agent.remainingDistance <= _agent.stoppingDistance) && !_isStuck) return;
+        
+        var newTarget = (_patrolTarget == _patrol1) ? _patrol2 : _patrol1;
+        
+        _patrolTarget = newTarget;
+        _agent.SetDestination(_patrolTarget);
         
         _healthSlider.gameObject.SetActive(false);
-
-        _agent.SetDestination(_patrolTarget);
+        _isStuck = false;
+        _timeSinceLastMove = 0f;
     }
+    
+    private void PickPatrolPoints()
+    {
+        var ranDist = Random.Range(minPatrolRange, maxPatrolRange);
+        _patrol1 =  transform.position + new Vector3(ranDist, transform.position.y, transform.position.z);
+        _patrol2 =  transform.position + new Vector3(-ranDist, transform.position.y, transform.position.z);
+    }
+    
+    private void CheckIfStuck()
+    {
+        if (Vector3.Distance(transform.position, _lastPosition) > 0.1f) 
+        {
+            _timeSinceLastMove = 0f;
+            _lastPosition = transform.position;
+            _isStuck = false;
+        }
+        else
+        {
+            _timeSinceLastMove += Time.deltaTime;
+        }
+        
+        if (!(_timeSinceLastMove > maxTimeToReachTarget)) return;
+        _isStuck = true;
+        PickPatrolPoints();
+    }
+
 
     private void Chase()
     {
@@ -268,14 +306,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         yield return new WaitForSecondsRealtime(2f);
         StartCoroutine(TakePoisonDamage());
-    }
-
-    private void PickPatrolPoints()
-    {
-        var position = transform.position;
-        var ranDist = Random.Range(position.x + minPatrolRange, maxPatrolRange);
-        _patrol1 = new Vector3(ranDist, position.y, position.z);
-        _patrol2 = new Vector3(-ranDist, position.y, position.z);
     }
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
