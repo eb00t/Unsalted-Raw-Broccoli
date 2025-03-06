@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class dialogueAppear : MonoBehaviour
 {
-    public GameObject dialogueBox, playerChar, npcChar, enemyChar;
+    public GameObject dialogueBox, playerChar, npcChar, enemyChar; // yesText, noText;
 
     // Update is called once per frame
     void Update()
@@ -15,7 +15,7 @@ public class dialogueAppear : MonoBehaviour
             dialogueBox.SetActive(true);
             //Debug.Log("Box on!");
         }
-        else
+        else if(Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) <= 5f)
         {
             dialogueBox.SetActive(false);
             //Debug.Log("Box off!");

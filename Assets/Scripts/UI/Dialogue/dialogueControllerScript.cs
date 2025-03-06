@@ -10,7 +10,7 @@ public class dialogueControllerScript : MonoBehaviour
     private int Index = 0;
     public float DialogueSpeed;
     public float fasterSpeed;
-    public GameObject dialogueCanvas, yesText, noText; // normalText, normalBox;
+    public GameObject dialogueCanvas, yesText, noText, normalText; // normalBox;
 
     //Bools
     public bool canText = false;
@@ -50,6 +50,7 @@ public class dialogueControllerScript : MonoBehaviour
             speedUptext();
         }
 
+        
         //Qusetion answers
         if(Input.GetKeyDown(KeyCode.Y)) //YesOrNo == true &&
         {
@@ -69,7 +70,7 @@ public class dialogueControllerScript : MonoBehaviour
             noText.SetActive(false);
             yesText.SetActive(false);
         }
-
+        
         //dialogueFinished();
     }
 
@@ -112,6 +113,7 @@ public class dialogueControllerScript : MonoBehaviour
     {
         yesText.SetActive(true);
         noText.SetActive(false);
+        normalText.SetActive(false);
         Debug.Log("YES!");
     }
 
@@ -119,6 +121,7 @@ public class dialogueControllerScript : MonoBehaviour
     {
         noText.SetActive(true);
         yesText.SetActive(false);
+        normalText.SetActive(false);
         Debug.Log("NO");
     }
 
