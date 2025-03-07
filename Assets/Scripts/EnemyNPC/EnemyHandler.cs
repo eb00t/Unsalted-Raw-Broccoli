@@ -359,7 +359,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Die()
     {
-        gameObject.transform.parent.GetComponent<Spawner>().spawnedEnemy = null;
+        Spawner.spawnedEnemy = null;
+        Spawner.SpawnEnemies();
         gameObject.SetActive(false);
     }
 

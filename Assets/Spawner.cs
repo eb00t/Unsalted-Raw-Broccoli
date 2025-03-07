@@ -42,7 +42,7 @@ public class Spawner : MonoBehaviour
             case > 74 and < 98:
                 _waveCount = 2;
                 break;
-            case 100:
+            case 99:
                 _waveCount = 3;
                 break;
         }
@@ -86,6 +86,7 @@ public class Spawner : MonoBehaviour
         }
         else
         {
+            DisableSpawner();
             Debug.Log("Wave count is 0");
         }
     }

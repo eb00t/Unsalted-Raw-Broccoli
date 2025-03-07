@@ -306,6 +306,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         {
             hb.gameObject.SetActive(false);
         }
+        Spawner.spawnedEnemy = null;
+        Spawner.SpawnEnemies();
     }
     
     private IEnumerator FallToGround()
