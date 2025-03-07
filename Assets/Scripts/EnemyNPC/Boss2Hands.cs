@@ -120,7 +120,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         _attackCdCounter = attackCooldown;
         
-        var attackType = Random.Range(0, 4);
+        var attackType = Random.Range(0, 5);
 
         switch (attackType)
         {
@@ -128,14 +128,17 @@ public class Boss2Hands : MonoBehaviour, IDamageable
                 yield return StartCoroutine(GroundPoundAndLunge());
                 break;
             case 1:
-                yield return StartCoroutine(OverheadSlam());
+                yield return StartCoroutine(OverheadSlam(true));
                 break;
             case 2:
                 yield return StartCoroutine(ClapAttack());
                 break;
             case 3:
                 yield return StartCoroutine(LaserAttack());
-            break;
+                break;
+            case 4:
+                yield return StartCoroutine(OverheadSlam(false));
+                break;
         }
     }
 
@@ -193,23 +196,40 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     }
 
     // hand hovers over player for short duration then slams down
-    private IEnumerator OverheadSlam()
+    private IEnumerator OverheadSlam(bool isLeft)
     {
         yield return StartCoroutine(ResetHands());
         _canAttack = false;
-
-        UpdateHandImg(false, true, true, false);
+        
         var hoverPosition = _target.position + Vector3.up * handHoverHeight;
-        yield return StartCoroutine(MoveHands(null, hoverPosition, 1f));
+        
+        if (!isLeft)
+        {
+            UpdateHandImg(false, true, true, false);
+            yield return StartCoroutine(MoveHands(null, hoverPosition, 1f));
+        }
+        else
+        {
+            UpdateHandImg(true, false, false, true);
+            yield return StartCoroutine(MoveHands(hoverPosition, null, 1f));
+        }
 
         yield return new WaitForSecondsRealtime(1f);
         
         UpdateColliders(true, true, false, false);
         
         var slamPosition = new Vector3(hoverPosition.x, groundPosition.position.y, hoverPosition.z);
-        yield return StartCoroutine(MoveHands(null, slamPosition, 0.5f));
 
-        yield return StartCoroutine(MoveHands(null, hoverPosition, 0.5f));
+        if (!isLeft)
+        {
+            yield return StartCoroutine(MoveHands(null, slamPosition, 0.5f));
+            yield return StartCoroutine(MoveHands(null, hoverPosition, 0.5f));
+        }
+        else
+        {
+            yield return StartCoroutine(MoveHands(slamPosition, null, 0.5f));
+            yield return StartCoroutine(MoveHands(hoverPosition, null, 0.5f));
+        }
 
         yield return new WaitForSecondsRealtime(0.5f);
         
@@ -235,11 +255,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         for (var i = 0; i <= clapCount; i++)
         {
             yield return StartCoroutine(MoveHands(leftWidePos, rightWidePos, 1f));
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
 
             UpdateColliders(false, false, true, true);
             
-            yield return StartCoroutine(MoveHands(clapTarget, clapTarget, 1f));
+            yield return StartCoroutine(MoveHands(clapTarget, clapTarget, .5f));
 
             yield return new WaitForSecondsRealtime(0.5f);
 

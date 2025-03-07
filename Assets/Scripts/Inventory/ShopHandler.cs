@@ -15,7 +15,7 @@ public class ShopHandler : MonoBehaviour
 	public Transform grid;
 	[SerializeField] private float range;
 
-	private GameObject _prompt, _player, _uiManager;
+	private GameObject _prompt, _player, _uiManager, _lastSelected;
 	private RectTransform _promptRT;
 	private TextMeshProUGUI _promptText;
 	private GameObject _shopGUI;
@@ -23,6 +23,7 @@ public class ShopHandler : MonoBehaviour
 	private ItemPickupHandler _itemPickupHandler;
 	private CurrencyManager _currencyManager;
 	private InventoryStore _inventoryStore;
+	[SerializeField] private TextMeshProUGUI infoTxt, numHeldTxt, infoTitle;
 
 	private void Start()
 	{
@@ -44,22 +45,41 @@ public class ShopHandler : MonoBehaviour
 
 	private void Update()
 	{
-		if (_characterMovement.uiOpen) return;
-		
-		var dist = Vector3.Distance(transform.position, _player.transform.position);
+		if (!_characterMovement.uiOpen)
+		{
+			var dist = Vector3.Distance(transform.position, _player.transform.position);
 
-		if (dist <= range)
-		{
-			_itemPickupHandler.isPlrNearShop = true;
-			_promptRT.anchoredPosition= new Vector3(0, 200, 0);
-			_promptText.text = "Open Shop (Backspace / [O]";
+			if (dist <= range)
+			{
+				_itemPickupHandler.isPlrNearShop = true;
+				_promptRT.anchoredPosition = new Vector3(0, 200, 0);
+				_promptText.text = "Open Shop (Backspace / [O]";
+			}
+			else if (dist > range)
+			{
+				_itemPickupHandler.isPlrNearShop = false;
+				_promptRT.anchoredPosition = new Vector3(0, -200, 0);
+				_promptText.text = "";
+			}
 		}
-		else if (dist > range)
-		{
-			_itemPickupHandler.isPlrNearShop = false;
-			_promptRT.anchoredPosition = new Vector3(0, -200, 0);
-			_promptText.text = "";
-		}
+		
+		if (EventSystem.current.currentSelectedGameObject == _lastSelected) return;
+		_lastSelected = EventSystem.current.currentSelectedGameObject;
+		UpdateInfo();
+	}
+	
+	private void UpdateInfo()
+	{
+		if (EventSystem.current.currentSelectedGameObject == null) return;
+        
+		var indexHolder = EventSystem.current.currentSelectedGameObject.GetComponentInChildren<IndexHolder>();
+
+		if (indexHolder.consumable == null) return;
+        
+		infoTxt.text = indexHolder.consumable.description;
+		infoTitle.text = indexHolder.consumable.title;
+		numHeldTxt.text = indexHolder.numHeld.ToString();
+		//infoImg.sprite = indexHolder.consumable.uiIcon;
 	}
 
 	private void RefreshShop()
