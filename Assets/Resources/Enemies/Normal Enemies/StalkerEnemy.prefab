@@ -51,20 +51,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  poisonResistance: 50
+  attack: 10
   poise: 20
-  atkDelay: 1.8
+  poisonResistance: 50
   attackRange: 3
+  attackCooldown: 1.8
   chaseRange: 8
   chaseDuration: 2
-  minPatrolRange: 5
-  maxPatrolRange: 10
+  patrolRange: 10
   freezeDuration: 3
   freezeCooldown: 15
   canFreeze: 1
   canBeStunned: 1
   isBomb: 0
-  attack: 10
   atkHitbox: {fileID: 3665861034403590735}
   healthFillImage: {fileID: 953913091542431065}
   isIdle: 0
@@ -292,6 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5bff6285508ddb4a8c62036e274d8f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canDamage: 1
 --- !u!114 &2673932411865042494
 MonoBehaviour:
   m_ObjectHideFlags: 0

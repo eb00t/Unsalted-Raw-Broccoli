@@ -249,16 +249,24 @@ public class CharacterAttack : MonoBehaviour
         {
             float randomTiny = Random.Range(-0.25f, 0.25f);
             damageable.TakeDamage(charAtk, poiseDamageLight, knockbackPowerLight);
-            _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.05f;
-            _impulseSource.GenerateImpulseWithVelocity(new Vector3(0.25f, randomTiny, 0));
+
+            if (_impulseSource != null)
+            {
+                _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.05f;
+                _impulseSource.GenerateImpulseWithVelocity(new Vector3(0.25f, randomTiny, 0));
+            }
         }
         //Layer = Heavy
         if (gameObject.layer == 14)
         {
             float randomTiny = Random.Range(-1f, 1f);
             damageable.TakeDamage(charAtk, poiseDamageHeavy, knockbackPowerHeavy);
-            _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;
-            _impulseSource.GenerateImpulseWithVelocity(new Vector3(2, randomTiny, 0));
+
+            if (_impulseSource != null)
+            {
+                _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;
+                _impulseSource.GenerateImpulseWithVelocity(new Vector3(2, randomTiny, 0));
+            }
         }
 
         if (isPoison)

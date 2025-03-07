@@ -53,7 +53,6 @@ public class ItemPickupHandler : MonoBehaviour
         }
     }
 
-
     public void PickUpItem(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
@@ -70,4 +69,12 @@ public class ItemPickupHandler : MonoBehaviour
             }
         }
     }
+    
+    /*
+     public void TogglePrompt(string prompt, bool toggle)
+    {
+        _rectTransform.anchoredPosition = new Vector3(0, -200, 0);
+        _text.text = prompt;
+    }
+     */
 }

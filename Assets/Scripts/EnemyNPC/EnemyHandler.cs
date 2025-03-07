@@ -13,21 +13,28 @@ using Random = UnityEngine.Random;
 
 public class EnemyHandler : MonoBehaviour, IDamageable
 {
+    private enum States { Idle, Patrol, Chase, Attack, Frozen }
+    private States _state = States.Idle;
+    
     [Header("Enemy Stats")]
-    [SerializeField] private int maxHealth, poisonResistance, poise;
-    [SerializeField] private float atkDelay, attackRange;
-    [SerializeField] private float chaseRange, chaseDuration;
-    [SerializeField] private float minPatrolRange, maxPatrolRange;
-    [SerializeField] private float freezeDuration, freezeCooldown;
-    [SerializeField] private bool canFreeze, canBeStunned, isBomb; // if by default set to false the enemy will never freeze or be stunned
-    public int attack;
+    [SerializeField] private int maxHealth;
+    [SerializeField] private int attack;
+    [SerializeField] private int poise;
+    [SerializeField] private int poisonResistance;
+    [SerializeField] private float attackRange;
+    [SerializeField] private float attackCooldown;
+    [SerializeField] private float chaseRange;
+    [SerializeField] private float chaseDuration;
+    [SerializeField] private float patrolRange;
+    [SerializeField] private float freezeDuration;
+    [SerializeField] private float freezeCooldown;
+    [SerializeField] private bool canFreeze, canBeStunned, isBomb; // if by default set to false the enemy will never freeze
+    
     private int _poisonBuildup, _poiseBuildup, _health;
     private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen;
-    
-    [Header("Values")]
     private float _targetTime;
-    private Vector3 _patrolTarget, _patrol1, _patrol2;
-    private States _state = States.Idle;
+    private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
+    
     
     [Header("References")]
     [SerializeField] private BoxCollider atkHitbox;
@@ -62,15 +69,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     public Spawner Spawner { get; set; }
 
     private int _knockbackDir;
-
-    private enum States
-    {
-        Idle,
-        Patrol,
-        Chase,
-        Attack,
-        Frozen
-    }
     
     private void Start()
     {
@@ -89,7 +87,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _agent.updateRotation = false;
         
         PickPatrolPoints();
-        _patrolTarget = _patrol1;
+        _patrolTarget = _patrolPoint1;
         if (gameObject.name.Contains("Stalker"))
         {
             gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
@@ -97,7 +95,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         if (isBomb)
         {
-            _targetTime = atkDelay;
+            _targetTime = attackCooldown;
         }
     }
 
@@ -178,7 +176,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (_agent.pathPending && !_isStuck) return;
         if (!(_agent.remainingDistance <= _agent.stoppingDistance) && !_isStuck) return;
         
-        var newTarget = (_patrolTarget == _patrol1) ? _patrol2 : _patrol1;
+        var newTarget = (_patrolTarget == _patrolPoint1) ? _patrolPoint2 : _patrolPoint1;
         
         _patrolTarget = newTarget;
         _agent.SetDestination(_patrolTarget);
@@ -188,11 +186,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _timeSinceLastMove = 0f;
     }
     
-    private void PickPatrolPoints()
+   private void PickPatrolPoints()
     {
-        var ranDist = Random.Range(minPatrolRange, maxPatrolRange);
-        _patrol1 =  transform.position + new Vector3(ranDist, transform.position.y, transform.position.z);
-        _patrol2 =  transform.position + new Vector3(-ranDist, transform.position.y, transform.position.z);
+        var randomOffset = Random.Range(4f, patrolRange);
+        _patrolPoint1 = transform.position + new Vector3(randomOffset, 0, 0);
+        _patrolPoint2 = transform.position + new Vector3(-randomOffset, 0, 0);
     }
     
     private void CheckIfStuck()
@@ -252,13 +250,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             _animator.SetTrigger("Attack"); 
         }
         
-        _targetTime = atkDelay;
+        _targetTime = attackCooldown;
     }
 
     private IEnumerator BeginExplode()
     {
         _animator.SetBool("isExplode", true);
-        yield return new WaitForSecondsRealtime(atkDelay);
+        yield return new WaitForSecondsRealtime(attackCooldown);
         _animator.SetBool("isExplode", false);
         _animator.SetTrigger("Detonate");
     }
@@ -381,13 +379,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (debugPatrol)
         {
             Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(position, maxPatrolRange);
-            Gizmos.DrawWireSphere(position, minPatrolRange);
+            Gizmos.DrawWireSphere(position, patrolRange);
 
             var v = new Vector3(1, 1, 1);
 
-            Gizmos.DrawWireCube(_patrol1, v);
-            Gizmos.DrawWireCube(_patrol2, v);
+            Gizmos.DrawWireCube(_patrolPoint1, v);
+            Gizmos.DrawWireCube(_patrolPoint2, v);
         }
     }
     
