@@ -76,7 +76,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
         RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         RoomScripting.enemies.Add(gameObject);
-        gameObject.transform.parent = gameObject.transform.root;
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -360,6 +359,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Die()
     {
+        gameObject.transform.parent.GetComponent<Spawner>().spawnedEnemy = null;
         gameObject.SetActive(false);
     }
 

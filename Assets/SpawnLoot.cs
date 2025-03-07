@@ -24,12 +24,12 @@ public class SpawnLoot : MonoBehaviour
     {
         if (spawnMode == SpawnMode.Random)
         {
-            LootManager.Instance.SpawnRandomLootHere(transform.position);
+            LootManager.Instance.SpawnRandomLootHere(transform);
         }
 
         if (spawnMode == SpawnMode.Specific)
         {
-            LootManager.Instance.SpawnSpecificLootHere(transform.position, pathForSpecificItem);
+            LootManager.Instance.SpawnSpecificLootHere(transform, pathForSpecificItem);
         }
     }
 }

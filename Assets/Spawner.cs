@@ -17,18 +17,20 @@ public class Spawner : MonoBehaviour
     public SpawnMode spawnMode = SpawnMode.Random;
     private int _waves, _waveCount = 1;
     private int _rng;
+    public GameObject spawnedEnemy;
     public RoomScripting roomScripting;
     public List<GameObject> spawnQueue, possibleEnemies, spawnedEnemies;
     public int basicWeight, stalkerWeight, bomberWeight, cameraWeight;
     public bool disabled;
+
     void Start()
     {
         roomScripting = transform.root.GetComponent<RoomScripting>();
-        for (int i = 0; i < _waves; i++)
+        _waves = RandomiseNumber(100);
+        for (int i = 0; i < _waveCount; i++)
         {
             roomScripting._enemyCount++;
         }
-        //_waves = RandomiseNumber(100);
         switch (_waves)
         {
             case 0:
@@ -52,6 +54,7 @@ public class Spawner : MonoBehaviour
             {
                 possibleEnemies.Add(enemy);
             }
+
             for (int i = 0; i < _waveCount; i++)
             {
                 _rng = RandomiseNumber(possibleEnemies.Count);
@@ -63,19 +66,27 @@ public class Spawner : MonoBehaviour
 
     public void SpawnEnemies()
     {
-        if (!disabled)
-        { 
-            GameObject enemyToSpawn = spawnQueue[0];
-            enemyToSpawn = Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
-            enemyToSpawn.GetComponent<IDamageable>().RoomScripting = roomScripting;
-            enemyToSpawn.GetComponent<IDamageable>().Spawner = this;
-            enemyToSpawn.transform.parent = gameObject.transform;
-            spawnedEnemies.Add(enemyToSpawn);
-            spawnQueue.Remove(spawnQueue[0]);
-            if (spawnQueue.Count == 0)
+        if (_waveCount > 0)
+        {
+            if (!disabled && spawnedEnemy == null)
             {
-                DisableSpawner();
+                GameObject enemyToSpawn = spawnQueue[0];
+                enemyToSpawn = Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+                enemyToSpawn.GetComponent<IDamageable>().RoomScripting = roomScripting;
+                enemyToSpawn.GetComponent<IDamageable>().Spawner = this;
+                enemyToSpawn.transform.parent = gameObject.transform;
+                spawnedEnemy = enemyToSpawn;
+                spawnedEnemies.Add(enemyToSpawn);
+                spawnQueue.Remove(spawnQueue[0]);
+                if (spawnQueue.Count == 0)
+                {
+                    DisableSpawner();
+                }
             }
+        }
+        else
+        {
+            Debug.Log("Wave count is 0");
         }
     }
 

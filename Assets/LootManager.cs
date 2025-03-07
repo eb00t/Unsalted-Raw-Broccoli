@@ -56,19 +56,21 @@ public class LootManager : MonoBehaviour
         }
     }
 
-    public void SpawnRandomLootHere(Vector3 here)
+    public void SpawnRandomLootHere(Transform here)
     {
         int chosenLoot = RandomiseNumber(majorLoot.Count);
-        GameObject lootToSpawn = Instantiate(majorLoot[chosenLoot], here, Quaternion.identity);
+        GameObject lootToSpawn = Instantiate(majorLoot[chosenLoot], here.position, Quaternion.identity);
         lootToSpawn.SetActive(true);
+        lootToSpawn.transform.parent = here.transform; 
         majorLoot.Remove(majorLoot[chosenLoot]);
     }
 
-    public void SpawnSpecificLootHere(Vector3 here, string path)
+    public void SpawnSpecificLootHere(Transform here, string path)
     {
         GameObject chosenLoot = Resources.Load<GameObject>(path);
-        GameObject lootToSpawn = Instantiate(chosenLoot, here, Quaternion.identity);
+        GameObject lootToSpawn = Instantiate(chosenLoot, here.position, Quaternion.identity);
         lootToSpawn.SetActive(true);
+        lootToSpawn.transform.parent = here.transform;
         majorLoot.Remove(chosenLoot);
     }
     
