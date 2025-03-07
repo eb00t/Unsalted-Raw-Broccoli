@@ -8,7 +8,8 @@ public class LootManager : MonoBehaviour
 {    
     public static LootManager Instance { get; private set; }
     public List<GameObject> minorLoot, majorLoot;
-    private int _willLootSpawn = 11; //It has a 10% chance to spawn by default
+    private readonly int _willLootSpawn = 10; //It has a 10% chance to spawn by default
+    private int _willMajorLootSpawn = 10;
     private void Awake()
     {
         foreach (var item in Resources.LoadAll<GameObject>("ItemPrefabs/Minor Items"))
@@ -31,10 +32,21 @@ public class LootManager : MonoBehaviour
     public void SpawnLootInCurrentRoom(GameObject room) //TODO: Add a chance to spawn an item from the other loot table
     {
         int spawnChance = RandomiseNumber(_willLootSpawn);
+        int majorLootChance = RandomiseNumber(_willMajorLootSpawn);
         if (spawnChance == 0)
         {
+            int chosenLoot;
+            GameObject lootToSpawn;
             Debug.Log("Spawning loot.");
-            int chosenLoot = RandomiseNumber(minorLoot.Count);
+            if (majorLootChance != 0)
+            {
+                chosenLoot = RandomiseNumber(minorLoot.Count);
+            }
+            else
+            {
+                chosenLoot = RandomiseNumber(majorLoot.Count);
+            }
+
             float offsetSpawnPos;
             int leftOffset = RandomiseNumber(2);
             Debug.Log(leftOffset);
@@ -47,7 +59,15 @@ public class LootManager : MonoBehaviour
                 offsetSpawnPos = room.transform.position.x + room.GetComponent<RoomInfo>().roomLength / 4;
             }
             Vector3 realSpawnPos = new Vector3(offsetSpawnPos, room.transform.position.y, room.transform.position.z);
-            GameObject lootToSpawn = Instantiate(minorLoot[chosenLoot], realSpawnPos, Quaternion.identity);
+            if (majorLootChance != 0)
+            {
+                lootToSpawn = Instantiate(minorLoot[chosenLoot], realSpawnPos, Quaternion.identity);
+            }
+            else
+            {
+                lootToSpawn = Instantiate(majorLoot[chosenLoot], realSpawnPos, Quaternion.identity);
+            }
+
             lootToSpawn.SetActive(true);
         }
         else
