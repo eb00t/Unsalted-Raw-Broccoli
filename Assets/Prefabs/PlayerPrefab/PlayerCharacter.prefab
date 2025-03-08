@@ -48,6 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timer: 0
   timer1: 0
+  heavyTimer: 0
+  heavyTimer1: 0
   lightCombo: 00000000
   heavyCombo: 00000000
   maxInputDelay: 10
@@ -61,12 +63,10 @@ MonoBehaviour:
   isInvincible: 0
   isPoison: 0
   isIce: 0
-  enemies: []
-  nearestEnemy: {fileID: 0}
   healthSlider: {fileID: 0}
   diedScreen: {fileID: 0}
   hitFlash: {fileID: 0}
-  knockbackPowerLight: {x: 1, y: 0.1}
+  knockbackPowerLight: {x: 2, y: 0.1}
   knockbackPowerHeavy: {x: 8, y: 1}
 --- !u!64 &3621395720539083714
 MeshCollider:

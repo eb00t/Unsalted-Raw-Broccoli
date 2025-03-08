@@ -572,11 +572,13 @@ MonoBehaviour:
   possibleRooms: []
   possibleBossRooms: []
   possibleSpecialRooms: []
+  possibleLootRooms: []
   roomsRemaining: 0
   discardedRooms: []
   possibleConnectors: []
   spawnedRooms: []
   spawnedBossRooms: []
+  spawnedLootRooms: []
   firstBossRoomSpawnPoints: []
   secondBossRoomSpawnPoints: []
   thirdBossRoomSpawnPoints: []
@@ -596,6 +598,8 @@ MonoBehaviour:
   bossRoomGeneratingFinished: 0
   floorSpecificRoomPath: 
   shopSpawned: 0
+  lootRoomsToSpawn: 0
+  spawnModeChangedByDestroy: 0
   _spawnMode: 0
 --- !u!114 &543560988434361953
 MonoBehaviour:
@@ -613,8 +617,6 @@ MonoBehaviour:
   playerCam: {fileID: 0}
   currentCamera: {fileID: 0}
   virtualCameras: []
-  defaultProfile: {fileID: 11400000, guid: b5682d53ce46be34487c8d198be37d2d, type: 2}
-  connectorProfile: {fileID: 11400000, guid: 6fd8c6bcbdc0111409ffc4b203d4f591, type: 2}
 --- !u!114 &5404688144565359110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -627,7 +629,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8e672bbff7e80f4db4ab45c0d4115d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  possibleLoot: []
+  minorLoot: []
+  majorLoot: []
 --- !u!1 &6937896342876284815
 GameObject:
   m_ObjectHideFlags: 0
