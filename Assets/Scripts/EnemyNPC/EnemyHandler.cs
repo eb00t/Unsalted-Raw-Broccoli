@@ -52,17 +52,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Vector3 _lastPosition;
     private bool _isStuck;
     
-    int IDamageable.Attack
-    {
-        get => attack;
-        set => attack = value;
-    }
-    
-    int IDamageable.Poise
-    {
-        get => poise;
-        set => poise = value;
-    }
+    int IDamageable.Attack { get => attack; set => attack = value; }
+    int IDamageable.Poise { get => poise; set => poise = value; }
 
     public bool isPlayerInRange { get; set; }
     public RoomScripting RoomScripting { get; set; }

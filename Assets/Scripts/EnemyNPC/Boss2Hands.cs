@@ -36,23 +36,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private Slider _healthSlider;
     
     private enum States { Idle, Attack }
-
     public int Poise { get; set; }
-
-    bool IDamageable.isPlayerInRange
-    {
-        get => _isPlayerInRange; 
-        set => _isPlayerInRange = value;
-    }
-    
+    bool IDamageable.isPlayerInRange { get => _isPlayerInRange; set => _isPlayerInRange = value; }
     public RoomScripting RoomScripting { get; set; }
     public Spawner Spawner { get; set; }
-    
-    int IDamageable.Attack
-    {
-        get => attack;
-        set => attack = value;
-    }
+    int IDamageable.Attack { get => attack; set => attack = value; }
 
     private void Start()
     {

@@ -6,10 +6,10 @@ using Random = UnityEngine.Random;
 
 public class CopyBoss : MonoBehaviour, IDamageable
 {
-    private enum States { Idle, Patrol, Chase, Attack, Retreat, Frozen, Dead }
+    private enum States { Idle, Patrol, Chase, Attack, Retreat, Frozen, Jumping }
     private States _currentState = States.Idle;
 
-    private NavMeshAgent _agent;
+    private Rigidbody _rigidbody;
     private Animator _animator;
     private Transform _player;
     private SpriteRenderer _spriteRenderer;
@@ -25,29 +25,23 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private float patrolRange;
     [SerializeField] private float attackCooldown;
     [SerializeField] private float comboChance;
-    [SerializeField] private bool canFreeze;
+    [SerializeField] private bool canFreeze, canJump;
     [SerializeField] private float freezeDuration;
     [SerializeField] private float freezeCooldown;
+    [SerializeField] private float movementSpeed;
+    [SerializeField] private float jumpForce, jumpTriggerDistance;
 
     private int _currentHealth, _poisonBuildup;
-    private bool _isAttacking, _isFrozen, _isDead, _isPoisoned, _hasPlayerBeenSeen;
+    private bool _isAttacking, _isFrozen, _isDead, _isPoisoned, _hasPlayerBeenSeen, _isJumping;
     private Vector3 _patrolPoint1, _patrolPoint2, _currentPatrolTarget;
 
     [Header("UI")]
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Image healthFillImage;
-    
-    int IDamageable.Attack
-    {
-        get => attack;
-        set => attack = value;
-    }
-    
-    int IDamageable.Poise
-    {
-        get => poise;
-        set => poise = value;
-    }
+    private Collider _bossCollider;
+
+    int IDamageable.Attack { get => attack; set => attack = value; }
+    int IDamageable.Poise { get => poise; set => poise = value; }
     
     public bool isPlayerInRange { get; set; }
     public RoomScripting RoomScripting { get; set; }
@@ -55,7 +49,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        _agent = GetComponent<NavMeshAgent>();
+        _bossCollider = GetComponent<Collider>();
+        _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -64,8 +59,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
         healthSlider.gameObject.SetActive(false);
-
-        _agent.updateRotation = false;
 
         PickPatrolPoints();
         _currentPatrolTarget = _patrolPoint1;
@@ -76,7 +69,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
         if (_isDead) return;
 
         var distance = Vector3.Distance(transform.position, _player.position);
-
+        var heightDifference = _player.position.y - transform.position.y;
+        
         if (_isFrozen)
         {
             _currentState = States.Frozen;
@@ -87,7 +81,15 @@ public class CopyBoss : MonoBehaviour, IDamageable
         }
         else if (distance < chaseRange || _hasPlayerBeenSeen)
         {
-            _currentState = States.Chase;
+            if (canJump && heightDifference > jumpTriggerDistance)
+            {
+                Debug.Log("Switching to Jumping state");
+                _currentState = States.Jumping;
+            }
+            else
+            {
+                _currentState = States.Chase;
+            }
         }
         else
         {
@@ -97,7 +99,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
         switch (_currentState)
         {
             case States.Idle:
-                _agent.isStopped = true;
                 healthSlider.gameObject.SetActive(false);
                 break;
             case States.Patrol:
@@ -116,15 +117,14 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 Retreat();
                 break;
             case States.Frozen:
-                _agent.isStopped = true;
                 StartCoroutine(BeginFreeze());
                 break;
-            case States.Dead:
-                Die();
+            case States.Jumping:
+                Jump();
                 break;
         }
         
-        var velocity = _agent.velocity;
+        var velocity = _rigidbody.velocity;
         
         _animator.SetFloat("XVelocity", Mathf.Abs(velocity.x));
 
@@ -141,15 +141,69 @@ public class CopyBoss : MonoBehaviour, IDamageable
         
         _spriteRenderer.transform.localScale = localScale;
     }
+    
+    private Collider FindPlatform()
+    {
+        var layerMask = LayerMask.GetMask("Ground");
+        return Physics.Raycast(transform.position, Vector3.up, out var hit, 2.5f, layerMask) ? hit.collider : null;
+    }
+
+    private void Jump()
+    {
+        if (_isJumping) return;
+        _isJumping = true;
+
+        var col = FindPlatform();
+        
+        if (col != null)
+        {
+            StartCoroutine(DisableCollision());
+        }
+
+        var newForce = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * (_player.position.y - transform.position.y + 1.5f));
+        newForce = Mathf.Max(newForce, jumpForce);
+
+        _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, newForce, _rigidbody.velocity.z);
+        _animator.SetTrigger("Jump");
+        
+        StartCoroutine(ResetJumpState());
+    }
+
+    private IEnumerator DisableCollision()
+    {
+        if (_bossCollider != null)
+        {
+            _bossCollider.enabled = false;
+        }
+
+        yield return new WaitForSeconds(0.8f);
+
+        if (_bossCollider != null)
+        {
+            _bossCollider.enabled = true;
+        }
+    }
+
+    private IEnumerator ResetJumpState()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _isJumping = false;
+    }
+    
+    private void MoveTowards(Vector3 target)
+    {
+        var direction = (target - transform.position).normalized;
+        _rigidbody.velocity = new Vector3(direction.x * movementSpeed, _rigidbody.velocity.y, direction.z);
+    }
 
     private void Patrol()
     {
-        if (_agent.pathPending) return;
-        if (!(_agent.remainingDistance <= _agent.stoppingDistance)) return;
+        MoveTowards(_currentPatrolTarget);
 
-        _currentPatrolTarget = (_currentPatrolTarget == _patrolPoint1) ? _patrolPoint2 : _patrolPoint1;
-        _agent.SetDestination(_currentPatrolTarget);
-        healthSlider.gameObject.SetActive(false);
+        if (Vector3.Distance(transform.position, _currentPatrolTarget) < 0.5f)
+        {
+            _currentPatrolTarget = (_currentPatrolTarget == _patrolPoint1) ? _patrolPoint2 : _patrolPoint1;
+        }
     }
 
     private void PickPatrolPoints()
@@ -161,7 +215,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void Chase()
     {
-        _agent.isStopped = false;
         healthSlider.gameObject.SetActive(true);
 
         if (!_hasPlayerBeenSeen)
@@ -169,7 +222,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
             StartCoroutine(StartChaseDelay());
         }
 
-        _agent.SetDestination(_player.position);
+        MoveTowards(_player.position);
     }
 
     private IEnumerator StartChaseDelay()
@@ -182,8 +235,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private IEnumerator Attack()
     {
         _isAttacking = true;
-        _agent.ResetPath();
-        _agent.isStopped = true;
+        _rigidbody.velocity = Vector3.zero;
 
         var comboCount = Random.Range(2, 4);
 
@@ -226,8 +278,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         var retreatDirection = (transform.position - _player.position).normalized;
         var retreatPosition = transform.position + retreatDirection * 3f;
-
-        _agent.SetDestination(retreatPosition);
+        
+        MoveTowards(transform.position + retreatDirection * 3f);
 
         if (Vector3.Distance(transform.position, retreatPosition) < 0.5f)
         {
@@ -241,7 +293,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         _isFrozen = true;
         healthFillImage.color = Color.cyan;
-        _agent.velocity = Vector3.zero;
+        _rigidbody.velocity = Vector3.zero;
 
         yield return new WaitForSeconds(freezeDuration);
 
@@ -289,7 +341,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         if (_currentHealth <= 0)
         {
-            _currentState = States.Dead;
+            Die();
         }
     }
     
@@ -320,9 +372,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void Die()
     {
-        _isDead = true;
-        _agent.isStopped = true;
-        _animator.SetTrigger("Death");
         gameObject.SetActive(false);
     }
 }

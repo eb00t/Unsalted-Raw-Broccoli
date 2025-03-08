@@ -38,17 +38,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float moveSpeed = 5f;
     private Vector3 _currentVelocity;
     
-    int IDamageable.Attack
-    {
-        get => attack;
-        set => attack = value;
-    }
-    
-    int IDamageable.Poise
-    {
-        get => poise;
-        set => poise = value;
-    }
+    int IDamageable.Attack { get => attack; set => attack = value; }
+    int IDamageable.Poise { get => poise; set => poise = value; }
 
     public bool isPlayerInRange { get; set; }
     public RoomScripting RoomScripting { get; set; }
