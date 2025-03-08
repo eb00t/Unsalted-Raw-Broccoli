@@ -150,7 +150,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private Collider FindPlatform()
     {
         var layerMask = LayerMask.GetMask("Ground");
-        return Physics.Raycast(transform.position, Vector3.up, out var hit, 2.5f, layerMask) ? hit.collider : null;
+        return Physics.Raycast(transform.position, Vector3.up, out var hit, 20f, layerMask) ? hit.collider : null;
     }
 
     private void Jump()
