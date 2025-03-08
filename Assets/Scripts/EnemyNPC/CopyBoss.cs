@@ -30,6 +30,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private float freezeCooldown;
     [SerializeField] private float movementSpeed;
     [SerializeField] private float jumpForce, jumpTriggerDistance;
+    [SerializeField] private Transform atkHitbox;
 
     private int _currentHealth, _poisonBuildup;
     private bool _isAttacking, _isFrozen, _isDead, _isPoisoned, _hasPlayerBeenSeen, _isJumping;
@@ -129,17 +130,21 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _animator.SetFloat("XVelocity", Mathf.Abs(velocity.x));
 
         var localScale = _spriteRenderer.transform.localScale;
+        var localScale2 = atkHitbox.localScale;
         
         if (velocity.x > 0.1f)
         {
             localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
+            localScale2 = new Vector3(Mathf.Abs(localScale2.x), localScale2.y, localScale2.z);
         }
         else if (velocity.x < -0.1f)
         {
             localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
+            localScale2 = new Vector3(-Mathf.Abs(localScale2.x), localScale2.y, localScale2.z);
         }
         
         _spriteRenderer.transform.localScale = localScale;
+        atkHitbox.localScale = localScale2;
     }
     
     private Collider FindPlatform()
