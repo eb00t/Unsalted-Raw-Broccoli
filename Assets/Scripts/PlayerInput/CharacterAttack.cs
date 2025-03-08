@@ -11,8 +11,11 @@ public class CharacterAttack : MonoBehaviour
     private Animator _playerAnimator;
 
     // Combo variables
+    [Header("Combo Variables")]
     [SerializeField] private float timer = 0f;
     [SerializeField] private float timer1 = 0f;
+    [SerializeField] private float heavyTimer = 0f;
+    [SerializeField] private float heavyTimer1 = 0f;
     [SerializeField] private bool[] lightCombo = new bool[4];
     [SerializeField] private bool[] heavyCombo = new bool[4];
     [SerializeField] private float maxInputDelay = 10f;
@@ -59,6 +62,9 @@ public class CharacterAttack : MonoBehaviour
     {
         if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
+            _playerAnimator.SetBool("HeavyAttack", false);
+            _playerAnimator.SetBool("HeavyAttack1", false);
+            _playerAnimator.SetBool("HeavyAttack2", false);
             gameObject.layer = 13;
             //Debug.Log("LightAttack");
             //_playerAnimator.SetBool("LightAttack1", true);
@@ -66,7 +72,7 @@ public class CharacterAttack : MonoBehaviour
             animEnd = false;
 
             // Start of chain
-            if (!lightCombo[0])
+            if (!lightCombo[0] && !_playerAnimator.GetBool("LightAttack2"))
             {
                 Debug.Log("LightAttack");
                 _playerAnimator.SetBool("LightAttack1", true);
@@ -80,26 +86,28 @@ public class CharacterAttack : MonoBehaviour
                 {
                     Debug.Log("LightPunch");
                     _playerAnimator.SetBool("LightPunch", true);
-                    if (lightCombo[1])
-                    {
-                        if (timer1 <= maxInputDelay && timer1 > 0f)
-                        {
-                            if (animEnd)
-                            {
-                                
-                                lightCombo[2] = true;
-                            }
-                        }
-                    }
+                    
                     lightCombo[1] = true;
                 }
             }
-            
-            lightCombo[0] = true;
-            if (lightCombo[2] && animEnd)
+
+            if (lightCombo[1])
             {
-                Debug.Log("LightAttack2");
-                _playerAnimator.SetBool("LightAttack2", true);
+                if (timer1 <= maxInputDelay && timer1 > 0f)
+                {
+                    Debug.Log("LightAttack2");
+                    _playerAnimator.SetBool("LightAttack2", true);
+                    if (animEnd)
+                    {
+                        lightCombo[2] = true;
+                    }
+                }
+            }
+
+            lightCombo[0] = true;
+            if (lightCombo[2])
+            {
+                
 
                 timer1 = 0f; lightCombo[1] = false;
                 timer = 0f; lightCombo[0] = false;
@@ -142,6 +150,9 @@ public class CharacterAttack : MonoBehaviour
     {
         if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
+            _playerAnimator.SetBool("LightAttack1", false);
+            _playerAnimator.SetBool("LightPunch", false);
+            _playerAnimator.SetBool("LightAttack2", false);
             gameObject.layer = 14;
             //Debug.Log("LightAttack");
             //_playerAnimator.SetBool("LightAttack1", true);
@@ -149,7 +160,7 @@ public class CharacterAttack : MonoBehaviour
             animEnd = false;
 
             // Start of chain
-            if (!heavyCombo[0])
+            if (!heavyCombo[0] && !_playerAnimator.GetBool("HeavyAttack2"))
             {
                 Debug.Log("HeavyAttack");
                 _playerAnimator.SetBool("HeavyAttack", true);
@@ -159,33 +170,35 @@ public class CharacterAttack : MonoBehaviour
             {
 
 
-                if (timer <= maxInputDelay && timer > 0f)
+                if (heavyTimer <= maxInputDelay && heavyTimer > 0f)
                 {
                     Debug.Log("HeavyAttack1");
                     _playerAnimator.SetBool("HeavyAttack1", true);
-                    if (heavyCombo[1])
-                    {
-                        if (timer1 <= maxInputDelay && timer1 > 0f)
-                        {
-                            if (animEnd)
-                            {
 
-                                heavyCombo[2] = true;
-                            }
-                        }
-                    }
                     heavyCombo[1] = true;
                 }
             }
 
-            heavyCombo[0] = true;
-            if (heavyCombo[2] && animEnd)
+            if (heavyCombo[1])
             {
-                Debug.Log("HeavyAttack2");
-                _playerAnimator.SetBool("HeavyAttack2", true);
+                if (heavyTimer1 <= maxInputDelay && heavyTimer1 > 0f)
+                {
+                    Debug.Log("HeavyAttack2");
+                    _playerAnimator.SetBool("HeavyAttack2", true);
+                    if (animEnd)
+                    {
+                        heavyCombo[2] = true;
+                    }
+                }
+            }
 
-                timer1 = 0f; heavyCombo[1] = false;
-                timer = 0f; heavyCombo[0] = false;
+            heavyCombo[0] = true;
+            if (heavyCombo[2])
+            {
+
+
+                heavyTimer1 = 0f; heavyCombo[1] = false;
+                heavyTimer = 0f; heavyCombo[0] = false;
 
 
                 heavyCombo[2] = false;
@@ -309,23 +322,23 @@ public class CharacterAttack : MonoBehaviour
         {
             if (!heavyCombo[1])
             {
-                timer += 1f * Time.deltaTime;
+                heavyTimer += 1f * Time.deltaTime;
             }
             if (heavyCombo[1])
             {
-                timer1 += 1f * Time.deltaTime;
-                if (timer1 >= maxInputDelay)
+                heavyTimer1 += 1f * Time.deltaTime;
+                if (heavyTimer1 >= maxInputDelay)
                 {
                     heavyCombo[0] = false;
                     heavyCombo[1] = false;
-                    timer = 0f;
-                    timer1 = 0f;
+                    heavyTimer = 0f;
+                    heavyTimer1 = 0f;
                 }
             }
-            if (timer >= maxInputDelay && !heavyCombo[1])
+            if (heavyTimer >= maxInputDelay && !heavyCombo[1])
             {
                 heavyCombo[0] = false;
-                timer = 0f;
+                heavyTimer = 0f;
             }
         }
 
