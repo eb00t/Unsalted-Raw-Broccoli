@@ -61,7 +61,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         healthSlider.value = maxHealth;
         healthSlider.gameObject.SetActive(false);
 
-        PickPatrolPoints();
+        //PickPatrolPoints();
         _currentPatrolTarget = _patrolPoint1;
     }
 
@@ -94,7 +94,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         }
         else
         {
-            _currentState = States.Patrol;
+            _currentState = States.Idle;
         }
 
         switch (_currentState)
@@ -103,7 +103,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 healthSlider.gameObject.SetActive(false);
                 break;
             case States.Patrol:
-                Patrol();
+                //Patrol();
                 break;
             case States.Chase:
                 Chase();
@@ -201,6 +201,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _rigidbody.velocity = new Vector3(direction.x * movementSpeed, _rigidbody.velocity.y, direction.z);
     }
 
+    /*
     private void Patrol()
     {
         MoveTowards(_currentPatrolTarget);
@@ -217,6 +218,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _patrolPoint1 = transform.position + new Vector3(randomOffset, 0, 0);
         _patrolPoint2 = transform.position + new Vector3(-randomOffset, 0, 0);
     }
+    */
 
     private void Chase()
     {

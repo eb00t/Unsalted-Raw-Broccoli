@@ -69,6 +69,7 @@ public class MenuHandler : MonoBehaviour
 	public void ToggleShop(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
+		if (characterMovement.uiOpen) return;
 		if (shopGUI == null) return;
 		
 		var shopHandler = shopGUI.GetComponentInParent<ShopHandler>();
@@ -91,10 +92,11 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 	
-	// when Button East/Backspace is pressed close current menu and open previous menus
+	// when Button East/Esc is pressed close current menu and open previous menus
 	public void Back(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
+		if (!characterMovement.uiOpen) return;
 		
 		if (invGui.activeSelf)
 		{
@@ -126,7 +128,9 @@ public class MenuHandler : MonoBehaviour
 	// toggle pause menu
 	public void Pause(InputAction.CallbackContext context)
 	{
+		if (!context.performed) return;
 		if (invGui.activeSelf) return;
+		if (characterMovement.uiOpen) return;
 		
 		menuGui.SetActive(!menuGui.activeSelf);
 		
