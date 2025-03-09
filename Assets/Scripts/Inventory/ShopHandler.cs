@@ -72,7 +72,7 @@ public class ShopHandler : MonoBehaviour
         
 		var indexHolder = EventSystem.current.currentSelectedGameObject.GetComponentInChildren<IndexHolder>();
 
-		if (indexHolder.consumable == null) return;
+		if (indexHolder == null) return;
         
 		infoTxt.text = indexHolder.consumable.description;
 		infoTitle.text = indexHolder.consumable.title;

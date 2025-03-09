@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class InventoryStore : MonoBehaviour
 {
     [SerializeField] private Transform block;
+    public bool isAutoEquipEnabled = true;
     public Transform grid;
     public List<GameObject> items;
     private ToolbarHandler _toolbarHandler;
@@ -69,7 +70,6 @@ public class InventoryStore : MonoBehaviour
             }
         }
         
-        
         // if the item did not exist in inventory already then a new inventory button is created
         items.Add(consumable.gameObject);
         consumable.gameObject.SetActive(false);
@@ -95,6 +95,11 @@ public class InventoryStore : MonoBehaviour
                 s.sprite = consumable.uiIcon;
                 s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld + "/" + indexHolder.consumable.maximumHold;
             }
+        }
+
+        if (isAutoEquipEnabled)
+        {
+            _toolbarHandler.AddToToolbar(consumable);
         }
     }
 

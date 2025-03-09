@@ -5,10 +5,10 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEditor;
+using Unity.VisualScripting;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
+using UnityEngine.InputSystem.Interactions;
 using Vector2 = UnityEngine.Vector2;
 
 
@@ -57,14 +57,15 @@ public class ToolbarHandler : MonoBehaviour
         // gets the consumable script on gameobject, gets the image and title, calls method to add inv item to toolbar
         var consumable = indexHolder.consumable;
 
-        AddToToolbar(consumable.uiIcon, consumable.title, consumable);
+        AddToToolbar(consumable);
         
         _menuHandler.ToggleEquip(); // once item is added go back to equip menu (slots gameobject)
     }
 
     // adds consumable to equip menu slot
-    private void AddToToolbar(Sprite newSprite, string txt, Consumable consumable)
+    public void AddToToolbar(Consumable consumable)
     {
+        // checks if any of the slots already contain the consumable being added and if so it removes it (makes moving items around easier)
         foreach (var slot in slots)
         {
             if (slot.GetComponent<IndexHolder>().consumable == null) continue;
@@ -75,24 +76,45 @@ public class ToolbarHandler : MonoBehaviour
             }
         }
         
-        slots[slotNo].GetComponentInChildren<TextMeshProUGUI>().text = ""; // set amount held
-        slots[slotNo].GetComponent<IndexHolder>().consumable = consumable; // update what consumables are equipped
-
-        // find image and set to consumable set sprite and consumable set title, then enable the image
-        foreach (var s in slots[slotNo].GetComponentsInChildren<Image>()) 
+        if (_inventoryStore.isAutoEquipEnabled && !_characterMovement.uiOpen)
         {
-            if (s.name == "Image")
+            // adds consumable to the first free slot found due to auto equip
+            foreach (var slot in slots)
             {
-                s.sprite = newSprite;
+                if (slot.GetComponent<IndexHolder>().consumable == null)
+                {
+                    slot.GetComponent<IndexHolder>().consumable = consumable;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            // adds consumable to specific slot when player selects it
+            slots[slotNo].GetComponent<IndexHolder>().consumable = consumable;
+        }
+
+        // checks each slots consumable and updates their image and title
+        foreach (var s in slots) 
+        {
+            foreach (var img in s.GetComponentsInChildren<Image>())
+            {
+                var con = s.GetComponent<IndexHolder>().consumable;
+                if (con == null) continue;
+                
+                if (img.name == "Image")
+                {
+                    img.sprite = con.uiIcon;
+                    img.enabled = true;
+                }
+
                 foreach (var t in s.GetComponentsInChildren<TextMeshProUGUI>())
                 {
                     if (t.name == "title")
                     {
-                        t.text = txt;
+                        t.text = con.title;
                     }
                 }
-
-                s.enabled = true;
             }
         }
 
