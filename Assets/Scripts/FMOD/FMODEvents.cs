@@ -24,6 +24,7 @@ public class FMODEvents : MonoBehaviour
     [field: Header("SFX")]
     [field: SerializeField] public EventReference DoorSlam { get; private set; }
     [field: SerializeField] public EventReference Footsteps { get; private set; }
+    [field: SerializeField] public EventReference Explosion { get; private set; }
     [field:Header("UI")]
     
     
