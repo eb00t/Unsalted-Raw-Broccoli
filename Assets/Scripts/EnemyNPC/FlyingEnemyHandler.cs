@@ -31,6 +31,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target, _spriteTransform;
+    private CharacterMovement _characterMovement;
 
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
 
@@ -68,6 +69,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _spriteTransform = GetComponentInChildren<SpriteRenderer>().transform;
 
         _target = GameObject.FindGameObjectWithTag("Player").transform;
+        _characterMovement = _target.GetComponent<CharacterMovement>();
 
         PickPatrolPoints();
         _patrolTarget = _patrol1;
@@ -297,6 +299,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         {
             hb.gameObject.SetActive(false);
         }
+
+        _characterMovement.lockedOn = false;
         Spawner.spawnedEnemy = null;
         Spawner.SpawnEnemies();
     }

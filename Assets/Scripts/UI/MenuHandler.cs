@@ -70,25 +70,18 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (!context.performed) return;
 		if (characterMovement.uiOpen) return;
-		if (shopGUI == null) return;
 		
 		var shopHandler = shopGUI.GetComponentInParent<ShopHandler>();
-		
-		if (shopGUI.activeSelf)
-		{
-			shopGUI.SetActive(false);
-		}
-		else if (!shopGUI.activeSelf)
-		{
-			if (characterMovement.uiOpen) return;
-			if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
-			
-			shopGUI.SetActive(true);
 
-			if (shopHandler.itemsHeld.Count > 0)
-			{
-				SwitchSelected(shopHandler.grid.GetComponentInChildren<Button>().gameObject);
-			}
+		if (shopGUI.activeSelf) return;
+		if (characterMovement.uiOpen) return;
+		if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
+			
+		shopGUI.SetActive(true);
+
+		if (shopHandler.itemsHeld.Count > 0)
+		{
+			SwitchSelected(shopHandler.grid.GetComponentInChildren<Button>().gameObject);
 		}
 	}
 	
@@ -122,6 +115,10 @@ public class MenuHandler : MonoBehaviour
 			toolbarGui.SetActive(true);
 			statsGui.SetActive(true);
 			SwitchSelected(null);
+		}
+		else if (shopGUI.activeSelf)
+		{
+			shopGUI.SetActive(false);
 		}
 	}
 

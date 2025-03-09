@@ -34,6 +34,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private Transform _target;
     private Vector3 _leftHandInitialPos, _rightHandInitialPos;
     private Slider _healthSlider;
+    private CharacterMovement _characterMovement;
     
     private enum States { Idle, Attack }
     public int Poise { get; set; }
@@ -48,6 +49,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
+        _characterMovement = _target.GetComponent<CharacterMovement>();
         _health = maxHealth;
         _leftHandInitialPos = leftHand.position;
         _rightHandInitialPos = rightHand.position;
@@ -430,6 +432,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        _characterMovement.lockedOn = false;
         gameObject.SetActive(false);
     }
 }

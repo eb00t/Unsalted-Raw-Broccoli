@@ -35,6 +35,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private int _currentHealth, _poisonBuildup;
     private bool _isAttacking, _isFrozen, _isDead, _isPoisoned, _hasPlayerBeenSeen, _isJumping;
     private Vector3 _patrolPoint1, _patrolPoint2, _currentPatrolTarget;
+    private CharacterMovement _characterMovement;
 
     [Header("UI")]
     [SerializeField] private Slider healthSlider;
@@ -55,6 +56,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
+        _characterMovement = _player.GetComponent<CharacterMovement>();
 
         _currentHealth = maxHealth;
         healthSlider.maxValue = maxHealth;
@@ -379,6 +381,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        _characterMovement.lockedOn = false;
         gameObject.SetActive(false);
     }
 }

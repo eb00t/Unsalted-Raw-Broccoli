@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,7 +45,8 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private Vector2 wallJumpForce = new Vector2(300f, 300f);
     [SerializeField] private float wallJumpingDuration = 0.4f;
 
-    public bool uiOpen; // makes sure player doesnt move when ui is open
+    [NonSerialized] public bool uiOpen; // makes sure player doesnt move when ui is open
+    [NonSerialized] public bool lockedOn = false;
 
     public void Awake()
     {
@@ -104,7 +106,10 @@ public class CharacterMovement : MonoBehaviour
             else { wallJump = new Vector3(-input * wallJumpForce.x/1.2f, wallJumpForce.y * 1.1f, 0f); }*/
             wallJumpingCounter = 0f;
             rb.AddForce(wallJump);
-            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            if (!lockedOn && Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(Velocity.x)) // this has a check if the player is locked on to prevent them flipping
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            }
             Invoke(nameof(stopWallJump), wallJumpingDuration);
         }
 
@@ -168,7 +173,7 @@ public class CharacterMovement : MonoBehaviour
         
         wallJump();
 
-        if (Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(Velocity.x))
+        if (!lockedOn && Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(Velocity.x)) // this has a check if the player is locked on to prevent them flipping
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }

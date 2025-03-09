@@ -44,6 +44,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Transform _target;
     private NavMeshAgent _agent;
     private CharacterAttack _characterAttack;
+    private CharacterMovement _characterMovement;
     private SpriteRenderer _spriteRenderer;
     
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
@@ -76,6 +77,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateRotation = false;
+        _characterMovement = _target.GetComponent<CharacterMovement>();
         
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
@@ -348,6 +350,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Die()
     {
+        _characterMovement.lockedOn = false;
         Spawner.spawnedEnemy = null;
         Spawner.SpawnEnemies();
         gameObject.SetActive(false);

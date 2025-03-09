@@ -52,14 +52,12 @@ public class ShopHandler : MonoBehaviour
 			if (dist <= range)
 			{
 				_itemPickupHandler.isPlrNearShop = true;
-				_promptRT.anchoredPosition = new Vector3(0, 200, 0);
-				_promptText.text = "Open Shop (Backspace / [O]";
+				_itemPickupHandler.TogglePrompt("Toggle Shop", true, "F", "B", "[]");
 			}
 			else if (dist > range)
 			{
 				_itemPickupHandler.isPlrNearShop = false;
-				_promptRT.anchoredPosition = new Vector3(0, -200, 0);
-				_promptText.text = "";
+				_itemPickupHandler.TogglePrompt("", false, "F", "B", "[]");
 			}
 		}
 		

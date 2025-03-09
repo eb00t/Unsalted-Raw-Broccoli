@@ -411,7 +411,7 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.size
-      value: 10
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
@@ -436,7 +436,12 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_ActionId
-      value: a5ef9408-06cf-4aad-9e57-fabf7d56fb3b
+      value: 249543e8-f0f6-4fa6-948e-2f1277600da5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_ActionId
+      value: ad4e2f97-0b54-4939-8725-d48180023174
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
@@ -461,7 +466,12 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_ActionName
-      value: Controls/Interact[/Keyboard/f,/XInputControllerWindows/buttonEast]
+      value: Controls/LockOn[/XInputControllerWindows/leftStickPress]
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_ActionName
+      value: Controls/SwitchTarget[/XInputControllerWindows/rightStick]
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
@@ -485,6 +495,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
       objectReference: {fileID: 0}
@@ -501,6 +516,11 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
@@ -572,7 +592,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1065095369}
+      objectReference: {fileID: 1587709264}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1587709264}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -596,6 +621,11 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
@@ -661,7 +691,12 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PickUpItem
+      value: ToggleLockOn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SwitchTarget
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
@@ -701,7 +736,12 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ItemPickupHandler, Assembly-CSharp
+      value: LockOnController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LockOnController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
@@ -721,6 +761,11 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5329607678594116923, guid: 5a9b12290cab1464785c4858bd2bb3a4,
@@ -1664,7 +1709,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7748169234227478159, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1587709264}
   m_SourcePrefab: {fileID: 100100000, guid: 4bd14efd408c3b943816001b9eeae0eb, type: 3}
 --- !u!114 &1065095369 stripped
 MonoBehaviour:
@@ -2071,6 +2120,21 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1065095368}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1587709264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684189450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f431e614a7e88bf4888422965d955171, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockOnRadius: 10
+  switchThreshold: 0.5
+  maxDistance: 12
 --- !u!1 &1625207169
 GameObject:
   m_ObjectHideFlags: 0
