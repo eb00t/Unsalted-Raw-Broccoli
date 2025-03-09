@@ -35,6 +35,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private Vector3 _leftHandInitialPos, _rightHandInitialPos;
     private Slider _healthSlider;
     private CharacterMovement _characterMovement;
+    private RoomScripting _roomScripting;
     
     private enum States { Idle, Attack }
     public int Poise { get; set; }
@@ -45,6 +46,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        _roomScripting.enemies.Add(gameObject);
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -432,6 +435,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        _roomScripting.enemies.Remove(gameObject);
         _characterMovement.lockedOn = false;
         gameObject.SetActive(false);
     }

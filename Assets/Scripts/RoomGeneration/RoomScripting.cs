@@ -145,6 +145,12 @@ public class RoomScripting : MonoBehaviour
             AudioManager.Instance.SetMusicParameter("Music Track", 3);
             _musicHasChanged = true;
         }
+
+        /*if (_roomInfo.bossRoom)
+        {
+            AudioManager.Instance.SetMusicParameter("Music Track", 2);
+            _musicHasChanged = true;
+        }*/
     }
 
     void ExitSpecialRoom()

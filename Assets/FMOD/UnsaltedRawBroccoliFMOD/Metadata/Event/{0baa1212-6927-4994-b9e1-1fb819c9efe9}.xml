@@ -8,7 +8,7 @@
 			<value>2</value>
 		</property>
 		<relationship name="folder">
-			<destination>{c4cc4731-3e8e-4d03-a3e2-81bb72783d50}</destination>
+			<destination>{e7705c91-f23e-4531-a7a1-82e66116fc34}</destination>
 		</relationship>
 		<relationship name="mixer">
 			<destination>{aacb5ed6-a2a1-4224-8227-351ee489eae5}</destination>
@@ -72,6 +72,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{b7647640-7f60-4920-bf41-86005ec11fa6}">
+		<property name="volume">
+			<value>4</value>
+		</property>
 		<relationship name="effectChain">
 			<destination>{a0f6ce8d-0216-4c53-845f-7e6e5672aafb}</destination>
 		</relationship>
@@ -114,7 +117,17 @@
 	</object>
 	<object class="MixerBusFader" id="{aa4af2bf-65fd-4928-991b-167980b5a5c5}" />
 	<object class="MixerBusFader" id="{fae191e9-4148-4e43-b8e6-80311519f338}" />
-	<object class="SpatialiserEffect" id="{99fdc2c7-eb7a-42c3-9863-4600c2368381}" />
+	<object class="SpatialiserEffect" id="{99fdc2c7-eb7a-42c3-9863-4600c2368381}">
+		<property name="extentMode">
+			<value>1</value>
+		</property>
+		<property name="soundSize">
+			<value>8.5</value>
+		</property>
+		<property name="minimumExtent">
+			<value>200</value>
+		</property>
+	</object>
 	<object class="SingleSound" id="{c5976dc0-b1b1-426e-8338-69c9cdbb07a7}">
 		<relationship name="audioFile">
 			<destination>{eb811283-cf1b-446c-a0a2-0d1a9971ab57}</destination>

@@ -36,6 +36,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private bool _isAttacking, _isFrozen, _isDead, _isPoisoned, _hasPlayerBeenSeen, _isJumping;
     private Vector3 _patrolPoint1, _patrolPoint2, _currentPatrolTarget;
     private CharacterMovement _characterMovement;
+    private RoomScripting _roomScripting;
 
     [Header("UI")]
     [SerializeField] private Slider healthSlider;
@@ -51,6 +52,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        _roomScripting.enemies.Add(gameObject);
         _bossCollider = GetComponent<Collider>();
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
@@ -381,6 +384,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        _roomScripting.enemies.Remove(gameObject);
         _characterMovement.lockedOn = false;
         gameObject.SetActive(false);
     }
