@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Linq;
+using UnityEngine.Serialization;
 
 public class LockOnController : MonoBehaviour
 {
@@ -8,11 +9,11 @@ public class LockOnController : MonoBehaviour
     [SerializeField] private float switchThreshold;
     [SerializeField] private float maxDistance;
 
-    private Transform _lockedTarget;
+    public Transform lockedTarget;
     private Vector2 _switchDirection;
     private Vector3 _originalLocalScale;
     private CharacterMovement _characterMovement;
-
+    
     private void Awake()
     {
         _characterMovement = GetComponent<CharacterMovement>();
@@ -20,21 +21,21 @@ public class LockOnController : MonoBehaviour
 
     public void ToggleLockOn(InputAction.CallbackContext context)
     {
-        if (_lockedTarget == null)
+        if (lockedTarget == null)
         {
-            _lockedTarget = FindNearestTarget();
+            lockedTarget = FindNearestTarget();
             
-            if (_lockedTarget == null) return;
+            if (lockedTarget == null) return;
             
-            UpdateTargetImg(_lockedTarget.gameObject, true);
+            UpdateTargetImg(lockedTarget.gameObject, true);
             _originalLocalScale = transform.localScale;
             _characterMovement.lockedOn = true;
             UpdateDir();
         }
         else
         {
-            UpdateTargetImg(_lockedTarget.gameObject, false);
-            _lockedTarget = null;
+            UpdateTargetImg(lockedTarget.gameObject, false);
+            lockedTarget = null;
             _characterMovement.lockedOn = false;
             transform.localScale = _originalLocalScale;
         }
@@ -42,25 +43,25 @@ public class LockOnController : MonoBehaviour
     
     public void SwitchTarget(InputAction.CallbackContext context)
     {
-        if (_lockedTarget == null) return;
+        if (lockedTarget == null) return;
 
         _switchDirection = context.ReadValue<Vector2>();
         if (_switchDirection.magnitude < switchThreshold) return;
         
-        UpdateTargetImg(_lockedTarget.gameObject, false);
+        UpdateTargetImg(lockedTarget.gameObject, false);
 
         var newTarget = FindTargetInDirection(_switchDirection);
         UpdateTargetImg(newTarget.gameObject, true);
-        if (newTarget == _lockedTarget) return;
+        if (newTarget == lockedTarget) return;
         
-        _lockedTarget = newTarget;
+        lockedTarget = newTarget;
         UpdateDir();
     }
 
     // this just updates the direction that the player is facing while locked on to the locked on target
     private void UpdateDir()
     {
-        var direction = Mathf.Sign(_lockedTarget.position.x - transform.position.x);
+        var direction = Mathf.Sign(lockedTarget.position.x - transform.position.x);
         transform.localScale = new Vector3(Mathf.Abs(_originalLocalScale.x) * direction, _originalLocalScale.y, _originalLocalScale.z);
     }
 
@@ -87,7 +88,7 @@ public class LockOnController : MonoBehaviour
         {
             var distance = Vector3.Distance(transform.position, enemy.transform.position);
             
-            if (!(distance < minDistance) || !(distance <= lockOnRadius) || !enemy.activeSelf) continue;
+            if (!(distance < minDistance) || !(distance <= lockOnRadius) || enemy.GetComponent<IDamageable>().isDead) continue;
             
             minDistance = distance;
             nearestTarget = enemy.transform;
@@ -102,9 +103,9 @@ public class LockOnController : MonoBehaviour
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
         var validTargets = enemies.Select(e => e.transform).Where(t => Vector3.Distance(transform.position, t.position) <= lockOnRadius).ToList();
 
-        if (validTargets.Count == 0) return _lockedTarget;
+        if (validTargets.Count == 0) return lockedTarget;
 
-        var bestTarget = _lockedTarget;
+        var bestTarget = lockedTarget;
         var bestScore = -Mathf.Infinity;
 
         foreach (var target in validTargets)
@@ -113,7 +114,7 @@ public class LockOnController : MonoBehaviour
             var projected = new Vector2(toTarget.x, toTarget.z);
             var score = Vector2.Dot(projected.normalized, direction.normalized);
 
-            if (!(score > bestScore) || !target.gameObject.activeSelf) continue;
+            if (!(score > bestScore) || target.GetComponent<IDamageable>().isDead) continue;
             
             bestScore = score;
             bestTarget = target;
@@ -124,12 +125,12 @@ public class LockOnController : MonoBehaviour
 
     private void Update()
     {
-        if (_lockedTarget == null) return;
+        if (lockedTarget == null) return;
 
-        if (Vector3.Distance(transform.position, _lockedTarget.position) > maxDistance)
+        if (Vector3.Distance(transform.position, lockedTarget.position) > maxDistance || lockedTarget.GetComponent<IDamageable>().isDead)
         {
-            UpdateTargetImg(_lockedTarget.gameObject, false);
-            _lockedTarget = null;
+            UpdateTargetImg(lockedTarget.gameObject, false);
+            lockedTarget = null;
             _characterMovement.lockedOn = false;
             transform.localScale = _originalLocalScale;
         }

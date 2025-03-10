@@ -37,6 +37,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private Vector3 _patrolPoint1, _patrolPoint2, _currentPatrolTarget;
     private CharacterMovement _characterMovement;
     private RoomScripting _roomScripting;
+    private LockOnController _lockOnController;
 
     [Header("UI")]
     [SerializeField] private Slider healthSlider;
@@ -47,6 +48,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     int IDamageable.Poise { get => poise; set => poise = value; }
     
     public bool isPlayerInRange { get; set; }
+    public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
     public Spawner Spawner { get; set; }
 
@@ -60,6 +62,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         _characterMovement = _player.GetComponent<CharacterMovement>();
+        _lockOnController = _player.GetComponent<LockOnController>();
 
         _currentHealth = maxHealth;
         healthSlider.maxValue = maxHealth;
@@ -384,8 +387,9 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        isDead = true;
+        _lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);
-        _characterMovement.lockedOn = false;
         gameObject.SetActive(false);
     }
 }

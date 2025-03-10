@@ -315,6 +315,7 @@ GameObject:
   - component: {fileID: 6454331290242472759}
   - component: {fileID: 2624940746732787405}
   - component: {fileID: 71690688824949088}
+  - component: {fileID: 4592323685554638241}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -471,5 +472,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lockOnRadius: 12
+  switchThreshold: 0.5
+  maxDistance: 12
+--- !u!114 &4592323685554638241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7748169234227478159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f431e614a7e88bf4888422965d955171, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockOnRadius: 10
   switchThreshold: 0.5
   maxDistance: 12

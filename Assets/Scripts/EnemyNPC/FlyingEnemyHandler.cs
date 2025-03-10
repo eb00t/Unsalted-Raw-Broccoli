@@ -31,7 +31,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target, _spriteTransform;
-    private CharacterMovement _characterMovement;
+    private LockOnController _lockOnController;
 
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
 
@@ -43,6 +43,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     int IDamageable.Poise { get => poise; set => poise = value; }
 
     public bool isPlayerInRange { get; set; }
+    public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
     public Spawner Spawner { get; set; }
 
@@ -69,7 +70,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _spriteTransform = GetComponentInChildren<SpriteRenderer>().transform;
 
         _target = GameObject.FindGameObjectWithTag("Player").transform;
-        _characterMovement = _target.GetComponent<CharacterMovement>();
+        _lockOnController = _target.GetComponent<LockOnController>();
 
         PickPatrolPoints();
         _patrolTarget = _patrol1;
@@ -292,6 +293,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private void Die()
     {
         _animator.SetBool("isDead", true);
+        isDead = true;
+        _lockOnController.lockedTarget = null;
         StopAllCoroutines();
         StartCoroutine(FallToGround());
 
@@ -299,8 +302,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         {
             hb.gameObject.SetActive(false);
         }
-
-        _characterMovement.lockedOn = false;
+        
         Spawner.spawnedEnemy = null;
         Spawner.SpawnEnemies();
     }

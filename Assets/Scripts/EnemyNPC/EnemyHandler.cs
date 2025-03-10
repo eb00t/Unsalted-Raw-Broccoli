@@ -45,6 +45,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private NavMeshAgent _agent;
     private CharacterAttack _characterAttack;
     private CharacterMovement _characterMovement;
+    private LockOnController _lockOnController;
     private SpriteRenderer _spriteRenderer;
     
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
@@ -57,6 +58,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     int IDamageable.Poise { get => poise; set => poise = value; }
 
     public bool isPlayerInRange { get; set; }
+    public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
     public Spawner Spawner { get; set; }
 
@@ -78,6 +80,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateRotation = false;
         _characterMovement = _target.GetComponent<CharacterMovement>();
+        _lockOnController = _target.GetComponent<LockOnController>();
         
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
@@ -350,7 +353,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Die()
     {
-        _characterMovement.lockedOn = false;
+        isDead = true;
+        _lockOnController.lockedTarget = null;
         Spawner.spawnedEnemy = null;
         Spawner.SpawnEnemies();
         gameObject.SetActive(false);
