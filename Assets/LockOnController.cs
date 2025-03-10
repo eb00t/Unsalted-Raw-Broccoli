@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Linq;
+using System.Collections;
 
 public class LockOnController : MonoBehaviour
 {
@@ -13,6 +15,8 @@ public class LockOnController : MonoBehaviour
     private Vector2 _switchDirection;
     private Vector3 _originalLocalScale;
     private CharacterMovement _characterMovement;
+    private bool _isSwitchingInProgress;
+    
     
     private void Awake()
     {
@@ -24,9 +28,9 @@ public class LockOnController : MonoBehaviour
         if (lockedTarget == null)
         {
             lockedTarget = FindNearestTarget();
-            
+
             if (lockedTarget == null) return;
-            
+
             UpdateTargetImg(lockedTarget.gameObject, true);
             _originalLocalScale = transform.localScale;
             _characterMovement.lockedOn = true;
@@ -40,24 +44,37 @@ public class LockOnController : MonoBehaviour
             transform.localScale = _originalLocalScale;
         }
     }
-    
+
     public void SwitchTarget(InputAction.CallbackContext context)
     {
         if (lockedTarget == null) return;
 
-        _switchDirection = context.ReadValue<Vector2>();
-        if (_switchDirection.magnitude < switchThreshold) return;
-        
-        UpdateTargetImg(lockedTarget.gameObject, false);
+        if (context.performed)
+        {
+            _switchDirection = context.ReadValue<Vector2>();
 
-        var newTarget = FindTargetInDirection(_switchDirection);
-        UpdateTargetImg(newTarget.gameObject, true);
-        if (newTarget == lockedTarget) return;
-        
-        lockedTarget = newTarget;
-        UpdateDir();
+            if (!(_switchDirection.magnitude >= switchThreshold)) return;
+            if (_isSwitchingInProgress) return;
+            Debug.Log("Target switched");
+
+            _isSwitchingInProgress = true;
+
+            var newTarget = FindTargetInDirection(_switchDirection);
+
+            if (newTarget == lockedTarget || newTarget == null) return;
+
+            UpdateTargetImg(lockedTarget.gameObject, false);
+            lockedTarget = newTarget;
+            UpdateTargetImg(lockedTarget.gameObject, true);
+
+            UpdateDir();
+        }
+        else if (context.canceled)
+        {
+            _isSwitchingInProgress = false;
+        }
     }
-
+    
     // this just updates the direction that the player is facing while locked on to the locked on target
     private void UpdateDir()
     {
@@ -98,47 +115,58 @@ public class LockOnController : MonoBehaviour
         return nearestTarget;
     }
 
-    // when switching direction this basically checks which enemy best fits the direction of the thumbstick input
+    // when switching direction this basically checks which enemy best fits the direction of the thumbstick input based on the current locked on enemy position
     private Transform FindTargetInDirection(Vector2 direction)
     {
+        var origin = lockedTarget != null ? lockedTarget.position : transform.position;
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        var validTargets = enemies.Select(e => e.transform).Where(t => Vector3.Distance(transform.position, t.position) <= lockOnRadius).ToList();
+        
+        var validTargets = enemies.Select(e => e.transform)
+            .Where(t => t != null 
+                        && t != lockedTarget
+                        && Vector3.Distance(transform.position, t.position) <= maxDistance
+                        && Vector3.Distance(origin, t.position) <= lockOnRadius
+                        && t.GetComponent<IDamageable>() != null 
+                        && !t.GetComponent<IDamageable>().isDead)
+            .ToList();
 
-        if (validTargets.Count == 0) return lockedTarget;
+        if (validTargets.Count == 0) return null;
 
-        var bestTarget = lockedTarget;
-        var bestScore = -Mathf.Infinity;
+        Transform closestTarget = null;
+        var closestDistance = Mathf.Infinity;
 
         foreach (var target in validTargets)
         {
-            var toTarget = (target.position - transform.position).normalized;
+            var toTarget = (target.position - origin).normalized;
             var projected = new Vector2(toTarget.x, toTarget.z);
-            var score = Vector2.Dot(projected.normalized, direction.normalized);
-
-            if (!(score > bestScore) || target.GetComponent<IDamageable>().isDead) continue;
+            var angle = Vector2.Angle(projected, direction);
             
-            bestScore = score;
-            bestTarget = target;
+            if (angle > 45f) continue;
+
+            var horizontalDistance = Vector2.Distance(new Vector2(origin.x, origin.z), new Vector2(target.position.x, target.position.z));
+
+            if (!(horizontalDistance < closestDistance)) continue;
+            
+            closestDistance = horizontalDistance;
+            closestTarget = target;
         }
-        
-        return bestTarget;
+
+        return closestTarget;
     }
 
     private void Update()
     {
         if (lockedTarget == null) return;
-        
+
         var damageable = lockedTarget.GetComponent<IDamageable>();
-        
+
         if (isAutoSwitchEnabled && damageable.isDead)
         {
             var nearestTarget = FindNearestTarget();
-            
             if (nearestTarget != null)
             {
                 lockedTarget = nearestTarget;
                 UpdateTargetImg(lockedTarget.gameObject, true);
-                return;
             }
         }
         else
