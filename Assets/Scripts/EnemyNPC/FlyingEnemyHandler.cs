@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FMOD.Studio;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -33,12 +34,14 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private Transform _target, _spriteTransform;
     private CharacterMovement _characterMovement;
     private LockOnController _lockOnController;
+    private EventInstance _alarmEvent;
 
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
     private Vector3 _currentVelocity;
+    private bool _lowHealth;
     
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -227,6 +230,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             _healthSlider.value = 0;
             Die();
         }
+        if (_health <= maxHealth / 3 && _lowHealth == false)
+        {
+            PlayAlarmSound();
+            _lowHealth = true;
+        }
     }
     
     private void Frozen()
@@ -308,7 +316,21 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         Spawner.spawnedEnemy = null;
         Spawner.SpawnEnemies();
+        StopAlarmSound();
     }
+    public void PlayAlarmSound()
+    {
+        _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
+        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
+        _alarmEvent.start();
+    }
+
+    public void StopAlarmSound()
+    {
+        _alarmEvent.stop(STOP_MODE.IMMEDIATE);
+        _alarmEvent.release();
+    }
+    
     
     private IEnumerator FallToGround()
     {
