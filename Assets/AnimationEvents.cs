@@ -1,22 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
 
-public class EnemyAnimationEvents : MonoBehaviour
+public class AnimationEvents : MonoBehaviour
 {
-    private EventInstance _footstepEvent, _explosionEvent;
-    void Start()
+    private EventInstance _footstepEvent, _explosionEvent, _alarmEvent;
+    public void PlayPlayerFootstepSound()
     {
-        
-    }
-    
-    public void PlayFootstepSound()
-    {
-        _footstepEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.Footsteps);
-        _footstepEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+        _footstepEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.PlayerFootsteps);
+        _footstepEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y - 4.96f, transform.position.z).To3DAttributes());
         _footstepEvent.start();
         _footstepEvent.release();
     }
@@ -28,9 +25,14 @@ public class EnemyAnimationEvents : MonoBehaviour
         _explosionEvent.release();
     }
 
+  
+
     public void BlowUp()
     {
         gameObject.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
     }
 
+    public void Update()
+    {
+    }
 }

@@ -46,11 +46,5 @@ public class PlayerAnimationEvents : MonoBehaviour
         charAttack.animEnd = true;
     }
 
-    public void PlayFootstepSound()
-    {
-        _footstepEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.Footsteps);
-        _footstepEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y - 4.96f, transform.position.z).To3DAttributes());
-        _footstepEvent.start();
-        _footstepEvent.release();
-    }
+   
 }

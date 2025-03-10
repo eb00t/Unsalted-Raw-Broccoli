@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using FMOD.Studio;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -47,12 +48,15 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private CharacterMovement _characterMovement;
     private LockOnController _lockOnController;
     private SpriteRenderer _spriteRenderer;
+    private EventInstance _alarmEvent;
+    
     
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
     [SerializeField] private float maxTimeToReachTarget = 5f;
     private float _timeSinceLastMove;
     private Vector3 _lastPosition;
     private bool _isStuck;
+    private bool _lowHealth;
     
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -315,6 +319,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             Die();
         }
 
+        if (_health <= maxHealth / 3 && _lowHealth == false)
+        {
+           PlayAlarmSound();
+           _lowHealth = true;
+        }
+
         if (_poiseBuildup >= poise)
         {
             if (knockback.HasValue)
@@ -359,7 +369,21 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         Spawner.spawnedEnemy = null;
         Spawner.SpawnEnemies();
         gameObject.SetActive(false);
+        StopAlarmSound();
     }
+    public void PlayAlarmSound()
+    {
+        _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
+        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
+        _alarmEvent.start();
+    }
+
+    public void StopAlarmSound()
+    {
+        _alarmEvent.stop(STOP_MODE.IMMEDIATE);
+        _alarmEvent.release();
+    }
+    
 
     private void OnDrawGizmos()
     {

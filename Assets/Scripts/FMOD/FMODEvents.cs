@@ -23,9 +23,21 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference Music { get; private set; }
     [field: Header("SFX")]
     [field: SerializeField] public EventReference DoorSlam { get; private set; }
-    [field: SerializeField] public EventReference Footsteps { get; private set; }
+    [field: Header("Player SFX")]
+    [field: SerializeField] public EventReference PlayerFootsteps { get; private set; }
+    [field: SerializeField] public EventReference PlayerJump { get; private set; }
+    [field: Header("Enemy SFX")]
+    [field: SerializeField] public EventReference EnemyFootsteps { get; private set; }
+    [field: SerializeField] public EventReference BombEnemyFootsteps { get; private set; }
+    [field: SerializeField] public EventReference EnemyLowHealthAlarm { get; private set; }
+    [field: SerializeField] public EventReference EnemyDeath { get; private set; }
     [field: SerializeField] public EventReference Explosion { get; private set; }
+    [field: Header("Boss SFX")]
+    [field: SerializeField] public EventReference BossHandSlam { get; private set; }
     [field:Header("UI")]
+    [field: SerializeField] public EventReference UINavigate { get; private set; }
+    [field: SerializeField] public EventReference UISelect { get; private set; }
+    [field: SerializeField] public EventReference DialogueScroll { get; private set; }
     
     
      
