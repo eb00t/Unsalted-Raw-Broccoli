@@ -56,6 +56,7 @@ public class ShopHandler : MonoBehaviour
 			}
 			else if (dist > range)
 			{
+				if (_itemPickupHandler.itemCount > 0) return;
 				_itemPickupHandler.isPlrNearShop = false;
 				_itemPickupHandler.TogglePrompt("", false, "F", "B", "[]");
 			}

@@ -13,6 +13,7 @@ public class ItemPickupHandler : MonoBehaviour
     public bool isPlrNearShop;
     private string _currentControl;
     private bool _isGamepad;
+    public int itemCount;
     
     private void Start()
     {
@@ -40,7 +41,7 @@ public class ItemPickupHandler : MonoBehaviour
         if (_characterMovement.uiOpen) return;
         if (isPlrNearShop) return;
         
-        var itemCount = 0;
+        itemCount = 0;
         
         foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
         {
