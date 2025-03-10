@@ -9,7 +9,13 @@ using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 public class AnimationEvents : MonoBehaviour
 {
-    private EventInstance _footstepEvent, _explosionEvent, _alarmEvent, _lightAttackEvent, _mediumAttackEvent, _heavyAttackEvent;
+    private EventInstance _footstepEvent, 
+        _explosionEvent, 
+        _alarmEvent,
+        _lightAttackEvent,
+        _mediumAttackEvent, 
+        _heavyAttackEvent,
+        _jumpEvent;
     
     //PLAYER
     public void PlayPlayerFootstepSound()
@@ -39,6 +45,14 @@ public class AnimationEvents : MonoBehaviour
         _heavyAttackEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
         _heavyAttackEvent.start();
         _heavyAttackEvent.release();
+    }
+
+    public void PlayPlayerJumpSound()
+    {
+        _jumpEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.PlayerJump);
+        _jumpEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+        _jumpEvent.start();
+        _jumpEvent.release();
     }
     
     //ENEMIES
