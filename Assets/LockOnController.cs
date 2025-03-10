@@ -169,10 +169,6 @@ public class LockOnController : MonoBehaviour
                 UpdateTargetImg(lockedTarget.gameObject, true);
             }
         }
-        else
-        {
-            UpdateDir();
-        }
 
         if (Vector3.Distance(transform.position, lockedTarget.position) > maxDistance || damageable.isDead)
         {
@@ -181,10 +177,8 @@ public class LockOnController : MonoBehaviour
             _characterMovement.lockedOn = false;
             transform.localScale = _originalLocalScale;
         }
-        else
-        {
-            UpdateDir();
-        }
+        
+        UpdateDir();
     }
 
     private void OnDrawGizmosSelected()

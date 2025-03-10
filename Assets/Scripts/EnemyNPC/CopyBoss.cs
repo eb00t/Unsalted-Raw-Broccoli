@@ -388,6 +388,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private void Die()
     {
         isDead = true;
+        _characterMovement.lockedOn = false;
         _lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);
         gameObject.SetActive(false);

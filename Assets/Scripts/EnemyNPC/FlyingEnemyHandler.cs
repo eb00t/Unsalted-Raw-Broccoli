@@ -31,6 +31,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target, _spriteTransform;
+    private CharacterMovement _characterMovement;
     private LockOnController _lockOnController;
 
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
@@ -71,6 +72,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _lockOnController = _target.GetComponent<LockOnController>();
+        _characterMovement = _target.GetComponent<CharacterMovement>();
 
         PickPatrolPoints();
         _patrolTarget = _patrol1;
@@ -294,6 +296,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         _animator.SetBool("isDead", true);
         isDead = true;
+        _characterMovement.lockedOn = false;
         _lockOnController.lockedTarget = null;
         StopAllCoroutines();
         StartCoroutine(FallToGround());

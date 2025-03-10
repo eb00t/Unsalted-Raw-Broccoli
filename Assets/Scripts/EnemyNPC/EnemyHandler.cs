@@ -354,6 +354,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Die()
     {
         isDead = true;
+        _characterMovement.lockedOn = false;
         _lockOnController.lockedTarget = null;
         Spawner.spawnedEnemy = null;
         Spawner.SpawnEnemies();
