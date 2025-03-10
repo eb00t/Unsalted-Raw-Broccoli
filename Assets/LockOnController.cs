@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Linq;
-using UnityEngine.Serialization;
 
 public class LockOnController : MonoBehaviour
 {
@@ -10,6 +9,7 @@ public class LockOnController : MonoBehaviour
     [SerializeField] private float maxDistance;
 
     public Transform lockedTarget;
+    public bool isAutoSwitchEnabled;
     private Vector2 _switchDirection;
     private Vector3 _originalLocalScale;
     private CharacterMovement _characterMovement;
@@ -86,6 +86,7 @@ public class LockOnController : MonoBehaviour
 
         foreach (var enemy in enemies)
         {
+            if (enemy.GetComponent<IDamageable>() == null) continue;
             var distance = Vector3.Distance(transform.position, enemy.transform.position);
             
             if (!(distance < minDistance) || !(distance <= lockOnRadius) || enemy.GetComponent<IDamageable>().isDead) continue;
@@ -126,8 +127,26 @@ public class LockOnController : MonoBehaviour
     private void Update()
     {
         if (lockedTarget == null) return;
+        
+        var damageable = lockedTarget.GetComponent<IDamageable>();
+        
+        if (isAutoSwitchEnabled && damageable.isDead)
+        {
+            var nearestTarget = FindNearestTarget();
+            
+            if (nearestTarget != null)
+            {
+                lockedTarget = nearestTarget;
+                UpdateTargetImg(lockedTarget.gameObject, true);
+                return;
+            }
+        }
+        else
+        {
+            UpdateDir();
+        }
 
-        if (Vector3.Distance(transform.position, lockedTarget.position) > maxDistance || lockedTarget.GetComponent<IDamageable>().isDead)
+        if (Vector3.Distance(transform.position, lockedTarget.position) > maxDistance || damageable.isDead)
         {
             UpdateTargetImg(lockedTarget.gameObject, false);
             lockedTarget = null;
