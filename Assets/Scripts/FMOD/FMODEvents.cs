@@ -27,6 +27,8 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference PlayerFootsteps { get; private set; }
     [field: SerializeField] public EventReference PlayerJump { get; private set; }
     [field: SerializeField] public EventReference PlayerLightAttack { get; private set; }
+    [field: SerializeField] public EventReference PlayerMediumAttack { get; private set; }
+    [field: SerializeField] public EventReference PlayerHeavyAttack { get; private set; }
     [field: Header("Enemy SFX")]
     [field: SerializeField] public EventReference EnemyFootsteps { get; private set; }
     [field: SerializeField] public EventReference BombEnemyFootsteps { get; private set; }
