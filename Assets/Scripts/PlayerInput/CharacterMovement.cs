@@ -299,6 +299,7 @@ public class CharacterMovement : MonoBehaviour
         if (collision.collider.CompareTag("Right Wall") || collision.collider.CompareTag("Left Wall"))
         {
             rb.useGravity = true;
+            startSlideTimer = false;
             startSlide = false;
             slideAllowed = false;
             sliding = false;
