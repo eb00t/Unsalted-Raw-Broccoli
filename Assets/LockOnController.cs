@@ -17,7 +17,6 @@ public class LockOnController : MonoBehaviour
     private CharacterMovement _characterMovement;
     private bool _isSwitchingInProgress;
     
-    
     private void Awake()
     {
         _characterMovement = GetComponent<CharacterMovement>();

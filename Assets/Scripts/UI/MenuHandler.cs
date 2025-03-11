@@ -14,7 +14,7 @@ public class MenuHandler : MonoBehaviour
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
-	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui;
+	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui;
 	
 	[Header("Navigation")]
 	[SerializeField] private EventSystem eventSystem;
@@ -32,7 +32,7 @@ public class MenuHandler : MonoBehaviour
 	private void Update()
 	{
 		// update if ui is open or not in player movement script
-		if (invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf)
+		if (invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf || settingGui.activeSelf)
 		{
 			characterMovement.uiOpen = true;
 		}
@@ -120,14 +120,25 @@ public class MenuHandler : MonoBehaviour
 		{
 			shopGUI.SetActive(false);
 		}
+		else if (settingGui.activeSelf)
+		{
+			settingGui.SetActive(false);
+			menuGui.SetActive(true);
+			SwitchSelected(selectedMenu);
+		}
+		else if (quitPopupGui.activeSelf)
+		{
+			quitPopupGui.SetActive(false);
+			menuGui.SetActive(true);
+			SwitchSelected(selectedMenu);
+		}
 	}
 
 	// toggle pause menu
 	public void Pause(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
-		if (invGui.activeSelf) return;
-		if (characterMovement.uiOpen) return;
+		if (characterMovement.uiOpen && !menuGui.activeSelf) return;
 		
 		menuGui.SetActive(!menuGui.activeSelf);
 		
@@ -137,7 +148,7 @@ public class MenuHandler : MonoBehaviour
 			statsGui.SetActive(false);
 			toolbarGui.SetActive(false);
 		}
-		else if (!invGui.activeSelf)
+		else
 		{
 			SwitchSelected(null);
 			statsGui.SetActive(true);
