@@ -2242,9 +2242,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomLength: 54
   roomHeight: 20
-  specialRoom: 0
+  specialRoom: 1
   bossRoom: 0
   shop: 0
+  lootRoom: 0
   intersectionCheck: {fileID: 2577646143545009483}
   doorSpawnPoints: []
   usableDoors: []
@@ -2284,6 +2285,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 576
+  objectsToIgnore: []
 --- !u!114 &6866331362388978602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2309,10 +2311,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bfdd4b60f2047248ddc830e87c8f6d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enemyCount: 0
+  lastEnemyCount: 0
+  enabledSpawnerCount: 0
+  currentWave: 0
   enemies: []
   allDoors: []
+  spawners: []
   allDoorsClosed: 0
   playerIsInRoom: 0
+  playerHasEnteredRoom: 0
   roomHadEnemies: 0
   _roomCam: {fileID: 0}
 --- !u!1 &7347630290567613744
