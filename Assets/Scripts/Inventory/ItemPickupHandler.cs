@@ -95,7 +95,7 @@ public class ItemPickupHandler : MonoBehaviour
     {
         if (toggle)
         {
-            _rectTransform.anchoredPosition = new Vector3(0, 200, 0);
+            _rectTransform.anchoredPosition = new Vector3(0, 100, 0);
             _text.text = prompt;
             CheckControl();
 
@@ -117,7 +117,7 @@ public class ItemPickupHandler : MonoBehaviour
         }
         else
         {
-            _rectTransform.anchoredPosition = new Vector3(0, -200, 0);  
+            _rectTransform.anchoredPosition = new Vector3(0, -100, 0);  
             _text.text = "";
         }
     }

@@ -121,13 +121,13 @@ public class ShopHandler : MonoBehaviour
 		{
 			if (s.name != "Image") continue;
 			s.sprite = itemConsumable.uiIcon;
-			s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
+			s.GetComponentInChildren<TextMeshProUGUI>().text = "Stock: " + indexHolder.numHeld;
 		}
 
 		foreach (var b in grid.GetComponentsInChildren<TextMeshProUGUI>())
 		{
 			if (b.name != "Price") continue;
-			b.text = "Cost: " + itemPrice[i];
+			b.text = "Price: " + itemPrice[i];
 		}
 	}
 
