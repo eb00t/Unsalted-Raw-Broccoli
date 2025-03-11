@@ -137,12 +137,12 @@ public class LockOnController : MonoBehaviour
         foreach (var target in validTargets)
         {
             var toTarget = (target.position - origin).normalized;
-            var projected = new Vector2(toTarget.x, toTarget.z);
+            var projected = new Vector2(toTarget.x, toTarget.y);
             var angle = Vector2.Angle(projected, direction);
             
             if (angle > 45f) continue;
 
-            var horizontalDistance = Vector2.Distance(new Vector2(origin.x, origin.z), new Vector2(target.position.x, target.position.z));
+            var horizontalDistance = Vector2.Distance(new Vector2(origin.x, origin.y), new Vector2(target.position.x, target.position.y));
 
             if (!(horizontalDistance < closestDistance)) continue;
             
