@@ -592,7 +592,6 @@ public class LevelBuilder : MonoBehaviour
             }
 
             if (lootRoomsToSpawn > 0 && roomsRemaining - 1 < lootRoomsToSpawn)
-                //TODO: THIS DOESN'T WORK. EITHER IT SPAWNS AN EXTRA LOOT ROOM OR DOES NOTHING
             {
                 Debug.Log("FORCED LOOT ROOM SPAWNING");
                 _spawnMode = SpawnMode.LootRoom;
@@ -603,6 +602,7 @@ public class LevelBuilder : MonoBehaviour
             {
                 Debug.Log("FORCED SHOP SPAWNING");
                 _spawnMode = SpawnMode.Shop;
+                shopSpawned = true;
             }
         }
         spawnModeChangedByDestroy = false;

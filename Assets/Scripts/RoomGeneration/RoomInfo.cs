@@ -40,9 +40,13 @@ public class RoomInfo : MonoBehaviour
     public bool markedForDiscard; 
     public CinemachineVirtualCamera roomCam;
     public bool canBeDiscarded = true;
-    private string _roomPath;
+    public string roomPath;
     void Awake()
     {
+        
+        string roomPath1 = "Room Layouts/Special Rooms/" + gameObject.name;
+        string roomPath2 = "(Clone)";
+        roomPath = roomPath1.Replace(roomPath2, "");
         roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
         intersectionCheck = GetComponent<IntersectionRaycast>();
         attachedConnectors.Clear();
@@ -136,7 +140,8 @@ public class RoomInfo : MonoBehaviour
         CameraManager.Instance.virtualCameras.Remove(roomCam.GetComponent<CinemachineVirtualCamera>());
         if (specialRoom)
         {
-            LevelBuilder.Instance.possibleSpecialRooms.Add(Resources.Load<GameObject>(_roomPath));
+            
+            LevelBuilder.Instance.possibleSpecialRooms.Add(Resources.Load<GameObject>(roomPath));
         }
         if (shop)
         {
@@ -149,7 +154,7 @@ public class RoomInfo : MonoBehaviour
             LevelBuilder.Instance.spawnedLootRooms.Remove(gameObject);
             LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.LootRoom;
             LevelBuilder.Instance.spawnModeChangedByDestroy = true;
-            LevelBuilder.Instance.lootRoomsToSpawn++;
+            LevelBuilder.Instance.lootRoomsToSpawn--;
         }
         if (bossRoom)
         {
