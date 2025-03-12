@@ -14,7 +14,7 @@ public class MenuHandler : MonoBehaviour
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
-	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui;
+	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui, controlGui;
 	
 	[Header("Navigation")]
 	[SerializeField] private EventSystem eventSystem;
@@ -32,7 +32,7 @@ public class MenuHandler : MonoBehaviour
 	private void Update()
 	{
 		// update if ui is open or not in player movement script
-		if (invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf || settingGui.activeSelf)
+		if (invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf || settingGui.activeSelf || controlGui.activeSelf)
 		{
 			characterMovement.uiOpen = true;
 		}
@@ -44,6 +44,8 @@ public class MenuHandler : MonoBehaviour
 		{
 			characterMovement.uiOpen = false;
 		}
+
+		Time.timeScale = characterMovement.uiOpen ? 0f : 1f;
 	}
 
 	// opens equip menu (with inventory), hides other menus and resets interaction bool to prevent unwanted ui navigation
@@ -129,6 +131,12 @@ public class MenuHandler : MonoBehaviour
 		else if (quitPopupGui.activeSelf)
 		{
 			quitPopupGui.SetActive(false);
+			menuGui.SetActive(true);
+			SwitchSelected(selectedMenu);
+		}
+		else if (controlGui.activeSelf)
+		{
+			controlGui.SetActive(false);
 			menuGui.SetActive(true);
 			SwitchSelected(selectedMenu);
 		}
