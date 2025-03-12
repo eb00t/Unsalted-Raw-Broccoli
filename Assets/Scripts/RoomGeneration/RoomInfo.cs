@@ -43,10 +43,13 @@ public class RoomInfo : MonoBehaviour
     public string roomPath;
     void Awake()
     {
-        
-        string roomPath1 = "Room Layouts/Special Rooms/" + gameObject.name;
-        string roomPath2 = "(Clone)";
-        roomPath = roomPath1.Replace(roomPath2, "");
+
+        if (specialRoom)
+        {
+            string roomPath1 = "Room Layouts/Special Rooms/" + gameObject.name;
+            string roomPath2 = "(Clone)";
+            roomPath = roomPath1.Replace(roomPath2, "");
+        }
         roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
         intersectionCheck = GetComponent<IntersectionRaycast>();
         attachedConnectors.Clear();

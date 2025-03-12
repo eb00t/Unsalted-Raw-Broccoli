@@ -395,18 +395,23 @@ public class LevelBuilder : MonoBehaviour
                 } 
                 break;   
             case SpawnMode.BossRooms:
-                foreach (var door in spawningRoomInfo.doorSpawnPoints) // Adding doors of the spawned room to the list of possible spawn points
+                foreach (var door in
+                         spawningRoomInfo.doorSpawnPoints) // Adding doors of the spawned room to the list of possible spawn points
                 {
-                    switch (roomRandomNumber)
+                    if (!spawningRoomInfo.markedForDiscard)
                     {
-                        case 0:
-                            secondBossRoomSpawnPoints.Add(door.transform);
-                            break;
-                        case 1:
-                            thirdBossRoomSpawnPoints.Add(door.transform);
-                            break;
+                        switch (roomRandomNumber)
+                        {
+                            case 0:
+                                secondBossRoomSpawnPoints.Add(door.transform);
+                                break;
+                            case 1:
+                                thirdBossRoomSpawnPoints.Add(door.transform);
+                                break;
+                        }
                     }
                 }
+
                 break;  
         }
         if (spawningRoomInfo.specialRoom) 
