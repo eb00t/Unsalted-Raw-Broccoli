@@ -3047,6 +3047,7 @@ GameObject:
   - component: {fileID: 2139461710}
   - component: {fileID: 2139461709}
   - component: {fileID: 2139461708}
+  - component: {fileID: 2139461711}
   m_Layer: 0
   m_Name: NPC
   m_TagString: NPC
@@ -3142,6 +3143,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2139461706}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2139461711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139461706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2b1804d739b2d4286a0c23b68e081a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueBox: {fileID: 1148015724}
+  playerChar: {fileID: 1036353671}
+  npcChar: {fileID: 46238882}
+  enemyChar: {fileID: 2139461706}
 --- !u!1001 &859828654311414906
 PrefabInstance:
   m_ObjectHideFlags: 0

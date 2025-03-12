@@ -105,7 +105,7 @@ public class dialogueControllerScript : MonoBehaviour
         if (Index == Sentences.Length )
         {
             dialogueCanvas.SetActive(false);
-            Debug.Log("Text Done!");
+         //   Debug.Log("Text Done!");
         }
     }
 
@@ -114,7 +114,7 @@ public class dialogueControllerScript : MonoBehaviour
         yesText.SetActive(true);
         noText.SetActive(false);
         normalText.SetActive(false);
-        Debug.Log("YES!");
+       // Debug.Log("YES!");
     }
 
     void answerN()
@@ -122,7 +122,7 @@ public class dialogueControllerScript : MonoBehaviour
         noText.SetActive(true);
         yesText.SetActive(false);
         normalText.SetActive(false);
-        Debug.Log("NO");
+       // Debug.Log("NO");
     }
 
     IEnumerator WriteSentence()
