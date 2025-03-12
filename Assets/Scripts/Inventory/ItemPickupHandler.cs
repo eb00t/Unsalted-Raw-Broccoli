@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,10 +11,17 @@ public class ItemPickupHandler : MonoBehaviour
     private GameObject _prompt;
     private RectTransform _rectTransform;
     private TextMeshProUGUI _text, _controlTxt;
-    public bool isPlrNearShop;
-    private string _currentControl;
+    public bool isPlrNearShop, forceControlScheme;
+    public ControlScheme currentControl;
     private bool _isGamepad;
     public int itemCount;
+    public enum ControlScheme
+    {
+        None,
+        Xbox,
+        Playstation,
+        Keyboard
+    }
     
     private void Start()
     {
@@ -34,6 +42,8 @@ public class ItemPickupHandler : MonoBehaviour
                     break;
             }
         }
+        
+        CheckControl();
     }
     
     private void Update()
@@ -99,20 +109,20 @@ public class ItemPickupHandler : MonoBehaviour
             _text.text = prompt;
             CheckControl();
 
-            switch (_currentControl)
+            switch (currentControl)
             {
-                case "Xbox":
+                case ControlScheme.None:
+                case ControlScheme.Xbox:
                     _controlTxt.text = ctrlXbox;
                     break;
-                case "PlayStation":
+                case ControlScheme.Playstation:
                     _controlTxt.text = ctrlPS;
                     break;
-                case "Keyboard":
+                case ControlScheme.Keyboard:
                     _controlTxt.text = ctrlKeyboard;
                     break;
-                case "":
-                    _controlTxt.text = ctrlXbox;
-                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
         else
@@ -122,29 +132,31 @@ public class ItemPickupHandler : MonoBehaviour
         }
     }
 
-    private void CheckControl()
+    public void CheckControl()
     {
+        if (forceControlScheme) return;
+        
         if (Gamepad.current != null && _isGamepad)
         {
             var deviceName = Gamepad.current.name.ToLower();
 
             if (deviceName.Contains("xbox"))
             {
-                _currentControl = "Xbox";
+                currentControl = ControlScheme.Xbox;
             }
             else if (deviceName.Contains("dualshock") || deviceName.Contains("dualsense") || deviceName.Contains("playstation"))
             {
-                _currentControl = "PlayStation";
+                currentControl = ControlScheme.Playstation;
             }
             else
             {
-                _currentControl = "";
+                currentControl = ControlScheme.None;
                 Debug.Log("Using another gamepad: " + deviceName);
             }
         }
         if (Keyboard.current != null && !_isGamepad)
         {
-            _currentControl = "Keyboard";
+            currentControl = ControlScheme.Keyboard;
         }
     }
 }
