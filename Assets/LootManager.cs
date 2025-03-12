@@ -8,7 +8,7 @@ public class LootManager : MonoBehaviour
 {    
     public static LootManager Instance { get; private set; }
     public List<GameObject> minorLoot, majorLoot;
-    private readonly int _willLootSpawn = 10; //It has a 10% chance to spawn by default
+    private readonly int _willLootSpawn = 2; //It has a 10% chance to spawn by default
     private int _willMajorLootSpawn = 10;
     private void Awake()
     {

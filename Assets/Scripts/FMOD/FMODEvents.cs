@@ -40,7 +40,9 @@ public class FMODEvents : MonoBehaviour
     [field:Header("UI")]
     [field: SerializeField] public EventReference UINavigate { get; private set; }
     [field: SerializeField] public EventReference UISelect { get; private set; }
+    [field: SerializeField] public EventReference UIBack { get; private set; }
     [field: SerializeField] public EventReference DialogueScroll { get; private set; }
+    
     
     
      
