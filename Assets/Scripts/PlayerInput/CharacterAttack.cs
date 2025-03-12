@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Cinemachine;
+using FMOD.Studio;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -37,6 +39,7 @@ public class CharacterAttack : MonoBehaviour
     private MenuHandler _menuHandler;
     private PlayerStatus _playerStatus;
     public GameObject hitFlash;
+    private EventInstance _enemyDamageEvent;
 
     [Header("Knockback Types")]
     public Vector2 knockbackPowerLight = new Vector2(10f, 1f);
@@ -260,25 +263,35 @@ public class CharacterAttack : MonoBehaviour
         //Layer = Light
         if (gameObject.layer == 13)
         {
-            float randomTiny = Random.Range(-0.25f, 0.25f);
+            float randomTinyX = Random.Range(0.15f, 0.25f);
+            float randomTinyY = Random.Range(-0.25f, 0.25f);
             damageable.TakeDamage(charAtk, poiseDamageLight, knockbackPowerLight);
-
+            
+            _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
+            _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+            _enemyDamageEvent.start();
+            _enemyDamageEvent.release();
+            
             if (_impulseSource != null)
             {
                 _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.05f;
-                _impulseSource.GenerateImpulseWithVelocity(new Vector3(0.25f, randomTiny, 0));
+                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0));
             }
         }
         //Layer = Heavy
         if (gameObject.layer == 14)
         {
-            float randomTiny = Random.Range(-1f, 1f);
+            float randomTinyX = Random.Range(1.5f, 2f);
+            float randomTinyY = Random.Range(-1f, 1f);
             damageable.TakeDamage(charAtk, poiseDamageHeavy, knockbackPowerHeavy);
-
+            _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
+            _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+            _enemyDamageEvent.start();
+            _enemyDamageEvent.release();
             if (_impulseSource != null)
             {
                 _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;
-                _impulseSource.GenerateImpulseWithVelocity(new Vector3(2, randomTiny, 0));
+                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0));
             }
         }
 
