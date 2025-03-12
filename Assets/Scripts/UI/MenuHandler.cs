@@ -35,17 +35,18 @@ public class MenuHandler : MonoBehaviour
 		if (invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf || settingGui.activeSelf || controlGui.activeSelf)
 		{
 			characterMovement.uiOpen = true;
+			Time.timeScale = 0;
 		}
 		else if (shopGUI != null)
 		{
 			characterMovement.uiOpen = shopGUI.activeSelf;
+			Time.timeScale = 1;
 		}
 		else
 		{
 			characterMovement.uiOpen = false;
+			Time.timeScale = 1;
 		}
-
-		Time.timeScale = characterMovement.uiOpen ? 0f : 1f;
 	}
 
 	// opens equip menu (with inventory), hides other menus and resets interaction bool to prevent unwanted ui navigation
