@@ -72,11 +72,10 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (!context.performed) return;
 		if (characterMovement.uiOpen) return;
-		if (shopGUI != null || shopGUI.activeSelf) return;
-		
+		if (shopGUI == null || shopGUI.activeSelf) return;
 		var shopHandler = shopGUI.GetComponentInParent<ShopHandler>();
 		if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
-			
+		
 		shopGUI.SetActive(true);
 
 		if (shopHandler.itemsHeld.Count > 0)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.Composites;
 using UnityEngine.UI;
 
 public class ShopHandler : MonoBehaviour
@@ -52,13 +51,13 @@ public class ShopHandler : MonoBehaviour
 			if (dist <= range)
 			{
 				_itemPickupHandler.isPlrNearShop = true;
-				_itemPickupHandler.TogglePrompt("Toggle Shop", true, "F", "B", "[]");
+				_itemPickupHandler.TogglePrompt("Toggle Shop", true, "F", "B", "circle");
 			}
 			else if (dist > range)
 			{
 				if (_itemPickupHandler.itemCount > 0) return;
 				_itemPickupHandler.isPlrNearShop = false;
-				_itemPickupHandler.TogglePrompt("", false, "F", "B", "[]");
+				_itemPickupHandler.TogglePrompt("", false, "F", "B", "circle");
 			}
 		}
 		
