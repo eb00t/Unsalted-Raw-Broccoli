@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class InventoryStore : MonoBehaviour
 {
     [SerializeField] private Transform block;
+    [SerializeField] private GameObject notifPrefab;
+    [SerializeField] private GameObject notifHolder;
     public bool isAutoEquipEnabled = true;
     public Transform grid;
     public List<GameObject> items;
@@ -49,9 +51,14 @@ public class InventoryStore : MonoBehaviour
                 {
                     if (b == null) continue;
                     if (b.consumable.title != consumable.title) continue;
-                    if (b.numHeld >= consumable.maximumHold) return;
-                    
+                    if (b.numHeld >= consumable.maximumHold)
+                    {
+                        TriggerNotification(consumable.uiIcon, "Maximum number of item held");
+                        return;
+                    }
+
                     b.numHeld++;
+                    TriggerNotification(consumable.uiIcon, consumable.title);
                     _toolbarHandler.UpdateActiveConsumables();
                     
                     foreach (var img in b.GetComponentsInChildren<Image>())
@@ -72,6 +79,7 @@ public class InventoryStore : MonoBehaviour
         
         // if the item did not exist in inventory already then a new inventory button is created
         items.Add(consumable.gameObject);
+        TriggerNotification(consumable.uiIcon, consumable.title);
         consumable.gameObject.SetActive(false);
         consumable.gameObject.GetComponent<ItemPickup>().canPickup = false;
         
@@ -100,6 +108,18 @@ public class InventoryStore : MonoBehaviour
         if (isAutoEquipEnabled)
         {
             _toolbarHandler.AddToToolbar(consumable);
+        }
+    }
+
+    private void TriggerNotification(Sprite icon, string text)
+    {
+        var newNotif = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation, notifHolder.transform);
+        newNotif.GetComponentInChildren<TextMeshProUGUI>().text = text;
+
+        foreach (var img in newNotif.GetComponentsInChildren<Image>())
+        {
+            if (img.name != "IconImg") continue;
+            img.sprite = icon;
         }
     }
 
