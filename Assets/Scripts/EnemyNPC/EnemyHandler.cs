@@ -102,6 +102,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Update()
     {
         var distance = Vector3.Distance(transform.position, _target.position);
+        var playerDir =  Mathf.Abs(_target.position.x - transform.position.x);
 
         if (_isFrozen)
         {
@@ -109,7 +110,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
         else
         {
-            if (distance < attackRange)
+            if (distance < attackRange && playerDir > 0)
             {
                 _state = States.Attack;
             }
