@@ -10,7 +10,7 @@ public class ItemPickupHandler : MonoBehaviour
     private CharacterMovement _characterMovement;
     private GameObject _prompt;
     private RectTransform _rectTransform;
-    private TextMeshProUGUI _text, _controlTxt;
+    private TextMeshProUGUI _text, _controlTxt, _diedText;
     public bool isPlrNearShop, forceControlScheme;
     public ControlScheme currentControl;
     private bool _isGamepad;
@@ -28,7 +28,7 @@ public class ItemPickupHandler : MonoBehaviour
     [SerializeField] private Sprite triangle;
     [SerializeField] private Sprite circle;
     [SerializeField] private Sprite x;
-    private Image _ctrlImg;
+    private Image _ctrlImg, _diedImg;
     
     private void Start()
     {

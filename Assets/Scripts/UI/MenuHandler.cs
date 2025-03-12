@@ -14,7 +14,7 @@ public class MenuHandler : MonoBehaviour
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
-	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui, controlGui;
+	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui, controlGui, diedScreen;
 	
 	[Header("Navigation")]
 	[SerializeField] private EventSystem eventSystem;
@@ -32,7 +32,7 @@ public class MenuHandler : MonoBehaviour
 	private void Update()
 	{
 		// update if ui is open or not in player movement script
-		if (invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf || settingGui.activeSelf || controlGui.activeSelf)
+		if (invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf || settingGui.activeSelf || controlGui.activeSelf || diedScreen.activeSelf)
 		{
 			characterMovement.uiOpen = true;
 			Time.timeScale = 0;
@@ -90,7 +90,13 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (!context.performed) return;
 		if (!characterMovement.uiOpen) return;
-		
+
+		if (diedScreen.activeSelf)
+		{
+			SceneReload();
+			return;
+		}
+
 		if (invGui.activeSelf)
 		{
 			foreach (var b in grid.GetComponentsInChildren<Button>())
