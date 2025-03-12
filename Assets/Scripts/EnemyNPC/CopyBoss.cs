@@ -79,12 +79,13 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         var distance = Vector3.Distance(transform.position, _player.position);
         var heightDifference = _player.position.y - transform.position.y;
+        var playerDir =  Mathf.Abs(_player.position.x - transform.position.x);
         
         if (_isFrozen)
         {
             _currentState = States.Frozen;
         }
-        else if (distance < attackRange)
+        else if (distance < attackRange && playerDir > 0)
         {
             _currentState = States.Attack;
         }

@@ -86,6 +86,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         if (_animator.GetBool("isDead")) return;
         
         var distance = Vector3.Distance(transform.position, _target.position);
+        var playerDir =  Mathf.Abs(_target.position.x - transform.position.x);
 
         if (_isFrozen)
         {
@@ -93,7 +94,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         }
         else
         {
-            if (distance < attackRange)
+            if (distance < attackRange && playerDir > 0)
             {
                 _state = States.Attack;
             }
