@@ -5,10 +5,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Interactions;
 using Vector2 = UnityEngine.Vector2;
 
 
@@ -38,6 +36,8 @@ public class ToolbarHandler : MonoBehaviour
     private GameObject _lastSelected;
     public bool isInfoOpen;
     private List<int> _activeAtkBuffs;
+    
+    [SerializeField] private DataHolder dataHolder;
 
     private void Start()
     {
@@ -76,7 +76,7 @@ public class ToolbarHandler : MonoBehaviour
             }
         }
         
-        if (_inventoryStore.isAutoEquipEnabled && !_characterMovement.uiOpen)
+        if (dataHolder.isAutoEquipEnabled && !_characterMovement.uiOpen)
         {
             // adds consumable to the first free slot found due to auto equip
             foreach (var slot in slots)

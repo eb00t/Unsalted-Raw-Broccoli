@@ -9,10 +9,10 @@ public class InventoryStore : MonoBehaviour
     [SerializeField] private Transform block;
     [SerializeField] private GameObject notifPrefab;
     [SerializeField] private GameObject notifHolder;
-    public bool isAutoEquipEnabled = true;
     public Transform grid;
     public List<GameObject> items;
     private ToolbarHandler _toolbarHandler;
+    [SerializeField] private DataHolder dataHolder;
     
     private void Start()
     {
@@ -105,7 +105,7 @@ public class InventoryStore : MonoBehaviour
             }
         }
 
-        if (isAutoEquipEnabled)
+        if (dataHolder.isAutoEquipEnabled)
         {
             _toolbarHandler.AddToToolbar(consumable);
         }

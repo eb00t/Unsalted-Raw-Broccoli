@@ -3,25 +3,20 @@ using UnityEngine;
 
 public class CurrencyManager : MonoBehaviour
 {
-    public int currencyHeld;
+    [SerializeField] private DataHolder dataHolder;
     [SerializeField] private TextMeshProUGUI currencyHeldText;
-
-    private void Start()
-    {
-        UpdateCurrency(100);
-    }
 
     public void UpdateCurrency(int amount)
     {
-        if (currencyHeld + amount <= 0)
+        if (dataHolder.currencyHeld + amount <= 0)
         {
-            currencyHeld = 0;
+            dataHolder.currencyHeld = 0;
         }
         else
         {
-            currencyHeld += amount;   
+            dataHolder.currencyHeld += amount;   
         }
         
-        currencyHeldText.text = currencyHeld.ToString();
+        currencyHeldText.text = dataHolder.currencyHeld.ToString();
     }
 }

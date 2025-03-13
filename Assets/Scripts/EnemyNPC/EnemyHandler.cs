@@ -372,6 +372,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         gameObject.SetActive(false);
         StopAlarmSound();
     }
+    
     public void PlayAlarmSound()
     {
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);

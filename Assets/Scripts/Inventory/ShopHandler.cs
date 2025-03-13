@@ -14,27 +14,22 @@ public class ShopHandler : MonoBehaviour
 	public Transform grid;
 	[SerializeField] private float range;
 
-	private GameObject _prompt, _player, _uiManager, _lastSelected;
-	private RectTransform _promptRT;
-	private TextMeshProUGUI _promptText;
+	private GameObject _player, _uiManager, _lastSelected;
 	private GameObject _shopGUI;
 	private CharacterMovement _characterMovement;
 	private ItemPickupHandler _itemPickupHandler;
 	private CurrencyManager _currencyManager;
 	private InventoryStore _inventoryStore;
 	[SerializeField] private TextMeshProUGUI infoTxt, numHeldTxt, infoTitle;
+	[SerializeField] private DataHolder dataHolder;
 
 	private void Start()
 	{
 		_player = GameObject.FindGameObjectWithTag("Player");
-		_prompt = GameObject.FindGameObjectWithTag("Prompt");
 		_uiManager = GameObject.FindGameObjectWithTag("UIManager");
 		_shopGUI = GetComponentInChildren<Canvas>(true).gameObject;
 		_uiManager.GetComponent<MenuHandler>().shopGUI = _shopGUI;
 		_inventoryStore = _uiManager.GetComponent<InventoryStore>();
-
-		_promptRT = _prompt.GetComponent<RectTransform>();
-		_promptText = _prompt.GetComponentInChildren<TextMeshProUGUI>();
 		_characterMovement = _player.GetComponent<CharacterMovement>();
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
 		_currencyManager = _uiManager.GetComponent<CurrencyManager>();
@@ -133,7 +128,7 @@ public class ShopHandler : MonoBehaviour
 	private void ShopItemSelected(IndexHolder indexHolder)
 	{
 		// if player does not have enough money then return
-		if (_currencyManager.currencyHeld - indexHolder.price < 0) return;
+		if (dataHolder.currencyHeld - indexHolder.price < 0) return;
 		if (indexHolder.numHeld <= 0) return;
 
 		foreach (var n in _inventoryStore.grid.GetComponentsInChildren<IndexHolder>())
