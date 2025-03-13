@@ -249,7 +249,6 @@ public class CharacterAttack : MonoBehaviour
     private void Die()
     {
         diedScreen.SetActive(true);
-        _menuHandler.SwitchSelected(diedScreen.GetComponentInChildren<Button>().gameObject);
     }
 
     private void OnTriggerEnter(Collider other) // gets takedamage and trigger status methods from all enemy types

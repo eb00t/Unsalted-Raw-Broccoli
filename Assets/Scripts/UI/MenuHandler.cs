@@ -15,6 +15,7 @@ public class MenuHandler : MonoBehaviour
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
 	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui, controlGui, diedScreen;
+	[SerializeField] private GameObject settingsBtn, controlsBtn, quitBtn;
 	
 	[Header("Navigation")]
 	[SerializeField] private EventSystem eventSystem;
@@ -130,19 +131,19 @@ public class MenuHandler : MonoBehaviour
 		{
 			settingGui.SetActive(false);
 			menuGui.SetActive(true);
-			SwitchSelected(selectedMenu);
+			SwitchSelected(settingsBtn);
 		}
 		else if (quitPopupGui.activeSelf)
 		{
 			quitPopupGui.SetActive(false);
 			menuGui.SetActive(true);
-			SwitchSelected(selectedMenu);
+			SwitchSelected(quitBtn);
 		}
 		else if (controlGui.activeSelf)
 		{
 			controlGui.SetActive(false);
 			menuGui.SetActive(true);
-			SwitchSelected(selectedMenu);
+			SwitchSelected(controlsBtn);
 		}
 	}
 

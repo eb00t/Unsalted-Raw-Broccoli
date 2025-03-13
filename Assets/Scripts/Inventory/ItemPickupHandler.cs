@@ -11,17 +11,11 @@ public class ItemPickupHandler : MonoBehaviour
     private GameObject _prompt;
     private RectTransform _rectTransform;
     private TextMeshProUGUI _text, _controlTxt, _diedText;
-    public bool isPlrNearShop, forceControlScheme;
-    public ControlScheme currentControl;
+    public bool isPlrNearShop;
     private bool _isGamepad;
     public int itemCount;
-    public enum ControlScheme
-    {
-        None,
-        Xbox,
-        Playstation,
-        Keyboard
-    }
+    private ControlsManager _controlsManager;
+    [SerializeField] private DataHolder dataHolder;
 
     [Header("Image References")] 
     [SerializeField] private Sprite square; // for ps controller
@@ -36,6 +30,7 @@ public class ItemPickupHandler : MonoBehaviour
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _prompt = GameObject.FindGameObjectWithTag("Prompt");
         _rectTransform = _prompt.GetComponent<RectTransform>();
+        _controlsManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<ControlsManager>();
 
         foreach (var txt in _prompt.GetComponentsInChildren<TextMeshProUGUI>())
         {
@@ -58,7 +53,7 @@ public class ItemPickupHandler : MonoBehaviour
             }
         }
 
-        CheckControl();
+        _controlsManager.CheckControl();
     }
     
     private void Update()
@@ -88,15 +83,6 @@ public class ItemPickupHandler : MonoBehaviour
                 TogglePrompt("Pick Up Items", true, "F", "B", "circle");
                 break;
         }
-        
-        if (Gamepad.current != null && Gamepad.current.wasUpdatedThisFrame)
-        {
-            _isGamepad = true;
-        }
-        else if (Keyboard.current != null && Keyboard.current.wasUpdatedThisFrame)
-        {
-            _isGamepad = false;
-        }
     }
 
     public void PickUpItem(InputAction.CallbackContext context)
@@ -122,16 +108,16 @@ public class ItemPickupHandler : MonoBehaviour
         {
             _rectTransform.anchoredPosition = new Vector3(0, 100, 0);
             _text.text = prompt;
-            CheckControl();
+            _controlsManager.CheckControl();
 
-            switch (currentControl)
+            switch (dataHolder.currentControl)
             {
-                case ControlScheme.None:
-                case ControlScheme.Xbox:
+                case ControlsManager.ControlScheme.None:
+                case ControlsManager.ControlScheme.Xbox:
                     _controlTxt.text = ctrlXbox;
                     _ctrlImg.enabled = false;
                     break;
-                case ControlScheme.Playstation:
+                case ControlsManager.ControlScheme.Playstation:
                     _ctrlImg.enabled = true;
                     
                     switch (ctrlPS)
@@ -152,7 +138,7 @@ public class ItemPickupHandler : MonoBehaviour
                     
                     _controlTxt.text = "";
                     break;
-                case ControlScheme.Keyboard:
+                case ControlsManager.ControlScheme.Keyboard:
                     _ctrlImg.enabled = false;
                     _controlTxt.text = ctrlKeyboard;
                     break;
@@ -164,34 +150,6 @@ public class ItemPickupHandler : MonoBehaviour
         {
             _rectTransform.anchoredPosition = new Vector3(0, -100, 0);  
             _text.text = "";
-        }
-    }
-
-    public void CheckControl()
-    {
-        if (forceControlScheme) return;
-        
-        if (Gamepad.current != null && _isGamepad)
-        {
-            var deviceName = Gamepad.current.name.ToLower();
-
-            if (deviceName.Contains("xbox"))
-            {
-                currentControl = ControlScheme.Xbox;
-            }
-            else if (deviceName.Contains("dualshock") || deviceName.Contains("dualsense") || deviceName.Contains("playstation"))
-            {
-                currentControl = ControlScheme.Playstation;
-            }
-            else
-            {
-                currentControl = ControlScheme.None;
-                Debug.Log("Using another gamepad: " + deviceName);
-            }
-        }
-        if (Keyboard.current != null && !_isGamepad)
-        {
-            currentControl = ControlScheme.Keyboard;
         }
     }
 }

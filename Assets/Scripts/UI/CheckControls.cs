@@ -3,41 +3,41 @@ using UnityEngine;
 
 public class CheckControls : MonoBehaviour
 {
-    private bool _isGamepad;
+    [SerializeField] private DataHolder dataHolder;
     [SerializeField] private GameObject xboximg, psimg, keyimg;
-    private GameObject _player;
-    private ItemPickupHandler _itemPickupHandler;
+    
+    private GameObject _startMenu;
+    private bool _isGamepad;
+    private ControlsManager _controlsManager;
 
     private void Start()
     {
-        _player = GameObject.FindGameObjectWithTag("Player");
-        _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
-        UpdateImg();
-        gameObject.SetActive(false);
+        _controlsManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<ControlsManager>();
     }
 
-    private void OnEnable()
+    private void Update()
     {
+        if (!gameObject.activeSelf) return;
         UpdateImg();
     }
 
     private void UpdateImg()
     {
-        _itemPickupHandler.CheckControl();
-        switch (_itemPickupHandler.currentControl)
+        _controlsManager.CheckControl();
+        switch (dataHolder.currentControl)
         {
-            case ItemPickupHandler.ControlScheme.None:
-            case ItemPickupHandler.ControlScheme.Xbox:
+            case ControlsManager.ControlScheme.None:
+            case ControlsManager.ControlScheme.Xbox:
                 xboximg.SetActive(true);
                 psimg.SetActive(false);
                 keyimg.SetActive(false);
                 break;
-            case ItemPickupHandler.ControlScheme.Playstation:
+            case ControlsManager.ControlScheme.Playstation:
                 xboximg.SetActive(false);
                 psimg.SetActive(true);
                 keyimg.SetActive(false);
                 break;
-            case ItemPickupHandler.ControlScheme.Keyboard:
+            case ControlsManager.ControlScheme.Keyboard:
                 xboximg.SetActive(false);
                 psimg.SetActive(false);
                 keyimg.SetActive(true);

@@ -12,22 +12,25 @@ public class UpdateButton : MonoBehaviour
     
     [SerializeField] private string keyboardText, xboxText, psText;
     [SerializeField] private Sprite square, circle, x, triangle;
+    [SerializeField] private DataHolder dataHolder;
+    
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+        UpdateControl();
     }
 
-    private void OnEnable()
+    private void UpdateControl()
     {
-        switch (_itemPickupHandler.currentControl)
+        switch (dataHolder.currentControl)
         {
-            case ItemPickupHandler.ControlScheme.None:
-            case ItemPickupHandler.ControlScheme.Xbox:
+            case ControlsManager.ControlScheme.None:
+            case ControlsManager.ControlScheme.Xbox:
                 text.text = xboxText;
                 image.enabled = false;
                 break;
-            case ItemPickupHandler.ControlScheme.Playstation:
+            case ControlsManager.ControlScheme.Playstation:
                 image.enabled = true;
                     
                 switch (psText)
@@ -48,7 +51,7 @@ public class UpdateButton : MonoBehaviour
                     
                 text.text = "";
                 break;
-            case ItemPickupHandler.ControlScheme.Keyboard:
+            case ControlsManager.ControlScheme.Keyboard:
                 image.enabled = false;
                 text.text = keyboardText;
                 break;
