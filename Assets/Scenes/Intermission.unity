@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.127317, g: 0.13414717, b: 0.12107849, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -161,12 +161,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &19192206 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3189373009415031498, guid: 80030656154d8654fa3b9e61421d497a,
-    type: 3}
-  m_PrefabInstance: {fileID: 115100973}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &44463549
 GameObject:
   m_ObjectHideFlags: 0
@@ -582,6 +576,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dialogue Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2299727961927214872, guid: 80030656154d8654fa3b9e61421d497a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6050523429805151012, guid: 80030656154d8654fa3b9e61421d497a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -682,26 +681,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8081341651933455204, guid: 80030656154d8654fa3b9e61421d497a,
+    - target: {fileID: 6314740990948628018, guid: 80030656154d8654fa3b9e61421d497a,
         type: 3}
-      propertyPath: m_fontSize
-      value: 29
-      objectReference: {fileID: 0}
-    - target: {fileID: 8081341651933455204, guid: 80030656154d8654fa3b9e61421d497a,
-        type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 32cf7e2a470d7904e91939d741a1018d,
-        type: 2}
-    - target: {fileID: 8081341651933455204, guid: 80030656154d8654fa3b9e61421d497a,
-        type: 3}
-      propertyPath: m_fontSizeBase
-      value: 29
-      objectReference: {fileID: 0}
-    - target: {fileID: 8081341651933455204, guid: 80030656154d8654fa3b9e61421d497a,
-        type: 3}
-      propertyPath: m_hasFontAssetChanged
-      value: 1
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -714,13 +697,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 115100973}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &115100975 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8081341651933455204, guid: 80030656154d8654fa3b9e61421d497a,
+--- !u!1 &115100975 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6836901781482300786, guid: 80030656154d8654fa3b9e61421d497a,
     type: 3}
   m_PrefabInstance: {fileID: 115100973}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 19192206}
+--- !u!114 &115100976 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2263786435195261722, guid: 80030656154d8654fa3b9e61421d497a,
+    type: 3}
+  m_PrefabInstance: {fileID: 115100973}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115100975}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -1601,6 +1590,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dialogue Controller
       objectReference: {fileID: 0}
+    - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: noText
@@ -1615,12 +1609,12 @@ PrefabInstance:
         type: 3}
       propertyPath: normalText
       value: 
-      objectReference: {fileID: 19192206}
+      objectReference: {fileID: 115100975}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: DialogueText
       value: 
-      objectReference: {fileID: 115100975}
+      objectReference: {fileID: 115100976}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: dialogueCanvas
@@ -1867,7 +1861,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27e233e3a5da7c9489c36e49a91e3be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DialogueText: {fileID: 2018214004}
+  DialogueText: {fileID: 0}
   Sentences:
   - Who goes there?
   - You shouldn't be here, how did you get in?
@@ -1876,7 +1870,7 @@ MonoBehaviour:
   dialogueCanvas: {fileID: 219135083}
   yesText: {fileID: 686374263}
   noText: {fileID: 686374262}
-  normalText: {fileID: 2018214002}
+  normalText: {fileID: 0}
   canText: 0
 --- !u!114 &391000283
 MonoBehaviour:
@@ -3419,7 +3413,7 @@ PrefabInstance:
         type: 3}
       propertyPath: normalText
       value: 
-      objectReference: {fileID: 19192206}
+      objectReference: {fileID: 0}
     - target: {fileID: 359950344388485252, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: dialogueCanvas
@@ -3549,7 +3543,7 @@ PrefabInstance:
         type: 3}
       propertyPath: normalText
       value: 
-      objectReference: {fileID: 19192206}
+      objectReference: {fileID: 0}
     - target: {fileID: 7431351088562688840, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: dialogueCanvas
@@ -3654,6 +3648,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Game Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5617660318742304912, guid: 41c9b278c89fdfd47ba444dc5d0dea08,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8355,7 +8354,7 @@ SpriteRenderer:
   m_Size: {x: 5.12, y: 5.12}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1782166891
@@ -9302,24 +9301,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2006137784}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &2018214002 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3189373009415031498, guid: 80030656154d8654fa3b9e61421d497a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1175116333}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2018214004 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8081341651933455204, guid: 80030656154d8654fa3b9e61421d497a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1175116333}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2018214002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2027525072
 GameObject:
   m_ObjectHideFlags: 0
@@ -14366,7 +14347,7 @@ SpriteRenderer:
   m_Size: {x: 5.12, y: 5.12}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &5032236618204559002
