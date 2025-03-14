@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -71,8 +72,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
-        RoomScripting.enemies.Add(gameObject);
+        if (!SceneManager.GetActiveScene().name.Contains("Tutorial"))
+        {
+            RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+            RoomScripting.enemies.Add(gameObject);
+        }
+
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -391,8 +396,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         isDead = true;
         _characterMovement.lockedOn = false;
         _lockOnController.lockedTarget = null;
-        Spawner.spawnedEnemy = null;
-        Spawner.SpawnEnemies();
+
+        if (!SceneManager.GetActiveScene().name.Contains("Tutorial"))
+        {
+            Spawner.spawnedEnemy = null;
+            Spawner.SpawnEnemies();
+        }
+
         gameObject.SetActive(false);
         StopAlarmSound();
     }
@@ -439,9 +449,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void OnDisable()
     {
-        RoomScripting.enemies.Remove(gameObject);
-        RoomScripting._enemyCount--;
-        Spawner.spawnedEnemies.Remove(gameObject);
+        if (!SceneManager.GetActiveScene().name.Contains("Tutorial"))
+        {
+            RoomScripting.enemies.Remove(gameObject);
+            RoomScripting._enemyCount--;
+            Spawner.spawnedEnemies.Remove(gameObject);
+        }
     }
 
     public void ApplyKnockback(Vector2 knockbackPower)
