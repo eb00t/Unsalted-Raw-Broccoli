@@ -35,7 +35,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen;
     private float _targetTime;
     private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
-    private float playerDir;
+    private Vector3 playerDir;
     
     
     [Header("References")]
@@ -103,8 +103,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Update()
     {
         var distance = Vector3.Distance(transform.position, _target.position);
-        var transformWorldPos = transform.TransformPoint(transform.position);
-        playerDir =  Mathf.Abs(_target.position.x - transformWorldPos.x);
+        playerDir = _target.position - transform.position;
         var velocity = _agent.velocity;
 
         if (_isFrozen)
@@ -185,7 +184,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
             atkHitbox.center = new Vector3(1.2f, -0.1546797f, 0);
         }
-        else if (isLeft)
+        else
         {
             localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
             atkHitbox.center = new Vector3(-1.2f, -0.1546797f, 0);
@@ -262,6 +261,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _agent.isStopped = true;
         
         _targetTime -= Time.deltaTime;
+        
+        UpdateSpriteDirection(playerDir.x < 0);
 
         if (!(_targetTime <= 0.0f)) return;
         
@@ -272,15 +273,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         else
         {
             _animator.SetTrigger("Attack"); 
-        }
-        
-        if (playerDir >= 0)
-        {
-            UpdateSpriteDirection(true);
-        }
-        else if (playerDir < 0)
-        {
-            UpdateSpriteDirection(false);
         }
         
         _targetTime = attackCooldown;
