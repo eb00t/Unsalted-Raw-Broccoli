@@ -24,7 +24,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [Header("Values")]
     private float _targetTime;
     private Vector3 _patrolTarget, _patrol1, _patrol2;
-    private States _state = States.Idle;
+    [SerializeField]private States _state = States.Idle;
 
     [Header("References")]
     [SerializeField] private BoxCollider atkHitbox;
@@ -94,11 +94,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         }
         else
         {
-            if (distance < attackRange && playerDir > 0)
+            if (distance <= attackRange)
             {
                 _state = States.Attack;
             }
-            else if (distance < chaseRange || _hasPlayerBeenSeen)
+            else if (distance <= chaseRange || _hasPlayerBeenSeen)
             {
                 _state = States.Chase;
             }
@@ -144,13 +144,15 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private void Chase()
     {
         _healthSlider.gameObject.SetActive(true);
-        
-        if (_hasPlayerBeenSeen == false)
+    
+        if (!_hasPlayerBeenSeen)
         {
             StartCoroutine(StartChaseDelay());
         }
 
-        MoveTowards(_target.position);
+        var targetPosition = _target.position;
+
+        MoveTowards(targetPosition);
     }
 
     private IEnumerator StartChaseDelay()
@@ -184,20 +186,23 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private void MoveTowards(Vector3 target)
     {
         var direction = (target - transform.position).normalized;
-        var hitNormal = Vector3.zero;
 
-        if (Physics.SphereCast(transform.position, 0.5f, direction, out var hit, 1f))
+        if (_state == States.Patrol)
         {
-            if (!hit.collider.isTrigger)
+            var hitNormal = Vector3.zero;
+            if (Physics.SphereCast(transform.position, 0.5f, direction, out var hit, 1f))
             {
-                hitNormal = hit.normal;
-                direction = Vector3.Reflect(direction, hitNormal).normalized; 
-                direction += hitNormal * 1.5f;
-                
-                if (Vector3.Dot(direction, (target - transform.position).normalized) < 0.2f)
+                if (!hit.collider.isTrigger)
                 {
-                    _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
-                    return;
+                    hitNormal = hit.normal;
+                    direction = Vector3.Reflect(direction, hitNormal).normalized;
+                    direction += hitNormal * 1.5f;
+
+                    if (Vector3.Dot(direction, (target - transform.position).normalized) < 0.2f)
+                    {
+                        _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
+                        return;
+                    }
                 }
             }
         }
@@ -211,11 +216,14 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         transform.position += direction * (moveSpeed * Time.deltaTime);
 
         var localScale = _spriteTransform.localScale;
+        var hitboxLocalScale = atkHitbox.transform.localScale;
         if (Mathf.Abs(direction.x) > 0.1f)
         {
             localScale.x = direction.x > 0 ? Mathf.Abs(localScale.x) : -Mathf.Abs(localScale.x);
+            hitboxLocalScale.x = direction.x > 0 ? Mathf.Abs(hitboxLocalScale.x) : -Mathf.Abs(hitboxLocalScale.x);
         }
         _spriteTransform.localScale = localScale;
+        atkHitbox.transform.localScale = hitboxLocalScale;
     }
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
@@ -307,6 +315,10 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         isDead = true;
         _characterMovement.lockedOn = false;
         _lockOnController.lockedTarget = null;
+        RoomScripting.enemies.Remove(gameObject);
+        RoomScripting._enemyCount--;
+        Spawner.spawnedEnemies.Remove(gameObject);
+        
         StopAllCoroutines();
         StartCoroutine(FallToGround());
 
@@ -385,14 +397,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             Gizmos.DrawWireCube(_patrol1, v);
             Gizmos.DrawWireCube(_patrol2, v);
         }
-    }
-    
-    
-    private void OnDisable()
-    {
-        RoomScripting.enemies.Remove(gameObject);
-        RoomScripting._enemyCount--;
-        Spawner.spawnedEnemies.Remove(gameObject);
     }
     
     public void ApplyKnockback(Vector2 knockbackPower)
