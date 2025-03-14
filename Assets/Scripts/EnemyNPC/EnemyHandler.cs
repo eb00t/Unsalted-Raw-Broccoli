@@ -35,6 +35,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen;
     private float _targetTime;
     private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
+    private float playerDir;
     
     
     [Header("References")]
@@ -102,7 +103,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Update()
     {
         var distance = Vector3.Distance(transform.position, _target.position);
-        var playerDir =  Mathf.Abs(_target.position.x - transform.position.x);
+        var transformWorldPos = transform.TransformPoint(transform.position);
+        playerDir =  Mathf.Abs(_target.position.x - transformWorldPos.x);
+        var velocity = _agent.velocity;
 
         if (_isFrozen)
         {
@@ -110,17 +113,35 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
         else
         {
-            if (distance < attackRange && playerDir > 0)
+            if (distance < attackRange)
             {
                 _state = States.Attack;
             }
             else if (distance < chaseRange || _hasPlayerBeenSeen)
             {
                 _state = States.Chase;
+                
+                if (velocity.x > 0.1f)
+                {
+                    UpdateSpriteDirection(false);
+                }
+                else if (velocity.x < -0.1f)
+                {
+                    UpdateSpriteDirection(true);
+                }
             }
             else if (!isIdle)
             {
                 _state = States.Patrol;
+                
+                if (velocity.x > 0.1f)
+                {
+                    UpdateSpriteDirection(false);
+                }
+                else if (velocity.x < -0.1f)
+                {
+                    UpdateSpriteDirection(true);
+                }
             }
             else
             {
@@ -151,18 +172,20 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 throw new ArgumentOutOfRangeException();
         }
         
-        var velocity = _agent.velocity;
         
         _animator.SetFloat("vel", Mathf.Abs(velocity.x));
+    }
 
+    private void UpdateSpriteDirection(bool isLeft)
+    {
         var localScale = _spriteRenderer.transform.localScale;
         
-        if (velocity.x > 0.1f)
+        if (!isLeft)
         {
             localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
             atkHitbox.center = new Vector3(1.2f, -0.1546797f, 0);
         }
-        else if (velocity.x < -0.1f)
+        else if (isLeft)
         {
             localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
             atkHitbox.center = new Vector3(-1.2f, -0.1546797f, 0);
@@ -249,6 +272,15 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         else
         {
             _animator.SetTrigger("Attack"); 
+        }
+        
+        if (playerDir >= 0)
+        {
+            UpdateSpriteDirection(true);
+        }
+        else if (playerDir < 0)
+        {
+            UpdateSpriteDirection(false);
         }
         
         _targetTime = attackCooldown;
@@ -451,7 +483,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private IEnumerator StunTimer(float stunTime)
     {
+        _animator.SetBool("isStaggered", true);
        yield return new WaitForSecondsRealtime(stunTime);
        _agent.velocity = Vector3.zero;
+       _animator.SetBool("isStaggered", false);
     }
 }
