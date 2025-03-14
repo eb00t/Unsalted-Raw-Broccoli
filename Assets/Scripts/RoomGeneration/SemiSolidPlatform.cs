@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
@@ -50,6 +51,9 @@ public class SemiSolidPlatform : MonoBehaviour
         {
             _layerToIgnore = LayerMask.GetMask("Player");
             TurnOffCollision(_layerToIgnore);
+            
+            if (SceneManager.GetActiveScene().name.Equals("Tutorial")) return;
+            
             if (LevelBuilder.Instance.bossRoomGeneratingFinished)
             {
                 gameObject.layer = LayerMask.NameToLayer("Ground");
@@ -59,6 +63,9 @@ public class SemiSolidPlatform : MonoBehaviour
         if (playerFeet.transform.position.y < transform.position.y && collisionOff == false)
         {
             TurnOffCollision(_layerToIgnore);
+
+            if (SceneManager.GetActiveScene().name.Equals("Tutorial")) return;
+            
             if (LevelBuilder.Instance.bossRoomGeneratingFinished)
             {
                 gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
@@ -68,6 +75,9 @@ public class SemiSolidPlatform : MonoBehaviour
         else if (playerFeet.transform.position.y > transform.position.y && canDropThrough == false && collisionOff)
         {
             TurnOnCollision(_layerToIgnore);
+            
+            if (SceneManager.GetActiveScene().name.Equals("Tutorial")) return;
+            
             if (LevelBuilder.Instance.bossRoomGeneratingFinished)
             {
                 gameObject.layer = LayerMask.NameToLayer("Ground");

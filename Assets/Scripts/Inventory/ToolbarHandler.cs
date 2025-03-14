@@ -142,7 +142,7 @@ public class ToolbarHandler : MonoBehaviour
                 CycleToolbar(1);
                 break;
             case (0, -1): // down (2)
-                // do nothing for now
+                _menuHandler.ToggleEquip();
                 break;
             case (-1, 0): // left (3)
                 CycleToolbar(-1);

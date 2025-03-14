@@ -69,7 +69,7 @@ public class MenuHandler : MonoBehaviour
 		menuGui.SetActive(false);
 		SwitchSelected(selectedEquip);
 	}
-	
+
 	public void ToggleShop(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
