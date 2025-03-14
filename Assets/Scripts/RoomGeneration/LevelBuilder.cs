@@ -395,8 +395,7 @@ public class LevelBuilder : MonoBehaviour
                 } 
                 break;   
             case SpawnMode.BossRooms:
-                foreach (var door in
-                         spawningRoomInfo.doorSpawnPoints) // Adding doors of the spawned room to the list of possible spawn points
+                foreach (var door in spawningRoomInfo.doorSpawnPoints) // Adding doors of the spawned room to the list of possible spawn points
                 {
                     if (!spawningRoomInfo.markedForDiscard)
                     {
@@ -411,7 +410,6 @@ public class LevelBuilder : MonoBehaviour
                         }
                     }
                 }
-
                 break;  
         }
         if (spawningRoomInfo.specialRoom) 
@@ -656,6 +654,8 @@ public class LevelBuilder : MonoBehaviour
           }
           roomRandomNumber = -1;
           firstBossRoomSpawnPoints = new List<Transform>(spawnPoints);
+          secondBossRoomSpawnPoints = new List<Transform>();
+          thirdBossRoomSpawnPoints = new List<Transform>();
           _numberOfRoomsToSpawn = possibleBossRooms.Count;
           possibleRooms.Clear();
           _spawnMode = SpawnMode.BossRooms;

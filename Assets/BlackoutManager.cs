@@ -96,7 +96,6 @@ public class BlackoutManager : MonoBehaviour
                 blackoutImage.color = Color.Lerp(blackoutColor, transparentColor, _lerpTime);
                 if (blackoutImage.color.a <= 0)
                 {
-                   
                     blackoutImage.gameObject.SetActive(false);
                 }
 
