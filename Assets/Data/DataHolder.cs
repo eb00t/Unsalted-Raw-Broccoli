@@ -12,4 +12,16 @@ public class DataHolder : ScriptableObject
     public bool isAutoSwitchEnabled;
     public bool forceControlScheme;
     public bool isGamepad;
+    
+    [Header("Volume")]
+    [Range(0, 1)] 
+    public float masterVolume;
+    [Range(0, 1)] 
+    public float ambientVolume;
+    [Range(0, 1)] 
+    public float musicVolume;
+    [Range(0, 1)] 
+    public float sfxVolume;
+    [Range(0, 1)] 
+    public float uiVolume;
 }

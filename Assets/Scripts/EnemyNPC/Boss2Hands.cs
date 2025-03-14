@@ -115,6 +115,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private IEnumerator Attack() // randomly pick an attack
     {
         _attackCdCounter = attackCooldown;
+        attack = 5;
         
         var attackType = Random.Range(0, 5);
 
@@ -174,8 +175,10 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var rightTargetPos = new Vector3(rightHand.position.x, groundPosition.position.y, rightHand.position.z);
 
         yield return StartCoroutine(MoveHands(leftTargetPos, rightTargetPos, 2f));
+        
+        UpdateColliders(false, false, false, false); // give player opening to attack
 
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(2f);
 
         UpdateColliders(false, false, true, true);
         UpdateHandImg(false, false, true, true);
@@ -184,7 +187,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         
         yield return StartCoroutine(MoveHands(lungeTarget, lungeTarget, 1f));
 
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(0.1f);
         
         UpdateColliders(false, false, false, false);
         
@@ -196,6 +199,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         yield return StartCoroutine(ResetHands());
         _canAttack = false;
+        attack = 30;
         
         var hoverPosition = _target.position + Vector3.up * handHoverHeight;
         
@@ -216,18 +220,22 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         
         var slamPosition = new Vector3(hoverPosition.x, groundPosition.position.y, hoverPosition.z);
 
-        if (!isLeft)
+        if (!isLeft) //  slam down
         {
             yield return StartCoroutine(MoveHands(null, slamPosition, 0.5f));
+            UpdateColliders(false, false, false, false);
+            yield return new WaitForSecondsRealtime(1f);
             yield return StartCoroutine(MoveHands(null, hoverPosition, 0.5f));
         }
         else
         {
             yield return StartCoroutine(MoveHands(slamPosition, null, 0.5f));
+            UpdateColliders(false, false, false, false);
+            yield return new WaitForSecondsRealtime(1f);
             yield return StartCoroutine(MoveHands(hoverPosition, null, 0.5f));
         }
 
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(0.1f);
         
         UpdateHandImg(false, false, true, true);
         UpdateColliders(false, false, false, false);
@@ -257,7 +265,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             
             yield return StartCoroutine(MoveHands(clapTarget, clapTarget, .5f));
 
-            yield return new WaitForSecondsRealtime(0.5f);
+            yield return new WaitForSecondsRealtime(0.1f);
 
             UpdateColliders(false, false, false, false);
         }

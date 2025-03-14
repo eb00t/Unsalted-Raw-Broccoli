@@ -90,7 +90,7 @@ public class BlackoutManager : MonoBehaviour
         switch (_lerpDirection)
         {
             case LerpDirection.Neither:
-                blackoutImage.color = Color.black;
+                blackoutImage.color = new Color(0.02745098f, 0.1019608f, 0.2235294f);
                 break;
             case LerpDirection.FadeOut:
                 blackoutImage.color = Color.Lerp(blackoutColor, transparentColor, _lerpTime);
