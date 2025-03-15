@@ -5,6 +5,8 @@ using TMPro;
 
 public class dialogueControllerScript : MonoBehaviour
 {
+    /*
+     * 
     public TextMeshProUGUI DialogueText;
     public string[] Sentences;
     private int Index = 0;
@@ -41,6 +43,8 @@ public class dialogueControllerScript : MonoBehaviour
             SkipDialogue();
         }
         */
+
+    /*
 
         dialogueFinished();
 
@@ -90,6 +94,8 @@ public class dialogueControllerScript : MonoBehaviour
         DialogueSpeed = fasterSpeed;
     }
 
+*/
+
     /*
     void SkipDialogue()
     {
@@ -100,6 +106,8 @@ public class dialogueControllerScript : MonoBehaviour
     }
     */
 
+
+    /*
     void dialogueFinished()
     {
         if (Index == Sentences.Length )
@@ -114,7 +122,7 @@ public class dialogueControllerScript : MonoBehaviour
         yesText.SetActive(true);
         noText.SetActive(false);
         normalText.SetActive(false);
-       // Debug.Log("YES!");
+        Debug.Log("YES!");
     }
 
     void answerN()
@@ -122,7 +130,7 @@ public class dialogueControllerScript : MonoBehaviour
         noText.SetActive(true);
         yesText.SetActive(false);
         normalText.SetActive(false);
-       // Debug.Log("NO");
+        Debug.Log("NO");
     }
 
     IEnumerator WriteSentence()
@@ -136,4 +144,70 @@ public class dialogueControllerScript : MonoBehaviour
         Index++;
         canText = true;
     }
+
+    */
+
+
+
+    //TESTING ANOTHER WAY TO DO DIALOGUE
+
+    public TextMeshProUGUI DialogueText;
+    public string[] Sentences;
+    private int Index; // = 0;
+    public float DialogueSpeed;
+    //public float fasterSpeed;
+    public GameObject dialogueCanvas; // yesText, noText, normalText; // normalBox;
+
+
+    private void Start()
+    {
+        DialogueText.text = string.Empty;
+        startSentence();
+    }
+
+    private void Update()
+    {
+       if(Input.GetKeyDown(KeyCode.Tab))
+        {
+            if(DialogueText.text == Sentences[Index])
+            {
+                nextSen();
+            }
+            else
+            {
+                StopAllCoroutines();
+                DialogueText.text = Sentences[Index];
+            }
+        }
+    }
+
+    void startSentence()
+    {
+        Index = 0;
+        StartCoroutine(typeSentence());
+    }
+
+    IEnumerator typeSentence()
+    {
+        foreach (char Character in Sentences[Index].ToCharArray())
+        {
+            DialogueText.text += Character;
+            yield return new WaitForSeconds(DialogueSpeed);
+        }
+    }
+
+    void nextSen()
+    {
+        if(Index < Sentences.Length - 1)
+        {
+            Index++;
+            DialogueText.text = string.Empty;
+            StartCoroutine(typeSentence());
+        }
+        else
+        {
+            dialogueCanvas.SetActive(false);
+        }
+    }
+
 }

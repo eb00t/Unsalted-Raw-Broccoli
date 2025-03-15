@@ -796,12 +796,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6990996159585773148}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &453936989 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4160678663505474738, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
-    type: 3}
-  m_PrefabInstance: {fileID: 859828654311414906}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &456824924
 GameObject:
   m_ObjectHideFlags: 0
@@ -906,6 +900,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &524802461 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6064975457947279391, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+    type: 3}
+  m_PrefabInstance: {fileID: 859828654311414906}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &537857454
 GameObject:
   m_ObjectHideFlags: 0
@@ -2243,7 +2249,6 @@ Transform:
   - {fileID: 2139461707}
   - {fileID: 1398073261}
   - {fileID: 1852067076}
-  - {fileID: 453936989}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1474906469
@@ -3166,13 +3171,18 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1403024756}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 359950344388485252, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: noText
       value: 
       objectReference: {fileID: 859828654311414907}
+    - target: {fileID: 359950344388485252, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: yesText
+      value: 
+      objectReference: {fileID: 1027549766}
     - target: {fileID: 359950344388485252, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: normalText
@@ -3254,7 +3264,7 @@ PrefabInstance:
     - target: {fileID: 1815952323309074485, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2603915240213121135, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
@@ -3275,7 +3285,7 @@ PrefabInstance:
         type: 3}
       propertyPath: DialogueText
       value: 
-      objectReference: {fileID: 1222884652}
+      objectReference: {fileID: 524802461}
     - target: {fileID: 2603915240213121135, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: dialogueCanvas
@@ -3290,6 +3300,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3979793820842373549, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4160678663505474738, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
@@ -3390,6 +3405,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4927317932952936545, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184670087304966135, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_text
+      value: YYY
       objectReference: {fileID: 0}
     - target: {fileID: 6194012241835207217, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
@@ -3596,7 +3621,7 @@ PrefabInstance:
     - target: {fileID: 2299727961927214872, guid: 80030656154d8654fa3b9e61421d497a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6050523429805151012, guid: 80030656154d8654fa3b9e61421d497a,
         type: 3}
@@ -3713,6 +3738,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7364672705755353053, guid: 80030656154d8654fa3b9e61421d497a,
+        type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8081341651933455204, guid: 80030656154d8654fa3b9e61421d497a,
         type: 3}
       propertyPath: m_fontSize
@@ -3750,6 +3780,7 @@ SceneRoots:
   - {fileID: 1403024756}
   - {fileID: 6990996159585773148}
   - {fileID: 4352075441790859051}
+  - {fileID: 859828654311414906}
   - {fileID: 940583569}
   - {fileID: 699026899}
   - {fileID: 456824928}
