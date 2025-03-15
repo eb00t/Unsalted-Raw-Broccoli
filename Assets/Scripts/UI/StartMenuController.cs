@@ -33,11 +33,13 @@ public class StartMenuController : MonoBehaviour
 	public void StartGame()
 	{
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+		ButtonHandler.Instance.PlayConfirmSound();
 	}
 
 	public void QuitGame()
 	{
 		Application.Quit();
+		ButtonHandler.Instance.PlayBackSound();
 	}
 	
 	public void SwitchSelected(GameObject g)

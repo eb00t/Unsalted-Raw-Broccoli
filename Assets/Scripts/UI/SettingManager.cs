@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -19,11 +20,13 @@ public class SettingManager : MonoBehaviour
     public void ToggleAutoEquip()
     {
         dataHolder.isAutoEquipEnabled = !dataHolder.isAutoEquipEnabled;
+        ButtonHandler.Instance.PlayConfirmSound();
     }
 
     public void ToggleAutoSwitchLockTarget()
     {
         dataHolder.isAutoSwitchEnabled = !dataHolder.isAutoSwitchEnabled;
+        ButtonHandler.Instance.PlayConfirmSound();
     }
 
     private void LoadVolume()
@@ -92,4 +95,6 @@ public class SettingManager : MonoBehaviour
                 break;
         }
     }
+
+   
 }

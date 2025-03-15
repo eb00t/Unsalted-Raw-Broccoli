@@ -207,10 +207,12 @@ public class MenuHandler : MonoBehaviour
 	public void SceneReload() // reloads scene
 	{
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		ButtonHandler.Instance.PlayBackSound();
 	}
 
 	public void Quit() // quits game
 	{
+		ButtonHandler.Instance.PlayBackSound();
 		Application.Quit();
 	}
 }

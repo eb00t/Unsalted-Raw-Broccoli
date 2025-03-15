@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.127317, g: 0.13414717, b: 0.12107849, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2124,6 +2124,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1065189420}
+        m_TargetAssemblyTypeName: ButtonHandler, Assembly-CSharp
+        m_MethodName: PlayConfirmSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!224 &275059373
 RectTransform:
@@ -4039,6 +4051,18 @@ MonoBehaviour:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SettingManager, Assembly-CSharp
         m_MethodName: ToggleAutoSwitchLockTarget
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1065189420}
+        m_TargetAssemblyTypeName: ButtonHandler, Assembly-CSharp
+        m_MethodName: PlayConfirmSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6949,6 +6973,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1058916812}
   m_CullTransparentMesh: 1
+--- !u!114 &1065189420 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7893753596808020989, guid: 7f14c0dfa0b49b54fa5c55018e610bc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 986782151}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90889d44f13e8ab408ecd516edf728f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1073951726
 GameObject:
   m_ObjectHideFlags: 0
@@ -7551,6 +7587,7 @@ GameObject:
   - component: {fileID: 1155752718}
   - component: {fileID: 1155752720}
   - component: {fileID: 1155752719}
+  - component: {fileID: 1155752721}
   m_Layer: 5
   m_Name: Bck
   m_TagString: Untagged
@@ -7617,6 +7654,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1155752717}
   m_CullTransparentMesh: 1
+--- !u!114 &1155752721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155752717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62fa3c06adbb17f41ad1c1a7c477d12a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1157425783
 GameObject:
   m_ObjectHideFlags: 0
@@ -7665,7 +7714,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b1e69464f8bff84188e4461eaa89303, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  diedScreen: {fileID: 0}
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
+  circle: {fileID: 0}
+  psX: {fileID: 0}
+  triangle: {fileID: 0}
+  square: {fileID: 0}
+  L1: {fileID: 0}
+  L2: {fileID: 0}
+  L3: {fileID: 0}
+  R1: {fileID: 0}
+  R2: {fileID: 0}
+  R3: {fileID: 0}
+  xboxX: {fileID: 0}
+  Y: {fileID: 0}
+  A: {fileID: 0}
+  B: {fileID: 0}
+  RB: {fileID: 0}
+  LB: {fileID: 0}
+  RT: {fileID: 0}
+  LT: {fileID: 0}
+  menuImg: {fileID: 0}
+  dPadUp: {fileID: 0}
+  dPadDown: {fileID: 0}
+  dPadLeft: {fileID: 0}
+  dPadRight: {fileID: 0}
+  lThumbstick: {fileID: 0}
+  rThumbstick: {fileID: 0}
+  lThumbstickDown: {fileID: 0}
+  rThumbstickDown: {fileID: 0}
 --- !u!1 &1169306574
 GameObject:
   m_ObjectHideFlags: 0
@@ -8000,6 +8077,7 @@ GameObject:
   - component: {fileID: 1178602225}
   - component: {fileID: 1178602227}
   - component: {fileID: 1178602226}
+  - component: {fileID: 1178602228}
   m_Layer: 5
   m_Name: ControlsMenu
   m_TagString: Untagged
@@ -8053,6 +8131,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1178602224}
   m_CullTransparentMesh: 1
+--- !u!114 &1178602228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178602224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62fa3c06adbb17f41ad1c1a7c477d12a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1182435006
 GameObject:
   m_ObjectHideFlags: 0
@@ -13181,6 +13271,18 @@ MonoBehaviour:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SettingManager, Assembly-CSharp
         m_MethodName: ToggleAutoEquip
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1065189420}
+        m_TargetAssemblyTypeName: ButtonHandler, Assembly-CSharp
+        m_MethodName: PlayConfirmSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
