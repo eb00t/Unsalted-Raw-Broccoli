@@ -653,12 +653,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 137252548}
   m_CullTransparentMesh: 1
---- !u!1 &184374608 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2455849831513854181, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
-    type: 3}
-  m_PrefabInstance: {fileID: 859828654311414906}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &207534262
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,6 +795,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1593307799739000426, guid: 80030656154d8654fa3b9e61421d497a,
     type: 3}
   m_PrefabInstance: {fileID: 6990996159585773148}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &453936989 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4160678663505474738, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+    type: 3}
+  m_PrefabInstance: {fileID: 859828654311414906}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &456824924
 GameObject:
@@ -1040,12 +1040,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 537857454}
   m_CullTransparentMesh: 1
---- !u!1 &593500844 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6836901781482300786, guid: 80030656154d8654fa3b9e61421d497a,
-    type: 3}
-  m_PrefabInstance: {fileID: 6990996159585773148}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &699026897
 GameObject:
   m_ObjectHideFlags: 0
@@ -2249,6 +2243,7 @@ Transform:
   - {fileID: 2139461707}
   - {fileID: 1398073261}
   - {fileID: 1852067076}
+  - {fileID: 453936989}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1474906469
@@ -3171,22 +3166,130 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1403024756}
     m_Modifications:
+    - target: {fileID: 359950344388485252, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: noText
+      value: 
+      objectReference: {fileID: 859828654311414907}
     - target: {fileID: 359950344388485252, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: normalText
       value: 
-      objectReference: {fileID: 593500844}
+      objectReference: {fileID: 1222884650}
+    - target: {fileID: 359950344388485252, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: DialogueText
+      value: 
+      objectReference: {fileID: 859828654311414909}
     - target: {fileID: 359950344388485252, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: dialogueCanvas
       value: 
       objectReference: {fileID: 1148015724}
+    - target: {fileID: 1281289727516512157, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1281289727516512157, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 6f254133f10861249bfe5bf82aca9968,
+        type: 2}
+    - target: {fileID: 1281289727516512157, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1281289727516512157, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513456521673118595, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_text
+      value: cnjxcgncmbnvcb
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513456521673118595, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513456521673118595, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 6f254133f10861249bfe5bf82aca9968,
+        type: 2}
+    - target: {fileID: 1513456521673118595, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_fontStyle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513456521673118595, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513456521673118595, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -8826119498318675824, guid: 6f254133f10861249bfe5bf82aca9968,
+        type: 2}
+    - target: {fileID: 1513456521673118595, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1815952323309074485, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: m_Name
       value: Answer Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 1815952323309074485, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2603915240213121135, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: noText
+      value: 
+      objectReference: {fileID: 859828654311414907}
+    - target: {fileID: 2603915240213121135, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: yesText
+      value: 
+      objectReference: {fileID: 1027549766}
+    - target: {fileID: 2603915240213121135, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: normalText
+      value: 
+      objectReference: {fileID: 1222884650}
+    - target: {fileID: 2603915240213121135, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: DialogueText
+      value: 
+      objectReference: {fileID: 1222884652}
+    - target: {fileID: 2603915240213121135, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: dialogueCanvas
+      value: 
+      objectReference: {fileID: 1148015724}
+    - target: {fileID: 2603915240213121135, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: Sentences.Array.data[0]
+      value: NO
+      objectReference: {fileID: 0}
+    - target: {fileID: 2731999377829808327, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4160678663505474738, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
@@ -3288,21 +3391,56 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6194012241835207217, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -26.7
+      objectReference: {fileID: 0}
     - target: {fileID: 7431351088562688840, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: normalText
       value: 
-      objectReference: {fileID: 593500844}
+      objectReference: {fileID: 0}
     - target: {fileID: 7431351088562688840, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
         type: 3}
       propertyPath: dialogueCanvas
       value: 
       objectReference: {fileID: 1148015724}
+    - target: {fileID: 8560898422051428940, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9049022283227586227, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5286627750826092516, guid: a18befbb180504e4b9eb96d5b4e4f8d6, type: 3}
+    - {fileID: 2731999377829808327, guid: a18befbb180504e4b9eb96d5b4e4f8d6, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a18befbb180504e4b9eb96d5b4e4f8d6, type: 3}
+--- !u!1 &859828654311414907 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8560898422051428940, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+    type: 3}
+  m_PrefabInstance: {fileID: 859828654311414906}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &859828654311414909 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6184670087304966135, guid: a18befbb180504e4b9eb96d5b4e4f8d6,
+    type: 3}
+  m_PrefabInstance: {fileID: 859828654311414906}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4352075441790859051
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3370,7 +3508,7 @@ PrefabInstance:
         type: 3}
       propertyPath: noText
       value: 
-      objectReference: {fileID: 184374608}
+      objectReference: {fileID: 859828654311414907}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: canText
@@ -3411,6 +3549,17 @@ PrefabInstance:
       propertyPath: dialogueCanvas
       value: 
       objectReference: {fileID: 1148015724}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: Sentences.Array.data[1]
+      value: I should see what's behind one of those doors, maybe there will be a
+        way out!
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: Sentences.Array.data[2]
+      value: Look around using...
+      objectReference: {fileID: 0}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: Sentences.Array.data[4]
@@ -3549,6 +3698,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6256760097374189432, guid: 80030656154d8654fa3b9e61421d497a,
+        type: 3}
+      propertyPath: m_Name
+      value: Normal Text
+      objectReference: {fileID: 0}
     - target: {fileID: 6314740990948628018, guid: 80030656154d8654fa3b9e61421d497a,
         type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
@@ -3581,7 +3735,8 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6836901781482300786, guid: 80030656154d8654fa3b9e61421d497a, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80030656154d8654fa3b9e61421d497a, type: 3}
@@ -3595,7 +3750,6 @@ SceneRoots:
   - {fileID: 1403024756}
   - {fileID: 6990996159585773148}
   - {fileID: 4352075441790859051}
-  - {fileID: 859828654311414906}
   - {fileID: 940583569}
   - {fileID: 699026899}
   - {fileID: 456824928}
