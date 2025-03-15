@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ItemPickupHandler : MonoBehaviour
@@ -54,6 +55,7 @@ public class ItemPickupHandler : MonoBehaviour
     
     private void Update()
     {
+        if (SceneManager.GetActiveScene().name == "Tutorial") return;
         if (_characterMovement.uiOpen) return;
         if (isPlrNearShop) return;
         
