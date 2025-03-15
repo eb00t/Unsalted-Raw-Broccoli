@@ -9,7 +9,7 @@ public class CheckControls : MonoBehaviour
     private GameObject _startMenu;
     private bool _isGamepad;
     private ControlsManager _controlsManager;
-
+    
     private void Start()
     {
         _controlsManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<ControlsManager>();
@@ -26,7 +26,6 @@ public class CheckControls : MonoBehaviour
         _controlsManager.CheckControl();
         switch (dataHolder.currentControl)
         {
-            case ControlsManager.ControlScheme.None:
             case ControlsManager.ControlScheme.Xbox:
                 xboximg.SetActive(true);
                 psimg.SetActive(false);

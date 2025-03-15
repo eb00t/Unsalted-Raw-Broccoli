@@ -18,17 +18,15 @@ public class ItemPickupHandler : MonoBehaviour
     [SerializeField] private DataHolder dataHolder;
 
     [Header("Image References")] 
-    [SerializeField] private Sprite square; // for ps controller
-    [SerializeField] private Sprite triangle;
-    [SerializeField] private Sprite circle;
-    [SerializeField] private Sprite x;
     private Image _ctrlImg, _diedImg;
+    private UpdateButton _updateButton;
     
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _prompt = GameObject.FindGameObjectWithTag("Prompt");
+        _updateButton = _prompt.GetComponent<UpdateButton>();
         _rectTransform = _prompt.GetComponent<RectTransform>();
         _controlsManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<ControlsManager>();
 
@@ -52,8 +50,6 @@ public class ItemPickupHandler : MonoBehaviour
                 _ctrlImg = img;
             }
         }
-
-        _controlsManager.CheckControl();
     }
     
     private void Update()
@@ -74,13 +70,13 @@ public class ItemPickupHandler : MonoBehaviour
         switch (itemCount)
         {
             case 0:
-                TogglePrompt("", false, "", "", "");
+                TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
                 break;
             case 1:
-                TogglePrompt("Pick Up Item", true, "F", "B", "circle");
+                TogglePrompt("Pick Up Item", true, ControlsManager.ButtonType.ButtonEast);
                 break;
             case > 1:
-                TogglePrompt("Pick Up Items", true, "F", "B", "circle");
+                TogglePrompt("Pick Up Items", true, ControlsManager.ButtonType.ButtonEast);
                 break;
         }
     }
@@ -102,49 +98,13 @@ public class ItemPickupHandler : MonoBehaviour
         }
     }
     
-     public void TogglePrompt(string prompt, bool toggle, string ctrlKeyboard, string ctrlXbox, string ctrlPS)
+     public void TogglePrompt(string prompt, bool toggle, ControlsManager.ButtonType button)
     {
         if (toggle)
         {
             _rectTransform.anchoredPosition = new Vector3(0, 100, 0);
             _text.text = prompt;
-            _controlsManager.CheckControl();
-
-            switch (dataHolder.currentControl)
-            {
-                case ControlsManager.ControlScheme.None:
-                case ControlsManager.ControlScheme.Xbox:
-                    _controlTxt.text = ctrlXbox;
-                    _ctrlImg.enabled = false;
-                    break;
-                case ControlsManager.ControlScheme.Playstation:
-                    _ctrlImg.enabled = true;
-                    
-                    switch (ctrlPS)
-                    {
-                        case "square":
-                            _ctrlImg.sprite = square;
-                            break;
-                        case "circle":
-                            _ctrlImg.sprite = circle;
-                            break;
-                        case "x":
-                            _ctrlImg.sprite = x;
-                            break;
-                        case "triangle":
-                            _ctrlImg.sprite = triangle;
-                            break;
-                    }
-                    
-                    _controlTxt.text = "";
-                    break;
-                case ControlsManager.ControlScheme.Keyboard:
-                    _ctrlImg.enabled = false;
-                    _controlTxt.text = ctrlKeyboard;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            _updateButton.button = button;
         }
         else
         {
