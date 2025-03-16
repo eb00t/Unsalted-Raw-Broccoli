@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using FMOD.Studio;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -36,6 +37,7 @@ public class ToolbarHandler : MonoBehaviour
     private GameObject _lastSelected;
     public bool isInfoOpen;
     private List<int> _activeAtkBuffs;
+    private EventInstance _cycleInstance;
     
     [SerializeField] private DataHolder dataHolder;
 
@@ -249,17 +251,19 @@ public class ToolbarHandler : MonoBehaviour
     { 
         // (equippedConsumables.Any(t => t == null)) return; 
         if (equippedConsumables.Count == 0) return; // if no consumables are equipped do nothing
-        
-        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.CycleItem, transform.position);
+
+        _cycleInstance = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.CycleItem);
         
         if (_activeConsumable + direction > equippedConsumables.Count - 1)
         {
             _activeConsumable = 0;
+            AudioManager.Instance.SetEventParameter(_cycleInstance, "Cycle Direction", 0);
             //Debug.LogWarning("Index higher than list length, resetting to 0.");
         }
         else if (_activeConsumable + direction < 0)
         {
             _activeConsumable = equippedConsumables.Count - 1; 
+            AudioManager.Instance.SetEventParameter(_cycleInstance, "Cycle Direction", 1);
             //Debug.LogWarning("Index is lower than 0, resetting to list length.");
         }
         else
@@ -268,8 +272,18 @@ public class ToolbarHandler : MonoBehaviour
             
             _activeConsumable += direction;
             //Debug.Log("Moving to next index");
+            
+            if (direction == 1)
+            {
+                AudioManager.Instance.SetEventParameter(_cycleInstance, "Cycle Direction", 0);
+            }
+            else
+            {
+                AudioManager.Instance.SetEventParameter(_cycleInstance, "Cycle Direction", 1);
+            }
         }
-        
+        _cycleInstance.start();
+        _cycleInstance.release();
         UpdateCurrentTool();
     }
 
