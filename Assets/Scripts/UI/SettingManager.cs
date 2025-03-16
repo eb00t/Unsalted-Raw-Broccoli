@@ -7,7 +7,7 @@ public class SettingManager : MonoBehaviour
 {
     private InventoryStore _inventoryStore;
     [SerializeField] private DataHolder dataHolder;
-    [SerializeField] private Slider masterSlider, ambientSlider, musicSlider, sfxSlider, uiSlider;
+    [SerializeField] private Slider masterSlider, musicSlider, sfxSlider;
     private float _currentSlider;
     private AudioManager _audioManager;
     
@@ -38,10 +38,8 @@ public class SettingManager : MonoBehaviour
         _audioManager.uiSfxVolume = dataHolder.uiVolume;
         
         masterSlider.value = dataHolder.masterVolume;
-        ambientSlider.value = dataHolder.ambientVolume;
         musicSlider.value = dataHolder.musicVolume;
         sfxSlider.value = dataHolder.sfxVolume;
-        uiSlider.value = dataHolder.uiVolume;
     }
 
     public void UpdateVolume(int volumeType)
