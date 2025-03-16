@@ -80,6 +80,7 @@ public class PlayerStatus : MonoBehaviour
         if (statuses.Count <= 0) return;
         foreach (var s in statuses)
         {
+            if (s == null) continue;
             if (s.GetComponent<Consumable>().consumableEffect != ConsumableEffect.Invincibility) continue;
             if (amount > 0)
             {
