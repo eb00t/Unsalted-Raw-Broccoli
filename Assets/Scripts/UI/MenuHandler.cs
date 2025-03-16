@@ -23,6 +23,7 @@ public class MenuHandler : MonoBehaviour
 	private GameObject _lastSelected;
 
 	public GameObject shopGUI;
+	[SerializeField] private DataHolder dataHolder;
 
 	private void Start()
 	{
@@ -52,6 +53,7 @@ public class MenuHandler : MonoBehaviour
 
 		if (eventSystem.currentSelectedGameObject != _lastSelected)
 		{
+			if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard) return;
 			ButtonHandler.Instance.PlayNavigateSound();
 			_lastSelected = eventSystem.currentSelectedGameObject;
 		}

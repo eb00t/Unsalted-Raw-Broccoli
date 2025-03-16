@@ -10,11 +10,22 @@ public class SettingManager : MonoBehaviour
     [SerializeField] private Slider masterSlider, musicSlider, sfxSlider;
     private float _currentSlider;
     private AudioManager _audioManager;
+    private GameObject _lastSelected;
     
     private void Start()
     {
         _audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
         LoadVolume();
+    }
+
+    private void Update()
+    {
+        if (EventSystem.current.currentSelectedGameObject != _lastSelected)
+        {
+            if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard) return;
+            ButtonHandler.Instance.PlayNavigateSound();
+            _lastSelected = EventSystem.current.currentSelectedGameObject;
+        }
     }
 
     public void ToggleAutoEquip()
@@ -32,10 +43,10 @@ public class SettingManager : MonoBehaviour
     private void LoadVolume()
     {
         _audioManager.masterVolume = dataHolder.masterVolume;
-        _audioManager.ambienceVolume = dataHolder.ambientVolume;
+        _audioManager.ambienceVolume = dataHolder.musicVolume;
         _audioManager.musicVolume = dataHolder.musicVolume;
         _audioManager.sfxVolume = dataHolder.sfxVolume;
-        _audioManager.uiSfxVolume = dataHolder.uiVolume;
+        _audioManager.uiSfxVolume = dataHolder.sfxVolume;
         
         masterSlider.value = dataHolder.masterVolume;
         musicSlider.value = dataHolder.musicVolume;
@@ -53,20 +64,14 @@ public class SettingManager : MonoBehaviour
                 dataHolder.masterVolume = _currentSlider;
                 _audioManager.masterVolume = _currentSlider;
                 break;
-            case 1: // ambience
-                dataHolder.ambientVolume = _currentSlider;
-                _audioManager.ambienceVolume = _currentSlider;
-                break;
             case 2: // music
                 dataHolder.musicVolume = _currentSlider;
                 _audioManager.musicVolume = _currentSlider;
+                _audioManager.ambienceVolume = _currentSlider;
                 break;
             case 3: // sfx
                 dataHolder.sfxVolume = _currentSlider;
                 _audioManager.sfxVolume = _currentSlider;
-                break;
-            case 4: // hud sfx
-                dataHolder.uiVolume = _currentSlider;
                 _audioManager.uiSfxVolume = _currentSlider;
                 break;
         }
@@ -93,6 +98,4 @@ public class SettingManager : MonoBehaviour
                 break;
         }
     }
-
-   
 }

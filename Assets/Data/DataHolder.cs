@@ -17,11 +17,7 @@ public class DataHolder : ScriptableObject
     [Range(0, 1)] 
     public float masterVolume;
     [Range(0, 1)] 
-    public float ambientVolume;
-    [Range(0, 1)] 
     public float musicVolume;
     [Range(0, 1)] 
     public float sfxVolume;
-    [Range(0, 1)] 
-    public float uiVolume;
 }
