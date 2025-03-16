@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -6,7 +7,7 @@ using Random = UnityEngine.Random;
 
 public class CopyBoss : MonoBehaviour, IDamageable
 {
-    private enum States { Idle, Patrol, Chase, Attack, Retreat, Frozen, Jumping }
+    private enum States { Idle, Patrol, Chase, Attack, Retreat, Frozen, Jumping, Crouching }
     private States _currentState = States.Idle;
 
     private Rigidbody _rigidbody;
@@ -31,7 +32,10 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private float movementSpeed;
     [SerializeField] private float jumpForce, jumpTriggerDistance;
     [SerializeField] private Transform atkHitbox;
-
+    [SerializeField] private float fallThroughTime = 2f;
+    
+    private float _playerBelowTimer;
+    private bool _isFallingThrough;
     private int _currentHealth, _poisonBuildup;
     private bool _isAttacking, _isFrozen, _isDead, _isPoisoned, _hasPlayerBeenSeen, _isJumping;
     private Vector3 _patrolPoint1, _patrolPoint2, _currentPatrolTarget;
@@ -78,7 +82,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
         if (_isDead) return;
 
         var distance = Vector3.Distance(transform.position, _player.position);
-        var heightDifference = _player.position.y - transform.position.y;
+        var heightDiffAbove = _player.position.y - transform.position.y;
+        var heightDiffBelow = transform.position.y - _player.position.y;
         var playerDir =  Mathf.Abs(_player.position.x - transform.position.x);
         
         if (_isFrozen)
@@ -91,10 +96,13 @@ public class CopyBoss : MonoBehaviour, IDamageable
         }
         else if (distance < chaseRange || _hasPlayerBeenSeen)
         {
-            if (canJump && heightDifference > jumpTriggerDistance)
+            if (canJump && heightDiffAbove > jumpTriggerDistance)
             {
-                Debug.Log("Switching to Jumping state");
                 _currentState = States.Jumping;
+            }
+            else if (heightDiffBelow > jumpTriggerDistance)
+            {
+                _currentState = States.Crouching;
             }
             else
             {
@@ -132,6 +140,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
             case States.Jumping:
                 Jump();
                 break;
+            case States.Crouching:
+                Crouching();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
         
         var velocity = _rigidbody.velocity;
@@ -155,11 +168,35 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _spriteRenderer.transform.localScale = localScale;
         atkHitbox.localScale = localScale2;
     }
+
+    private void Crouching()
+    {
+        _playerBelowTimer += Time.deltaTime;
+
+        if (_playerBelowTimer >= fallThroughTime && !_isFallingThrough)
+        {
+            FallThroughPlatform();
+            _playerBelowTimer = 0f;
+        }
+    }
+
+    private void FallThroughPlatform()
+    {
+        _isFallingThrough = true;
+        var platform = FindPlatform(Vector3.down); 
+
+        if (platform != null)
+        {
+            StartCoroutine(DisableCollision());
+        }
+
+        _isFallingThrough = false;
+    }
     
-    private Collider FindPlatform()
+    private Collider FindPlatform(Vector3 dir)
     {
         var layerMask = LayerMask.GetMask("Ground");
-        return Physics.Raycast(transform.position, Vector3.up, out var hit, 20f, layerMask) ? hit.collider : null;
+        return Physics.Raycast(transform.position, dir, out var hit, 20f, layerMask) ? hit.collider : null;
     }
 
     private void Jump()
@@ -167,7 +204,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         if (_isJumping) return;
         _isJumping = true;
 
-        var col = FindPlatform();
+        var col = FindPlatform(Vector3.up);
         
         if (col != null)
         {

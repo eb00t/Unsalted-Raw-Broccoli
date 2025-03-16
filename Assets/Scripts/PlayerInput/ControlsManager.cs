@@ -22,13 +22,15 @@ public class ControlsManager : MonoBehaviour
     [SerializeField] private Sprite square;
     [SerializeField] private Sprite L1, L2, L3;
     [SerializeField] private Sprite R1, R2, R3;
+    [SerializeField] private Sprite create;
 
     [Header("XBOX Sprites")] 
     [SerializeField] private Sprite xboxX;
     [SerializeField] private Sprite Y, A, B;
     [SerializeField] private Sprite RB, LB, RT, LT;
+    [SerializeField] private Sprite select;
     
-    [Header("All Gamepad Sprites")]
+    [Header("Generic Sprites")]
     [SerializeField] private Sprite menuImg;
     [SerializeField] private Sprite dPadUp, dPadDown, dPadLeft, dPadRight;
     [SerializeField] private Sprite lThumbstick, rThumbstick;
@@ -137,7 +139,7 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.DpadSouth, dPadDown },
             { ButtonType.DpadWest, dPadLeft },
             { ButtonType.Start, menuImg },
-            { ButtonType.Select, menuImg },
+            { ButtonType.Select, select },
             { ButtonType.LThumbstick, lThumbstick},
             { ButtonType.RThumbstick, rThumbstick},
             { ButtonType.LThumbstickDown, lThumbstickDown},
@@ -159,7 +161,7 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.DpadSouth, dPadDown },
             { ButtonType.DpadWest, dPadLeft },
             { ButtonType.Start, menuImg },
-            { ButtonType.Select, menuImg },
+            { ButtonType.Select, create },
             { ButtonType.LThumbstick, lThumbstick},
             { ButtonType.RThumbstick, rThumbstick},
             { ButtonType.LThumbstickDown, L3},
