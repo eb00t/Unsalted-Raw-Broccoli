@@ -18,6 +18,7 @@ public class LevelBuilder : MonoBehaviour
         Floor2,
         Floor3,
         Intermission,
+        Tutorial,
     }
 
     [field: Header("Configuration")] 
@@ -106,7 +107,7 @@ public class LevelBuilder : MonoBehaviour
 
     IEnumerator DelayStart()
     {
-        if (currentFloor != LevelMode.Intermission)
+        if (currentFloor is not (LevelMode.Intermission or LevelMode.Tutorial))
         {
             yield return new WaitForSecondsRealtime(.5f);
             roomsRemaining = _numberOfRoomsToSpawn;

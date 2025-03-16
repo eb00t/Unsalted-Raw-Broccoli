@@ -23,6 +23,7 @@ public class CameraTrigger : MonoBehaviour
     {
         //_doorInfo = transform.parent.GetComponent<DoorInfo>();
         _playerCam = CameraManager.Instance.playerCam;
+        Debug.Log(_playerCam.name);
         //StartCoroutine(CheckIfDoorCanOpen());
         switch (roomOrConnector)
         {
@@ -31,8 +32,6 @@ public class CameraTrigger : MonoBehaviour
                 _camera = transform.root.transform.Find("RoomCam").GetComponent<CinemachineVirtualCamera>();
                 break;
             }
-            default:
-                break;
         }
 
     }
@@ -55,17 +54,15 @@ public class CameraTrigger : MonoBehaviour
                 case RoomOrConnector.Room:
                     foreach (var cam in CameraManager.Instance.virtualCameras)
                     {
-                        cam.Priority = 9;
+                        cam.Priority = 0;
                     }
-
                     _camera.Priority = 10;
                     break;
                 case RoomOrConnector.Connector:
                     foreach (var cam in CameraManager.Instance.virtualCameras)
                     {
-                        cam.Priority = 9;
+                        cam.Priority = 0;
                     }
-
                     _playerCam.Priority = 10;
                     break;
             }
@@ -80,7 +77,7 @@ public class CameraTrigger : MonoBehaviour
             {
                 foreach (var cam in CameraManager.Instance.virtualCameras)
                 {
-                    cam.Priority = 9;
+                    cam.Priority = 0;
                 }
 
                 _playerCam.Priority = 10;
@@ -96,7 +93,7 @@ public class CameraTrigger : MonoBehaviour
             {
                 foreach (var cam in CameraManager.Instance.virtualCameras)
                 {
-                    cam.Priority = 9;
+                    cam.Priority = 0;
                 }
 
                 _camera.Priority = 10;

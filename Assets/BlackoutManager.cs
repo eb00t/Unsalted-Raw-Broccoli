@@ -72,12 +72,12 @@ public class BlackoutManager : MonoBehaviour
 
     private void Update()
     {
-        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
+        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial))
         {
             _fadedOut = true;
             LowerOpacity();
         } 
-        else if (LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.Intermission && _fadedOut == false)
+        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial) && _fadedOut == false)
         {
             _timer -= Time.deltaTime;
             if (_timer <= 0)

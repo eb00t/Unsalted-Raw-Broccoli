@@ -87,12 +87,13 @@ public class TutorialController : MonoBehaviour
         
         arrowToEnd1.SetActive(true);
         arrowToEnd2.SetActive(true);
-        doorToEnd.SetActive(false);
+        doorToEnd.transform.position = new Vector3(doorToEnd.transform.position.x, doorToEnd.transform.position.y, doorToEnd.transform.position.z + 3);
         AdvanceStep();
     }
 
     private void ShowPrompt()
     {
+        ButtonHandler.Instance.PlayConfirmSound();
         switch (_currentStep)
         {
             case TutorialStep.Move:
@@ -162,7 +163,7 @@ public class TutorialController : MonoBehaviour
         {
             arrowItem1.SetActive(false);
             arrowItem1Back.SetActive(true);
-            doorItem2.SetActive(false);
+            doorItem2.transform.position = new Vector3(doorItem2.transform.position.x, doorItem2.transform.position.y, doorItem2.transform.position.z + 3);
             arrowItem2.SetActive(true);
         }
 
@@ -216,7 +217,7 @@ public class TutorialController : MonoBehaviour
             AdvanceStep();
             if (_itemsFound == 0)
             {
-                doorItem1.SetActive(false);
+                doorItem1.transform.position = new Vector3(doorItem1.transform.position.x, doorItem1.transform.position.y, doorItem1.transform.position.z + 3);
                 arrowItem1.SetActive(true);
             }
         }
@@ -301,8 +302,8 @@ public class TutorialController : MonoBehaviour
             arrowItem2Back.SetActive(true);
             arrowUp.SetActive(true);
             arrowToEnemy.SetActive(true);
-            doorToEnemy.SetActive(false);
-            doorUp.SetActive(false);
+            doorToEnemy.transform.position = new Vector3(doorToEnemy.transform.position.x, doorToEnemy.transform.position.y, doorToEnemy.transform.position.z + 3);
+            doorUp.transform.position = new Vector3(doorUp.transform.position.x, doorUp.transform.position.y, doorUp.transform.position.z + 3);
         }
     }
 

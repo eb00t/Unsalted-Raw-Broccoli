@@ -14,6 +14,7 @@ public class LevelTextManager : MonoBehaviour
     private float _lerpTime;
     private bool _fadedOut;
     private Color _startColor;
+    private float _timer = 2;
     private enum LerpDirection
     {
         Neither,
@@ -52,6 +53,9 @@ public class LevelTextManager : MonoBehaviour
             case LevelBuilder.LevelMode.Intermission:
                 titleText.text = ("");
                 break;
+            case LevelBuilder.LevelMode.Tutorial:
+                titleText.text = ("TUTORIAL");
+                break;
         }
 
         if (subtitleText == null)
@@ -76,12 +80,23 @@ public class LevelTextManager : MonoBehaviour
             case LevelBuilder.LevelMode.Intermission:
                 subtitleText.text = ("");
                 break;
+            case LevelBuilder.LevelMode.Tutorial:
+                subtitleText.text = ("New here?");
+                break;
         }
     }
 
     IEnumerator WaitToLowerTextOpacity()
-    { 
-        yield return new WaitForSecondsRealtime(2f);
+    {
+        if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Tutorial
+            or LevelBuilder.LevelMode.Intermission))
+        {
+            yield return new WaitForSecondsRealtime(3f);
+        }
+        else
+        {
+            yield return new WaitForSecondsRealtime(2f);
+        }
         LowerTextOpacity();
     }
 
@@ -99,7 +114,12 @@ public class LevelTextManager : MonoBehaviour
     
     private void Update()
     {
-        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false)
+        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial))
+        {
+            _fadedOut = true;
+            StartCoroutine(WaitToLowerTextOpacity());
+        }
+        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial) && _fadedOut == false)
         {
             _fadedOut = true;
             StartCoroutine(WaitToLowerTextOpacity());
