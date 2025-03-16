@@ -229,6 +229,7 @@ public class ToolbarHandler : MonoBehaviour
 
     private IEnumerator ActivateStatusEffect(Consumable consumable)
     {
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemActivate, transform.position);
         switch (consumable.consumableEffect)
         {
             case ConsumableEffect.Ice:
@@ -248,6 +249,8 @@ public class ToolbarHandler : MonoBehaviour
     { 
         // (equippedConsumables.Any(t => t == null)) return; 
         if (equippedConsumables.Count == 0) return; // if no consumables are equipped do nothing
+        
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.CycleItem, transform.position);
         
         if (_activeConsumable + direction > equippedConsumables.Count - 1)
         {

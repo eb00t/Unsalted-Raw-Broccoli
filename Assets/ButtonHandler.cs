@@ -23,4 +23,9 @@ public class ButtonHandler : MonoBehaviour
     {
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.UIBack, transform.position);
     }
+
+    public void PlayNavigateSound()
+    {
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.UINavigate, transform.position);
+    }
 }

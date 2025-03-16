@@ -52,7 +52,7 @@ public class MenuHandler : MonoBehaviour
 
 		if (eventSystem.currentSelectedGameObject != _lastSelected)
 		{
-			// PLAY SOUND EFFECT HERE
+			ButtonHandler.Instance.PlayNavigateSound();
 			_lastSelected = eventSystem.currentSelectedGameObject;
 		}
 	}
@@ -60,6 +60,7 @@ public class MenuHandler : MonoBehaviour
 	// opens equip menu (with inventory), hides other menus and resets interaction bool to prevent unwanted ui navigation
 	public void ToggleEquip()
 	{
+		ButtonHandler.Instance.PlayConfirmSound();
 		foreach (var s in slots.GetComponentsInChildren<Button>())
 		{
 			s.interactable = true;
@@ -85,6 +86,8 @@ public class MenuHandler : MonoBehaviour
 		var shopHandler = shopGUI.GetComponentInParent<ShopHandler>();
 		if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
 		
+		ButtonHandler.Instance.PlayConfirmSound();
+		
 		shopGUI.SetActive(true);
 
 		if (shopHandler.itemsHeld.Count > 0)
@@ -107,6 +110,7 @@ public class MenuHandler : MonoBehaviour
 
 		if (invGui.activeSelf)
 		{
+			ButtonHandler.Instance.PlayBackSound();
 			foreach (var b in grid.GetComponentsInChildren<Button>())
 			{
 				b.interactable = false;
@@ -125,6 +129,7 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (menuGui.activeSelf)
 		{
+			ButtonHandler.Instance.PlayBackSound();
 			menuGui.SetActive(false);
 			toolbarGui.SetActive(true);
 			statsGui.SetActive(true);
@@ -136,18 +141,21 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (settingGui.activeSelf)
 		{
+			ButtonHandler.Instance.PlayBackSound();
 			settingGui.SetActive(false);
 			menuGui.SetActive(true);
 			SwitchSelected(settingsBtn);
 		}
 		else if (quitPopupGui.activeSelf)
 		{
+			ButtonHandler.Instance.PlayBackSound();
 			quitPopupGui.SetActive(false);
 			menuGui.SetActive(true);
 			SwitchSelected(quitBtn);
 		}
 		else if (controlGui.activeSelf)
 		{
+			ButtonHandler.Instance.PlayBackSound();
 			controlGui.SetActive(false);
 			menuGui.SetActive(true);
 			SwitchSelected(controlsBtn);
@@ -220,8 +228,8 @@ public class MenuHandler : MonoBehaviour
 
 	public void SceneReload() // reloads scene
 	{
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		ButtonHandler.Instance.PlayBackSound();
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 
 	public void LoadScene(string scene)

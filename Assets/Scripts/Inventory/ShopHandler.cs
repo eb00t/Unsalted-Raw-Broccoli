@@ -128,8 +128,16 @@ public class ShopHandler : MonoBehaviour
 	private void ShopItemSelected(IndexHolder indexHolder)
 	{
 		// if player does not have enough money then return
-		if (dataHolder.currencyHeld - indexHolder.price < 0) return;
-		if (indexHolder.numHeld <= 0) return;
+		if (dataHolder.currencyHeld - indexHolder.price < 0)
+		{
+			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseFailed, transform.position);
+			return;
+		}
+		if (indexHolder.numHeld <= 0) 
+		{
+			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseFailed, transform.position);
+			return;
+		}
 
 		foreach (var n in _inventoryStore.grid.GetComponentsInChildren<IndexHolder>())
 		{
@@ -145,6 +153,7 @@ public class ShopHandler : MonoBehaviour
 		// add item to inventory when bought
 		var inventoryStore = _uiManager.GetComponent<InventoryStore>();
 		inventoryStore.AddNewItem(indexHolder.consumable);
+		AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseMade, transform.position);
 		
 		// update ui text for amount held in stock
 		foreach (var i in grid.GetComponentsInChildren<Button>())
