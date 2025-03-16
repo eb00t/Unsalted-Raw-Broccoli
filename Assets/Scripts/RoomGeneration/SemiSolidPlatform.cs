@@ -11,6 +11,7 @@ public class SemiSolidPlatform : MonoBehaviour
 {
     private BoxCollider _boxCollider;
     public GameObject playerFeet;
+    public CapsuleCollider playerCollider;
     public LayerMask _layerToIgnore;
     public bool collisionOff;
     public bool canDropThrough;
@@ -30,27 +31,26 @@ public class SemiSolidPlatform : MonoBehaviour
             playerFeet = GameObject.FindWithTag("Player Ground Position");
         }
         _characterMovement = playerFeet.GetComponentInParent<CharacterMovement>();
+        playerCollider = playerFeet.GetComponentInParent<CapsuleCollider>();
     }
 
 
-    public void TurnOffCollision(LayerMask layerMask)
+    private void TurnOffCollision(Collider col)
     {
         collisionOff = true;
-        _boxCollider.excludeLayers += layerMask;
+        Physics.IgnoreCollision(col, _boxCollider, true);
     }
-    public void TurnOnCollision(LayerMask layerMask)
+    private void TurnOnCollision(Collider col)
     {
         collisionOff = false;
-        _boxCollider.excludeLayers -= layerMask;
+        Physics.IgnoreCollision(col, _boxCollider, false);
     }
-
-
+    
     private void Update()
     {
         if (_characterMovement.isCrouching && canDropThrough)
         {
-            _layerToIgnore = LayerMask.GetMask("Player");
-            TurnOffCollision(_layerToIgnore);
+            TurnOffCollision(playerCollider);
             
             if (SceneManager.GetActiveScene().name.Equals("Tutorial")) return;
             
@@ -62,8 +62,8 @@ public class SemiSolidPlatform : MonoBehaviour
 
         if (playerFeet.transform.position.y < transform.position.y && collisionOff == false)
         {
-            TurnOffCollision(_layerToIgnore);
-
+            TurnOffCollision(playerCollider);
+            
             if (SceneManager.GetActiveScene().name.Equals("Tutorial")) return;
             
             if (LevelBuilder.Instance.bossRoomGeneratingFinished)
@@ -74,7 +74,7 @@ public class SemiSolidPlatform : MonoBehaviour
         }
         else if (playerFeet.transform.position.y > transform.position.y && canDropThrough == false && collisionOff)
         {
-            TurnOnCollision(_layerToIgnore);
+            TurnOnCollision(playerCollider);
             
             if (SceneManager.GetActiveScene().name.Equals("Tutorial")) return;
             

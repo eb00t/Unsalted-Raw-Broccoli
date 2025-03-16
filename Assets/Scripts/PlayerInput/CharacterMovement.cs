@@ -61,10 +61,7 @@ public class CharacterMovement : MonoBehaviour
         if (uiOpen) return;
         if (ctx.ReadValue<float>() > 0)
         {
-            if (grounded)
-            {
-                isCrouching = true;
-            }
+            isCrouching = true;
         }
         else
         {

@@ -32,7 +32,11 @@ public class NextLevelTrigger : MonoBehaviour
         }
         if (other.CompareTag("Player"))
         {
-            BlackoutManager.Instance.RaiseOpacity();
+            if (SceneManager.GetActiveScene().name != "Tutorial")
+            {
+                BlackoutManager.Instance.RaiseOpacity();
+            }
+            
             gameObject.GetComponent<BoxCollider>().enabled = false;
             StartCoroutine(LoadNextScene(scene));
         }

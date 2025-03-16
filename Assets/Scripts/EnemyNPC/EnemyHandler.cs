@@ -400,7 +400,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (!SceneManager.GetActiveScene().name.Contains("Tutorial"))
         {
             Spawner.spawnedEnemy = null;
-            Spawner.SpawnEnemies();
+            Spawner.SpawnEnemies(); 
+        }
+        else if (SceneManager.GetActiveScene().name.Contains("Tutorial"))
+        {
+            _target.GetComponent<TutorialController>().EnemyDefeated();
         }
 
         gameObject.SetActive(false);

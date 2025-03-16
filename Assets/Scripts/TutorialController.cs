@@ -1,111 +1,343 @@
 using System;
+using FMODUnity;
+using Unity.VisualScripting;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 // this script manages the tutorial for the player by making sure the player does important actions to play the game
-// TODO: i apologise if this script is a mess, this will be updated for final submission
 public class TutorialController : MonoBehaviour
 {
     private GameObject _player;
     private ItemPickupHandler _itemPickupHandler;
-    
-    [SerializeField] private bool _hasMoved; // Movement (Left/Right)
-    [SerializeField]private bool _hasJumped; // Jumping
-    [SerializeField]private bool _hasDoubleJumped; // Double Jump
-    [SerializeField]private bool _hasCrouched; // Crouch
-    [SerializeField]private int _itemsFound; // Find 2 items
-    [SerializeField]private bool _hasSwitchedItem; // toggle/switch items
-    [SerializeField]private bool _useItem; // use an item
-    [SerializeField]private bool _hasPaused; // pause game
-    [SerializeField]private bool _hasExitedUI; // close the pause menu to learn about going back
-    [SerializeField]private bool _hasOpenedInventory; // quickly open the inventory
-    [SerializeField]private bool _hasFoundEnemy; // explore and find enemy
-    [SerializeField]private bool _hasLockedOn; // lock onto enemy
-    [SerializeField]private bool _hasLightAttacked; // light attack enemy
-    [SerializeField]private bool _hasHeavyAttacked; // heavy attack enemy
-    // talk about attack combos
-    private bool _isEnemyDead; // when the enemy dies direct player to the end of the tutorial to start the game
-    
+    private int _doubleJumpCount;
+
+    [SerializeField] private GameObject doorItem1, doorItem2, doorUp, doorToEnemy, doorToEnd;
+    [SerializeField] private GameObject arrowItem1, arrowItem1Back, arrowItem2, arrowItem2Back, arrowUp, arrowToEnemy, arrowToEnd1, arrowToEnd2;
+    [SerializeField] private GameObject highLight1, hightLight2, hightLight3, hightLight4;
+
+    [SerializeField] private GameObject enemy;
+    [SerializeField] private float rangeToEnemy;
+
+    public enum TutorialStep
+    {
+        Move,
+        Jump,
+        DoubleJump,
+        Crouch,
+        FindItems,
+        SwitchItem,
+        UseItem,
+        PauseGame,
+        ExitUI,
+        OpenInventory,
+        FindEnemy,
+        LockOn,
+        LightAttack,
+        HeavyAttack,
+        DefeatEnemy,
+        Complete
+    }
+
+    [SerializeField] private TutorialStep _currentStep = TutorialStep.Move;
+    private int _itemsFound;
+
     private void Start()
     {
         if (!SceneManager.GetActiveScene().name.Equals("Tutorial"))
         {
-           enabled = false; 
+            enabled = false;
+            return;
         }
-        
-        _player = GameObject.Find("PlayerCharacter");
-        _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
-    }
 
+        _player = gameObject;
+        _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+        ShowPrompt();
+    }
+    
     private void Update()
     {
-        if (!_hasMoved)
+        if (_currentStep == TutorialStep.FindEnemy)
         {
-            _itemPickupHandler.TogglePrompt("Move left and right with", true, ControlsManager.ButtonType.LThumbstick);
+            var dist = Vector3.Distance(_player.transform.position, enemy.transform.position);
+            if (dist <= rangeToEnemy)
+            {
+                AdvanceStep();
+            }
         }
-        else if (!_hasJumped)
+    }
+
+    private void AdvanceStep()
+    {
+        if (_currentStep == TutorialStep.Complete)
         {
-            _itemPickupHandler.TogglePrompt("Jump by pressing", true, ControlsManager.ButtonType.ButtonSouth);
+            return;
         }
-        else if (!_hasDoubleJumped)
+        
+        _currentStep++;
+        Debug.Log($"Tutorial advanced to: {_currentStep}");
+        ShowPrompt();
+    }
+
+    public void EnemyDefeated()
+    {
+        if (_currentStep != TutorialStep.DefeatEnemy && _currentStep != TutorialStep.LightAttack &&
+            _currentStep != TutorialStep.HeavyAttack && _currentStep != TutorialStep.LockOn) return;
+        
+        arrowToEnd1.SetActive(true);
+        arrowToEnd2.SetActive(true);
+        doorToEnd.SetActive(false);
+        AdvanceStep();
+    }
+
+    private void ShowPrompt()
+    {
+        switch (_currentStep)
         {
-            _itemPickupHandler.TogglePrompt("To double jump twice or jump while in the air", true, ControlsManager.ButtonType.ButtonSouth);
+            case TutorialStep.Move:
+                ShowMessage("Move left and right with", ControlsManager.ButtonType.LThumbstick);
+                break;
+            case TutorialStep.Jump:
+                ShowMessage("Jump by pressing", ControlsManager.ButtonType.ButtonSouth);
+                break;
+            case TutorialStep.DoubleJump:
+                ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.ButtonSouth);
+                break;
+            case TutorialStep.Crouch:
+                ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.LThumbstickDown);
+                break;
+            case TutorialStep.FindItems:
+                ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.ButtonEast);
+                break;
+            case TutorialStep.SwitchItem:
+                ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.DpadEast);
+                break;
+            case TutorialStep.UseItem:
+                ShowMessage("Use an item by pressing", ControlsManager.ButtonType.DpadNorth);
+                break;
+            case TutorialStep.PauseGame:
+                ShowMessage("Pause the game by pressing", ControlsManager.ButtonType.Start);
+                break;
+            case TutorialStep.ExitUI:
+                ShowMessage("Exit the pause menu by pressing", ControlsManager.ButtonType.ButtonEast);
+                break;
+            case TutorialStep.OpenInventory:
+                ShowMessage("Quickly open the inventory by pressing", ControlsManager.ButtonType.DpadSouth);
+                break;
+            case TutorialStep.FindEnemy:
+                ShowMessage("Find an enemy by exploring the rooms", ControlsManager.ButtonType.LThumbstick);
+                break;
+            case TutorialStep.LockOn:
+                ShowMessage("Lock onto an enemy by pressing", ControlsManager.ButtonType.RThumbstickDown);
+                break;
+            case TutorialStep.LightAttack:
+                ShowMessage("Perform a light attack", ControlsManager.ButtonType.ButtonWest);
+                break;
+            case TutorialStep.HeavyAttack:
+                ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.ButtonNorth);
+                break;
+            case TutorialStep.DefeatEnemy:
+                ShowMessage("Defeat the enemy", ControlsManager.ButtonType.ButtonWest);
+                break;
+            case TutorialStep.Complete:
+                ShowMessage("Tutorial complete! You may now continue to the game", ControlsManager.ButtonType.LThumbstick);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-        else if (!_hasCrouched)
+    }
+
+    private void ShowMessage(string message, ControlsManager.ButtonType button)
+    {
+        _itemPickupHandler.TogglePrompt(message, true, button);
+    }
+
+    public void OnItemPickedUp()
+    {
+        _itemsFound++;
+        if (_currentStep != TutorialStep.FindItems) return;
+        
+        if (_itemsFound == 1)
         {
-            _itemPickupHandler.TogglePrompt("Crouching allows you to go through certain platforms to fall through them, to crouch press", true, ControlsManager.ButtonType.LThumbstickDown);
+            arrowItem1.SetActive(false);
+            arrowItem1Back.SetActive(true);
+            doorItem2.SetActive(false);
+            arrowItem2.SetActive(true);
         }
-        else if (_itemsFound < 2)
+
+        if (_itemsFound >= 2 && _currentStep == TutorialStep.FindItems)
         {
-            _itemPickupHandler.TogglePrompt("Find and pick up two items, pick them up by pressing", true, ControlsManager.ButtonType.ButtonEast);
+            arrowItem2.SetActive(false);
+            
+            AdvanceStep();
         }
-        else if (_itemsFound == 2 && !_hasSwitchedItem)
+    }
+
+    public void HasPlayerMoved(InputAction.CallbackContext context)
+    {
+        if (context.ReadValue<float>() > 0.1f && _currentStep == TutorialStep.Move)
         {
-            _itemPickupHandler.TogglePrompt("To switch between items press", true, ControlsManager.ButtonType.DpadEast);
+            AdvanceStep();
         }
-        else if (_itemsFound == 2 && !_useItem && _hasSwitchedItem)
+    }
+
+    public void PlayerJumped(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        if (_currentStep == TutorialStep.Jump)
         {
-            _itemPickupHandler.TogglePrompt("To use an item press", true, ControlsManager.ButtonType.DpadNorth);
+            AdvanceStep();
         }
-        else if (!_hasPaused && _useItem)
+        else if (_currentStep == TutorialStep.DoubleJump)
         {
-            _itemPickupHandler.TogglePrompt("To access the pause menu press", true, ControlsManager.ButtonType.Start);
+            _doubleJumpCount++;
+            if (_doubleJumpCount >= 2)
+            {
+                AdvanceStep();
+                highLight1.SetActive(true);
+                hightLight2.SetActive(true);
+                hightLight3.SetActive(true);
+                hightLight4.SetActive(true);
+            }
         }
-        else if (!_hasExitedUI)
+    }
+
+    public void PlayerCrouched(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        if (_currentStep == TutorialStep.Crouch)
         {
-            _itemPickupHandler.TogglePrompt("To go back press", true, ControlsManager.ButtonType.ButtonEast);
+            highLight1.SetActive(false);
+            hightLight2.SetActive(false);
+            hightLight3.SetActive(false);
+            hightLight4.SetActive(false);
+            
+            AdvanceStep();
+            if (_itemsFound == 0)
+            {
+                doorItem1.SetActive(false);
+                arrowItem1.SetActive(true);
+            }
         }
-        else if (!_hasOpenedInventory)
+    }
+
+    public void ItemSwitched(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        var dir = context.ReadValue<Vector2>();
+        
+        if (_currentStep == TutorialStep.SwitchItem)
         {
-            _itemPickupHandler.TogglePrompt("Quickly open the inventory by pressing", true, ControlsManager.ButtonType.DpadSouth);
+            switch (dir.x, dir.y)
+            {
+                case (1, 0): // right (1)
+                    break;
+                case (-1, 0): // left (3)
+                    break;
+                default:
+                    return;
+            }
+            
+            AdvanceStep();
         }
-        else if (!_hasOpenedInventory)
+    }
+    
+    public void ItemUsed(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        var dir = context.ReadValue<Vector2>();
+        
+        if (_currentStep == TutorialStep.UseItem)
         {
-            _itemPickupHandler.TogglePrompt("Quickly open the inventory by pressing", true, ControlsManager.ButtonType.DpadSouth);
+            switch (dir.x, dir.y)
+            {
+                case (0, 1): // up
+                    break;
+                default:
+                    return;
+            }
+            
+            AdvanceStep();
         }
-        else if (!_hasFoundEnemy)
+    }
+
+    public void OpenPause(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        if (_currentStep == TutorialStep.PauseGame)
         {
-            _itemPickupHandler.TogglePrompt("Find an enemy by exploring the rooms", true, ControlsManager.ButtonType.LThumbstick);
+            AdvanceStep();
         }
-        else if (_hasFoundEnemy && !_hasLockedOn)
+    }
+    
+    public void GoBack(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        Debug.Log("goback called");
+        if (_currentStep == TutorialStep.ExitUI)
         {
-            _itemPickupHandler.TogglePrompt("To lock onto an enemy press", true, ControlsManager.ButtonType.RThumbstickDown);
+            AdvanceStep();
         }
-        else if (_hasLockedOn && !_hasLightAttacked)
+    }
+
+    public void InventoryOpened(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        var dir = context.ReadValue<Vector2>();
+        
+        if (_currentStep == TutorialStep.OpenInventory)
         {
-            _itemPickupHandler.TogglePrompt("Perform a light attack", true, ControlsManager.ButtonType.ButtonWest);
+            switch (dir.x, dir.y)
+            {
+                case (0, -1): // down
+                    break;
+                default:
+                    return;
+            }
+            
+            AdvanceStep();
+            
+            arrowItem2Back.SetActive(true);
+            arrowUp.SetActive(true);
+            arrowToEnemy.SetActive(true);
+            doorToEnemy.SetActive(false);
+            doorUp.SetActive(false);
         }
-        else if (_hasLightAttacked && !_hasHeavyAttacked)
+    }
+
+    public void TryLockOn(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        
+        if (_currentStep == TutorialStep.LockOn)
         {
-            _itemPickupHandler.TogglePrompt("Perform a heavy attack", true, ControlsManager.ButtonType.ButtonNorth);
+            AdvanceStep();
         }
-        else if (_hasLightAttacked && _hasHeavyAttacked && !_isEnemyDead)
+    }
+    
+    public void TryLightAttack(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        
+        if (_currentStep == TutorialStep.LightAttack)
         {
-            _itemPickupHandler.TogglePrompt("Defeat the enemy", true, ControlsManager.ButtonType.ButtonWest);
+            AdvanceStep();
         }
-        else if (_isEnemyDead)
+    }
+    
+    public void TryHeavyAttack(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        
+        if (_currentStep == TutorialStep.HeavyAttack)
         {
-            _itemPickupHandler.TogglePrompt("That's the tutorial! You may now continue to the game", true, ControlsManager.ButtonType.LThumbstick);
+            AdvanceStep();
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, rangeToEnemy);
     }
 }
