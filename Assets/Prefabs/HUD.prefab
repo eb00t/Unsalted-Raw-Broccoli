@@ -447,6 +447,7 @@ GameObject:
   - component: {fileID: 673992785845343682}
   - component: {fileID: 9102254706887592176}
   - component: {fileID: 5055474455803443449}
+  - component: {fileID: 3327727188670059219}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -543,6 +544,21 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3327727188670059219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186657055044339449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8479a28f91e220b46b86a9b3df9b6e39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollRect: {fileID: 5055474455803443449}
+  viewportRectTransform: {fileID: 2491507298227521140}
+  contentRectTransform: {fileID: 2426840947234421266}
 --- !u!1 &258740977302067208
 GameObject:
   m_ObjectHideFlags: 0
@@ -11823,7 +11839,7 @@ MonoBehaviour:
     type: 3}
   m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
-  m_DeselectOnBackgroundClick: 1
+  m_DeselectOnBackgroundClick: 0
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
 --- !u!1 &5190054297088042448
@@ -16043,6 +16059,7 @@ GameObject:
   - component: {fileID: 7231829183509649105}
   - component: {fileID: 9101855205036889080}
   - component: {fileID: 6191641369816282807}
+  - component: {fileID: 9029079610996043799}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -16139,6 +16156,21 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &9029079610996043799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6707104593290864279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8479a28f91e220b46b86a9b3df9b6e39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollRect: {fileID: 6191641369816282807}
+  viewportRectTransform: {fileID: 7037922072242949338}
+  contentRectTransform: {fileID: 3434076548209023037}
 --- !u!1 &6750216198899185326
 GameObject:
   m_ObjectHideFlags: 0

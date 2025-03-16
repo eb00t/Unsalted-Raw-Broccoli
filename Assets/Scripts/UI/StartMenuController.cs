@@ -48,6 +48,11 @@ public class StartMenuController : MonoBehaviour
 		eventSystem.SetSelectedGameObject(g);
 	}
 
+	public void StartTutorial()
+	{
+		SceneManager.LoadScene("Tutorial");
+	}
+
 	public void Back(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;

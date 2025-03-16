@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class ControlsManager : MonoBehaviour
 {
@@ -42,6 +43,7 @@ public class ControlsManager : MonoBehaviour
 
     private void Start()
     {
+        if (SceneManager.GetActiveScene().name == "StartScreen") return;
         _player = GameObject.Find("PlayerCharacter");
         _characterMovement = _player.GetComponent<CharacterMovement>();
     }
@@ -64,13 +66,20 @@ public class ControlsManager : MonoBehaviour
             dataHolder.isGamepad = false;
         }
 
-        if (_characterMovement.uiOpen && !diedScreen.activeSelf)
+        if (SceneManager.GetActiveScene().name != "StartScreen")
         {
-            keyboardInteractBack = "Esc";
+            if (_characterMovement.uiOpen && !diedScreen.activeSelf)
+            {
+                keyboardInteractBack = "Esc";
+            }
+            else
+            {
+                keyboardInteractBack = "F";
+            }
         }
         else
         {
-            keyboardInteractBack = "F";
+            keyboardInteractBack = "Esc";
         }
         
         if (KeyboardStrings.ContainsKey(ButtonType.ButtonEast))

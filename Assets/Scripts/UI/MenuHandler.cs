@@ -20,6 +20,7 @@ public class MenuHandler : MonoBehaviour
 	[Header("Navigation")]
 	[SerializeField] private EventSystem eventSystem;
 	[SerializeField] private GameObject selectedMenu, selectedEquip, slots;
+	private GameObject _lastSelected;
 
 	public GameObject shopGUI;
 
@@ -174,6 +175,13 @@ public class MenuHandler : MonoBehaviour
 	{
 		eventSystem.SetSelectedGameObject(null);
 		eventSystem.SetSelectedGameObject(g);
+		_lastSelected = g;
+	}
+	
+	private void OnApplicationFocus(bool hasFocus)
+	{
+		if (!hasFocus) return;
+		SwitchSelected(_lastSelected);
 	}
 
 	// If player has items, switches navigation to inventory to add item to selected toolbar index when toolbar button is pressed
