@@ -30,12 +30,6 @@ public class StartMenuController : MonoBehaviour
 		SwitchSelected(playBtn);
 	}
 
-	public void StartGame()
-	{
-		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-		ButtonHandler.Instance.PlayConfirmSound();
-	}
-
 	public void QuitGame()
 	{
 		Application.Quit();
@@ -48,9 +42,10 @@ public class StartMenuController : MonoBehaviour
 		eventSystem.SetSelectedGameObject(g);
 	}
 
-	public void StartTutorial()
+	public void LoadScene(string sceneName)
 	{
-		SceneManager.LoadScene("Tutorial");
+		ButtonHandler.Instance.PlayConfirmSound();
+		SceneManager.LoadScene(sceneName);
 	}
 
 	public void Back(InputAction.CallbackContext context)

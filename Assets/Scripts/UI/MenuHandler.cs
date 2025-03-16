@@ -218,6 +218,11 @@ public class MenuHandler : MonoBehaviour
 		ButtonHandler.Instance.PlayBackSound();
 	}
 
+	public void LoadScene(string scene)
+	{
+		SceneManager.LoadScene(scene);
+	}
+
 	public void Quit() // quits game
 	{
 		ButtonHandler.Instance.PlayBackSound();
