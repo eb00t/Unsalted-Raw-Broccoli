@@ -49,6 +49,12 @@ public class MenuHandler : MonoBehaviour
 			characterMovement.uiOpen = false;
 			Time.timeScale = 1;
 		}
+
+		if (eventSystem.currentSelectedGameObject != _lastSelected)
+		{
+			// PLAY SOUND EFFECT HERE
+			_lastSelected = eventSystem.currentSelectedGameObject;
+		}
 	}
 
 	// opens equip menu (with inventory), hides other menus and resets interaction bool to prevent unwanted ui navigation
