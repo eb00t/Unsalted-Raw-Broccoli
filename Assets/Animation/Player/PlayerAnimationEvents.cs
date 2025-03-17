@@ -34,11 +34,13 @@ public class PlayerAnimationEvents : MonoBehaviour
     private void disablePlayerMovement()
     {
         charMovement.allowMovement = false;
+        charMovement.walkAllowed = false;
     }
 
     private void enablePlayerMovement()
     {
         charMovement.allowMovement = true;
+        charMovement.walkAllowed = true;
     }
 
     private void signalAnimationEnd()

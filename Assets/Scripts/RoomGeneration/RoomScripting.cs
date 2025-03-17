@@ -90,7 +90,7 @@ public class RoomScripting : MonoBehaviour
             Debug.Log("Last enemy count: " + lastEnemyCount);
             lastEnemyCount = _enemyCount;
             
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(.25f);
         }
     }
 

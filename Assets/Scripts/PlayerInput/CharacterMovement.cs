@@ -10,7 +10,7 @@ public class CharacterMovement : MonoBehaviour
     Rigidbody rb;
     BoxCollider groundCheck;
     Animator PlayerAnimator;
-    bool walkAllowed = true;
+    public bool walkAllowed = true;
 
     public bool allowMovement = true;
 
@@ -59,6 +59,7 @@ public class CharacterMovement : MonoBehaviour
     public void Crouch(InputAction.CallbackContext ctx)
     {
         if (uiOpen) return;
+        if (!allowMovement) return;
         if (ctx.ReadValue<float>() > 0)
         {
             isCrouching = true;
@@ -72,6 +73,7 @@ public class CharacterMovement : MonoBehaviour
     public void XAxis(InputAction.CallbackContext ctx)
     {
         if (uiOpen) return;
+        if (!walkAllowed) return;
         input = ctx.ReadValue<float>();
         PlayerAnimator.SetFloat("Input", input);
     }
@@ -205,7 +207,6 @@ public class CharacterMovement : MonoBehaviour
             if (BlackoutManager.Instance.blackoutComplete == false)
             {
                 allowMovement = false;
-                Velocity = Vector3.zero;
                 walkAllowed = false;
             }
             else if (BlackoutManager.Instance.blackoutComplete && uiOpen == false)
