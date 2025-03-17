@@ -128,6 +128,11 @@ public class AudioManager : MonoBehaviour
         eventInstance.setParameterByName(parameterName, parameterValue);
     }
     
+    public void SetGlobalEventParameter(string parameterName, float parameterValue)
+    {
+        RuntimeManager.StudioSystem.setParameterByName(parameterName, parameterValue);
+    }
+    
     //AMBIENCE FUNCTIONS
     private void InitialiseAmbience(EventReference ambienceEventReference)
     {

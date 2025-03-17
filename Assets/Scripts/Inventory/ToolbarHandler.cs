@@ -225,7 +225,6 @@ public class ToolbarHandler : MonoBehaviour
     // updates the number of the specified item id held in dataholder
     public void UseItemEffect(Consumable consumable)
     {
-        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemActivate, transform.position);
         switch (consumable.consumableEffect)
         {
             case ConsumableEffect.None:
@@ -236,26 +235,32 @@ public class ToolbarHandler : MonoBehaviour
                 _characterAttack.TakeDamagePlayer((int)-newHealth);
                 break;
             case ConsumableEffect.GiveCurrency: // gives the player money
+                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.CurrencyPickup, transform.position);
                 _currencyManager.UpdateCurrency((int)consumable.effectAmount);
                 break;
             case ConsumableEffect.Poison: //  attacks have a chance to proc poison on enemies
+                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemActivate, transform.position);
                 StartCoroutine(ActivateStatusEffect(consumable));
                 _playerStatus.AddNewStatus(consumable);
                 break;
             case ConsumableEffect.Ice: // attacks have a chance to freeze enemies for a time
+                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemActivate, transform.position);
                 StartCoroutine(ActivateStatusEffect(consumable));
                 _playerStatus.AddNewStatus(consumable);
                 break;
             case ConsumableEffect.DamageBuff: // provides the player a non-stackable attack buff
+                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemActivate, transform.position);
                 StartCoroutine(ActivateAtkBuff(consumable));
                 break;
             case ConsumableEffect.Invincibility: // gives player up to 3 hits without taking damage
                 if (_characterAttack.isInvincible >= 3) return;
+                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemActivate, transform.position);
                 _characterAttack.isInvincible += (int)consumable.effectAmount;
                 consumable.statusText = _characterAttack.isInvincible.ToString();
                 _playerStatus.AddNewStatus(consumable);
                 break;
-            case ConsumableEffect.RouletteHeal: // ?
+            case ConsumableEffect.RouletteHeal: // Has a chance to either heal or harm the player (cannot kill them)
+                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemActivate, transform.position);
                 Debug.LogWarning("Roulette heal has no effect.");
                 break;
             case ConsumableEffect.HorseFact: // enemy deaths in vicinity have a chance to show fact about a horse

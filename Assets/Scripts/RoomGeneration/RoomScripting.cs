@@ -20,6 +20,7 @@ public class RoomScripting : MonoBehaviour
     public bool playerIsInRoom;
     public bool playerHasEnteredRoom;
     public bool roomHadEnemies;
+    public bool bossDead;
     private bool _musicHasChanged;
     private bool _lootSpawned;
     public CinemachineVirtualCamera _roomCam;
@@ -82,7 +83,7 @@ public class RoomScripting : MonoBehaviour
                 StopCoroutine(CheckIfRoomHasEnemies());
             }
 
-            if (lastEnemyCount != _enemyCount)
+            if (lastEnemyCount > _enemyCount)
             {
                 ChangeCombatWeight();
             }
@@ -100,7 +101,18 @@ public class RoomScripting : MonoBehaviour
             door.GetComponent<DoorInfo>().OpenDoor();
             door.GetComponent<DoorInfo>().closed = false;
         }
-        AudioManager.Instance.SetMusicParameter("Music Track", 0);
+        if (_roomInfo.bossRoom && bossDead)
+        {
+            Debug.Log("Boss dead");
+        }
+        else if ( bossDead)
+        {
+            AudioManager.Instance.SetGlobalEventParameter("Music Track", 4);
+        }
+        else
+        {
+            AudioManager.Instance.SetGlobalEventParameter("Music Track", 0);
+        }
         allDoorsClosed = false;
     }
 
@@ -113,11 +125,11 @@ public class RoomScripting : MonoBehaviour
         }
         if (allDoorsClosed == false && _roomInfo.bossRoom == false)
         {
-            AudioManager.Instance.SetMusicParameter("Music Track", 1);
+            AudioManager.Instance.SetGlobalEventParameter("Music Track", 1);
         }
         else if (allDoorsClosed == false && _roomInfo.bossRoom)
         {
-            AudioManager.Instance.SetMusicParameter("Music Track", 2);
+            AudioManager.Instance.SetGlobalEventParameter("Music Track", 2);
         }
         allDoorsClosed = true;
         foreach (var spawner in spawners)
@@ -155,7 +167,15 @@ public class RoomScripting : MonoBehaviour
 
     void ExitSpecialRoom()
     {
-        AudioManager.Instance.SetMusicParameter("Music Track", 0);
+        if (bossDead)
+        {
+            AudioManager.Instance.SetGlobalEventParameter("Music Track", 4);
+        }
+        else
+        {
+            AudioManager.Instance.SetGlobalEventParameter("Music Track", 0);
+        }
+
         _musicHasChanged = false;
     }
     
