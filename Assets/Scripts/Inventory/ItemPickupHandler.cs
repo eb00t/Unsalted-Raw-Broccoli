@@ -61,13 +61,12 @@ public class ItemPickupHandler : MonoBehaviour
     public void PickUpItem(InputAction.CallbackContext context)
     {
         if (!context.performed || characterMovement.uiOpen) return;
-
-        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemPickup, transform.position);
         
         foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
         {
             var itemPickup = item.GetComponent<ItemPickup>();
             if (itemPickup == null || !itemPickup.canPickup) continue;
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemPickup, transform.position);
             itemPickup.AddItemToInventory();
         }
     }

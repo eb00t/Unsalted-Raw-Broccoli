@@ -225,6 +225,7 @@ public class ToolbarHandler : MonoBehaviour
     // updates the number of the specified item id held in dataholder
     public void UseItemEffect(Consumable consumable)
     {
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemActivate, transform.position);
         switch (consumable.consumableEffect)
         {
             case ConsumableEffect.None:
