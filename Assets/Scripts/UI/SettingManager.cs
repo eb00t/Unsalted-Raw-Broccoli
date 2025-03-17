@@ -2,12 +2,14 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class SettingManager : MonoBehaviour
 {
     private InventoryStore _inventoryStore;
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private Slider masterSlider, musicSlider, sfxSlider;
+    [SerializeField] private TMP_Dropdown controlSchemeDropdown;
     private float _currentSlider;
     private AudioManager _audioManager;
     private GameObject _lastSelected;
@@ -77,9 +79,9 @@ public class SettingManager : MonoBehaviour
         }
     }
 
-    public void ForceControlScheme(int controlScheme)
+    public void ForceControlScheme()
     {
-        switch (controlScheme)
+        switch (controlSchemeDropdown.value)
         {
             case 0: // automatically detect control scheme
                 dataHolder.forceControlScheme = false;
