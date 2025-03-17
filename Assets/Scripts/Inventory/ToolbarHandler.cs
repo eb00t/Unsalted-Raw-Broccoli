@@ -3,15 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FMOD.Studio;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using Vector2 = UnityEngine.Vector2;
+using UnityEngine.UI;
 
-
-// TODO: Item type that gets used as soon as its picked up
 public class ToolbarHandler : MonoBehaviour
 {
     [Header("Navigation Tracking")]
@@ -20,8 +17,8 @@ public class ToolbarHandler : MonoBehaviour
     
     [Header("Item Tracking")]
     [SerializeField] private List<GameObject> slots;
-    [SerializeField] private List<Consumable> equippedConsumables; // allows flexibility for cycling consumables
-    
+    [SerializeField] private DataHolder dataHolder;
+
     [Header("UI References")]
     [SerializeField] private GameObject grid;
     [SerializeField] private Image toolbarImg;
@@ -38,8 +35,6 @@ public class ToolbarHandler : MonoBehaviour
     public bool isInfoOpen;
     private List<int> _activeAtkBuffs;
     private EventInstance _cycleInstance;
-    
-    [SerializeField] private DataHolder dataHolder;
 
     private void Start()
     {
@@ -51,6 +46,69 @@ public class ToolbarHandler : MonoBehaviour
         _currencyManager = GetComponent<CurrencyManager>();
         _playerStatus = GetComponent<PlayerStatus>();
         _activeAtkBuffs = new List<int>();
+        UpdateActiveConsumables();
+        UpdateSlots();
+        UpdateToolBar();
+    }
+    
+    private void UpdateSlots()
+    {
+        for (var i = 0; i < slots.Count; i++)
+        {
+            var itemID = dataHolder.equippedConsumables.Count > i ? dataHolder.equippedConsumables[i] : 0;
+            var consumable = _inventoryStore.FindConsumable(itemID);
+
+            var slot = slots[i].GetComponent<IndexHolder>();
+            if (consumable != null)
+            {
+                slot.consumable = consumable;
+
+                var index = dataHolder.savedItems.IndexOf(consumable.itemID);
+                if (index >= 0)
+                {
+                    slot.numHeld = dataHolder.savedItemCounts[index];
+                }
+                else
+                {
+                    slot.numHeld = 0;
+                }
+
+                foreach (var img in slot.GetComponentsInChildren<Image>())
+                {
+                    if (img.name != "Image") continue;
+                    img.sprite = consumable.uiIcon;
+                    img.enabled = true;
+                }
+
+                foreach (var text in slot.GetComponentsInChildren<TextMeshProUGUI>())
+                {
+                    if (text.name != "title") continue;
+                    text.text = consumable.title;
+                }
+            }
+            else
+            {
+                slot.consumable = null;
+                slot.numHeld = 0;
+
+                foreach (var img in slot.GetComponentsInChildren<Image>())
+                {
+                    if (img.name == "Image")
+                    {
+                        img.sprite = null;
+                        img.enabled = false;
+                    }
+                }
+
+                foreach (var text in slot.GetComponentsInChildren<TextMeshProUGUI>())
+                {
+                    if (text.name == "title")
+                    {
+                        text.text = "";
+                    }
+                }
+            }
+        }
     }
 
     // triggered when a player clicks on an item when browsing the inventory menu
@@ -58,9 +116,7 @@ public class ToolbarHandler : MonoBehaviour
     {
         // gets the consumable script on gameobject, gets the image and title, calls method to add inv item to toolbar
         var consumable = indexHolder.consumable;
-
         AddToToolbar(consumable);
-        
         _menuHandler.ToggleEquip(); // once item is added go back to equip menu (slots gameobject)
     }
 
@@ -69,14 +125,23 @@ public class ToolbarHandler : MonoBehaviour
     {
         foreach (var slot in slots)
         {
-            if (slot.GetComponent<IndexHolder>().consumable == null) continue;
+            var indexHolder = slot.GetComponent<IndexHolder>();
             
-            if (slot.GetComponent<IndexHolder>().consumable.title == consumable.title)
+            if (indexHolder.consumable != null && indexHolder.consumable.itemID == consumable.itemID)
             {
-                slot.GetComponent<IndexHolder>().consumable = null;
+                foreach (var img in slot.GetComponentsInChildren<Image>())
+                {
+                    if (img.name == "Image")
+                    {
+                        img.sprite = null;
+                        img.enabled = false;
+                    }
+                }
+
+                indexHolder.consumable = null;
             }
         }
-
+        
         if (dataHolder.isAutoEquipEnabled && !_characterMovement.uiOpen)
         {
             foreach (var slot in slots)
@@ -93,31 +158,32 @@ public class ToolbarHandler : MonoBehaviour
             slots[slotNo].GetComponent<IndexHolder>().consumable = consumable;
         }
         
-        foreach (var s in slots)
+        foreach (var slot in slots)
         {
-            foreach (var img in s.GetComponentsInChildren<Image>())
-            {
-                var con = s.GetComponent<IndexHolder>().consumable;
-                if (con == null) continue;
+            var con = slot.GetComponent<IndexHolder>().consumable;
+            if (con == null) continue;
 
+            foreach (var img in slot.GetComponentsInChildren<Image>())
+            {
                 if (img.name == "Image")
                 {
                     img.sprite = con.uiIcon;
                     img.enabled = true;
                 }
+            }
 
-                foreach (var t in s.GetComponentsInChildren<TextMeshProUGUI>())
+            foreach (var txt in slot.GetComponentsInChildren<TextMeshProUGUI>())
+            {
+                if (txt.name == "title")
                 {
-                    if (t.name == "title")
-                    {
-                        t.text = con.title;
-                    }
+                    txt.text = con.title;
                 }
             }
         }
-
+        
         UpdateActiveConsumables();
     }
+
 
     // triggers when a direction on the dpad is pressed
     public void SlotItemActivated(InputAction.CallbackContext context)
@@ -127,7 +193,7 @@ public class ToolbarHandler : MonoBehaviour
         if (_characterMovement.uiOpen) return;
 
         var dir = context.ReadValue<Vector2>();
-
+        
         // do something based on which direction is pressed
         switch (dir.x, dir.y)
         {
@@ -151,15 +217,46 @@ public class ToolbarHandler : MonoBehaviour
     // checks a consumables effect and triggers it based on which consumable is active (num = slot active)
     private void CheckItemEffect()
     {
-        if (equippedConsumables.Count <= 0 || equippedConsumables[_activeConsumable] == null) return;
-        
-        UseItemEffect(equippedConsumables[_activeConsumable]);
-        
-        _inventoryStore.UpdateItemsHeld(equippedConsumables[_activeConsumable]);
-        
-        UpdateCurrentTool();
-    }
+        if (dataHolder.equippedConsumables.Count == 0) return;
 
+        var itemID = dataHolder.equippedConsumables[_activeConsumable];
+        if (itemID == 0) return;
+
+        var consumable = _inventoryStore.FindConsumable(itemID);
+        if (consumable == null) return;
+
+        UseItemEffect(consumable);
+
+        var itemIndex = dataHolder.savedItems.IndexOf(itemID);
+        if (itemIndex >= 0)
+        {
+            dataHolder.savedItemCounts[itemIndex] -= 1;
+        }
+
+        if (dataHolder.savedItemCounts[itemIndex] <= 0)
+        {
+            dataHolder.equippedConsumables.RemoveAt(_activeConsumable);
+            dataHolder.savedItems.RemoveAt(itemIndex);
+            dataHolder.savedItemCounts.RemoveAt(itemIndex);
+
+            if (_activeConsumable >= dataHolder.equippedConsumables.Count)
+            {
+                _activeConsumable = dataHolder.equippedConsumables.Count - 1;
+            }
+
+            if (_activeConsumable < 0)
+            {
+                toolbarImg.enabled = false;
+                toolbarImg.sprite = null;
+                toolbarTxt.text = "-";
+            }
+        }
+
+        UpdateSlots();
+        UpdateToolBar();
+        _inventoryStore.UpdateItemsHeld(consumable);
+    }
+    
     public void UseItemEffect(Consumable consumable)
     {
         switch (consumable.consumableEffect)
@@ -201,7 +298,7 @@ public class ToolbarHandler : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
     }
-
+    
     private IEnumerator ActivateAtkBuff(Consumable consumable)
     {
         var atkIncrease = (int)((float)_characterAttack.baseAtk / 100 * consumable.effectAmount); // converts percentage to value
@@ -243,14 +340,15 @@ public class ToolbarHandler : MonoBehaviour
         }
     }
 
-    private void CycleToolbar(int direction) // -1 = left, 1 = right
+    // cycles through the toolbar
+    private void CycleToolbar(int direction)
     { 
         // (equippedConsumables.Any(t => t == null)) return; 
-        if (equippedConsumables.Count == 0) return; // if no consumables are equipped do nothing
+        if (dataHolder.equippedConsumables.Count == 0) return; // if no consumables are equipped do nothing
 
         _cycleInstance = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.CycleItem);
         
-        if (_activeConsumable + direction > equippedConsumables.Count - 1)
+        if (_activeConsumable + direction > dataHolder.equippedConsumables.Count - 1)
         {
             _activeConsumable = 0;
             AudioManager.Instance.SetEventParameter(_cycleInstance, "Cycle Direction", 0);
@@ -258,14 +356,12 @@ public class ToolbarHandler : MonoBehaviour
         }
         else if (_activeConsumable + direction < 0)
         {
-            _activeConsumable = equippedConsumables.Count - 1; 
+            _activeConsumable = dataHolder.equippedConsumables.Count - 1; 
             AudioManager.Instance.SetEventParameter(_cycleInstance, "Cycle Direction", 1);
             //Debug.LogWarning("Index is lower than 0, resetting to list length.");
         }
         else
         {
-            if (_activeConsumable + direction > equippedConsumables.Count - 1) return;
-            
             _activeConsumable += direction;
             //Debug.Log("Moving to next index");
             
@@ -286,7 +382,7 @@ public class ToolbarHandler : MonoBehaviour
     // updates the sprite image, text and if image should be enabled or disabled (to prevent a white box appearing)
     private void UpdateCurrentTool()
     {
-        if (equippedConsumables.Count == 0)
+        if (dataHolder.equippedConsumables.Count == 0)
         {
             toolbarImg.enabled = false;
             toolbarImg.sprite = null;
@@ -294,13 +390,15 @@ public class ToolbarHandler : MonoBehaviour
         }
         else
         {
-            var con = equippedConsumables[_activeConsumable];
+            var itemID = dataHolder.equippedConsumables[_activeConsumable];
+            var consumable = _inventoryStore.FindConsumable(itemID);
+
             toolbarImg.enabled = true;
-            toolbarImg.sprite = con.uiIcon;
+            toolbarImg.sprite = consumable.uiIcon;
 
             foreach (var b in grid.GetComponentsInChildren<IndexHolder>())
             {
-                if (b.consumable == con)
+                if (b.consumable == consumable)
                 {
                     toolbarTxt.text = b.numHeld.ToString();
                 }
@@ -311,7 +409,7 @@ public class ToolbarHandler : MonoBehaviour
     // removes all items from EquippedConsumables list and adds items from indexholders in slots if not null
     private void UpdateToolBar() 
     {
-        equippedConsumables.Clear();
+        dataHolder.equippedConsumables.Clear();
 
         foreach (var ac in slots)
         {
@@ -319,14 +417,14 @@ public class ToolbarHandler : MonoBehaviour
             
             if (consumable != null)
             {
-                equippedConsumables.Add(consumable);
+                dataHolder.equippedConsumables.Add(consumable.itemID);
             }
         }
 
         _activeConsumable = 0;
         UpdateCurrentTool();
     }
-
+    
     public void UpdateActiveConsumables()
     {
         // checks what consumables are in the toolbar (held in children of slots gameobject),
@@ -334,44 +432,41 @@ public class ToolbarHandler : MonoBehaviour
         foreach (var ac in slots)
         {
             var consumable = ac.GetComponent<IndexHolder>().consumable;
-            
             // compares what is in the toolbar to what items are held in inventory
-            if (dataHolder.savedItems.Count > 0 & consumable != null)
+            if (dataHolder.savedItems.Count > 0 && consumable != null)
             {
-                var isInInventory = false;
-                
-                foreach (var i in dataHolder.savedItems)
+                var isInInventory = dataHolder.savedItems.Contains(consumable.itemID);
+                if (!isInInventory)
                 {
-                    if (i == consumable.itemID)
+                    foreach (var s in ac.GetComponentsInChildren<Image>())
                     {
-                        // if the item is in the inventory then stop loop
-                        isInInventory = true;
-                        break;
+                        if (s.name == "Image")
+                        {
+                            s.sprite = null;
+                            s.enabled = false;
+                        }
                     }
-                }
-                
-                // the current slot is not processed if item is in inventory, moves onto next slot
-                if (isInInventory)
-                {
-                    continue;
-                }
-            }
-            
-            // if the checked consumable is not in the inventory then remove the consumable from the toolbar
-            foreach (var s in ac.GetComponentsInChildren<Image>())
-            {
-                if (s.name == "Image")
-                {
-                    s.sprite = null;
-                    s.enabled = false;
-                }
-            }
 
-            ac.GetComponent<IndexHolder>().consumable = null;
+                    ac.GetComponent<IndexHolder>().consumable = null;
+                }
+            }
         }
         
-        UpdateToolBar();
+        foreach (var ac in slots)
+        {
+            var consumable = ac.GetComponent<IndexHolder>().consumable;
+
+            if (consumable != null && !dataHolder.equippedConsumables.Contains(consumable.itemID))
+            {
+                dataHolder.equippedConsumables.Add(consumable.itemID);
+            }
+        }
+
+
+        _activeConsumable = 0;
+        UpdateCurrentTool();
     }
+
 
     public void RemoveFromToolbar(InputAction.CallbackContext context)
     {
@@ -382,13 +477,29 @@ public class ToolbarHandler : MonoBehaviour
         {
             if (EventSystem.current.currentSelectedGameObject == slot)
             {
-                slot.GetComponent<IndexHolder>().consumable = null;
+                var consumable = slot.GetComponent<IndexHolder>().consumable;
+                if (consumable != null)
+                {
+                    dataHolder.equippedConsumables.Remove(consumable.itemID);
+                    
+                    slot.GetComponent<IndexHolder>().consumable = null;
+                    
+                    foreach (var img in slot.GetComponentsInChildren<Image>())
+                    {
+                        if (img.name == "Image")
+                        {
+                            img.sprite = null;
+                            img.enabled = false;
+                        }
+                    }
+                }
             }
         }
         
         UpdateActiveConsumables();
     }
 
+    
     private void Update()
     {
         if (!isInfoOpen) return;

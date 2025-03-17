@@ -51,7 +51,7 @@ public class InventoryStore : MonoBehaviour
         UpdateUI(indexHolder);
     }
     
-    private Consumable FindConsumable(int itemID)
+    public Consumable FindConsumable(int itemID)
     {
         return itemDatabase.allItems.FirstOrDefault(item => item.itemID == itemID);
     }
