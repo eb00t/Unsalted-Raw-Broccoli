@@ -145,6 +145,7 @@ public class CharacterMovement : MonoBehaviour
     public void Dash(InputAction.CallbackContext ctx)
     {
         if (uiOpen) return;
+        if (!allowMovement) return;
         if (ctx.performed && grounded && Mathf.Abs(rb.velocity.x) <= 9.8f) // MAKE A COOLDOWN
         {
             Vector3 dashDir = new Vector3(input, 0f, 0f);

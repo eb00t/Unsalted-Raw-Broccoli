@@ -158,6 +158,22 @@ public class AudioManager : MonoBehaviour
     public void InitialiseMusic(EventReference musicEventReference)
     {
         MusicEventInstance = CreateEventInstance(musicEventReference);
+        if (LevelBuilder.Instance != null)
+        {
+            switch (LevelBuilder.Instance.currentFloor)
+            {
+                case LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial:
+                    SetGlobalEventParameter("Music Track", 5);
+                    break;
+                default:
+                    SetGlobalEventParameter("Music Track", 0);
+                    break;
+            }
+        }
+        else if (LevelBuilder.Instance == null)
+        {
+            SetGlobalEventParameter("Music Track", 0);
+        }
         MusicEventInstance.start();
     }
     public void SetMusicParameter(string parameterName, float parameterValue)
