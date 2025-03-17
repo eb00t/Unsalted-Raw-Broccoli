@@ -67,7 +67,6 @@ public class ToolbarHandler : MonoBehaviour
     // adds consumable to equip menu slot
     public void AddToToolbar(Consumable consumable)
     {
-        // checks if any of the slots already contain the consumable being added and if so it removes it (makes moving items around easier)
         foreach (var slot in slots)
         {
             if (slot.GetComponent<IndexHolder>().consumable == null) continue;
@@ -77,10 +76,9 @@ public class ToolbarHandler : MonoBehaviour
                 slot.GetComponent<IndexHolder>().consumable = null;
             }
         }
-        
+
         if (dataHolder.isAutoEquipEnabled && !_characterMovement.uiOpen)
         {
-            // adds consumable to the first free slot found due to auto equip
             foreach (var slot in slots)
             {
                 if (slot.GetComponent<IndexHolder>().consumable == null)
@@ -92,18 +90,16 @@ public class ToolbarHandler : MonoBehaviour
         }
         else
         {
-            // adds consumable to specific slot when player selects it
             slots[slotNo].GetComponent<IndexHolder>().consumable = consumable;
         }
-
-        // checks each slots consumable and updates their image and title
-        foreach (var s in slots) 
+        
+        foreach (var s in slots)
         {
             foreach (var img in s.GetComponentsInChildren<Image>())
             {
                 var con = s.GetComponent<IndexHolder>().consumable;
                 if (con == null) continue;
-                
+
                 if (img.name == "Image")
                 {
                     img.sprite = con.uiIcon;
@@ -340,13 +336,13 @@ public class ToolbarHandler : MonoBehaviour
             var consumable = ac.GetComponent<IndexHolder>().consumable;
             
             // compares what is in the toolbar to what items are held in inventory
-            if (_inventoryStore.items.Count > 0 & consumable != null)
+            if (dataHolder.savedItems.Count > 0 & consumable != null)
             {
                 var isInInventory = false;
                 
-                foreach (var i in _inventoryStore.items)
+                foreach (var i in dataHolder.savedItems)
                 {
-                    if (i.GetComponent<Consumable>().title == consumable.title)
+                    if (i == consumable.itemID)
                     {
                         // if the item is in the inventory then stop loop
                         isInInventory = true;

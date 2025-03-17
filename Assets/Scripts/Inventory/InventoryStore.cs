@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -10,14 +9,51 @@ public class InventoryStore : MonoBehaviour
     [SerializeField] private GameObject notifPrefab;
     [SerializeField] private GameObject notifHolder;
     public Transform grid;
-    public List<GameObject> items;
     private ToolbarHandler _toolbarHandler;
     [SerializeField] private DataHolder dataHolder;
-    
+    [SerializeField] private ItemDatabase itemDatabase;
+
     private void Start()
     {
         _toolbarHandler = GetComponent<ToolbarHandler>();
+        LoadItems();
         RefreshList();
+    }
+
+    private void LoadItems()
+    {
+        for (var i = 0; i < dataHolder.savedItems.Count; i++)
+        {
+            var itemID = dataHolder.savedItems[i];
+            var itemCount = dataHolder.savedItemCounts[i];
+
+            var item = FindConsumable(itemID);
+            if (item != null)
+            {
+                LoadUI(item, itemCount);
+            }
+        }
+    }
+    
+    private void LoadUI(Consumable item, int itemCount)
+    {
+        var newBlock = Instantiate(block, block.position, block.rotation, grid);
+        newBlock.GetComponentInChildren<TextMeshProUGUI>().text = item.title;
+        var indexHolder = newBlock.GetComponent<IndexHolder>();
+        indexHolder.consumable = item;
+        indexHolder.numHeld = itemCount;
+
+        newBlock.GetComponent<Button>().onClick.AddListener(delegate
+        {
+            _toolbarHandler.InvItemSelected(indexHolder);
+        });
+
+        UpdateUI(indexHolder);
+    }
+    
+    private Consumable FindConsumable(int itemID)
+    {
+        return itemDatabase.allItems.FirstOrDefault(item => item.itemID == itemID);
     }
 
     private void RefreshList()
@@ -30,80 +66,67 @@ public class InventoryStore : MonoBehaviour
             }
         }
         
-        for (var i = 0; i < items.Count; i++)
+        for (var i = 0; i < dataHolder.savedItems.Count; i++)
         {
-	        AddNewItem(items[i].GetComponent<Consumable>());
-        }
-    }
-    
-    public void AddNewItem(Consumable consumable)
-    {
-        // checks if item added exists in inventory, if so it increases the number held and returns
-        if (items.Count > 0)
-        {
-            foreach (var x in items)
+            var itemID = dataHolder.savedItems[i];
+            var itemCount = dataHolder.savedItemCounts[i];
+            var item = FindConsumable(itemID);
+            if (item != null)
             {
-                //Debug.Log(consumable.title + x.GetComponent<Consumable>().title);
-                
-                if (consumable.title != x.GetComponent<Consumable>().title) continue;
-                
-                foreach (var b in grid.GetComponentsInChildren<IndexHolder>())
-                {
-                    if (b == null) continue;
-                    if (b.consumable.title != consumable.title) continue;
-                    if (b.numHeld >= consumable.maximumHold)
-                    {
-                        TriggerNotification(consumable.uiIcon, "Maximum number of item held");
-                        return;
-                    }
-
-                    b.numHeld++;
-                    TriggerNotification(consumable.uiIcon, consumable.title);
-                    _toolbarHandler.UpdateActiveConsumables();
-                    
-                    foreach (var img in b.GetComponentsInChildren<Image>())
-                    {
-                        if (img.name == "Image")
-                        {
-                            img.GetComponentInChildren<TextMeshProUGUI>().text = b.numHeld + "/" + b.consumable.maximumHold;
-                        }
-                    }
-                    
-                    consumable.gameObject.SetActive(false);
-                    consumable.gameObject.GetComponent<ItemPickup>().canPickup = false;
-
-                    return;
-                }
+                LoadUI(item, itemCount);
             }
         }
-        
+    }
+
+    // checks if item added exists in inventory, if so it increases the number held and returns
+   public void AddNewItem(Consumable consumable)
+    {
+        foreach (var t in dataHolder.savedItems)
+        {
+            if (t != consumable.itemID) continue;
+            
+            var b = grid.GetComponentsInChildren<IndexHolder>()
+                .FirstOrDefault(b => b.consumable.itemID == consumable.itemID);
+
+            if (b == null) continue;
+                
+            if (b.numHeld < consumable.maximumHold)
+            {
+                b.numHeld++;
+                UpdateStoredCount(consumable.itemID, b.numHeld);
+                TriggerNotification(consumable.uiIcon, consumable.title);
+                _toolbarHandler.UpdateActiveConsumables();
+                UpdateUI(b);
+                        
+                consumable.gameObject.SetActive(false);
+                consumable.gameObject.GetComponent<ItemPickup>().canPickup = false;
+            }
+            else
+            {
+                TriggerNotification(consumable.uiIcon, "Maximum number of item held");
+            }
+            return;
+        }
+
         // if the item did not exist in inventory already then a new inventory button is created
-        items.Add(consumable.gameObject);
+        dataHolder.savedItems.Add(consumable.itemID);
+        dataHolder.savedItemCounts.Add(1);
+
         TriggerNotification(consumable.uiIcon, consumable.title);
         consumable.gameObject.SetActive(false);
         consumable.gameObject.GetComponent<ItemPickup>().canPickup = false;
-        
+
         var newBlock = Instantiate(block, block.position, block.rotation, grid);
         newBlock.GetComponentInChildren<TextMeshProUGUI>().text = consumable.title;
-        
+
         var indexHolder = newBlock.GetComponent<IndexHolder>();
         indexHolder.consumable = consumable;
-        indexHolder.numHeld++;
+        indexHolder.numHeld = 1;
         
         // updates the onclick for the new inventory item button
-        newBlock.GetComponent<Button>().onClick.AddListener(delegate
-        {
-            _toolbarHandler.InvItemSelected(indexHolder);
-        });
+        newBlock.GetComponent<Button>().onClick.AddListener(delegate { _toolbarHandler.InvItemSelected(indexHolder); });
 
-        foreach (var s in newBlock.GetComponentsInChildren<Image>())
-        {
-            if (s.name == "Image")
-            {
-                s.sprite = consumable.uiIcon;
-                s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld + "/" + indexHolder.consumable.maximumHold;
-            }
-        }
+        UpdateUI(indexHolder);
 
         if (dataHolder.isAutoEquipEnabled)
         {
@@ -111,9 +134,34 @@ public class InventoryStore : MonoBehaviour
         }
     }
 
+
+    private void UpdateStoredCount(int itemID, int newCount)
+    {
+        var index = dataHolder.savedItems.IndexOf(itemID);
+
+        if (index != -1)
+        {
+            dataHolder.savedItemCounts[index] = newCount;
+        }
+    }
+
+    private void UpdateUI(IndexHolder indexHolder)
+    {
+        foreach (var s in indexHolder.GetComponentsInChildren<Image>())
+        {
+            if (s.name == "Image")
+            {
+                s.sprite = indexHolder.consumable.uiIcon;
+                s.GetComponentInChildren<TextMeshProUGUI>().text =
+                    indexHolder.numHeld + "/" + indexHolder.consumable.maximumHold;
+            }
+        }
+    }
+
     private void TriggerNotification(Sprite icon, string text)
     {
-        var newNotif = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation, notifHolder.transform);
+        var newNotif = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation,
+            notifHolder.transform);
         newNotif.GetComponentInChildren<TextMeshProUGUI>().text = text;
 
         foreach (var img in newNotif.GetComponentsInChildren<Image>())
@@ -125,32 +173,39 @@ public class InventoryStore : MonoBehaviour
 
     public void UpdateItemsHeld(Consumable consumable)
     {
-        foreach (var b in grid.GetComponentsInChildren<IndexHolder>())
+        for (var i = 0; i < grid.GetComponentsInChildren<IndexHolder>().Length; i++)
         {
-            if (b.consumable.title != consumable.title) continue;
-            if (b.numHeld - 1 <= 0)
+            var indexHolder = grid.GetComponentsInChildren<IndexHolder>()[i];
+
+            if (indexHolder.consumable.title == consumable.title)
             {
-                foreach (var item in items.ToList())
+                if (indexHolder.numHeld - 1 <= 0)
                 {
-                    if (item.GetComponent<Consumable>().title != b.consumable.title) continue;
-                    items.Remove(item);
-                    Destroy(b.gameObject);
-                }
-            }
-            else
-            {
-                b.numHeld--;
-                
-                foreach (var img in b.GetComponentsInChildren<Image>())
-                {
-                    if (img.name == "Image")
+                    var itemIndex = dataHolder.savedItems.IndexOf(consumable.itemID);
+                    if (itemIndex != -1)
                     {
-                        img.GetComponentInChildren<TextMeshProUGUI>().text = b.numHeld + "/" + b.consumable.maximumHold;
+                        dataHolder.savedItems.RemoveAt(itemIndex);
+                        dataHolder.savedItemCounts.RemoveAt(itemIndex);
+                    }
+                    Destroy(indexHolder.gameObject);
+                }
+                else
+                {
+                    indexHolder.numHeld--;
+                    UpdateStoredCount(consumable.itemID, indexHolder.numHeld);
+
+                    foreach (var img in indexHolder.GetComponentsInChildren<Image>())
+                    {
+                        if (img.name == "Image")
+                        {
+                            img.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld + "/" + indexHolder.consumable.maximumHold;
+                        }
                     }
                 }
+
+                _toolbarHandler.UpdateActiveConsumables();
+                break;
             }
         }
-        
-        _toolbarHandler.UpdateActiveConsumables();
     }
 }

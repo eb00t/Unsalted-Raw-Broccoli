@@ -6,8 +6,8 @@ public class DataHolder : ScriptableObject
 {
     public int currencyHeld;
     
+    [Header("Settings")]
     public ControlsManager.ControlScheme currentControl;
-    
     public bool isAutoEquipEnabled;
     public bool isAutoSwitchEnabled;
     public bool forceControlScheme;
@@ -20,4 +20,8 @@ public class DataHolder : ScriptableObject
     public float musicVolume;
     [Range(0, 1)] 
     public float sfxVolume;
+    
+    [Header("Inventory")]
+    public List<int> savedItems = new List<int>();
+    public List<int> savedItemCounts = new List<int>();  
 }

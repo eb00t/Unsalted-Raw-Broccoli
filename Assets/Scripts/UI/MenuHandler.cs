@@ -203,7 +203,7 @@ public class MenuHandler : MonoBehaviour
 	// If player has items, switches navigation to inventory to add item to selected toolbar index when toolbar button is pressed
 	public void SlotSelected(int slot)
 	{
-		if (_inventoryStore.items.Count > 0)
+		if (dataHolder.savedItems.Count > 0)
 		{
 			SwitchSelected(grid.GetComponentInChildren<Button>().gameObject);
 			

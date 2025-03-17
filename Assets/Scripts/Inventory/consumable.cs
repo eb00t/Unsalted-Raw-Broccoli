@@ -13,8 +13,9 @@ public class Consumable : MonoBehaviour
 	public string statusText;
 	public bool isInstantUse;
 	public int maximumHold;
+
+	public int itemID;
 	
 	[TextArea(3, 10)]
 	public string description;
-	
 }
