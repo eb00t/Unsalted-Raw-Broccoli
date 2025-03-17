@@ -36,7 +36,7 @@ public class ControlsManager : MonoBehaviour
     [SerializeField] private Sprite lThumbstick, rThumbstick;
     [SerializeField] private Sprite lThumbstickDown, rThumbstickDown;
 
-    private string keyboardInteractBack;
+    private string keyboardInteractBack = "F";
     
     private void Awake()
     {
