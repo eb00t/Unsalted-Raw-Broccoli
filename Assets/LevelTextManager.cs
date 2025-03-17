@@ -81,7 +81,7 @@ public class LevelTextManager : MonoBehaviour
                 subtitleText.text = ("");
                 break;
             case LevelBuilder.LevelMode.Tutorial:
-                subtitleText.text = ("New here?");
+                subtitleText.text = ("Doctor Blank smells like a bu-Uh... nevermind...");
                 break;
         }
     }
@@ -112,7 +112,7 @@ public class LevelTextManager : MonoBehaviour
         _lerpDirection = LerpDirection.FadeIn;
     }
     
-    private void Update()
+    private void FixedUpdate()
     {
         if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial))
         {
@@ -154,7 +154,7 @@ public class LevelTextManager : MonoBehaviour
                 break;
         }
         
-        _lerpTime += .002f; 
+        _lerpTime += .01f; 
         
     }
 }
