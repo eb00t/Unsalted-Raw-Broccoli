@@ -11,7 +11,9 @@ public class BlackoutManager : MonoBehaviour
     public static BlackoutManager Instance { get; private set; }
 
     public Image blackoutImage;
+    public Image vignetteImage;
     public Color blackoutColor;
+    public Color vignetteColor;
     public Color transparentColor;
     public bool blackoutComplete;
     private float _lerpTime;
@@ -41,6 +43,10 @@ public class BlackoutManager : MonoBehaviour
         if (blackoutImage == null)
         {
             blackoutImage = transform.Find("Blackout").gameObject.GetComponent<Image>();
+        } 
+        if (vignetteImage == null)
+        {
+            vignetteImage = transform.Find("vignette").gameObject.GetComponent<Image>();
         }
 
         gameObject.SetActive(true);
@@ -57,6 +63,7 @@ public class BlackoutManager : MonoBehaviour
     {
         _loading = false;
         blackoutImage.gameObject.SetActive(true);
+        vignetteImage.gameObject.SetActive(true);
         _lerpTime = 0;
         _lerpDirection = LerpDirection.FadeOut;
         _timer = 2;
@@ -66,11 +73,12 @@ public class BlackoutManager : MonoBehaviour
     {
         blackoutComplete = false;
         blackoutImage.gameObject.SetActive(true);
+        vignetteImage.gameObject.SetActive(true);
         _lerpTime = 0;
         _lerpDirection = LerpDirection.FadeIn;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial))
         {
@@ -94,18 +102,24 @@ public class BlackoutManager : MonoBehaviour
                 break;
             case LerpDirection.FadeOut:
                 blackoutImage.color = Color.Lerp(blackoutColor, transparentColor, _lerpTime);
+                vignetteImage.color = Color.Lerp(vignetteColor, transparentColor, _lerpTime);
                 if (blackoutImage.color.a <= 0)
                 {
                     blackoutImage.gameObject.SetActive(false);
+                }
+                if (vignetteImage.color.a <= 0)
+                {
+                    vignetteImage.gameObject.SetActive(false);
                 }
 
                 break;
             case LerpDirection.FadeIn:
                 blackoutImage.color = Color.Lerp(transparentColor, blackoutColor, _lerpTime);
+                vignetteImage.color = Color.Lerp(transparentColor, vignetteColor, _lerpTime);
                 break;
         }
 
-        _lerpTime += .002f;
+        _lerpTime += .01f;
         
         if (_loading)
         {

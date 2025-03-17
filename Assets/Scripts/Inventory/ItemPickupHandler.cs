@@ -62,6 +62,8 @@ public class ItemPickupHandler : MonoBehaviour
     {
         if (!context.performed || characterMovement.uiOpen) return;
 
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemPickup, transform.position);
+        
         foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
         {
             var itemPickup = item.GetComponent<ItemPickup>();
