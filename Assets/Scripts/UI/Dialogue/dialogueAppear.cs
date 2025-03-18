@@ -4,21 +4,33 @@ using UnityEngine;
 
 public class dialogueAppear : MonoBehaviour
 {
-    public GameObject dialogueBox, playerChar, npcChar, enemyChar; // yesText, noText;
+    public GameObject dialogueBox, playerChar, npcChar, enemyChar, indicator; // yesText, noText;
+   // public bool isOn = false;
 
     // Update is called once per frame
     void Update()
     {
-        //enemy text appear
+        //prompt text appear
         if (Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) <= 5f)
         {
-            dialogueBox.SetActive(true);
+           // isOn = true;
+          //  Debug.Log("TRUE");
+            indicator.SetActive(true);
             //Debug.Log("Box on!");
         }
-        else if(Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) <= 5f)
+        else if(Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) >= 5f)
         {
-            dialogueBox.SetActive(false);
+          //  isOn = false;
+           // Debug.Log("FALSE");
+              indicator.SetActive(false);
             //Debug.Log("Box off!");
+        }
+
+        //Text appear
+        if(Input.GetKeyDown(KeyCode.M))
+        {
+            dialogueBox.SetActive(true);
+            indicator.SetActive(false);
         }
 
         /*
