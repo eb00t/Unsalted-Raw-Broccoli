@@ -1411,6 +1411,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7523217066711979568}
   - component: {fileID: 1474318186572488600}
+  - component: {fileID: 8894105689132867395}
+  - component: {fileID: 4932949775588881609}
   m_Layer: 0
   m_Name: RoomCam
   m_TagString: Untagged
@@ -1473,6 +1475,46 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 8439025872845980085}
+--- !u!114 &8894105689132867395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5468601211671800307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ApplyAfter: 2
+  m_ChannelMask: 1
+  m_Gain: 1
+  m_Use2DDistance: 0
+  m_UseCameraSpace: 1
+  m_ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
+--- !u!114 &4932949775588881609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5468601211671800307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2fba25a5cd15594e8f050a11e386c80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ConfineMode: 1
+  m_BoundingVolume: {fileID: 1934783231391689536}
+  m_BoundingShape2D: {fileID: 0}
+  m_ConfineScreenEdges: 1
+  m_Damping: 0
 --- !u!1 &5825055953460668920
 GameObject:
   m_ObjectHideFlags: 0
@@ -2001,6 +2043,59 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0000005, y: 1, z: 1.0000005}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &6198526923694107489
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4016625664900572864}
+  - component: {fileID: 1934783231391689536}
+  m_Layer: 2
+  m_Name: CameraBounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4016625664900572864
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6198526923694107489}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7997321835333841640}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1934783231391689536
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6198526923694107489}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 48, y: 34.5, z: -178.5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6611371729783940968
 GameObject:
   m_ObjectHideFlags: 0
@@ -2050,6 +2145,7 @@ Transform:
   - {fileID: 1574192294783969551}
   - {fileID: 7189601891212095893}
   - {fileID: 7523217066711979568}
+  - {fileID: 4016625664900572864}
   - {fileID: 5840944004734660949}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
@@ -2142,6 +2238,7 @@ MonoBehaviour:
   bossRoom: 1
   shop: 0
   lootRoom: 0
+  bigRoom: 1
   intersectionCheck: {fileID: 2577646143545009483}
   doorSpawnPoints: []
   usableDoors: []
@@ -2160,6 +2257,7 @@ MonoBehaviour:
   markedForDiscard: 0
   roomCam: {fileID: 0}
   canBeDiscarded: 1
+  roomPath: 
 --- !u!114 &2577646143545009483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2181,6 +2279,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 576
+  objectsToIgnore: []
 --- !u!114 &6866331362388978602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2217,6 +2316,7 @@ MonoBehaviour:
   playerIsInRoom: 0
   playerHasEnteredRoom: 0
   roomHadEnemies: 0
+  bossDead: 0
   _roomCam: {fileID: 0}
 --- !u!1 &7347630290567613744
 GameObject:

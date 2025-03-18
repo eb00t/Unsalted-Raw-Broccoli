@@ -1786,6 +1786,59 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &2014749527063928496
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7601146496505058226}
+  - component: {fileID: 8972071469048553417}
+  m_Layer: 2
+  m_Name: CameraBounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7601146496505058226
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2014749527063928496}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1518416835097859484}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8972071469048553417
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2014749527063928496}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 15, y: 34.5, z: -178.5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2038577148403120426
 GameObject:
   m_ObjectHideFlags: 0
@@ -1834,6 +1887,7 @@ Transform:
   - {fileID: 3127512238731992061}
   - {fileID: 2665386248511018991}
   - {fileID: 3610380616235731955}
+  - {fileID: 7601146496505058226}
   - {fileID: 5402322014282645336}
   - {fileID: 1287989356336990883}
   - {fileID: 6576849881457310662}
@@ -1931,6 +1985,7 @@ MonoBehaviour:
   bossRoom: 0
   shop: 0
   lootRoom: 0
+  bigRoom: 1
   intersectionCheck: {fileID: 573429788166635036}
   doorSpawnPoints: []
   usableDoors: []
@@ -2008,6 +2063,7 @@ MonoBehaviour:
   playerIsInRoom: 0
   playerHasEnteredRoom: 0
   roomHadEnemies: 0
+  bossDead: 0
   _roomCam: {fileID: 0}
 --- !u!1 &2347807090983557506
 GameObject:
@@ -4871,6 +4927,7 @@ GameObject:
   - component: {fileID: 3610380616235731955}
   - component: {fileID: 1352841694302580177}
   - component: {fileID: 104884237238599549}
+  - component: {fileID: 4743152156878588905}
   m_Layer: 0
   m_Name: RoomCam
   m_TagString: Untagged
@@ -4956,6 +5013,23 @@ MonoBehaviour:
     m_FrequencyGain: 1
     m_Duration: 1
     m_NoiseOffsets: {x: 0, y: 0, z: 0}
+--- !u!114 &4743152156878588905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7014535289158096310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2fba25a5cd15594e8f050a11e386c80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ConfineMode: 1
+  m_BoundingVolume: {fileID: 8972071469048553417}
+  m_BoundingShape2D: {fileID: 0}
+  m_ConfineScreenEdges: 1
+  m_Damping: 0
 --- !u!1 &7551388516670544299
 GameObject:
   m_ObjectHideFlags: 0
