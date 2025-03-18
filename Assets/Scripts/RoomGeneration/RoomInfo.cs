@@ -25,6 +25,7 @@ public class RoomInfo : MonoBehaviour
     public bool bossRoom = false;
     public bool shop = false;
     public bool lootRoom = false;
+    public bool bigRoom = false;
 
 
     [field: Header("Debugging")] 
@@ -41,6 +42,7 @@ public class RoomInfo : MonoBehaviour
     public CinemachineVirtualCamera roomCam;
     public bool canBeDiscarded = true;
     public string roomPath;
+    private GameObject _playerRenderer;
     void Awake()
     {
 
@@ -51,6 +53,7 @@ public class RoomInfo : MonoBehaviour
             roomPath = roomPath1.Replace(roomPath2, "");
         }
         roomCam = GetComponentInChildren<CinemachineVirtualCamera>();
+        roomCam.m_Lens.OrthographicSize = 12.6f;
         intersectionCheck = GetComponent<IntersectionRaycast>();
         attachedConnectors.Clear();
         foreach (var door in gameObject.GetComponentsInChildren<Transform>())
@@ -101,6 +104,12 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
+        _playerRenderer = GameObject.FindGameObjectWithTag("Player").transform.Find("Renderer").gameObject;
+        if (bigRoom)
+        {
+            roomCam.Follow = _playerRenderer.transform;
+            roomCam.LookAt = null;
+        }
         if (gameObject.CompareTag("StartingRoom"))
         {
             canBeDiscarded = false;
