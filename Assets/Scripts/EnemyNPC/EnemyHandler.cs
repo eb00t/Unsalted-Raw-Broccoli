@@ -31,6 +31,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float freezeDuration;
     [SerializeField] private float freezeCooldown;
     [SerializeField] private bool canFreeze, canBeStunned, isBomb; // if by default set to false the enemy will never freeze
+    [SerializeField] private int atkNumber;
     
     private int _poisonBuildup, _poiseBuildup, _health;
     private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen;
@@ -97,6 +98,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (gameObject.name.Contains("Stalker"))
         {
             gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+        }
+        
+        if (gameObject.name.Contains("Robot"))
+        {
+            gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         }
 
         if (isBomb)
@@ -187,15 +193,16 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (!isLeft)
         {
             localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
-            atkHitbox.center = new Vector3(1.2f, -0.1546797f, 0);
+            //atkHitbox.center = new Vector3(1.2f, -0.1546797f, 0);
         }
         else
         {
             localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
-            atkHitbox.center = new Vector3(-1.2f, -0.1546797f, 0);
+            //atkHitbox.center = new Vector3(-1.2f, -0.1546797f, 0);
         }
         
         _spriteRenderer.transform.localScale = localScale;
+        atkHitbox.transform.localScale = localScale;
     }
 
     private void Patrol()
@@ -277,7 +284,19 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
         else
         {
-            _animator.SetTrigger("Attack"); 
+            var i = Random.Range(0, atkNumber);
+
+            switch (i)
+            {
+                case 0:
+                    _animator.SetTrigger("Attack");
+                    break;
+                case 1:
+                    _animator.SetTrigger("Attack2");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
         
         _targetTime = attackCooldown;
