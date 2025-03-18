@@ -23,7 +23,7 @@ public class dialogueAppear : MonoBehaviour
         }
 
         //Text appear
-        if (Input.GetKeyDown(KeyCode.M))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             dialogueBox.SetActive(true);
             indicator.SetActive(false);
