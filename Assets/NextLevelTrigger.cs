@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,16 +6,48 @@ using UnityEngine.SceneManagement;
 
 public class NextLevelTrigger : MonoBehaviour
 {
-    
+    private CharacterMovement _characterMovement;
+    private ItemPickupHandler _itemPickupHandler;
+    private GameObject _player;
+    public float range;
+
     public enum SceneToLoad
     {
         Intermission,
         NextFloor,
         TitleScreen
     }
+
     public SceneToLoad sceneToLoad;
-    
-    void OnTriggerEnter(Collider other)
+
+    private void Start()
+    {
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _characterMovement = _player.GetComponent<CharacterMovement>();
+        _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+    }
+
+    private void Update()
+    {
+        if (!_characterMovement.uiOpen)
+        {
+            var dist = Vector3.Distance(transform.position, _player.transform.position);
+
+            if (dist <= range)
+            {
+                _itemPickupHandler.isPlrNearShop = true;
+                _itemPickupHandler.TogglePrompt("Continue ahead?", true, ControlsManager.ButtonType.ButtonEast);
+            }
+            else if (dist > range)
+            {
+                if (_itemPickupHandler.itemCount > 0) return;
+                _itemPickupHandler.isPlrNearShop = false;
+                _itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
+            }
+        }
+    }
+
+    void LoadNextLevel()
     {
         string scene = "";
         switch (sceneToLoad)
@@ -30,12 +63,9 @@ public class NextLevelTrigger : MonoBehaviour
                 break;
             
         }
-        if (other.CompareTag("Player"))
-        {
             BlackoutManager.Instance.RaiseOpacity();
             gameObject.GetComponent<BoxCollider>().enabled = false;
             StartCoroutine(LoadNextScene(scene));
-        }
     }
     
      IEnumerator LoadNextScene(string scene)

@@ -12,8 +12,10 @@ public class DoorInfo : MonoBehaviour
     private Vector3 _initialPosition;
     public bool closed;
     private float _lerpTime;
+    private Renderer _renderer;
 private void Awake()
     {
+        _renderer = GetComponent<Renderer>();
         _roomInfo = transform.root.GetComponent<RoomInfo>();
         _initialPosition = transform.position;
     }
@@ -72,6 +74,7 @@ private void Awake()
    public void OpenDoor()
    { 
        Vector3 transformPos = new Vector3(_initialPosition.x, _initialPosition.y, _initialPosition.z + 2.99f);
+       _renderer.material.color = Color.cyan;
        transform.position = transformPos;
        Debug.Log("Opening door (" + gameObject.name + ") in " + transform.root.name);
        if (closed)
@@ -84,6 +87,7 @@ private void Awake()
    public void CloseDoor()
    {
       transform.position = _initialPosition;
+      _renderer.material.color = Color.red;
       Debug.Log("Closing door (" + gameObject.name + ") in " + transform.root.name);
        if (!closed)
        { 

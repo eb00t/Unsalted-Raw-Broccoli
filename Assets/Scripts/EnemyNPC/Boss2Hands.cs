@@ -449,7 +449,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private void Die()
     {
         isDead = true;
-        _roomScripting.bossDead = true;
+        LevelBuilder.Instance.bossDead = true;
         AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
         _characterMovement.lockedOn = false;
         _lockOnController.lockedTarget = null;

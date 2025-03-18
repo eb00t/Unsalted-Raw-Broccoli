@@ -20,7 +20,6 @@ public class RoomScripting : MonoBehaviour
     public bool playerIsInRoom;
     public bool playerHasEnteredRoom;
     public bool roomHadEnemies;
-    public bool bossDead;
     private bool _musicHasChanged;
     private bool _lootSpawned;
     public CinemachineVirtualCamera _roomCam;
@@ -101,17 +100,14 @@ public class RoomScripting : MonoBehaviour
             door.GetComponent<DoorInfo>().OpenDoor();
             door.GetComponent<DoorInfo>().closed = false;
         }
-        if (_roomInfo.bossRoom && bossDead)
+        switch (LevelBuilder.Instance.bossDead && !_roomInfo.bossRoom)
         {
-            Debug.Log("Boss dead");
-        }
-        else if ( bossDead)
-        {
-            AudioManager.Instance.SetGlobalEventParameter("Music Track", 4);
-        }
-        else
-        {
-            AudioManager.Instance.SetGlobalEventParameter("Music Track", 0);
+            case true:
+                AudioManager.Instance.SetGlobalEventParameter("Music Track", 4);
+                break;
+            default:
+                AudioManager.Instance.SetGlobalEventParameter("Music Track", 0);
+                break;
         }
         allDoorsClosed = false;
     }
@@ -167,13 +163,14 @@ public class RoomScripting : MonoBehaviour
 
     void ExitSpecialRoom()
     {
-        if (bossDead)
+        switch (LevelBuilder.Instance.bossDead)
         {
-            AudioManager.Instance.SetGlobalEventParameter("Music Track", 4);
-        }
-        else
-        {
-            AudioManager.Instance.SetGlobalEventParameter("Music Track", 0);
+            case true:
+                AudioManager.Instance.SetGlobalEventParameter("Music Track", 4);
+                break;
+            default:
+                AudioManager.Instance.SetGlobalEventParameter("Music Track", 0);
+                break;
         }
 
         _musicHasChanged = false;
