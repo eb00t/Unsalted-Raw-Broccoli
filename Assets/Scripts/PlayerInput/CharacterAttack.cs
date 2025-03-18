@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using FMOD.Studio;
@@ -9,8 +10,10 @@ using Random = UnityEngine.Random;
 
 public class CharacterAttack : MonoBehaviour
 {
+    private static readonly int IsStaggered = Animator.StringToHash("isStaggered");
     private MeshCollider _attackCollider;
     private Animator _playerAnimator;
+    private CharacterMovement _characterMovement;
 
     // Combo variables
     [Header("Combo Variables")]
@@ -49,6 +52,7 @@ public class CharacterAttack : MonoBehaviour
 
     private void Start()
     {
+        _characterMovement = transform.root.GetComponent<CharacterMovement>();
         _attackCollider = GetComponent<MeshCollider>();
         _playerAnimator = GameObject.FindGameObjectWithTag("PlayerRenderer").GetComponent<Animator>();
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
@@ -243,12 +247,26 @@ public class CharacterAttack : MonoBehaviour
             var hitColor = (currentHealth - damage < currentHealth) ? Color.red : Color.green;
             hitFlash.GetComponent<Image>().color = hitColor;
             hitFlash.SetActive(true);
-
+            StartCoroutine(StunTimer(0.5f));
             currentHealth -= damage;
             healthSlider.value = currentHealth;
         }
     }
 
+    private IEnumerator StunTimer(float stunTime)
+    {
+        _playerAnimator.SetBool(IsStaggered, true);
+        _characterMovement.allowMovement = false;
+        _characterMovement.walkAllowed = false;
+        
+        yield return new WaitForSecondsRealtime(stunTime);
+        
+        _playerAnimator.SetBool(IsStaggered, false);
+        _characterMovement.allowMovement = true;
+        _characterMovement.walkAllowed = true;
+    }
+    
+    
     private void Die()
     {
         diedScreen.SetActive(true);
