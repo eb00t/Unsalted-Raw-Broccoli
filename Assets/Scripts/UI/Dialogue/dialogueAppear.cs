@@ -4,26 +4,43 @@ using UnityEngine;
 
 public class dialogueAppear : MonoBehaviour
 {
-    public GameObject dialogueBox, playerChar, npcChar, enemyChar, indicator; // yesText, noText;
-   // public bool playerNear = false;
+    public GameObject dialogueBox, playerChar, enemyChar, npcChar, indicator; // yesText, noText;
+   // public bool enemyNear = false;
+   // public bool npcNear = false;
 
     // Update is called once per frame
     void Update()
     {
-        //prompt text appear
+        //prompt text appear (ENEMY)
         if (Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) <= 5f)
         {
             indicator.SetActive(true);
-          //  Debug.Log("Box on!");
+           // enemyNear = false;
+            //Debug.Log("ENEMY NEAR!");
         }
-        else if(Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) <= 5f)
+        else if(Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) >= 5f)
         {
             indicator.SetActive(false);
-          //  Debug.Log("Box off!");
+           // enemyNear = false;
+            //  Debug.Log("ENEMY GONE!");
         }
+        /*
+        else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) <= 5f)
+        {
+            indicator.SetActive(true);
+          //  npcNear = false;
+         //   Debug.Log("NPC NEAR!");
+        }
+        else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) >= 5f)
+        {
+            indicator.SetActive(false);
+          //  npcNear = false;
+          //  Debug.Log("NPC GONE!");
+        }
+        */
 
         //Text appear
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.M))
         {
             dialogueBox.SetActive(true);
             indicator.SetActive(false);

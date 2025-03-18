@@ -58,11 +58,14 @@ MonoBehaviour:
   maxHealth: 250
   baseAtk: 10
   charAtk: 10
+  poise: 0
   poiseDamageLight: 5
   poiseDamageHeavy: 10
   isInvincible: 0
   isPoison: 0
   isIce: 0
+  isInvulnerable: 0
+  stunDuration: 0
   healthSlider: {fileID: 0}
   diedScreen: {fileID: 0}
   hitFlash: {fileID: 0}
@@ -329,6 +332,7 @@ GameObject:
   - component: {fileID: 2624940746732787405}
   - component: {fileID: 4592323685554638241}
   - component: {fileID: 2398015274289911549}
+  - component: {fileID: 3773342949230833633}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -527,3 +531,20 @@ MonoBehaviour:
   enemy: {fileID: 0}
   rangeToEnemy: 12
   _currentStep: 0
+--- !u!114 &3773342949230833633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7748169234227478159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2b1804d739b2d4286a0c23b68e081a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueBox: {fileID: 0}
+  playerChar: {fileID: 0}
+  npcChar: {fileID: 0}
+  enemyChar: {fileID: 0}
+  indicator: {fileID: 0}
