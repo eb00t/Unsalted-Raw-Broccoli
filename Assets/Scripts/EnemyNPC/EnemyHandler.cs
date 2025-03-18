@@ -53,6 +53,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private LockOnController _lockOnController;
     private SpriteRenderer _spriteRenderer;
     private EventInstance _alarmEvent;
+    private EventInstance _deathEvent;
     
     
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
@@ -112,6 +113,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         {
             _targetTime = attackCooldown;
         }
+
+        _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
     }
 
     private void Update()
@@ -429,9 +432,16 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         {
             _target.GetComponent<TutorialController>().EnemyDefeated();
         }
-
+        
+        if (!isBomb)
+        {
+            AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);
+            _deathEvent.start();
+            _deathEvent.release();
+        }
         gameObject.SetActive(false);
         StopAlarmSound();
+       
     }
     
     public void PlayAlarmSound()

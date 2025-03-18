@@ -572,7 +572,6 @@ public class LevelBuilder : MonoBehaviour
                     {
                         Debug.Log("SHOP SPAWNING");
                         _spawnMode = SpawnMode.Shop;
-                        shopSpawned = true;
                     }  else
                     {
                         _spawnMode = SpawnMode.Normal;

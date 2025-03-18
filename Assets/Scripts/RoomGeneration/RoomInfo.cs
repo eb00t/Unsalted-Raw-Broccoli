@@ -132,7 +132,15 @@ public class RoomInfo : MonoBehaviour
 
         if (shop)
         {
-            LevelBuilder.Instance.shopSpawned = true;
+            if (LevelBuilder.Instance.shopSpawned)
+            {
+                markedForDiscard = true;
+            }
+            else
+            {
+                LevelBuilder.Instance.shopSpawned = true;
+            }
+            
         }
         CameraManager.Instance.virtualCameras.Add(roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
