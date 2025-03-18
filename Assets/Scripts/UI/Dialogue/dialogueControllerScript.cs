@@ -150,13 +150,12 @@ public class dialogueControllerScript : MonoBehaviour
 
 
     //TESTING ANOTHER WAY TO DO DIALOGUE
-
     public TextMeshProUGUI DialogueText;
     public string[] Sentences;
     private int Index; // = 0;
     public float DialogueSpeed;
     //public float fasterSpeed;
-    public GameObject dialogueCanvas; // yesText, noText, normalText; // normalBox;
+    public GameObject dialogueCanvas, yesText, noText; // normalText; // normalBox;
 
 
     private void Start()
@@ -179,6 +178,25 @@ public class dialogueControllerScript : MonoBehaviour
                 DialogueText.text = Sentences[Index];
             }
         }
+
+        //ANSWERS
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            //Answer is yes
+            answerY();
+        }
+        else if (Input.GetKeyDown(KeyCode.N))
+        {
+            //Answer is no
+            answerN();
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            //Turn off text boxes
+            noText.SetActive(false);
+            yesText.SetActive(false);
+        }
+
     }
 
     void startSentence()
@@ -208,6 +226,21 @@ public class dialogueControllerScript : MonoBehaviour
         {
             dialogueCanvas.SetActive(false);
         }
+    }
+    void answerY()
+    {
+        yesText.SetActive(true);
+        noText.SetActive(false);
+        dialogueCanvas.SetActive(false);
+      //  Debug.Log("YES!");
+    }
+
+    void answerN()
+    {
+        noText.SetActive(true);
+        yesText.SetActive(false);
+        dialogueCanvas.SetActive(false);
+    //    Debug.Log("NO");
     }
 
 }
