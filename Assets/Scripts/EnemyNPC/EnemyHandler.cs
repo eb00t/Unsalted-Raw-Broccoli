@@ -22,6 +22,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int maxHealth;
     [SerializeField] private int attack;
     [SerializeField] private int poise;
+    [SerializeField] private int poiseDamage;
     [SerializeField] private int poisonResistance;
     [SerializeField] private float attackRange;
     [SerializeField] private float attackCooldown;
@@ -63,6 +64,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
+    
+    int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
 
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }

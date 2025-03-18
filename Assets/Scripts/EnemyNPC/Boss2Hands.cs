@@ -17,6 +17,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private float attackCooldown;
     [SerializeField] private float handLerpSpeed, handHoverHeight;
     [SerializeField] private int poisonResistance;
+    [SerializeField] private int poiseDamage;
     [SerializeField] private bool canFreeze; 
     private float _attackCdCounter;
     private States _state = States.Idle;
@@ -45,6 +46,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     public RoomScripting RoomScripting { get; set; }
     public Spawner Spawner { get; set; }
     int IDamageable.Attack { get => attack; set => attack = value; }
+    int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
 
     private void Start()
     {
@@ -325,7 +327,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
                     {
                         if (Time.time >= lastDamageTime + 0.25f) // makes sure player only takes damage at intervals
                         {
-                            player.TakeDamagePlayer(attack);
+                            player.TakeDamagePlayer(attack, poiseDamage);
                             lastDamageTime = Time.time;
                         }
                     }

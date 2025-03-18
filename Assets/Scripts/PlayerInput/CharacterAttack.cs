@@ -31,11 +31,14 @@ public class CharacterAttack : MonoBehaviour
     public int maxHealth = 100;
     public int baseAtk;
     public int charAtk = 10;
+    [SerializeField] private int poise;
     public int poiseDamageLight, poiseDamageHeavy;
     public int isInvincible;
+    private int _poiseBuildup;
     public bool isPoison;
     public bool isIce;
     public bool isInvulnerable;
+    [SerializeField] private float stunDuration;
     
     [SerializeField] private Slider healthSlider;
     [SerializeField] private GameObject diedScreen;
@@ -225,7 +228,7 @@ public class CharacterAttack : MonoBehaviour
         Debug.Log("Enable collider");
     }
 
-    public void TakeDamagePlayer(int damage)
+    public void TakeDamagePlayer(int damage, int poiseDmg)
     {
         if (isInvulnerable) return;
         
@@ -247,14 +250,21 @@ public class CharacterAttack : MonoBehaviour
             var hitColor = (currentHealth - damage < currentHealth) ? Color.red : Color.green;
             hitFlash.GetComponent<Image>().color = hitColor;
             hitFlash.SetActive(true);
-            StartCoroutine(StunTimer(0.5f));
+            
             currentHealth -= damage;
             healthSlider.value = currentHealth;
         }
+        
+        _poiseBuildup += poiseDmg;
+        
+        if (_poiseBuildup >= poise)
+        {
+            StartCoroutine(StunTimer(stunDuration));
+            _poiseBuildup = 0;
+        }
     }
 
-    private IEnumerator StunTimer(float stunTime) // Ideally this would be added to every time the player is hit and once it reaches a certain number they would be knocked down,
-                                                  // preventing them getting stunlocked to death in a combo. Kind of like poise...
+    private IEnumerator StunTimer(float stunTime)
     {
         _playerAnimator.SetBool(IsStaggered, true);
         _characterMovement.allowMovement = false;

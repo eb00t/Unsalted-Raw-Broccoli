@@ -10,8 +10,9 @@ using Random = UnityEngine.Random;
 
 public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 {
-    [Header("Enemy Stats")]
-    [SerializeField] private int maxHealth, poisonResistance, poise;
+    [Header("Enemy Stats")] 
+    [SerializeField] private int maxHealth;
+    [SerializeField] private int  poisonResistance, poise, poiseDamage;
     [SerializeField] private float atkDelay, attackRange;
     [SerializeField] private float chaseRange, chaseDuration;
     [SerializeField] private float minPatrolRange, maxPatrolRange;
@@ -45,7 +46,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
-
+    int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }

@@ -20,6 +20,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private int attack;
     [SerializeField] private int poise;
     [SerializeField] private int poisonResistance;
+    [SerializeField] private int poiseDamage;
     [SerializeField] private float attackRange;
     [SerializeField] private float chaseRange;
     [SerializeField] private float chaseDuration;
@@ -50,7 +51,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
-    
+    int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }

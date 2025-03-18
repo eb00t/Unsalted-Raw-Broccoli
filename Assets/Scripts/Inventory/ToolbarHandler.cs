@@ -232,7 +232,7 @@ public class ToolbarHandler : MonoBehaviour
                 break;
             case ConsumableEffect.Heal: // Heals player by a percentage of their maximum health
                 var newHealth = (float)_characterAttack.maxHealth / 100 * consumable.effectAmount;
-                _characterAttack.TakeDamagePlayer((int)-newHealth);
+                _characterAttack.TakeDamagePlayer((int)-newHealth, 0);
                 break;
             case ConsumableEffect.GiveCurrency: // gives the player money
                 AudioManager.Instance.PlayOneShot(FMODEvents.Instance.CurrencyPickup, transform.position);

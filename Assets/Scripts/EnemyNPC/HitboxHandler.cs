@@ -12,9 +12,9 @@ public class HitboxHandler : MonoBehaviour
         if (!_canDamage) return;
         
         var characterAttack = other.GetComponentInChildren<CharacterAttack>();
-        var atk = GetComponentInParent<IDamageable>().Attack;
+        var damageable = GetComponentInParent<IDamageable>();
         
-        characterAttack.TakeDamagePlayer(atk);
+        characterAttack.TakeDamagePlayer(damageable.Attack, damageable.PoiseDamage);
         StartCoroutine(AtkCooldown());
     }
 
