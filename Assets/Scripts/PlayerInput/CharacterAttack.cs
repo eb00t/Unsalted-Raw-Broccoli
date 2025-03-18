@@ -253,7 +253,8 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
-    private IEnumerator StunTimer(float stunTime)
+    private IEnumerator StunTimer(float stunTime) // Ideally this would be added to every time the player is hit and once it reaches a certain number they would be knocked down,
+                                                  // preventing them getting stunlocked to death in a combo. Kind of like poise...
     {
         _playerAnimator.SetBool(IsStaggered, true);
         _characterMovement.allowMovement = false;
