@@ -59,7 +59,7 @@ public class AnimationEvents : MonoBehaviour
     public void PlayExplosionSound()
     {
         _explosionEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.Explosion);
-        _explosionEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+        AudioManager.Instance.AttachInstanceToGameObject(_explosionEvent, gameObject.transform);
         _explosionEvent.start();
         _explosionEvent.release();
     }
