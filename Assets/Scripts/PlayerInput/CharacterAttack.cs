@@ -32,6 +32,7 @@ public class CharacterAttack : MonoBehaviour
     public int isInvincible;
     public bool isPoison;
     public bool isIce;
+    public bool isInvulnerable;
     
     [SerializeField] private Slider healthSlider;
     [SerializeField] private GameObject diedScreen;
@@ -222,6 +223,8 @@ public class CharacterAttack : MonoBehaviour
 
     public void TakeDamagePlayer(int damage)
     {
+        if (isInvulnerable) return;
+        
         if (isInvincible > 0)
         {
             isInvincible--;

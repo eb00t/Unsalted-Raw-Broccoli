@@ -396,6 +396,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         isDead = true;
         _characterMovement.lockedOn = false;
         _lockOnController.lockedTarget = null;
+        StopAllCoroutines();
 
         if (!SceneManager.GetActiveScene().name.Contains("Tutorial"))
         {
@@ -463,7 +464,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     public void ApplyKnockback(Vector2 knockbackPower)
     {
-        if (_isFrozen || _poiseBuildup < poise) return;
+        if (_isFrozen || _poiseBuildup < poise || isDead) return;
         
         _poiseBuildup = 0;
         _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;

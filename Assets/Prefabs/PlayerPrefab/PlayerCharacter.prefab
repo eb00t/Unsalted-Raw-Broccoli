@@ -393,18 +393,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3fd3e67c191a224ab3e01639d2ef7b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walkAllowed: 1
   allowMovement: 1
   acceleration: 17
   maxSpeed: 12
-  jumpForce: 24
-  dashSpeed: 1500
+  jumpForce: 35
+  dashSpeed: 25
   slideSpeed: 10
-  holdTime: 10
+  holdTime: 1
   grounded: 0
   doubleJumpPerformed: 0
   isCrouching: 0
   Velocity: {x: 0, y: 0, z: 0}
-  dashBreak: 10
+  dashBreak: 1
   startSlide: 0
   startSlideTimer: 0
   sliding: 0
@@ -413,7 +414,7 @@ MonoBehaviour:
   isWallJumping: 0
   wallJumpingCounter: 0.2
   wallJumpingTime: 0.2
-  wallJumpForce: {x: 900, y: 1000}
+  wallJumpForce: {x: 20, y: 35}
   wallJumpingDuration: 0.2
 --- !u!65 &7947488834224069209
 BoxCollider:
@@ -489,9 +490,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f431e614a7e88bf4888422965d955171, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnRadius: 20
+  lockOnRadius: 15
   switchThreshold: 0.5
-  maxDistance: 20
+  maxDistance: 15
   lockedTarget: {fileID: 0}
   isAutoSwitchEnabled: 1
 --- !u!114 &2398015274289911549
