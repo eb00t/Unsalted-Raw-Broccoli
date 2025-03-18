@@ -37,7 +37,7 @@ public class CharacterAttack : MonoBehaviour
     public int baseAtk;
     public int charAtk = 10;
     [SerializeField] private int poise;
-    public int poiseDamageLight, poiseDamageHeavy;
+    public int poiseDamageLight, poiseDamageHeavy, poiseDamageMedium;
     public int isInvincible;
     private int _poiseBuildup;
     public bool isPoison;
@@ -55,6 +55,7 @@ public class CharacterAttack : MonoBehaviour
 
     [Header("Knockback Types")]
     public Vector2 knockbackPowerLight = new Vector2(10f, 1f);
+    public Vector2 knockbackPowerMedium = new Vector2(0f, 0f);
     public Vector2 knockbackPowerHeavy = new Vector2(20f, 3f);
     private CinemachineCollisionImpulseSource _impulseSource;
 
@@ -114,6 +115,7 @@ public class CharacterAttack : MonoBehaviour
                 if (timer1 <= maxInputDelay && timer1 > 0f)
                 {
                     Debug.Log("LightAttack2");
+                    gameObject.layer = 15;
                     _playerAnimator.SetBool("LightAttack2", true);
                     if (animEnd)
                     {
@@ -121,12 +123,12 @@ public class CharacterAttack : MonoBehaviour
                     }
                 }
             }
-
+            
             lightCombo[0] = true;
             if (lightCombo[2])
             {
-                
 
+                
                 timer1 = 0f; lightCombo[1] = false;
                 timer = 0f; lightCombo[0] = false;
 
@@ -365,7 +367,24 @@ public class CharacterAttack : MonoBehaviour
                 _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0));
             }
         }
-
+// Layer = Medium (final hit of light combo)
+        if (gameObject.layer == 15)
+        {
+            float randomTinyX = Random.Range(0.5f, 1f);
+            float randomTinyY = Random.Range(-0.25f, 0.25f);
+            damageable.TakeDamage(charAtk, poiseDamageMedium, knockbackPowerMedium);
+            
+            _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
+            _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+            _enemyDamageEvent.start();
+            _enemyDamageEvent.release();
+            
+            if (_impulseSource != null)
+            {
+                _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.1f;
+                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0));
+            }
+        }
         if (isPoison)
         {
             damageable.TriggerStatusEffect(ConsumableEffect.Poison);
