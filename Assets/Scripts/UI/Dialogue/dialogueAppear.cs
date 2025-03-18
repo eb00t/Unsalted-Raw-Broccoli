@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class dialogueAppear : MonoBehaviour
 {
-    public GameObject dialogueBox, playerChar, enemyChar, npcChar, indicator; // yesText, noText;
-   // public bool enemyNear = false;
-   // public bool npcNear = false;
+    public GameObject dialogueBoxA, dialogueBoxB, playerChar, enemyChar, npcChar, indicator; // yesText, noText;
+    //public bool enemyNear = false;
+    //public bool npcNear = false;
 
     // Update is called once per frame
     void Update()
@@ -15,26 +15,28 @@ public class dialogueAppear : MonoBehaviour
         if (Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) <= 5f)
         {
             indicator.SetActive(true);
-           // enemyNear = false;
+          //  enemyNear = true;
+           // npcNear = false;
             //Debug.Log("ENEMY NEAR!");
         }
         else if(Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) >= 5f)
         {
             indicator.SetActive(false);
            // enemyNear = false;
+           // npcNear = true;
             //  Debug.Log("ENEMY GONE!");
         }
         /*
         else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) <= 5f)
         {
             indicator.SetActive(true);
-          //  npcNear = false;
+            npcNear = true;
          //   Debug.Log("NPC NEAR!");
         }
         else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) >= 5f)
         {
             indicator.SetActive(false);
-          //  npcNear = false;
+            npcNear = false;
           //  Debug.Log("NPC GONE!");
         }
         */
@@ -42,7 +44,7 @@ public class dialogueAppear : MonoBehaviour
         //Text appear
         if (Input.GetKeyDown(KeyCode.M))
         {
-            dialogueBox.SetActive(true);
+            dialogueBoxA.SetActive(true);
             indicator.SetActive(false);
         }
 
