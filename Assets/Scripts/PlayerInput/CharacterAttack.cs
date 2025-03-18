@@ -255,6 +255,8 @@ public class CharacterAttack : MonoBehaviour
             _playerStatus.UpdateStatuses(isInvincible);
             return;
         }
+        
+        var hitColor = (currentHealth - damage < currentHealth) ? Color.red : Color.green;
 
         if (currentHealth <= damage)
         {
@@ -262,16 +264,19 @@ public class CharacterAttack : MonoBehaviour
             healthSlider.value = 0;
             Die();
         }
+        else if (currentHealth - damage > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
         else
         {
-            var hitColor = (currentHealth - damage < currentHealth) ? Color.red : Color.green;
             hitFlash.GetComponent<Image>().color = hitColor;
             hitFlash.SetActive(true);
             
             currentHealth -= damage;
-            healthSlider.value = currentHealth;
         }
         
+        healthSlider.value = currentHealth;
         _poiseBuildup += poiseDmg;
         
         if (_poiseBuildup >= poise)

@@ -1073,6 +1073,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6496928459d4ed49bbba6bb5647b4a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
   sceneToLoad: 1
 --- !u!1 &4465536660053550658
 GameObject:
@@ -1656,6 +1657,7 @@ MonoBehaviour:
   bossRoom: 1
   shop: 0
   lootRoom: 0
+  bigRoom: 0
   intersectionCheck: {fileID: 1721880650798842935}
   doorSpawnPoints: []
   usableDoors: []
@@ -1720,6 +1722,7 @@ MonoBehaviour:
   playerIsInRoom: 0
   playerHasEnteredRoom: 0
   roomHadEnemies: 0
+  bossDead: 0
   _roomCam: {fileID: 0}
 --- !u!65 &7564641656213552662
 BoxCollider:

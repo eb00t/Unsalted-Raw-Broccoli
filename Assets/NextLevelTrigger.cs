@@ -9,13 +9,15 @@ public class NextLevelTrigger : MonoBehaviour
     private CharacterMovement _characterMovement;
     private ItemPickupHandler _itemPickupHandler;
     private GameObject _player;
-    public float range;
+    public float range = 5f;
+    [SerializeField] private DataHolder dataHolder;
 
     public enum SceneToLoad
     {
         Intermission,
         NextFloor,
-        TitleScreen
+        TitleScreen,
+        Automatic
     }
 
     public SceneToLoad sceneToLoad;
@@ -56,12 +58,27 @@ public class NextLevelTrigger : MonoBehaviour
                 scene = "Intermission";
                 break;
             case SceneToLoad.NextFloor:
-                scene = "MainScene";
+                if (SceneManager.GetActiveScene().name != "Tutorial")
+                {
+                    if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor1)
+                    {
+                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor2;
+                        scene = "MainScene";
+                    }
+                    else if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor2)
+                    {
+                        scene = "StartScreen";
+                    }
+                }
+                else
+                {
+                    dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
+                    scene = "MainScene";
+                }
                 break;
             case SceneToLoad.TitleScreen:
                 scene = "StartScreen";
                 break;
-            
         }
             BlackoutManager.Instance.RaiseOpacity();
             gameObject.GetComponent<BoxCollider>().enabled = false;

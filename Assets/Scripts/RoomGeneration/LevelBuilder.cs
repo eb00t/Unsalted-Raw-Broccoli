@@ -69,6 +69,7 @@ public class LevelBuilder : MonoBehaviour
     public int lootRoomsToSpawn;
     public bool spawnModeChangedByDestroy;
     public bool bossDead;
+    [SerializeField] private DataHolder dataHolder;
     public enum SpawnMode
     {
         Normal,
@@ -79,7 +80,6 @@ public class LevelBuilder : MonoBehaviour
     }
 
     public SpawnMode _spawnMode;
-    
 
     private void Awake()
     {
@@ -102,6 +102,8 @@ public class LevelBuilder : MonoBehaviour
             lootRoomsToSpawn = 2;
         }
         _numberOfRoomsToSpawn += lootRoomsToSpawn;
+        
+        currentFloor = dataHolder.currentLevel;
         Debug.Log("Loot rooms to spawn: " + lootRoomsToSpawn);
         StartCoroutine(DelayStart());
     }
@@ -571,9 +573,8 @@ public class LevelBuilder : MonoBehaviour
                 case > 3 and < 6:
                     if (shopSpawned == false)
                     {
-                        //Debug.Log("SHOP SPAWNING");
-                        //_spawnMode = SpawnMode.Shop;
-                        _spawnMode = SpawnMode.Normal; //Only fix I could think of to stop double shops
+                        Debug.Log("SHOP SPAWNING");
+                        _spawnMode = SpawnMode.Shop;
                     }  else
                     {
                         _spawnMode = SpawnMode.Normal;

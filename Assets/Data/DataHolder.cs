@@ -5,6 +5,7 @@ using UnityEngine;
 public class DataHolder : ScriptableObject
 {
     public int currencyHeld;
+    public LevelBuilder.LevelMode currentLevel;
     
     [Header("Settings")]
     public ControlsManager.ControlScheme currentControl;
