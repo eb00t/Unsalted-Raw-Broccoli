@@ -54,19 +54,26 @@ MonoBehaviour:
   heavyCombo: 00000000
   maxInputDelay: 0.75
   animEnd: 0
+  heavyEnergyCost1: 5
+  heavyEnergyCost2: 5
+  heavyEnergyCost3: 5
+  rechargeSpeed: 1
   currentHealth: 100
   maxHealth: 250
+  maxEnergy: 40
+  currentEnergy: 40
   baseAtk: 10
   charAtk: 10
-  poise: 0
+  poise: 30
   poiseDamageLight: 5
   poiseDamageHeavy: 10
   isInvincible: 0
   isPoison: 0
   isIce: 0
   isInvulnerable: 0
-  stunDuration: 0
+  stunDuration: 0.5
   healthSlider: {fileID: 0}
+  energySlider: {fileID: 0}
   diedScreen: {fileID: 0}
   hitFlash: {fileID: 0}
   knockbackPowerLight: {x: 2, y: 0.1}
@@ -543,8 +550,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d2b1804d739b2d4286a0c23b68e081a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueBox: {fileID: 0}
+  dialogueBoxA: {fileID: 0}
+  dialogueBoxB: {fileID: 0}
   playerChar: {fileID: 0}
-  npcChar: {fileID: 0}
   enemyChar: {fileID: 0}
+  npcChar: {fileID: 0}
   indicator: {fileID: 0}

@@ -25,10 +25,15 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private bool[] heavyCombo = new bool[4];
     [SerializeField] private float maxInputDelay = 10f;
     [HideInInspector] public bool animEnd;
+    [SerializeField] private int heavyEnergyCost1, heavyEnergyCost2, heavyEnergyCost3;
+    [SerializeField] private float rechargeSpeed;
+    private float _rechargeTime;
     
     [Header("Stats")]
     public int currentHealth = 100;
     public int maxHealth = 100;
+    public int maxEnergy;
+    public int currentEnergy;
     public int baseAtk;
     public int charAtk = 10;
     [SerializeField] private int poise;
@@ -40,7 +45,7 @@ public class CharacterAttack : MonoBehaviour
     public bool isInvulnerable;
     [SerializeField] private float stunDuration;
     
-    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Slider healthSlider, energySlider;
     [SerializeField] private GameObject diedScreen;
     private GameObject _uiManager;
     private MenuHandler _menuHandler;
@@ -62,6 +67,8 @@ public class CharacterAttack : MonoBehaviour
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
         _playerStatus = _uiManager.GetComponent<PlayerStatus>();
         healthSlider.maxValue = maxHealth;
+        energySlider.maxValue = maxEnergy;
+        energySlider.value = currentEnergy;
         healthSlider.value = maxHealth;
         currentHealth = maxHealth;
         baseAtk = charAtk;
@@ -173,20 +180,26 @@ public class CharacterAttack : MonoBehaviour
             // Start of chain
             if (!heavyCombo[0] && !_playerAnimator.GetBool("HeavyAttack2"))
             {
-                Debug.Log("HeavyAttack");
-                _playerAnimator.SetBool("HeavyAttack", true);
+                if (currentEnergy >= heavyEnergyCost1)
+                {
+                    Debug.Log("HeavyAttack");
+                    _playerAnimator.SetBool("HeavyAttack", true);
+                    UseEnergy(heavyEnergyCost1);
+                }
             }
 
             if (heavyCombo[0])
             {
-
-
                 if (heavyTimer <= maxInputDelay && heavyTimer > 0f)
                 {
-                    Debug.Log("HeavyAttack1");
-                    _playerAnimator.SetBool("HeavyAttack1", true);
+                    if (currentEnergy >= heavyEnergyCost2)
+                    {
+                        Debug.Log("HeavyAttack1");
+                        _playerAnimator.SetBool("HeavyAttack1", true);
+                        UseEnergy(heavyEnergyCost2);
 
-                    heavyCombo[1] = true;
+                        heavyCombo[1] = true;
+                    }
                 }
             }
 
@@ -194,11 +207,17 @@ public class CharacterAttack : MonoBehaviour
             {
                 if (heavyTimer1 <= maxInputDelay && heavyTimer1 > 0f)
                 {
-                    Debug.Log("HeavyAttack2");
-                    _playerAnimator.SetBool("HeavyAttack2", true);
-                    if (animEnd)
+                    if (currentEnergy >= heavyEnergyCost3)
                     {
-                        heavyCombo[2] = true;
+                        Debug.Log("HeavyAttack2");
+                        _playerAnimator.SetBool("HeavyAttack3", true);
+                        UseEnergy(heavyEnergyCost2);
+                        
+                        if (animEnd)
+                        {
+                            heavyCombo[2] = true;
+                            
+                        }
                     }
                 }
             }
@@ -206,8 +225,6 @@ public class CharacterAttack : MonoBehaviour
             heavyCombo[0] = true;
             if (heavyCombo[2])
             {
-
-
                 heavyTimer1 = 0f; heavyCombo[1] = false;
                 heavyTimer = 0f; heavyCombo[0] = false;
 
@@ -263,6 +280,25 @@ public class CharacterAttack : MonoBehaviour
             _poiseBuildup = 0;
         }
     }
+    
+    public void UseEnergy(int amount)
+    {
+        if (currentEnergy <= amount)
+        {
+            currentEnergy = 0;
+            energySlider.value = 0;
+        }
+        else if (currentEnergy - amount >= maxEnergy)
+        {
+            currentEnergy = maxEnergy;
+        }
+        else
+        {
+            currentEnergy -= amount;
+        }
+        
+        energySlider.value = currentEnergy;
+    }
 
     private IEnumerator StunTimer(float stunTime)
     {
@@ -276,7 +312,6 @@ public class CharacterAttack : MonoBehaviour
         _characterMovement.allowMovement = true;
         _characterMovement.walkAllowed = true;
     }
-    
     
     private void Die()
     {
@@ -338,6 +373,17 @@ public class CharacterAttack : MonoBehaviour
 
     private void Update()
     {
+        if (currentEnergy < maxEnergy)
+        {
+            _rechargeTime -= Time.deltaTime * rechargeSpeed;
+            
+            if (_rechargeTime <= 0)
+            {
+                UseEnergy(-1);
+                _rechargeTime = 1f;
+            }
+        }
+
         if (lightCombo[0])
         {
             if (!lightCombo[1])
@@ -385,7 +431,6 @@ public class CharacterAttack : MonoBehaviour
                 heavyTimer = 0f;
             }
         }
-
     }
 }
 

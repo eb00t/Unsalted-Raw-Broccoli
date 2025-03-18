@@ -820,24 +820,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 115100973}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &115100975 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6836901781482300786, guid: 80030656154d8654fa3b9e61421d497a,
-    type: 3}
-  m_PrefabInstance: {fileID: 115100973}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &115100976 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2263786435195261722, guid: 80030656154d8654fa3b9e61421d497a,
-    type: 3}
-  m_PrefabInstance: {fileID: 115100973}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 115100975}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &116880430 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1116453098056227650, guid: 3b2c9c78620e3974b8e296947a04e364,
@@ -2559,12 +2541,12 @@ PrefabInstance:
         type: 3}
       propertyPath: normalText
       value: 
-      objectReference: {fileID: 115100975}
+      objectReference: {fileID: 0}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: DialogueText
       value: 
-      objectReference: {fileID: 115100976}
+      objectReference: {fileID: 0}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: dialogueCanvas
@@ -2602,10 +2584,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d2b1804d739b2d4286a0c23b68e081a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueBox: {fileID: 115100974}
+  dialogueBoxA: {fileID: 0}
+  dialogueBoxB: {fileID: 0}
   playerChar: {fileID: 907745041}
-  npcChar: {fileID: 391000279}
   enemyChar: {fileID: 1223722021}
+  npcChar: {fileID: 391000279}
+  indicator: {fileID: 0}
 --- !u!1 &391000279
 GameObject:
   m_ObjectHideFlags: 0
@@ -2711,6 +2695,8 @@ MonoBehaviour:
   - You shouldn't be here, how did you get in?
   DialogueSpeed: 0
   dialogueCanvas: {fileID: 219135083}
+  yesText: {fileID: 0}
+  noText: {fileID: 0}
 --- !u!114 &391000283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2723,10 +2709,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d2b1804d739b2d4286a0c23b68e081a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueBox: {fileID: 219135083}
+  dialogueBoxA: {fileID: 0}
+  dialogueBoxB: {fileID: 0}
   playerChar: {fileID: 907745041}
-  npcChar: {fileID: 391000279}
   enemyChar: {fileID: 391000279}
+  npcChar: {fileID: 391000279}
+  indicator: {fileID: 0}
 --- !u!1001 &399357253
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3346,6 +3334,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7e1317cb604b4e22a153d1237c3c7d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &430852524 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1296698452011104564, guid: 82d96a92435624859a85308310350400,
+    type: 3}
+  m_PrefabInstance: {fileID: 430852522}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &430852525 stripped
@@ -7273,6 +7273,11 @@ PrefabInstance:
       propertyPath: diedScreen
       value: 
       objectReference: {fileID: 1510280978}
+    - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: energySlider
+      value: 
+      objectReference: {fileID: 430852524}
     - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
       propertyPath: healthSlider

@@ -887,6 +887,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 9329533697730984, guid: 82d96a92435624859a85308310350400, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9329533697730984, guid: 82d96a92435624859a85308310350400, type: 3}
+      propertyPath: m_Color.g
+      value: 0.8470589
+      objectReference: {fileID: 0}
+    - target: {fileID: 9329533697730984, guid: 82d96a92435624859a85308310350400, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 543019165611569556, guid: 82d96a92435624859a85308310350400,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -952,6 +964,21 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3600125945374501294, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3600125945374501294, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.2509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 3600125945374501294, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.29803923
+      objectReference: {fileID: 0}
     - target: {fileID: 4309984013583806159, guid: 82d96a92435624859a85308310350400,
         type: 3}
       propertyPath: characterMovement
@@ -972,6 +999,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
       objectReference: {fileID: 1913636165}
+    - target: {fileID: 5228926062562168707, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_Name
+      value: EnergySlider
+      objectReference: {fileID: 0}
     - target: {fileID: 6208669108584140494, guid: 82d96a92435624859a85308310350400,
         type: 3}
       propertyPath: m_Name
@@ -1686,11 +1718,6 @@ PrefabInstance:
       objectReference: {fileID: 524628064}
     - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
-      propertyPath: poise
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
-        type: 3}
       propertyPath: hitFlash
       value: 
       objectReference: {fileID: 1693891471}
@@ -1701,18 +1728,43 @@ PrefabInstance:
       objectReference: {fileID: 524628063}
     - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
+      propertyPath: energySlider
+      value: 
+      objectReference: {fileID: 2136483518}
+    - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
       propertyPath: healthSlider
       value: 
       objectReference: {fileID: 524628062}
     - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
-      propertyPath: stunDuration
-      value: 0.5
+      propertyPath: maxInputDelay
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
-      propertyPath: maxInputDelay
-      value: 0.75
+      propertyPath: rechargeDelay
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: rechargeAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: heavyEnergyCost1
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: heavyEnergyCost2
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: heavyEnergyCost3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3077880211322091115, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
@@ -3215,6 +3267,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2136483518 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1296698452011104564, guid: 82d96a92435624859a85308310350400,
+    type: 3}
+  m_PrefabInstance: {fileID: 524628061}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
