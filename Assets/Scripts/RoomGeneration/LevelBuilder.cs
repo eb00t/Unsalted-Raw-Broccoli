@@ -104,7 +104,7 @@ public class LevelBuilder : MonoBehaviour
         }
         _numberOfRoomsToSpawn += lootRoomsToSpawn;
 
-        if (SceneManager.GetActiveScene().name != "Tutorial" || SceneManager.GetActiveScene().name != "Intermission")
+        if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission")
         {
            currentFloor = dataHolder.currentLevel;
         }
