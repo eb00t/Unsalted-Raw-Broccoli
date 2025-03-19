@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class dialogueAppear : MonoBehaviour
 {
-    public GameObject dialogueBoxA, dialogueBoxB, playerChar, enemyChar, npcChar, indicator; // yesText, noText;
+    public GameObject dialogueBox, dialogueConA, dialogueConB, playerChar, enemyChar, indicator; // yesText, noText, npcChar;
+    public GameObject npcChar;
+
     //public bool enemyNear = false;
     //public bool npcNear = false;
+
+    private void Start()
+    {
+        npcChar = GameObject.Find("NPC");
+    }
 
     // Update is called once per frame
     void Update()
@@ -15,36 +22,48 @@ public class dialogueAppear : MonoBehaviour
         if (Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) <= 5f)
         {
             indicator.SetActive(true);
-          //  enemyNear = true;
-           // npcNear = false;
+            dialogueConA.SetActive(true);
+            dialogueConB.SetActive(false);
+
+            //  enemyNear = true;
+            // npcNear = false;
             //Debug.Log("ENEMY NEAR!");
         }
         else if(Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) >= 5f)
         {
             indicator.SetActive(false);
-           // enemyNear = false;
-           // npcNear = true;
+            dialogueConA.SetActive(false);
+            dialogueConB.SetActive(true);
+
+            // enemyNear = false;
+            // npcNear = true;
             //  Debug.Log("ENEMY GONE!");
         }
-        /*
-        else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) <= 5f)
+        
+        //NPC Indicator
+       else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) <= 5f)
         {
             indicator.SetActive(true);
-            npcNear = true;
-         //   Debug.Log("NPC NEAR!");
+            dialogueConA.SetActive(true);
+            dialogueConB.SetActive(false);
+
+            //npcNear = true;
+          //  Debug.Log("NPC NEAR!");
         }
         else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) >= 5f)
         {
             indicator.SetActive(false);
-            npcNear = false;
-          //  Debug.Log("NPC GONE!");
+            dialogueConA.SetActive(false);
+            dialogueConB.SetActive(true);
+
+            // npcNear = false;
+           // Debug.Log("NPC GONE!");
         }
-        */
 
         //Text appear
         if (Input.GetKeyDown(KeyCode.M))
         {
-            dialogueBoxA.SetActive(true);
+            dialogueBox.SetActive(true);
             indicator.SetActive(false);
         }
 

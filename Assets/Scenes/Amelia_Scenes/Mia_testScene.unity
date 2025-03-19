@@ -1678,10 +1678,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueBox: {fileID: 1148015724}
+  dialogueConA: {fileID: 1225568339}
+  dialogueConB: {fileID: 1350503849}
   playerChar: {fileID: 1036353671}
   enemyChar: {fileID: 46238882}
-  npcChar: {fileID: 2139461706}
   indicator: {fileID: 1121946560}
+  npcChar: {fileID: 2139461706}
 --- !u!54 &1036353677
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1739,6 +1741,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1225568339 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+    type: 3}
+  m_PrefabInstance: {fileID: 4352075441790859051}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1233148892
 GameObject:
   m_ObjectHideFlags: 0
@@ -2114,6 +2122,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1403024756}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1350503849 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1822398922}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1398073260
 GameObject:
   m_ObjectHideFlags: 0
@@ -2903,6 +2917,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dialogue Controller (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: noText
@@ -3131,6 +3150,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Semi-Solid Platform Test
       objectReference: {fileID: 0}
+    - target: {fileID: 1154910801636379045, guid: f7c38637bec6fd84eae2fb83668c4f60,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1945495271575585008, guid: f7c38637bec6fd84eae2fb83668c4f60,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3301,16 +3325,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2139461706}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d2b1804d739b2d4286a0c23b68e081a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueBox: {fileID: 1148015724}
+  dialogueBox: {fileID: 0}
+  dialogueConA: {fileID: 0}
+  dialogueConB: {fileID: 0}
   playerChar: {fileID: 1036353671}
   enemyChar: {fileID: 2139461706}
-  npcChar: {fileID: 0}
   indicator: {fileID: 1121946560}
+  npcChar: {fileID: 0}
 --- !u!1001 &859828654311414906
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3674,6 +3700,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Dialogue Controller
+      objectReference: {fileID: 0}
+    - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
