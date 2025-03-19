@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 
 public class StartMenuController : MonoBehaviour
@@ -64,5 +65,14 @@ public class StartMenuController : MonoBehaviour
 			menuGui.SetActive(true);
 			SwitchSelected(controlsBtn);
 		}
+	}
+
+	public void WipeData()
+	{
+		dataHolder.savedItems.Clear();
+		dataHolder.savedItemCounts.Clear();
+		dataHolder.equippedConsumables.Clear();
+		dataHolder.currencyHeld = 0;
+		dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
 	}
 }
