@@ -81,7 +81,7 @@ public class LevelTextManager : MonoBehaviour
                 subtitleText.text = ("");
                 break;
             case LevelBuilder.LevelMode.Tutorial:
-                subtitleText.text = ("Doctor Blank smells like a bu-Uh... nevermind...");
+                subtitleText.text = ("");
                 break;
         }
     }
