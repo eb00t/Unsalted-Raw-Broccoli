@@ -158,7 +158,7 @@ public class InventoryStore : MonoBehaviour
         }
     }
 
-    private void TriggerNotification(Sprite icon, string text)
+    public void TriggerNotification(Sprite icon, string text)
     {
         var newNotif = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation,
             notifHolder.transform);

@@ -36,6 +36,7 @@ public class ToolbarHandler : MonoBehaviour
     public bool isInfoOpen;
     private List<int> _activeAtkBuffs;
     private EventInstance _cycleInstance;
+    private HorseFacts _horseFacts;
 
     private void Start()
     {
@@ -47,6 +48,7 @@ public class ToolbarHandler : MonoBehaviour
         _currencyManager = GetComponent<CurrencyManager>();
         _playerStatus = GetComponent<PlayerStatus>();
         _activeAtkBuffs = new List<int>();
+        _horseFacts = GetComponent<HorseFacts>();
         UpdateActiveConsumables();
         UpdateSlots();
         UpdateToolbar();
@@ -263,8 +265,8 @@ public class ToolbarHandler : MonoBehaviour
                 AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemActivate, transform.position);
                 Debug.LogWarning("Roulette heal has no effect.");
                 break;
-            case ConsumableEffect.HorseFact: // enemy deaths in vicinity have a chance to show fact about a horse
-                Debug.LogWarning("Horse fact has no effect.");
+            case ConsumableEffect.HorseFact: // shows a fact about a horse
+                _inventoryStore.TriggerNotification(consumable.uiIcon, _horseFacts.HorseFact());
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
