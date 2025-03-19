@@ -150,7 +150,7 @@ public class RoomScripting : MonoBehaviour
     {
         if (_roomInfo.shop)
         {
-            AudioManager.Instance.SetMusicParameter("Music Track", 3);
+            AudioManager.Instance.SetGlobalEventParameter("Music Track", 3);
             _musicHasChanged = true;
         }
 

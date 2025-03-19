@@ -16,6 +16,7 @@ public class AnimationEvents : MonoBehaviour
         _mediumAttackEvent,
         _heavyAttackEvent,
         _jumpEvent;
+    private CharacterAttack _characterAttack;
     
     //PLAYER
     public void PlayPlayerFootstepSound()
@@ -53,6 +54,25 @@ public class AnimationEvents : MonoBehaviour
         _jumpEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
         _jumpEvent.start();
         _jumpEvent.release();
+    }
+
+    public void ReduceEnergy(int LMH) //Light = 0, Medium = 1, Heavy = 0
+    {
+        _characterAttack = transform.root.transform.Find("PlayerAttack").GetComponent<CharacterAttack>();
+        int energyUsed = 0;
+        switch (LMH)
+        {
+            case 0:
+                energyUsed = _characterAttack.heavyEnergyCost1;
+                break;
+            case 1:
+                energyUsed = _characterAttack.heavyEnergyCost2;
+                break;
+            case 2:
+                energyUsed = _characterAttack.heavyEnergyCost3;
+                break;
+        }
+        _characterAttack.UseEnergy(energyUsed);
     }
     
     //ENEMIES

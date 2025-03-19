@@ -38,6 +38,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference Explosion { get; private set; }
     [field: Header("Hands Boss SFX")]
     [field: SerializeField] public EventReference BossHandSlam { get; private set; }
+    [field: SerializeField] public EventReference BossHandMove { get; private set; }
     [field: Header("Copy Boss SFX")]
     [field: SerializeField] public EventReference CopyBossFootsteps { get; private set; }
     [field: SerializeField] public EventReference CopyBossJump { get; private set; }

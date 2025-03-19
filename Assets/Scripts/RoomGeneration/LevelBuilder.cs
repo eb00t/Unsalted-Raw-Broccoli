@@ -104,9 +104,9 @@ public class LevelBuilder : MonoBehaviour
         }
         _numberOfRoomsToSpawn += lootRoomsToSpawn;
 
-        if (SceneManager.GetActiveScene().name != "Tutorial")
+        if (SceneManager.GetActiveScene().name != "Tutorial" || SceneManager.GetActiveScene().name != "Intermission")
         {
-            currentFloor = dataHolder.currentLevel;
+           currentFloor = dataHolder.currentLevel;
         }
 
         Debug.Log("Loot rooms to spawn: " + lootRoomsToSpawn);
@@ -576,14 +576,9 @@ public class LevelBuilder : MonoBehaviour
                     }
                     break;
                 case > 3 and < 6:
-                    if (shopSpawned == false)
-                    {
-                        Debug.Log("SHOP SPAWNING");
-                        _spawnMode = SpawnMode.Shop;
-                    }  else
-                    {
-                        _spawnMode = SpawnMode.Normal;
-                    }
+                    //Debug.Log("SHOP SPAWNING");
+                    //_spawnMode = SpawnMode.Shop;
+                    _spawnMode = SpawnMode.Normal; //Only fix I could think of to stop double shops
                     break;
                 case > 7 and < 10:
                     if (lootRoomsToSpawn > 0)

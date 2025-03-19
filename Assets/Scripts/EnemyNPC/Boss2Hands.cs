@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using Cinemachine;
 using FMOD;
+using FMOD.Studio;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -8,6 +10,7 @@ using UnityEngine.Serialization;
 using UnityEngine.TextCore.Text;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 public class Boss2Hands : MonoBehaviour, IDamageable
 {
@@ -38,6 +41,10 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private LockOnController _lockOnController;
     private CharacterMovement _characterMovement;
     private RoomScripting _roomScripting;
+    private EventInstance _armMovementL, _armMovementR;
+    private bool _soundLStarted, _soundRStarted;
+    private CinemachineImpulseSource _impulseSource;
+    private Vector3 _impulseVector;
     
     private enum States { Idle, Attack }
     public int Poise { get; set; }
@@ -52,6 +59,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -149,6 +157,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
         var leftStartPos = leftHand.position;
         var rightStartPos = rightHand.position;
+        
+        CreateHandMovementEvents();
 
         while (elapsed < resetDur)
         {
@@ -161,6 +171,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             elapsed += Time.deltaTime * handLerpSpeed;
             yield return null;
         }
+        
+        TwoHandAttackSoundFinish(transform.position, false);
 
     }
     
@@ -177,6 +189,9 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var rightTargetPos = new Vector3(rightHand.position.x, groundPosition.position.y, rightHand.position.z);
 
         yield return StartCoroutine(MoveHands(leftTargetPos, rightTargetPos, 2f));
+        _impulseVector = new Vector3(0, 1, 0);
+        OneHandAttackSoundFinish(true, true);
+        OneHandAttackSoundFinish(false, true);
         
         UpdateColliders(false, false, false, false); // give player opening to attack
 
@@ -188,6 +203,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var lungeTarget = new Vector3(_target.position.x, groundPosition.position.y, groundPosition.position.z);
         
         yield return StartCoroutine(MoveHands(lungeTarget, lungeTarget, 1f));
+        _impulseVector = new Vector3(0, 2, 0);
+        TwoHandAttackSoundFinish(lungeTarget, true);
 
         yield return new WaitForSecondsRealtime(0.1f);
         
@@ -207,15 +224,20 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         
         if (!isLeft)
         {
+            _armMovementL = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
             UpdateHandImg(false, true, true, false);
             yield return StartCoroutine(MoveHands(null, hoverPosition, 1f));
+            OneHandAttackSoundFinish(isLeft, false);
         }
         else
         {
+            _armMovementR = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
             UpdateHandImg(true, false, false, true);
             yield return StartCoroutine(MoveHands(hoverPosition, null, 1f));
+            OneHandAttackSoundFinish(isLeft, false);
+            
         }
-
+        
         yield return new WaitForSecondsRealtime(1f);
         
         UpdateColliders(true, true, false, false);
@@ -225,18 +247,22 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         if (!isLeft) //  slam down
         {
             yield return StartCoroutine(MoveHands(null, slamPosition, 0.5f));
+            _impulseVector = new Vector3(0, 2, 0);
+            OneHandAttackSoundFinish(isLeft, true);
             UpdateColliders(false, false, false, false);
-            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, rightHand.position);
             yield return new WaitForSecondsRealtime(2f);
             yield return StartCoroutine(MoveHands(null, hoverPosition, 0.5f));
+            OneHandAttackSoundFinish(isLeft, false);
         }
         else
         {
             yield return StartCoroutine(MoveHands(slamPosition, null, 0.5f));
+            _impulseVector = new Vector3(0, 2, 0);
             UpdateColliders(false, false, false, false);
-            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, leftHand.position);
+            OneHandAttackSoundFinish(isLeft, true);
             yield return new WaitForSecondsRealtime(2f);
             yield return StartCoroutine(MoveHands(hoverPosition, null, 0.5f));
+            OneHandAttackSoundFinish(isLeft, false);
         }
 
         yield return new WaitForSecondsRealtime(0.1f);
@@ -259,16 +285,18 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var rightWidePos = _target.position + Vector3.right * 5;
         var clapCount = Random.Range(1, 4);
         var clapTarget = _target.position;
+        
 
         for (var i = 0; i <= clapCount; i++)
         {
             yield return StartCoroutine(MoveHands(leftWidePos, rightWidePos, 1f));
             yield return new WaitForSeconds(0.1f);
-
+            TwoHandAttackSoundFinish(transform.position, false);
             UpdateColliders(false, false, true, true);
-            
             yield return StartCoroutine(MoveHands(clapTarget, clapTarget, .5f));
-
+            _impulseVector = new Vector3(4, 0, 0);
+            TwoHandAttackSoundFinish(clapTarget, true);
+            
             yield return new WaitForSecondsRealtime(0.1f);
 
             UpdateColliders(false, false, false, false);
@@ -352,17 +380,46 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var leftStartPos = leftHand.position;
         var rightStartPos = rightHand.position;
 
+        if (leftTarget != null)
+        {
+            _armMovementL = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
+        }
+
+        if (rightTarget != null)
+        {
+            _armMovementR = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
+        }
+
+        if (leftTarget != null && rightTarget != null)
+        {
+            _armMovementL.setVolume(0.25f);
+            _armMovementR.setVolume(0.25f);
+            Debug.Log("Lowering volume of hands to save your ears.");
+        }
+        
+        AudioManager.Instance.AttachInstanceToGameObject(_armMovementL, leftHand);
+        AudioManager.Instance.AttachInstanceToGameObject(_armMovementR, rightHand);
         while (elapsed < duration)
         {
             var t = elapsed / duration;
 
             if (leftTarget.HasValue)
             {
+                if (_soundLStarted == false)
+                {
+                    _armMovementL.start();
+                    _soundLStarted = true;
+                }
                 leftHand.position = Vector3.Lerp(leftStartPos, leftTarget.Value, t);
             }
 
             if (rightTarget.HasValue)
-            {
+            { 
+                if (_soundRStarted == false)
+                {
+                    _armMovementR.start();
+                    _soundRStarted = true;
+                }
                 rightHand.position = Vector3.Lerp(rightStartPos, rightTarget.Value, t);
             }
 
@@ -452,10 +509,69 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         isDead = true;
         LevelBuilder.Instance.bossDead = true;
+        _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
+        _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
+        _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, leftHand.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, rightHand.position);
         AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
         _characterMovement.lockedOn = false;
         _lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);
         gameObject.SetActive(false);
+    }
+
+    void CreateHandMovementEvents()
+    {
+        _armMovementL = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
+        _armMovementR = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
+    }
+    
+    void OneHandAttackSoundFinish(bool isLeft, bool slam)
+    {
+        switch (isLeft)
+        {
+          case true:
+              AudioManager.Instance.SetEventParameter(_armMovementL, "Move Complete", 1);
+              _armMovementL.release();
+              _soundLStarted = false;
+              break;
+          case false:
+              AudioManager.Instance.SetEventParameter(_armMovementR, "Move Complete", 1);
+              _armMovementR.release();
+              _soundRStarted = false;
+              break;
+        }
+
+        switch (slam)
+        {
+            case true when isLeft is true:
+                _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
+                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, leftHand.position);
+                _impulseVector = Vector3.zero;
+                break;
+            case true when isLeft is false:
+                _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
+                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, rightHand.position);
+                _impulseVector = Vector3.zero;
+                break;
+        }
+    }
+    
+    void TwoHandAttackSoundFinish(Vector3 slamTarget, bool slam)
+    {
+        AudioManager.Instance.SetEventParameter(_armMovementL, "Move Complete", 1);
+        AudioManager.Instance.SetEventParameter(_armMovementR, "Move Complete", 1);
+        _armMovementL.release();
+        _armMovementR.release();
+        if (slam)
+        {
+            _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, slamTarget);
+            _impulseVector = Vector3.zero;
+        }
+        _soundLStarted = false;
+        _soundRStarted = false;
     }
 }

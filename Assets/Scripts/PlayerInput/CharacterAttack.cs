@@ -25,7 +25,7 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private bool[] heavyCombo = new bool[4];
     [SerializeField] private float maxInputDelay = 10f;
     [HideInInspector] public bool animEnd;
-    [SerializeField] private int heavyEnergyCost1, heavyEnergyCost2, heavyEnergyCost3;
+    [SerializeField] public int heavyEnergyCost1, heavyEnergyCost2, heavyEnergyCost3;
     [SerializeField] private float rechargeSpeed;
     private float _rechargeTime;
     
@@ -186,7 +186,7 @@ public class CharacterAttack : MonoBehaviour
                 {
                     Debug.Log("HeavyAttack");
                     _playerAnimator.SetBool("HeavyAttack", true);
-                    UseEnergy(heavyEnergyCost1);
+                    //UseEnergy(heavyEnergyCost1);
                 }
             }
 
@@ -198,7 +198,7 @@ public class CharacterAttack : MonoBehaviour
                     {
                         Debug.Log("HeavyAttack1");
                         _playerAnimator.SetBool("HeavyAttack1", true);
-                        UseEnergy(heavyEnergyCost2);
+                        //UseEnergy(heavyEnergyCost2);
 
                         heavyCombo[1] = true;
                     }
@@ -213,7 +213,7 @@ public class CharacterAttack : MonoBehaviour
                     {
                         Debug.Log("HeavyAttack2");
                         _playerAnimator.SetBool("HeavyAttack3", true);
-                        UseEnergy(heavyEnergyCost2);
+                        //UseEnergy(heavyEnergyCost2);
                         
                         if (animEnd)
                         {
