@@ -37,8 +37,6 @@ public class dialogueAppear : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (!_characterMovement.uiOpen)
-        {
             var dist = Vector3.Distance(transform.position, enemyChar.transform.position);
             //var dist1 = Vector3.Distance(transform.position, npcChar.transform.position);
 
@@ -47,7 +45,7 @@ public class dialogueAppear : MonoBehaviour
                 dialogueConA.SetActive(true);
                 indicator.SetActive(true);
                 _itemPickupHandler.isPlrNearDialogue = true;
-
+                
                 if (dialogueBox.activeSelf)
                 {
                     _itemPickupHandler.TogglePrompt("Next sentence", true, ControlsManager.ButtonType.ButtonSouth);
@@ -76,8 +74,7 @@ public class dialogueAppear : MonoBehaviour
                 dialogueConB.SetActive(false);
                 _itemPickupHandler.isPlrNearDialogue1 = false;
             }
-            */
-        }
+            /*
 
         
         /*
