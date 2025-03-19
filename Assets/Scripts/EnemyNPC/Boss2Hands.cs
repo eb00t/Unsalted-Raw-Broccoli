@@ -42,6 +42,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private CharacterMovement _characterMovement;
     private RoomScripting _roomScripting;
     private EventInstance _armMovementL, _armMovementR;
+    private EventInstance _laserEvent;
     private bool _soundLStarted, _soundRStarted;
     private CinemachineImpulseSource _impulseSource;
     private Vector3 _impulseVector;
@@ -308,7 +309,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private IEnumerator LaserAttack() // aims laser at player that tracks, then it stops and starts doing damage
     {
         yield return StartCoroutine(ResetHands());
-        
+        _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandLaser);
         _canAttack = false;
         _lineRenderer.enabled = true;
         _lineRenderer.SetPosition(0, bossEyePosition.position);
@@ -319,6 +320,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var delay = 0.1f;
         var targetPos = new Vector3(0, 0, 0);
         var elapsed = 0f;
+
+        _laserEvent.start();
         
         while (elapsed < chargeTime)
         {
@@ -337,7 +340,9 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         
         elapsed = 0f;
         var lastDamageTime = 0f;
-
+        
+        AudioManager.Instance.SetEventParameter(_laserEvent, "Firing", 1);
+        _laserEvent.release();
         while (elapsed < fireTime)
         {
             var dist = Vector3.Distance(targetPos, laserStartPos);
@@ -440,6 +445,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             _health = 0;
             _healthSlider.value = 0;
             Die();
+        }
+        
+        if (_health <= maxHealth / 2)
+        {
+            AudioManager.Instance.SetMusicParameter("Boss Phase", 2);
         }
     }
     

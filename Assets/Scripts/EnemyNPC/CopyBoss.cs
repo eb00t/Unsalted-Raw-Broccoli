@@ -393,6 +393,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _currentHealth -= damage;
         healthSlider.value = _currentHealth;
 
+        if (_currentHealth <= maxHealth / 2)
+        {
+            AudioManager.Instance.SetMusicParameter("Boss Phase", 2);
+        }
+
         if (_currentHealth <= 0)
         {
             Die();
@@ -428,6 +433,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         isDead = true; 
         LevelBuilder.Instance.bossDead = true;
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
         AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
         _characterMovement.lockedOn = false;
         _lockOnController.lockedTarget = null;
