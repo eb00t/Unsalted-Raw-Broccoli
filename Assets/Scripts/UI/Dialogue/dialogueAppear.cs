@@ -5,7 +5,7 @@ using UnityEngine;
 public class dialogueAppear : MonoBehaviour
 {
     public GameObject dialogueBox, dialogueConA, dialogueConB, playerChar, enemyChar, indicator; // yesText, noText, npcChar;
-    public GameObject npcChar; // bossIndicator;
+    public GameObject npcChar, bossIndicator;
 
     //public bool enemyNear = false;
     //public bool npcNear = false;
@@ -19,7 +19,7 @@ public class dialogueAppear : MonoBehaviour
     void Update()
     {
         npcChar = GameObject.Find("NPC");
-       // bossIndicator = GameObject.Find("bossIndicator");
+        bossIndicator = GameObject.Find("bossIndicator");
 
         //prompt text appear (ENEMY)
         if (Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) <= 5f)
@@ -46,7 +46,7 @@ public class dialogueAppear : MonoBehaviour
         //NPC Indicator
        else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) <= 5f)
         {
-           // bossIndicator.SetActive(true);
+            bossIndicator.SetActive(true);
             dialogueConA.SetActive(true);
             dialogueConB.SetActive(false);
 
@@ -55,7 +55,7 @@ public class dialogueAppear : MonoBehaviour
         }
         else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) >= 5f)
         {
-          //  bossIndicator.SetActive(false);
+            bossIndicator.SetActive(false);
             dialogueConA.SetActive(false);
             dialogueConB.SetActive(true);
 
