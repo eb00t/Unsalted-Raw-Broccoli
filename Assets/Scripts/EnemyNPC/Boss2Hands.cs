@@ -321,6 +321,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var targetPos = new Vector3(0, 0, 0);
         var elapsed = 0f;
 
+        AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
         _laserEvent.start();
         
         while (elapsed < chargeTime)

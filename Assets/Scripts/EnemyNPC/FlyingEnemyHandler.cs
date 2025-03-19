@@ -36,6 +36,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private CharacterMovement _characterMovement;
     private LockOnController _lockOnController;
     private EventInstance _alarmEvent;
+    private EventInstance _deathEvent;
 
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
 
@@ -66,6 +67,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         RoomScripting.enemies.Add(gameObject);
         gameObject.transform.parent = gameObject.transform.root;
+        _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -330,6 +332,9 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         Spawner.spawnedEnemy = null;
         Spawner.SpawnEnemies();
+        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);
+        _deathEvent.start();
+        _deathEvent.release();
         StopAlarmSound();
     }
     public void PlayAlarmSound()

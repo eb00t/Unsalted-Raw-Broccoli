@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -43,6 +44,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private CharacterMovement _characterMovement;
     private RoomScripting _roomScripting;
     private LockOnController _lockOnController;
+    private CinemachineImpulseSource _impulseSource;
+    private Vector3 _impulseVector;
 
     [Header("UI")]
     [SerializeField] private Slider healthSlider;
@@ -61,6 +64,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
         _bossCollider = GetComponent<Collider>();
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
@@ -433,6 +437,9 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         isDead = true; 
         LevelBuilder.Instance.bossDead = true;
+        _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
+        _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
+        _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
         AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
         _characterMovement.lockedOn = false;
