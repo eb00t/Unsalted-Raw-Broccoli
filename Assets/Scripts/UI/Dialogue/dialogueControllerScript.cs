@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class dialogueControllerScript : MonoBehaviour
 {
     //DIALOGUE CODE
     public TextMeshProUGUI DialogueText;
+    [TextArea(3, 10)]
     public string[] Sentences;
     private int Index; // = 0;
     public float DialogueSpeed;
@@ -23,20 +25,7 @@ public class dialogueControllerScript : MonoBehaviour
 
     private void Update()
     {
-        //Move through sentences
-       if(Input.GetKeyDown(KeyCode.Tab))
-        {
-            if(DialogueText.text == Sentences[Index])
-            {
-                nextSen();
-            }
-            else
-            {
-                StopAllCoroutines();
-                DialogueText.text = Sentences[Index];
-            }
-        }
-
+        /*
         //ANSWERS
         if (Input.GetKeyDown(KeyCode.Y))
         {
@@ -48,13 +37,42 @@ public class dialogueControllerScript : MonoBehaviour
             //Answer is no
             answerN();
         }
-        else if (Input.GetKeyDown(KeyCode.Escape))
+       
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             //Turn off text boxes
             noText.SetActive(false);
             yesText.SetActive(false);
         }
+        */
+    }
 
+    // move through sentences
+    public void NextSentence(InputAction.CallbackContext context) // when space/a is pressed
+    {
+        if (!context.performed) return;
+        if (!gameObject.activeSelf) return;
+        
+        if (DialogueText.text == Sentences[Index])
+        {
+            // nextSen() moved here
+            if(Index < Sentences.Length - 1)
+            {
+                Index++;
+                DialogueText.text = string.Empty;
+                StartCoroutine(typeSentence());
+            }
+            else
+            {
+                dialogueCanvas.SetActive(false);
+                Index = 0;
+            }
+        }
+        else
+        {
+            StopAllCoroutines();
+            DialogueText.text = Sentences[Index];
+        }
     }
 
     void startSentence()
@@ -71,20 +89,7 @@ public class dialogueControllerScript : MonoBehaviour
             yield return new WaitForSeconds(DialogueSpeed);
         }
     }
-
-    void nextSen()
-    {
-        if(Index < Sentences.Length - 1)
-        {
-            Index++;
-            DialogueText.text = string.Empty;
-            StartCoroutine(typeSentence());
-        }
-        else
-        {
-            dialogueCanvas.SetActive(false);
-        }
-    }
+    
     void answerY()
     {
         yesText.SetActive(true);

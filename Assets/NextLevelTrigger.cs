@@ -46,7 +46,7 @@ public class NextLevelTrigger : MonoBehaviour
             {
                 if (_itemPickupHandler.itemCount > 0) return;
                 _itemPickupHandler.isPlrNearEnd = false;
-                _itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
+                //_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
             }
         }
     }

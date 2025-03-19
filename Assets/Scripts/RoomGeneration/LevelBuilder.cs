@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FMOD.Studio;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
@@ -102,8 +103,12 @@ public class LevelBuilder : MonoBehaviour
             lootRoomsToSpawn = 2;
         }
         _numberOfRoomsToSpawn += lootRoomsToSpawn;
-        
-        currentFloor = dataHolder.currentLevel;
+
+        if (SceneManager.GetActiveScene().name != "Tutorial")
+        {
+            currentFloor = dataHolder.currentLevel;
+        }
+
         Debug.Log("Loot rooms to spawn: " + lootRoomsToSpawn);
         StartCoroutine(DelayStart());
     }

@@ -52,7 +52,7 @@ public class ShopHandler : MonoBehaviour
 			{
 				if (_itemPickupHandler.itemCount > 0) return;
 				_itemPickupHandler.isPlrNearShop = false;
-				_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
+				//_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
 			}
 		}
 		

@@ -14,7 +14,7 @@ public class MenuHandler : MonoBehaviour
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
-	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui, controlGui, diedScreen;
+	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui, controlGui, diedScreen, dialogueGUI;
 	[SerializeField] private GameObject settingsBtn, controlsBtn, quitBtn;
 	
 	[Header("Navigation")]
@@ -40,15 +40,19 @@ public class MenuHandler : MonoBehaviour
 			characterMovement.uiOpen = true;
 			Time.timeScale = 0;
 		}
-		else if (shopGUI != null)
+		else
 		{
-			characterMovement.uiOpen = shopGUI.activeSelf;
-			Time.timeScale = 1;
+				characterMovement.uiOpen = false;
+				Time.timeScale = 1;
+		}
+
+		if ((shopGUI != null && shopGUI.activeSelf) || (dialogueGUI != null && dialogueGUI.activeSelf))
+		{
+			characterMovement.uiOpen = true;
 		}
 		else
 		{
 			characterMovement.uiOpen = false;
-			Time.timeScale = 1;
 		}
 
 		if (eventSystem.currentSelectedGameObject != _lastSelected)

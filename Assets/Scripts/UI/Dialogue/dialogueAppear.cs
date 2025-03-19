@@ -1,80 +1,85 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class dialogueAppear : MonoBehaviour
 {
-    public GameObject dialogueBox, dialogueConA, dialogueConB, playerChar, enemyChar, indicator; // yesText, noText, npcChar;
-    public GameObject npcChar, bossIndicator;
+    public GameObject dialogueBox, dialogueConA, dialogueConB, enemyChar; // yesText, noText, npcChar;
+    public GameObject npcChar, bossIndicator, indicator;
+    private ItemPickupHandler _itemPickupHandler;
+    private CharacterMovement _characterMovement;
+    [SerializeField] private float range;
 
     //public bool enemyNear = false;
    // public bool npcNear = false;
 
     private void Start()
-    {
+    { 
+        _characterMovement = GetComponent<CharacterMovement>();
+        _itemPickupHandler = GetComponent<ItemPickupHandler>();
        // npcChar = GameObject.Find("NPC");
+       npcChar = GameObject.Find("NPC");
+    }
+
+    //Text appear
+    public void EnableDialogueBox(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        if (_characterMovement.uiOpen) return;
+
+        if (GetComponent<ItemPickupHandler>().isPlrNearDialogue || GetComponent<ItemPickupHandler>().isPlrNearDialogue1)
+        {
+            dialogueBox.SetActive(true);
+        }
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        npcChar = GameObject.Find("NPC");
-        bossIndicator = GameObject.Find("bossIndicator");
-
-        //prompt text appear (ENEMY)
-        if (Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) <= 5f)
+        if (!_characterMovement.uiOpen)
         {
-            indicator.SetActive(true);
+            var dist = Vector3.Distance(transform.position, enemyChar.transform.position);
+            //var dist1 = Vector3.Distance(transform.position, npcChar.transform.position);
 
-            dialogueConA.SetActive(true);
-            dialogueConB.SetActive(false);
+            if (dist <= range)
+            {
+                dialogueConA.SetActive(true);
+                indicator.SetActive(true);
+                _itemPickupHandler.isPlrNearDialogue = true;
 
-            // enemyNear = true;
-             //npcNear = false;
-            //Debug.Log("ENEMY NEAR!");
+                if (dialogueBox.activeSelf)
+                {
+                    _itemPickupHandler.TogglePrompt("Next sentence", true, ControlsManager.ButtonType.ButtonSouth);
+                }
+                else
+                {
+                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.ButtonEast);
+                }
+            }
+            else if (dist > range)
+            {
+                dialogueConA.SetActive(false);
+                indicator.SetActive(false);
+                _itemPickupHandler.isPlrNearDialogue = false;
+            }
+            
+            /*
+            if (dist1 <= range)
+            {
+                dialogueConB.SetActive(true);
+                _itemPickupHandler.isPlrNearDialogue1 = true;
+                _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.ButtonEast);
+            }
+            else if (dist1 > range)
+            {
+                dialogueConB.SetActive(false);
+                _itemPickupHandler.isPlrNearDialogue1 = false;
+            }
+            */
         }
-        else if(Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) >= 5f)
-        {
-            indicator.SetActive(false);
 
-            dialogueConA.SetActive(false);
-            dialogueConB.SetActive(true);
-
-           //  enemyNear = false;
-            // npcNear = true;
-            //  Debug.Log("ENEMY GONE!");
-        }
         
-        //NPC Indicator
-        else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) <= 5f)
-        {
-            bossIndicator.SetActive(true);
-
-            dialogueConA.SetActive(false);
-            dialogueConB.SetActive(true);
-
-           // npcNear = true;
-          //  Debug.Log("NPC NEAR!");
-        }
-        else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) >= 5f)
-        {
-            bossIndicator.SetActive(false);
-
-            dialogueConA.SetActive(false);
-            dialogueConB.SetActive(false);
-
-          //   npcNear = false;
-           // Debug.Log("NPC GONE!");
-        }
-
-        //Text appear
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            dialogueBox.SetActive(true);
-            indicator.SetActive(false);
-         //   bossIndicator.SetActive(false);
-        }
-
         /*
         //Activate Prompt
         if(playerNear)
