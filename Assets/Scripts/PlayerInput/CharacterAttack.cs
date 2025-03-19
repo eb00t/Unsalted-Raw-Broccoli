@@ -212,7 +212,7 @@ public class CharacterAttack : MonoBehaviour
                     if (currentEnergy >= heavyEnergyCost3)
                     {
                         Debug.Log("HeavyAttack2");
-                        _playerAnimator.SetBool("HeavyAttack3", true);
+                        _playerAnimator.SetBool("HeavyAttack2", true);
                         //UseEnergy(heavyEnergyCost2);
                         
                         if (animEnd)
