@@ -796,6 +796,84 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6990996159585773148}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &410731551
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2287692074504712138, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287692074504712138, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287692074504712138, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -12.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287692074504712138, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287692074504712138, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287692074504712138, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287692074504712138, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287692074504712138, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287692074504712138, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287692074504712138, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5236877705274997862, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6304590621591677812, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_Name
+      value: bossIndicator
+      objectReference: {fileID: 0}
+    - target: {fileID: 6304590621591677812, guid: 3a3b9c341ca50224c8af206c3b3dc432,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3a3b9c341ca50224c8af206c3b3dc432, type: 3}
 --- !u!1 &456824924
 GameObject:
   m_ObjectHideFlags: 0
@@ -1684,6 +1762,7 @@ MonoBehaviour:
   enemyChar: {fileID: 46238882}
   indicator: {fileID: 1121946560}
   npcChar: {fileID: 2139461706}
+  bossIndicator: {fileID: 0}
 --- !u!54 &1036353677
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2915,7 +2994,7 @@ PrefabInstance:
     - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: m_Name
-      value: Dialogue Controller (1)
+      value: Dialogue Controller (B)
       objectReference: {fileID: 0}
     - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
@@ -3337,6 +3416,7 @@ MonoBehaviour:
   enemyChar: {fileID: 2139461706}
   indicator: {fileID: 1121946560}
   npcChar: {fileID: 0}
+  bossIndicator: {fileID: 0}
 --- !u!1001 &859828654311414906
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3699,7 +3779,7 @@ PrefabInstance:
     - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: m_Name
-      value: Dialogue Controller
+      value: Dialogue Controller (A)
       objectReference: {fileID: 0}
     - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
@@ -4034,6 +4114,7 @@ SceneRoots:
   - {fileID: 732553445}
   - {fileID: 1403024756}
   - {fileID: 8768536754159229780}
+  - {fileID: 410731551}
   - {fileID: 6990996159585773148}
   - {fileID: 4352075441790859051}
   - {fileID: 1822398922}

@@ -8,7 +8,7 @@ public class dialogueAppear : MonoBehaviour
     public GameObject npcChar, bossIndicator;
 
     //public bool enemyNear = false;
-    //public bool npcNear = false;
+   // public bool npcNear = false;
 
     private void Start()
     {
@@ -25,41 +25,45 @@ public class dialogueAppear : MonoBehaviour
         if (Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) <= 5f)
         {
             indicator.SetActive(true);
+
             dialogueConA.SetActive(true);
             dialogueConB.SetActive(false);
 
-            //  enemyNear = true;
-            // npcNear = false;
+            // enemyNear = true;
+             //npcNear = false;
             //Debug.Log("ENEMY NEAR!");
         }
         else if(Vector3.Distance(playerChar.transform.position, enemyChar.transform.position) >= 5f)
         {
             indicator.SetActive(false);
+
             dialogueConA.SetActive(false);
             dialogueConB.SetActive(true);
 
-            // enemyNear = false;
+           //  enemyNear = false;
             // npcNear = true;
             //  Debug.Log("ENEMY GONE!");
         }
         
         //NPC Indicator
-       else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) <= 5f)
+        else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) <= 5f)
         {
             bossIndicator.SetActive(true);
-            dialogueConA.SetActive(true);
-            dialogueConB.SetActive(false);
 
-            //npcNear = true;
+            dialogueConA.SetActive(false);
+            dialogueConB.SetActive(true);
+
+           // npcNear = true;
           //  Debug.Log("NPC NEAR!");
         }
         else if (Vector3.Distance(playerChar.transform.position, npcChar.transform.position) >= 5f)
         {
             bossIndicator.SetActive(false);
-            dialogueConA.SetActive(false);
-            dialogueConB.SetActive(true);
 
-            // npcNear = false;
+            dialogueConA.SetActive(false);
+            dialogueConB.SetActive(false);
+
+          //   npcNear = false;
            // Debug.Log("NPC GONE!");
         }
 
@@ -68,6 +72,7 @@ public class dialogueAppear : MonoBehaviour
         {
             dialogueBox.SetActive(true);
             indicator.SetActive(false);
+            bossIndicator.SetActive(false);
         }
 
         /*
