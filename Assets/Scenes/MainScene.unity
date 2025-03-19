@@ -1556,7 +1556,12 @@ PrefabInstance:
     - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
       propertyPath: m_Name
-      value: Dialogue Controller
+      value: Dialogue Controller (A)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}
@@ -1609,6 +1614,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e52fc17a0bc9b648967f5ce08073dd2, type: 3}
+--- !u!1 &817331348 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+    type: 3}
+  m_PrefabInstance: {fileID: 817331347}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &909250203
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1806,6 +1817,16 @@ PrefabInstance:
       propertyPath: dialogueBoxA
       value: 
       objectReference: {fileID: 1697302078}
+    - target: {fileID: 3773342949230833633, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: dialogueConA
+      value: 
+      objectReference: {fileID: 817331348}
+    - target: {fileID: 3773342949230833633, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: dialogueConB
+      value: 
+      objectReference: {fileID: 1455840015}
     - target: {fileID: 5293791565655745629, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2515,6 +2536,130 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41c9b278c89fdfd47ba444dc5d0dea08, type: 3}
+--- !u!1001 &1455840014
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2803193585703622190, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1022.24176
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803193585703622190, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 164.51685
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803193585703622190, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 424.30408
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803193585703622190, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803193585703622190, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803193585703622190, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803193585703622190, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803193585703622190, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803193585703622190, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803193585703622190, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_Name
+      value: Dialogue Controller (B)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: noText
+      value: 
+      objectReference: {fileID: 1887583969}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: yesText
+      value: 
+      objectReference: {fileID: 117951394}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: DialogueText
+      value: 
+      objectReference: {fileID: 616577144}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: dialogueCanvas
+      value: 
+      objectReference: {fileID: 1697302078}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: Sentences.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: Sentences.Array.data[0]
+      value: Is that...
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: Sentences.Array.data[1]
+      value: me?
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: Sentences.Array.data[2]
+      value: Just need to be on the look out for any of his experiements!
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: Sentences.Array.data[3]
+      value: Just need to be on the look out for any of his experiements!
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4e52fc17a0bc9b648967f5ce08073dd2, type: 3}
+--- !u!1 &1455840015 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1455840014}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1467474240 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6304590621591677812, guid: 3a3b9c341ca50224c8af206c3b3dc432,
@@ -3295,6 +3440,7 @@ SceneRoots:
   - {fileID: 1945610212}
   - {fileID: 524628061}
   - {fileID: 817331347}
+  - {fileID: 1455840014}
   - {fileID: 1666749008}
   - {fileID: 1112248152}
   - {fileID: 1621120036}
