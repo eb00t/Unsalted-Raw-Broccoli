@@ -35,25 +35,12 @@ public class MenuHandler : MonoBehaviour
 	private void Update()
 	{
 		// update if ui is open or not in player movement script
-		if (invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf || settingGui.activeSelf || controlGui.activeSelf || diedScreen.activeSelf)
-		{
-			characterMovement.uiOpen = true;
-			Time.timeScale = 0;
-		}
-		else
-		{
-				characterMovement.uiOpen = false;
-				Time.timeScale = 1;
-		}
-
-		if ((shopGUI != null && shopGUI.activeSelf) || (dialogueGUI != null && dialogueGUI.activeSelf))
-		{
-			characterMovement.uiOpen = true;
-		}
-		else
-		{
-			characterMovement.uiOpen = false;
-		}
+		var pauseGuisOpen = invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf || settingGui.activeSelf || controlGui.activeSelf || diedScreen.activeSelf;
+		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) || (dialogueGUI != null && dialogueGUI.activeSelf);
+		
+		characterMovement.uiOpen = pauseGuisOpen || noPauseGuisOpen;
+		
+		Time.timeScale = pauseGuisOpen ? 0 : 1;
 
 		if (eventSystem.currentSelectedGameObject != _lastSelected)
 		{

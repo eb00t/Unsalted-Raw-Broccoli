@@ -380,18 +380,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
            _lowHealth = true;
         }
 
-        if (_poiseBuildup >= poise)
+        if (poiseDmg.HasValue)
         {
+            _poiseBuildup += poiseDmg.Value;
+
             if (knockback.HasValue)
             {
                 ApplyKnockback(knockback.Value);
-            }
-        }
-        else
-        {
-            if (poiseDmg.HasValue)
-            {
-                _poiseBuildup += poiseDmg.Value;
             }
         }
     }
@@ -496,18 +491,37 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     public void ApplyKnockback(Vector2 knockbackPower)
     {
-        if (_isFrozen || _poiseBuildup < poise || isDead) return;
-        
-        _poiseBuildup = 0;
+        if (_isFrozen || isDead) return;
+
         _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
         
-        var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir, knockbackPower.y, 0);
-        _agent.velocity = knockbackForce; 
-        
-        StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .5f));
-        StartCoroutine(StunTimer(.5f));
-    }
+        var knockbackMultiplier = (_poiseBuildup >= poise) ? 2f : 0.5f; 
+        var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
+        StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
+
+        if (_poiseBuildup >= poise)
+        {
+            StartCoroutine(StunTimer(1f));
+            _poiseBuildup = 0;
+        }
+    }
+    
+    private IEnumerator TriggerKnockback(Vector3 force, float duration)
+    {
+        var elapsedTime = 0f;
+        var startPos = transform.position;
+        var targetPos = startPos + force;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            var t = elapsedTime / duration;
+            transform.position = Vector3.Lerp(startPos, targetPos, t);
+            yield return null;
+        }
+    }
+    
     private IEnumerator ApplyVerticalKnockback(float height, float dur)
     {
         var elapsedTime = 0f;
