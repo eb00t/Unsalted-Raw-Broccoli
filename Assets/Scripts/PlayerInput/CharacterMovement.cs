@@ -260,7 +260,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Right Wall") || collision.collider.CompareTag("Left Wall"))
+        if (collision.collider.CompareTag("Right Wall") || collision.collider.CompareTag("Left Wall") || collision.collider.CompareTag("Left Door") || collision.collider.CompareTag("Right Door"))
         {
             if (!grounded && input != 0)
             {
