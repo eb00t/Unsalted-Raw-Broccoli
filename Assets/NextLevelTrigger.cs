@@ -9,6 +9,7 @@ public class NextLevelTrigger : MonoBehaviour
     private CharacterMovement _characterMovement;
     private ItemPickupHandler _itemPickupHandler;
     private GameObject _player;
+    private GameObject _uiManager;
     public float range = 5f;
     [SerializeField] private DataHolder dataHolder;
 
@@ -16,8 +17,7 @@ public class NextLevelTrigger : MonoBehaviour
     {
         Intermission,
         NextFloor,
-        TitleScreen,
-        Automatic
+        TitleScreen
     }
 
     public SceneToLoad sceneToLoad;
@@ -27,6 +27,8 @@ public class NextLevelTrigger : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player");
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+        _uiManager = GameObject.FindGameObjectWithTag("UIManager");
+        _uiManager.GetComponent<MenuHandler>().nextLevelTrigger = gameObject;
     }
 
     private void Update()
@@ -37,19 +39,19 @@ public class NextLevelTrigger : MonoBehaviour
 
             if (dist <= range)
             {
-                _itemPickupHandler.isPlrNearShop = true;
+                _itemPickupHandler.isPlrNearEnd = true;
                 _itemPickupHandler.TogglePrompt("Continue ahead?", true, ControlsManager.ButtonType.ButtonEast);
             }
             else if (dist > range)
             {
                 if (_itemPickupHandler.itemCount > 0) return;
-                _itemPickupHandler.isPlrNearShop = false;
+                _itemPickupHandler.isPlrNearEnd = false;
                 _itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
             }
         }
     }
 
-    void LoadNextLevel()
+    public void LoadNextLevel()
     {
         string scene = "";
         switch (sceneToLoad)
@@ -87,7 +89,7 @@ public class NextLevelTrigger : MonoBehaviour
     
      IEnumerator LoadNextScene(string scene)
     {
-        yield return new WaitForSecondsRealtime(3f);
+        yield return new WaitForSecondsRealtime(2f);
         SceneManager.LoadScene(scene);
     }
 }

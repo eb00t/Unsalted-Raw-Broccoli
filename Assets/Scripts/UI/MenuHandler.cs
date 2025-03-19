@@ -22,7 +22,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject selectedMenu, selectedEquip, slots;
 	private GameObject _lastSelected;
 
-	public GameObject shopGUI;
+	public GameObject shopGUI, nextLevelTrigger;
 	[SerializeField] private DataHolder dataHolder;
 
 	private void Start()
@@ -97,7 +97,16 @@ public class MenuHandler : MonoBehaviour
 			SwitchSelected(shopHandler.grid.GetComponentInChildren<Button>().gameObject);
 		}
 	}
-	
+
+	public void NextLevelLoad(InputAction.CallbackContext context)
+	{
+		if (!context.performed) return;
+		if (characterMovement.uiOpen) return;
+		if (!_player.gameObject.GetComponent<ItemPickupHandler>().isPlrNearEnd) return;
+		
+		nextLevelTrigger.GetComponent<NextLevelTrigger>().LoadNextLevel();
+	}
+
 	// when Button East/Esc is pressed close current menu and open previous menus
 	public void Back(InputAction.CallbackContext context)
 	{
