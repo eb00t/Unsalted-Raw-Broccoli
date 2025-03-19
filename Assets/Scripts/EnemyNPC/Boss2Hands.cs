@@ -226,14 +226,16 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         {
             yield return StartCoroutine(MoveHands(null, slamPosition, 0.5f));
             UpdateColliders(false, false, false, false);
-            yield return new WaitForSecondsRealtime(1f);
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, rightHand.position);
+            yield return new WaitForSecondsRealtime(2f);
             yield return StartCoroutine(MoveHands(null, hoverPosition, 0.5f));
         }
         else
         {
             yield return StartCoroutine(MoveHands(slamPosition, null, 0.5f));
             UpdateColliders(false, false, false, false);
-            yield return new WaitForSecondsRealtime(1f);
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, leftHand.position);
+            yield return new WaitForSecondsRealtime(2f);
             yield return StartCoroutine(MoveHands(hoverPosition, null, 0.5f));
         }
 
