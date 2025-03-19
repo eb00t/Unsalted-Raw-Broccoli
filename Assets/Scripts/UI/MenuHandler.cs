@@ -104,12 +104,6 @@ public class MenuHandler : MonoBehaviour
 		if (!context.performed) return;
 		if (!characterMovement.uiOpen) return;
 
-		if (diedScreen.activeSelf)
-		{
-			SceneReload();
-			return;
-		}
-
 		if (invGui.activeSelf)
 		{
 			ButtonHandler.Instance.PlayBackSound();
@@ -161,6 +155,16 @@ public class MenuHandler : MonoBehaviour
 			controlGui.SetActive(false);
 			menuGui.SetActive(true);
 			SwitchSelected(controlsBtn);
+		}
+	}
+
+	public void DeathReload(InputAction.CallbackContext context)
+	{
+		if (!context.performed) return;
+		
+		if (diedScreen.activeSelf)
+		{
+			SceneReload();
 		}
 	}
 
