@@ -77,9 +77,9 @@ MonoBehaviour:
   energySlider: {fileID: 0}
   diedScreen: {fileID: 0}
   hitFlash: {fileID: 0}
-  knockbackPowerLight: {x: 1, y: 0.1}
-  knockbackPowerMedium: {x: 10, y: 0.2}
-  knockbackPowerHeavy: {x: 12, y: 1}
+  knockbackPowerLight: {x: 0.2, y: 0.1}
+  knockbackPowerMedium: {x: 1, y: 0.2}
+  knockbackPowerHeavy: {x: 5, y: 1}
 --- !u!64 &3621395720539083714
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -489,6 +489,9 @@ MonoBehaviour:
   text: {fileID: 0}
   updateButton: {fileID: 0}
   isPlrNearShop: 0
+  isPlrNearEnd: 0
+  isPlrNearDialogue: 0
+  isPlrNearDialogue1: 0
   itemCount: 0
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
 --- !u!114 &4592323685554638241
@@ -552,9 +555,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d2b1804d739b2d4286a0c23b68e081a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueBoxA: {fileID: 0}
-  dialogueBoxB: {fileID: 0}
-  playerChar: {fileID: 0}
+  dialogueBox: {fileID: 0}
+  dialogueConA: {fileID: 0}
+  dialogueConB: {fileID: 0}
   enemyChar: {fileID: 0}
   npcChar: {fileID: 0}
+  bossIndicator: {fileID: 0}
   indicator: {fileID: 0}
+  range: 0
