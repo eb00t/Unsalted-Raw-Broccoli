@@ -72,7 +72,7 @@ public class dialogueAppear : MonoBehaviour
         {
             dialogueBox.SetActive(true);
             indicator.SetActive(false);
-            bossIndicator.SetActive(false);
+         //   bossIndicator.SetActive(false);
         }
 
         /*
