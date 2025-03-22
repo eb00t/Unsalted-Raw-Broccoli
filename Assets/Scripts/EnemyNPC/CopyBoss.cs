@@ -37,15 +37,16 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private float fallThroughTime = 2f;
     
     private float _playerBelowTimer;
-    private bool _isFallingThrough;
-    private int _currentHealth, _poisonBuildup, _jumpCount;
-    private bool _isAttacking, _isFrozen, _isDead, _isPoisoned, _hasPlayerBeenSeen, _isJumping;
+    private bool _isFallingThrough, _isStunned;
+    private int _currentHealth, _poisonBuildup, _poiseBuildup, _jumpCount;
+    private bool _isAttacking, _isFrozen, _isDead, _isPoisoned, _hasPlayerBeenSeen, _isJumping, _isKnockedBack;
     private Vector3 _patrolPoint1, _patrolPoint2, _currentPatrolTarget;
     private CharacterMovement _characterMovement;
     private RoomScripting _roomScripting;
     private LockOnController _lockOnController;
     private CinemachineImpulseSource _impulseSource;
     private Vector3 _impulseVector;
+    private int _knockbackDir;
 
     [Header("UI")]
     [SerializeField] private Slider healthSlider;
@@ -94,6 +95,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
         if (IsGrounded())
         {
             _jumpCount = 0;
+        }
+
+        if (_isStunned)
+        {
+            return;
         }
         
         if (_isFrozen)
@@ -156,27 +162,30 @@ public class CopyBoss : MonoBehaviour, IDamageable
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
-        var velocity = _rigidbody.velocity;
-        
-        _animator.SetFloat("XVelocity", Mathf.Abs(velocity.x));
 
-        var localScale = _spriteRenderer.transform.localScale;
-        var localScale2 = atkHitbox.localScale;
-        
-        if (velocity.x > 0.1f)
+        if (!_isKnockedBack)
         {
-            localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
-            localScale2 = new Vector3(Mathf.Abs(localScale2.x), localScale2.y, localScale2.z);
+            var velocity = _rigidbody.velocity;
+
+            _animator.SetFloat("XVelocity", Mathf.Abs(velocity.x));
+
+            var localScale = _spriteRenderer.transform.localScale;
+            var localScale2 = atkHitbox.localScale;
+
+            if (velocity.x > 0.1f)
+            {
+                localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
+                localScale2 = new Vector3(Mathf.Abs(localScale2.x), localScale2.y, localScale2.z);
+            }
+            else if (velocity.x < -0.1f)
+            {
+                localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
+                localScale2 = new Vector3(-Mathf.Abs(localScale2.x), localScale2.y, localScale2.z);
+            }
+
+            _spriteRenderer.transform.localScale = localScale;
+            atkHitbox.localScale = localScale2;
         }
-        else if (velocity.x < -0.1f)
-        {
-            localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
-            localScale2 = new Vector3(-Mathf.Abs(localScale2.x), localScale2.y, localScale2.z);
-        }
-        
-        _spriteRenderer.transform.localScale = localScale;
-        atkHitbox.localScale = localScale2;
     }
     
     private bool IsGrounded()
@@ -252,6 +261,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
     
     private void MoveTowards(Vector3 target)
     {
+        if (_isKnockedBack) return;
+        
         var direction = (target - transform.position).normalized;
         _rigidbody.velocity = new Vector3(direction.x * movementSpeed, _rigidbody.velocity.y, direction.z);
     }
@@ -410,6 +421,16 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             Die();
         }
+        
+        if (poiseDmg.HasValue)
+        {
+            _poiseBuildup += poiseDmg.Value;
+
+            if (knockback.HasValue)
+            {
+                ApplyKnockback(knockback.Value);
+            }
+        }
     }
     
     public void TriggerStatusEffect(ConsumableEffect effect)
@@ -434,7 +455,43 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     public void ApplyKnockback(Vector2 knockbackPower)
     {
-        throw new System.NotImplementedException();
+        if (_isFrozen || isDead) return;
+
+        _knockbackDir = transform.position.x > _player.position.x ? 1 : -1;
+        
+        var knockbackMultiplier = (_poiseBuildup >= poise) ? 10f : 5f; 
+        var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
+
+        StartCoroutine(TriggerKnockback(knockbackForce, 0.5f));
+
+        if (_poiseBuildup >= poise)
+        {
+            StartCoroutine(StunTimer(1.5f));
+            _poiseBuildup = 0;
+        }
+    }
+    
+    private IEnumerator TriggerKnockback(Vector3 force, float duration)
+    {
+        _isKnockedBack = true;
+
+        _rigidbody.velocity = Vector3.zero;
+        yield return null;
+
+        _rigidbody.AddForce(force, ForceMode.Impulse);
+
+        yield return new WaitForSeconds(duration);
+
+        _isKnockedBack = false;
+    }
+    
+    private IEnumerator StunTimer(float stunTime)
+    {
+        _animator.SetBool("isStaggered", true);
+        _isStunned = true;
+        yield return new WaitForSecondsRealtime(stunTime);
+        _isStunned = false;
+        _animator.SetBool("isStaggered", false);
     }
 
     private void Die()

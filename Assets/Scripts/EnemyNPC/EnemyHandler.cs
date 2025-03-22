@@ -40,7 +40,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
     private Vector3 playerDir;
     
-    
     [Header("References")]
     [SerializeField] private BoxCollider atkHitbox;
     [SerializeField] private Image healthFillImage;
@@ -55,25 +54,21 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
     
-    
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
     [SerializeField] private float maxTimeToReachTarget = 5f;
     private float _timeSinceLastMove;
     private Vector3 _lastPosition;
+    private int _knockbackDir;
     private bool _isStuck;
     private bool _lowHealth;
     
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
-    
     int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
-
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
     public Spawner Spawner { get; set; }
-
-    private int _knockbackDir;
     
     private void Start()
     {
@@ -499,6 +494,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
+        StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .2f));
 
         if (_poiseBuildup >= poise)
         {
