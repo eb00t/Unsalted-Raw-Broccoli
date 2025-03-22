@@ -97,10 +97,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
             _jumpCount = 0;
         }
 
-        if (_isStunned)
-        {
-            return;
-        }
+        if (_isStunned) return;
         
         if (_isFrozen)
         {

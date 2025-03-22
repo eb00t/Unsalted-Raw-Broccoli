@@ -20,10 +20,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private bool canFreeze;
     public int attack;
     private int _poisonBuildup, _health;
-    private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen;
+    private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen, _isKnockedBack, _isStunned;
 
     [Header("Values")]
     private float _targetTime;
+    private int _poiseBuildup;
     private Vector3 _patrolTarget, _patrol1, _patrol2;
     [SerializeField] private States _state = States.Idle;
 
@@ -39,6 +40,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
     private Rigidbody _rigidbody;
+    private int _knockbackDir;
 
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
 
@@ -94,6 +96,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         var distance = Vector3.Distance(transform.position, _target.position);
         var playerDir =  Mathf.Abs(_target.position.x - transform.position.x);
+
+        if (_isStunned) return;
 
         if (_isFrozen)
         {
@@ -211,17 +215,21 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             }
         }
 
-        _rigidbody.velocity = direction * moveSpeed;
-
-        var localScale = _spriteTransform.localScale;
-        var hitboxLocalScale = atkHitbox.transform.localScale;
-        if (Mathf.Abs(direction.x) > 0.1f)
+        if (!_isKnockedBack)
         {
-            localScale.x = direction.x > 0 ? Mathf.Abs(localScale.x) : -Mathf.Abs(localScale.x);
-            hitboxLocalScale.x = direction.x > 0 ? Mathf.Abs(hitboxLocalScale.x) : -Mathf.Abs(hitboxLocalScale.x);
+            _rigidbody.velocity = direction * moveSpeed;
+
+            var localScale = _spriteTransform.localScale;
+            var hitboxLocalScale = atkHitbox.transform.localScale;
+            if (Mathf.Abs(direction.x) > 0.1f)
+            {
+                localScale.x = direction.x > 0 ? Mathf.Abs(localScale.x) : -Mathf.Abs(localScale.x);
+                hitboxLocalScale.x = direction.x > 0 ? Mathf.Abs(hitboxLocalScale.x) : -Mathf.Abs(hitboxLocalScale.x);
+            }
+
+            _spriteTransform.localScale = localScale;
+            atkHitbox.transform.localScale = hitboxLocalScale;
         }
-        _spriteTransform.localScale = localScale;
-        atkHitbox.transform.localScale = hitboxLocalScale;
     }
     
     private IEnumerator DisableCollision()
@@ -252,6 +260,16 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         {
             PlayAlarmSound();
             _lowHealth = true;
+        }
+        
+        if (poiseDmg.HasValue)
+        {
+            _poiseBuildup += poiseDmg.Value;
+
+            if (knockback.HasValue)
+            {
+                ApplyKnockback(knockback.Value);
+            }
         }
     }
     
@@ -366,17 +384,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         gameObject.SetActive(false);
     }
 
-    
-    private float GetGroundY()
-    {
-        if (Physics.Raycast(transform.position, Vector3.down, out var hit, Mathf.Infinity))
-        {
-            return hit.point.y; // return y position of the raycast hit (ground)
-        }
-        
-        return transform.position.y; // if no ground is found 
-    }
-
     private void OnDrawGizmos()
     {
         var position = transform.position;
@@ -406,16 +413,42 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     
     public void ApplyKnockback(Vector2 knockbackPower)
     {
-        /*
-        _agent.velocity = Vector3.zero;
-        if (_isFrozen) return;
+        if (_isFrozen || isDead) return;
+
+        _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
         
-        if (transform.position.x > _target.position.x)
+        var knockbackMultiplier = (_poiseBuildup >= poise) ? 2f : 1f; 
+        var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
+
+        StartCoroutine(TriggerKnockback(knockbackForce, 0.5f));
+
+        if (_poiseBuildup >= poise)
         {
-            _knockbackDir = 1;
+            StartCoroutine(StunTimer(1.5f));
+            _poiseBuildup = 0;
         }
-        else _knockbackDir = -1;
-        _agent.velocity += new Vector3(KnockbackPower.x * _knockbackDir, KnockbackPower.y, 0f);
-        */
+    }
+    
+    private IEnumerator TriggerKnockback(Vector3 force, float duration)
+    {
+        _isKnockedBack = true;
+
+        _rigidbody.velocity = Vector3.zero;
+        yield return null;
+
+        _rigidbody.AddForce(force, ForceMode.Impulse);
+
+        yield return new WaitForSeconds(duration);
+
+        _isKnockedBack = false;
+    }
+    
+    private IEnumerator StunTimer(float stunTime)
+    {
+        //_animator.SetBool("isStaggered", true);
+        _isStunned = true;
+        yield return new WaitForSecondsRealtime(stunTime);
+        _isStunned = false;
+        //_animator.SetBool("isStaggered", false);
     }
 }
