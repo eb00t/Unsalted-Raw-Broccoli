@@ -806,23 +806,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219b7179daa085c4da3de6837d1ad6e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 250
-  attack: 15
+  _currentState: 0
+  maxHealth: 600
+  attack: 20
   poise: 50
   poisonResistance: 50
+  maxJumpCount: 1
   poiseDamage: 5
   attackRange: 4
-  chaseRange: 20
-  chaseDuration: 3
+  chaseRange: 25
+  chaseDuration: 5
   patrolRange: 8
-  attackCooldown: 2
+  attackCooldown: 1
   comboChance: 0.8
   canFreeze: 1
   canJump: 1
   freezeDuration: 3
   freezeCooldown: 6
-  movementSpeed: 4
-  jumpForce: 10
+  movementSpeed: 6
+  jumpForce: 11
   jumpTriggerDistance: 1
   atkHitbox: {fileID: 7175001486363548954}
   fallThroughTime: 1.5

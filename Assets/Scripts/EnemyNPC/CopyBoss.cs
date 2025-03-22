@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class CopyBoss : MonoBehaviour, IDamageable
 {
     private enum States { Idle, Patrol, Chase, Attack, Retreat, Frozen, Jumping, Crouching }
-    private States _currentState = States.Idle;
+    [SerializeField] private States _currentState = States.Idle;
 
     private Rigidbody _rigidbody;
     private Animator _animator;
@@ -20,7 +20,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private int maxHealth;
     [SerializeField] private int attack;
     [SerializeField] private int poise;
-    [SerializeField] private int poisonResistance;
+    [SerializeField] private int poisonResistance, maxJumpCount;
     [SerializeField] private int poiseDamage;
     [SerializeField] private float attackRange;
     [SerializeField] private float chaseRange;
@@ -38,7 +38,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     
     private float _playerBelowTimer;
     private bool _isFallingThrough;
-    private int _currentHealth, _poisonBuildup;
+    private int _currentHealth, _poisonBuildup, _jumpCount;
     private bool _isAttacking, _isFrozen, _isDead, _isPoisoned, _hasPlayerBeenSeen, _isJumping;
     private Vector3 _patrolPoint1, _patrolPoint2, _currentPatrolTarget;
     private CharacterMovement _characterMovement;
@@ -90,6 +90,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
         var heightDiffAbove = _player.position.y - transform.position.y;
         var heightDiffBelow = transform.position.y - _player.position.y;
         var playerDir =  Mathf.Abs(_player.position.x - transform.position.x);
+        
+        if (IsGrounded())
+        {
+            _jumpCount = 0;
+        }
         
         if (_isFrozen)
         {
@@ -173,6 +178,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _spriteRenderer.transform.localScale = localScale;
         atkHitbox.localScale = localScale2;
     }
+    
+    private bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, Vector3.down, 3f, LayerMask.GetMask("Ground"));
+    }
 
     private void Crouching()
     {
@@ -194,8 +204,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             StartCoroutine(DisableCollision());
         }
-
-        _isFallingThrough = false;
     }
     
     private Collider FindPlatform(Vector3 dir)
@@ -206,11 +214,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void Jump()
     {
-        if (_isJumping) return;
-        _isJumping = true;
+        if (_jumpCount >= maxJumpCount) return;
+
+        _jumpCount++;
 
         var col = FindPlatform(Vector3.up);
-        
+    
         if (col != null)
         {
             StartCoroutine(DisableCollision());
@@ -218,32 +227,27 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         var newForce = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * (_player.position.y - transform.position.y + 1.5f));
         newForce = Mathf.Max(newForce, jumpForce);
-
-        _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, newForce, _rigidbody.velocity.z);
-        _animator.SetTrigger("Jump");
         
-        StartCoroutine(ResetJumpState());
+        var dirX = Mathf.Sign(transform.localScale.x);
+        var speed = 2f;
+        
+        _rigidbody.velocity = new Vector3(speed * dirX, newForce, _rigidbody.velocity.z);
+
+        _animator.SetTrigger("Jump");
     }
 
     private IEnumerator DisableCollision()
     {
         if (_bossCollider != null)
-        {
             _bossCollider.enabled = false;
-        }
 
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(.8f);
 
         if (_bossCollider != null)
-        {
             _bossCollider.enabled = true;
-        }
-    }
 
-    private IEnumerator ResetJumpState()
-    {
-        yield return new WaitForSeconds(0.5f);
-        _isJumping = false;
+        _isFallingThrough = false;
+        _currentState = States.Chase;
     }
     
     private void MoveTowards(Vector3 target)
@@ -446,5 +450,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);
         gameObject.SetActive(false);
+    }
+
+    private void OnDrawGizmos()
+    {
+        var dist = 3f;
+        Gizmos.DrawRay(transform.position, Vector3.down * dist);
     }
 }
