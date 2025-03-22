@@ -411,12 +411,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         _currentHealth -= damage;
         healthSlider.value = _currentHealth;
-
         if (_currentHealth <= maxHealth / 2)
         {
-            AudioManager.Instance.SetMusicParameter("Boss Phase", 2);
+            AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
         }
-
+        
+        
         if (_currentHealth <= 0)
         {
             Die();

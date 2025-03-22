@@ -61,12 +61,12 @@ public class IntersectionRaycast : MonoBehaviour
         _rayCastLength = _roomInfo.roomLength + 2;
         _rayCastHeight = _roomInfo.roomHeight + 2;
 
-        Vector3 cornerTL = new Vector3(_roomInfo.wallL.position.x,
-            _roomInfo.wallL.position.y + _halfRoomHeight + .5f, _roomInfo.wallL.position.z);
-        Vector3 cornerTR = new Vector3(_roomInfo.wallR.position.x,
-            _roomInfo.wallL.position.y + _halfRoomHeight + .5f, _roomInfo.wallL.position.z);
-        Vector3 cornerBL = new Vector3(_roomInfo.wallL.position.x,
-            _roomInfo.wallR.position.y - _halfRoomHeight - .5f, _roomInfo.wallR.position.z);
+        Vector3 cornerTL = new Vector3(_roomInfo.wallL.position.x - .4f,
+            _roomInfo.wallL.position.y + _halfRoomHeight + .9f, _roomInfo.wallL.position.z);
+        Vector3 cornerTR = new Vector3(_roomInfo.wallR.position.x +.4f,
+            _roomInfo.wallL.position.y + _halfRoomHeight + .9f, _roomInfo.wallL.position.z);
+        Vector3 cornerBL = new Vector3(_roomInfo.wallL.position.x -.4f,
+            _roomInfo.wallR.position.y - _halfRoomHeight - .9f, _roomInfo.wallR.position.z);
         Vector3 cornerBR = new Vector3(_roomInfo.wallR.position.x, _roomInfo.wallR.position.y - _halfRoomHeight + 0.5f,
             _roomInfo.wallR.position.z);
         Vector3 adjHorizRayPos = new Vector3(_roomInfo.wallL.position.x + 0.5f, _roomInfo.wallL.position.y,
@@ -144,7 +144,7 @@ public class IntersectionRaycast : MonoBehaviour
     private bool FireInternalRayCast()
     {
         bool discard = false;
-        if (Physics.Raycast(_horizMiddleRay, out RaycastHit horizHit, _roomInfo.roomLength, layerMask))
+        if (Physics.Raycast(_horizMiddleRay, out RaycastHit horizHit, _roomInfo.roomLength + .9f, layerMask))
         {
             Debug.Log("HORIZ RAY HIT!");
             if (!objectsToIgnore.Contains(horizHit.collider.gameObject))
@@ -152,7 +152,7 @@ public class IntersectionRaycast : MonoBehaviour
                 discard = true;
             }
         }
-        else if (Physics.Raycast(_verticMiddleRay, out RaycastHit vertHit, _roomInfo.roomHeight, layerMask))
+        else if (Physics.Raycast(_verticMiddleRay, out RaycastHit vertHit, _roomInfo.roomHeight + .9f, layerMask))
         {
             Debug.Log("VERT RAY HIT!");
             if (!objectsToIgnore.Contains(vertHit.collider.gameObject))
