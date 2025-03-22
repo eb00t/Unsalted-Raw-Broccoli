@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -10,15 +9,7 @@ using Random = UnityEngine.Random;
 
 public class RoomInfo : MonoBehaviour
 {
-    [field: Header("Configuration")] 
-    [NonSerialized] public bool canHaveLeftRoom;
-    [NonSerialized]public bool canHaveRightRoom;
-    [NonSerialized]public bool canHaveTopRoom;
-    [NonSerialized]public bool canHaveBottomRoom;
-    [NonSerialized]public bool canSpawnOnRight;
-    [NonSerialized] public bool canSpawnOnLeft;
-    [NonSerialized]public bool canSpawnOnTop;
-    [NonSerialized] public bool canSpawnOnBottom;
+    [field: Header("Configuration")]
     public float roomLength; //
     public float roomHeight; //YOU MUST ASSIGN THESE TWO MANUALLY FOR THINGS TO WORK
     public bool specialRoom = false;
@@ -26,6 +17,15 @@ public class RoomInfo : MonoBehaviour
     public bool shop = false;
     public bool lootRoom = false;
     public bool bigRoom = false;
+    [field: Header("Door Config (MAKE ABSOLUTELY SURE YOU SET THESE PROPERLY)")] 
+    [field: Tooltip("SERIOUSLY! MAKE SURE THESE ARE ACCURATE TO THE DESIGN OF THE ROOM")]
+    public bool missingLeftDoor;
+    [field: Tooltip("SERIOUSLY! MAKE SURE THESE ARE ACCURATE TO THE DESIGN OF THE ROOM")]
+    public bool missingRightDoor;
+    [field: Tooltip("SERIOUSLY! MAKE SURE THESE ARE ACCURATE TO THE DESIGN OF THE ROOM")]
+    public bool missingTopDoor;
+    [field: Tooltip("SERIOUSLY! MAKE SURE THESE ARE ACCURATE TO THE DESIGN OF THE ROOM")]
+    public bool missingBottomDoor;
 
 
     [field: Header("Debugging")] 
@@ -45,7 +45,23 @@ public class RoomInfo : MonoBehaviour
     private GameObject _playerRenderer;
     void Awake()
     {
-
+        if (doorT == null)
+        {
+            missingTopDoor = true;
+        }
+        if (doorB == null)
+        {
+            missingBottomDoor = true;
+        } 
+        if (doorL == null)
+        {
+           missingLeftDoor= true;
+        } 
+        if (doorR == null)
+        {
+            missingRightDoor = true;
+        }
+       
         if (specialRoom)
         {
             string roomPath1 = "Room Layouts/Special Rooms/" + gameObject.name;
@@ -68,37 +84,6 @@ public class RoomInfo : MonoBehaviour
             {
                 allWalls.Add(door.gameObject);
             }
-        }
-
-        canHaveLeftRoom = true;
-        canHaveRightRoom = true;
-        canHaveTopRoom = true;
-        canHaveBottomRoom = true;
-        
-        canSpawnOnRight = true;
-        canSpawnOnLeft = true;
-        canSpawnOnTop= true;
-        canSpawnOnBottom = true;
-
-        if (doorL == null)
-        {
-            canHaveLeftRoom = false;
-            canSpawnOnRight = false;
-        } 
-        if (doorR == null)
-        {
-            canHaveRightRoom = false;
-            canSpawnOnLeft = false;
-        } 
-        if (doorB == null)
-        {
-            canHaveBottomRoom = false;
-            canSpawnOnTop = false;
-        } 
-        if (doorT == null)
-        {
-            canHaveTopRoom = false;
-            canSpawnOnBottom = false;
         }
     }
 
@@ -128,6 +113,7 @@ public class RoomInfo : MonoBehaviour
         if (lootRoom)
         {
             LevelBuilder.Instance.spawnedLootRooms.Add(gameObject);
+            LevelBuilder.Instance.lootRoomsToSpawn--;
         }
 
         if (shop)
@@ -174,7 +160,7 @@ public class RoomInfo : MonoBehaviour
             LevelBuilder.Instance.spawnedLootRooms.Remove(gameObject);
             LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.LootRoom;
             LevelBuilder.Instance.spawnModeChangedByDestroy = true;
-            LevelBuilder.Instance.lootRoomsToSpawn--;
+            LevelBuilder.Instance.lootRoomsToSpawn++;
         }
         if (bossRoom)
         {

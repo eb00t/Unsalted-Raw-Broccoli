@@ -440,6 +440,10 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         {
             _health -= damage;
             _healthSlider.value = _health;
+            if (_health <= maxHealth / 2)
+            {
+                AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
+            }
         }
         else
         {
@@ -448,10 +452,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             Die();
         }
         
-        if (_health <= maxHealth / 2)
-        {
-            AudioManager.Instance.SetMusicParameter("Boss Phase", 2);
-        }
+        
     }
     
     private IEnumerator TakePoisonDamage()

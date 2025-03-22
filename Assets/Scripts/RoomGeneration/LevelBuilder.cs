@@ -70,6 +70,7 @@ public class LevelBuilder : MonoBehaviour
     public int lootRoomsToSpawn;
     public bool spawnModeChangedByDestroy;
     public bool bossDead;
+    private bool _spawnValid;
     [SerializeField] private DataHolder dataHolder;
     public enum SpawnMode
     {
@@ -205,11 +206,12 @@ public class LevelBuilder : MonoBehaviour
 
     IEnumerator SpawnConnector()
     {
+        _spawnValid = false;
         for (int i = 0; i < _numberOfRoomsToSpawn; i++) //Spawn amount of rooms
         {
             yield return new WaitForSeconds(.1f);
             GameObject connectorPathReference = null;
-            Vector3 spawnPointPosition = Vector3.zero; //    Position that the room will use to spawn on
+            Vector3 spawnPointPosition = Vector3.zero; //Position that the room will use to spawn on
             switch (_spawnMode)
             {
                 case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shop or SpawnMode.LootRoom:
@@ -220,8 +222,8 @@ public class LevelBuilder : MonoBehaviour
                     switch (roomRandomNumber)
                     {
                         case -1:
-                        spawnRandomNumber = RandomiseNumber(firstBossRoomSpawnPoints.Count); //  RNG for where to spawn connectors
-                        spawnPointPosition = firstBossRoomSpawnPoints[spawnRandomNumber].position;
+                            spawnRandomNumber = RandomiseNumber(firstBossRoomSpawnPoints.Count);//  RNG for where to spawn connectors
+                            spawnPointPosition = firstBossRoomSpawnPoints[spawnRandomNumber].position;
                             break;
                         case 0:
                             spawnRandomNumber = RandomiseNumber(secondBossRoomSpawnPoints.Count); //  RNG for where to spawn connectors
@@ -232,12 +234,10 @@ public class LevelBuilder : MonoBehaviour
                             spawnPointPosition = thirdBossRoomSpawnPoints[spawnRandomNumber].position;
                             break;
                     }
-
                     break;
             }
             Debug.Log("Spawn Random Number: " + spawnRandomNumber);
-            Vector3 newSpawnPoint = Vector3.zero; //    Where the connecting room will spawn
-
+            Vector3 newSpawnPoint = Vector3.zero; //Where the connecting room will spawn
             GameObject otherConnectorSide = null;
             string doorTag = "";
             switch (_spawnMode)
@@ -288,16 +288,16 @@ public class LevelBuilder : MonoBehaviour
                     Debug.Log("BOTTOM");
                     connectorPathReference = ConnectorPathSetup("Bottom");
                     spawnedConnectorInfo = connectorPathReference.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallT.localPosition.y);
-                    newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallT.localPosition.x);
+                    newSpawnPoint.y = (spawnPointPosition.y + spawnedConnectorInfo.wallB.localPosition.y);
+                    newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallB.localPosition.x);
                     spawnedConnectorInfo.spawnedOnSide = "Bottom";
                     break;
                 case "Top Door":
                     Debug.Log("TOP");
                     connectorPathReference = ConnectorPathSetup("Top");
                     spawnedConnectorInfo = connectorPathReference.GetComponent<ConnectorRoomInfo>();
-                    newSpawnPoint.y = (spawnPointPosition.y - spawnedConnectorInfo.wallB.localPosition.y);
-                    newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallB.localPosition.x);
+                    newSpawnPoint.y = (spawnPointPosition.y + spawnedConnectorInfo.wallT.localPosition.y);
+                    newSpawnPoint.x = (spawnPointPosition.x - spawnedConnectorInfo.wallT.localPosition.x);
                     spawnedConnectorInfo.spawnedOnSide = "Top";
                     break;
             }
@@ -310,20 +310,18 @@ public class LevelBuilder : MonoBehaviour
 
     IEnumerator SpawnRooms(Vector3 newSpawnPoint)
     {
-       
+        _spawnValid = false;
         switch (_spawnMode) // Picking a random room from the pool of possible rooms
         {
             case SpawnMode.Normal:
-                roomRandomNumber = RandomiseNumber(possibleRooms.Count); // Spawn a random room from the list of possible rooms
-                spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
-                break;
+                CheckIfRoomConnectorComboIsValid(_spawnMode);
+               break;
             case SpawnMode.Shop: // Only one shop
                 roomRandomNumber = 0;
                 spawningRoomInfo = _shop.GetComponent<RoomInfo>();
                 break;
             case SpawnMode.SpecialRooms:
-                roomRandomNumber = RandomiseNumber(possibleSpecialRooms.Count);
-                spawningRoomInfo = possibleSpecialRooms[roomRandomNumber].GetComponent<RoomInfo>();
+                CheckIfRoomConnectorComboIsValid(_spawnMode);
                 break;
             case SpawnMode.BossRooms:
                 roomRandomNumber++;
@@ -473,8 +471,7 @@ public class LevelBuilder : MonoBehaviour
                         spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorR.gameObject);
                         break;
                 }
-                spawningRoomInfo.canHaveRightRoom = false;
-                otherConnectorSideRoomInfo.canHaveLeftRoom = false;
+
                 break;
             case "Right":
                 switch (_spawnMode)
@@ -501,8 +498,7 @@ public class LevelBuilder : MonoBehaviour
                         spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorL.gameObject);
                         break;
                 }
-                spawningRoomInfo.canHaveLeftRoom = false;
-                otherConnectorSideRoomInfo.canHaveRightRoom = false;
+
                 break;
             case "Top":
                 switch (_spawnMode)
@@ -529,8 +525,7 @@ public class LevelBuilder : MonoBehaviour
                         spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorB.gameObject);
                         break;
                 }
-                spawningRoomInfo.canHaveBottomRoom = false;
-                otherConnectorSideRoomInfo.canHaveTopRoom = false;
+
                 break;
             case "Bottom":
                 switch (_spawnMode)
@@ -557,8 +552,7 @@ public class LevelBuilder : MonoBehaviour
                         spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorT.gameObject);
                         break;
                 }
-                spawningRoomInfo.canHaveTopRoom = false;
-                otherConnectorSideRoomInfo.canHaveBottomRoom = false;
+
                 break;
         }
         var rareSpawn = RandomiseNumber(12); //TEMP NUMBER; CHANGE
@@ -686,23 +680,16 @@ public class LevelBuilder : MonoBehaviour
         Debug.Log(side);
         switch (side)
         {
-            case "Left":
+            case "Left" or "Right":
                 path = "Room Layouts/Connectors/ConnectorShortHoriz"; //TEMP CODE: MAY BE REPLACED
                 break;
-            case "Right":
-                path = "Room Layouts/Connectors/ConnectorShortHoriz"; //TEMP CODE: MAY BE REPLACED
-                break;
-            case "Top":
-                path = "Room Layouts/Connectors/ConnectorShortVerti"; //TEMP CODE: MAY BE REPLACED
-                break;
-            case "Bottom":
+            case "Top" or "Bottom":
                 path = "Room Layouts/Connectors/ConnectorShortVerti"; //TEMP CODE: MAY BE REPLACED
                 break;
             default:
                 path = "Room Layouts/Connectors/ConnectorShortHoriz";
                 break;
         }
-
         GameObject connectorToSpawn = Resources.Load<GameObject>(path);
         return connectorToSpawn;
     }
@@ -748,6 +735,35 @@ public class LevelBuilder : MonoBehaviour
             //room.GetComponent<IntersectionRaycast>()._collider.enabled = false;
         }
         
+    }
+
+    void CheckIfRoomConnectorComboIsValid(SpawnMode spawnMode)
+    {
+        switch (spawnMode)
+        {
+            case SpawnMode.Normal:
+                roomRandomNumber = RandomiseNumber(possibleRooms.Count); // Spawn a random room from the list of possible rooms
+                spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
+                break;
+            case SpawnMode.SpecialRooms:
+                roomRandomNumber = RandomiseNumber(possibleSpecialRooms.Count);
+                spawningRoomInfo = possibleSpecialRooms[roomRandomNumber].GetComponent<RoomInfo>();
+                break;
+        }
+        switch (spawnedConnectorInfo.spawnedOnSide)
+        {
+            case "Left" when spawningRoomInfo.missingRightDoor:
+            case "Right" when spawningRoomInfo.missingLeftDoor:
+            case "Top" when spawningRoomInfo.missingBottomDoor:
+            case "Bottom" when spawningRoomInfo.missingTopDoor:
+                _spawnValid = false;
+                Debug.Log("Room and connector combo is not valid.");
+                CheckIfRoomConnectorComboIsValid(spawnMode);
+                break;
+            default:
+                _spawnValid = true;
+                break;
+        }
     }
     
     private void Update()
