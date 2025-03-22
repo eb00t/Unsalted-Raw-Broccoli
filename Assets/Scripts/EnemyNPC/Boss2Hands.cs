@@ -521,6 +521,10 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         isDead = true;
         LevelBuilder.Instance.bossDead = true;
+        _armMovementL.stop(STOP_MODE.IMMEDIATE);
+        _armMovementL.release();
+        _armMovementR.stop(STOP_MODE.IMMEDIATE);
+        _armMovementR.release();
         _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
         _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
         _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
