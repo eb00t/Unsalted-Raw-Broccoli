@@ -25,11 +25,12 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [Header("Values")]
     private float _targetTime;
     private Vector3 _patrolTarget, _patrol1, _patrol2;
-    [SerializeField]private States _state = States.Idle;
+    [SerializeField] private States _state = States.Idle;
 
     [Header("References")]
     [SerializeField] private BoxCollider atkHitbox;
     [SerializeField] private Image healthFillImage;
+    private BoxCollider _collider;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target, _spriteTransform;
@@ -37,6 +38,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private LockOnController _lockOnController;
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
+    private Rigidbody _rigidbody;
 
     [SerializeField] private bool isIdle, debugPatrol, debugRange;
 
@@ -79,6 +81,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _lockOnController = _target.GetComponent<LockOnController>();
         _characterMovement = _target.GetComponent<CharacterMovement>();
+        _rigidbody = GetComponent<Rigidbody>();
+        _collider = GetComponent<BoxCollider>();
 
         PickPatrolPoints();
         _patrolTarget = _patrol1;
@@ -190,33 +194,24 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         var direction = (target - transform.position).normalized;
 
-        if (_state == States.Patrol)
+        if (Physics.Raycast(transform.position, direction, out var hit, 1f))
         {
-            var hitNormal = Vector3.zero;
-            if (Physics.SphereCast(transform.position, 0.5f, direction, out var hit, 1f))
+            if (!hit.collider.CompareTag("Player") &&
+                !hit.collider.CompareTag("Top Wall") &&
+                !hit.collider.CompareTag("Bottom Wall") &&
+                !hit.collider.CompareTag("Left Wall") &&
+                !hit.collider.CompareTag("Right Wall") &&
+                !hit.collider.CompareTag("Right Door") &&
+                !hit.collider.CompareTag("Left Door") &&
+                !hit.collider.CompareTag("Bottom Door") &&
+                !hit.collider.CompareTag("Top Door") &&
+                !hit.collider.isTrigger)
             {
-                if (!hit.collider.isTrigger)
-                {
-                    hitNormal = hit.normal;
-                    direction = Vector3.Reflect(direction, hitNormal).normalized;
-                    direction += hitNormal * 1.5f;
-
-                    if (Vector3.Dot(direction, (target - transform.position).normalized) < 0.2f)
-                    {
-                        _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
-                        return;
-                    }
-                }
+                StartCoroutine(DisableCollision());
             }
         }
 
-        if (Physics.Raycast(transform.position, direction, 1f))
-        {
-            _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
-            return;
-        }
-
-        transform.position += direction * (moveSpeed * Time.deltaTime);
+        _rigidbody.velocity = direction * moveSpeed;
 
         var localScale = _spriteTransform.localScale;
         var hitboxLocalScale = atkHitbox.transform.localScale;
@@ -227,6 +222,17 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         }
         _spriteTransform.localScale = localScale;
         atkHitbox.transform.localScale = hitboxLocalScale;
+    }
+    
+    private IEnumerator DisableCollision()
+    {
+        if (_collider != null)
+            _collider.enabled = false;
+
+        yield return new WaitForSeconds(1.5f);
+
+        if (_collider != null)
+            _collider.enabled = true;
     }
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
@@ -350,23 +356,16 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _alarmEvent.release();
     }
     
-    
     private IEnumerator FallToGround()
     {
-        var fallSpeed = 1f; 
-        var groundY = GetGroundY();
+        _rigidbody.isKinematic = false;
+        _rigidbody.useGravity = true;
 
-        while (transform.position.y > groundY)
-        {
-            transform.position += Vector3.down * (fallSpeed * Time.deltaTime);
-        }
-
-        transform.position = new Vector3(transform.position.x, groundY, transform.position.z);
-    
         yield return new WaitForSeconds(2f);
 
         gameObject.SetActive(false);
     }
+
     
     private float GetGroundY()
     {
