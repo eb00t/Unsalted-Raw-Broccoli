@@ -14,40 +14,70 @@ using Debug = UnityEngine.Debug;
 
 public class Boss2Hands : MonoBehaviour, IDamageable
 {
-    [Header("Enemy Stats")] 
-    [SerializeField] private string bossName;
+    [Header("Defensive Stats")] 
     [SerializeField] private int maxHealth;
-    [SerializeField] private float attackCooldown;
-    [SerializeField] private float handLerpSpeed, handHoverHeight;
+    private int _health;
+    [SerializeField] private int defense;
     [SerializeField] private int poisonResistance;
-    [SerializeField] private int poiseDamage;
-    [SerializeField] private bool canFreeze; 
-    private float _attackCdCounter;
-    private States _state = States.Idle;
-    private int _poisonBuildup, _health;
-    private bool _isFrozen, _isPoisoned, _canAttack, _isPlayerInRange;
-    public int attack;
 
-    [Header("References")]
+    [Header("Offensive Stats")] 
+    [SerializeField] private int attack;
+    [SerializeField] private int poiseDamage;
+
+    [Header("Tracking")] 
+    private Vector3 _leftHandInitialPos, _rightHandInitialPos;
+    private int _knockbackDir;
+    private Vector3 _lastPosition;
+    private bool _isPlayerInRange;
+    private States _state;
+    private enum States { Idle, Attack }
+    
+    [Header("Timing")]
+    [SerializeField] private float attackCooldown; // time between attacks
+    [SerializeField] private float freezeDuration; // how long the enemy is frozen for
+    [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
+    [SerializeField] private float handLerpSpeed;
+    [SerializeField] private float handHoverHeight;
+    private float _attackCdCounter;
+    private float _timeSinceLastMove;
+
+    [Header("Enemy Properties")] 
+    [SerializeField] private string bossName;
+    [SerializeField] private bool canBeFrozen;
+    [SerializeField] private bool canBeStunned;
+    [SerializeField] private bool isIdle;
+    private Vector3 _impulseVector;
+    private bool _isFrozen;
+    private bool _isPoisoned;
+    private bool _lowHealth;
+    private bool _isStuck;
+    private int _poisonBuildup;
+    private int _poiseBuildup;
+    private bool _canAttack;
+
+    [Header("References")] 
     [SerializeField] private Image healthFillImage;
+    [SerializeField] private TextMeshProUGUI bossNameTxt;
+    private Slider _healthSlider;
+    private Animator _animator;
+    private Transform _target;
+    private RoomScripting _roomScripting;
+    private CharacterAttack _characterAttack;
+    private CharacterMovement _characterMovement;
+    private LockOnController _lockOnController;
+    private SpriteRenderer _spriteRenderer;
+    private LineRenderer _lineRenderer;
+    private CinemachineImpulseSource _impulseSource;
     [SerializeField] private Transform leftHand, rightHand, groundPosition, bossEyePosition;
     [SerializeField] private GameObject lhColliderDown, rhColliderDown, lhColliderUp, rhColliderUp;
     [SerializeField] private GameObject handDownL, handDownR, handUpL, handUpR;
     [SerializeField] private TextMeshProUGUI bossTitle;
-    private LineRenderer _lineRenderer;
-    private Transform _target;
-    private Vector3 _leftHandInitialPos, _rightHandInitialPos;
-    private Slider _healthSlider;
-    private LockOnController _lockOnController;
-    private CharacterMovement _characterMovement;
-    private RoomScripting _roomScripting;
+    
+    [Header("Sound")]
     private EventInstance _armMovementL, _armMovementR;
     private EventInstance _laserEvent;
     private bool _soundLStarted, _soundRStarted;
-    private CinemachineImpulseSource _impulseSource;
-    private Vector3 _impulseVector;
     
-    private enum States { Idle, Attack }
     public int Poise { get; set; }
     bool IDamageable.isPlayerInRange { get => _isPlayerInRange; set => _isPlayerInRange = value; }
     public bool isDead { get; set; }
@@ -481,7 +511,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         switch (effect)
         {
             case ConsumableEffect.Ice:
-                if (!canFreeze) return;
+                if (!canBeFrozen) return;
                 _isFrozen = true;
                 break;
             case ConsumableEffect.Poison:
@@ -534,13 +564,13 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         gameObject.SetActive(false);
     }
 
-    void CreateHandMovementEvents()
+    private void CreateHandMovementEvents()
     {
         _armMovementL = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
         _armMovementR = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
     }
     
-    void OneHandAttackSoundFinish(bool isLeft, bool slam)
+    private void OneHandAttackSoundFinish(bool isLeft, bool slam)
     {
         switch (isLeft)
         {
@@ -571,7 +601,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         }
     }
     
-    void TwoHandAttackSoundFinish(Vector3 slamTarget, bool slam)
+    private void TwoHandAttackSoundFinish(Vector3 slamTarget, bool slam)
     {
         AudioManager.Instance.SetEventParameter(_armMovementL, "Move Complete", 1);
         AudioManager.Instance.SetEventParameter(_armMovementR, "Move Complete", 1);

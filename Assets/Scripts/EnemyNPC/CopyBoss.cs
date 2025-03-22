@@ -8,50 +8,76 @@ using Random = UnityEngine.Random;
 
 public class CopyBoss : MonoBehaviour, IDamageable
 {
-    private enum States { Idle, Patrol, Chase, Attack, Retreat, Frozen, Jumping, Crouching }
-    [SerializeField] private States _currentState = States.Idle;
+    
+    
 
     private Rigidbody _rigidbody;
     private Animator _animator;
     private Transform _player;
     private SpriteRenderer _spriteRenderer;
     
-    [Header("Enemy Stats")]
+    [Header("Defensive Stats")] 
     [SerializeField] private int maxHealth;
-    [SerializeField] private int attack;
+    private int _health;
     [SerializeField] private int poise;
-    [SerializeField] private int poisonResistance, maxJumpCount;
+    [SerializeField] private int defense;
+    [SerializeField] private int poisonResistance;
+    
+    [Header("Offensive Stats")] 
+    [SerializeField] private int attack;
     [SerializeField] private int poiseDamage;
+    [SerializeField] private float comboChance;
+    
+    [Header("Tracking")] 
     [SerializeField] private float attackRange;
     [SerializeField] private float chaseRange;
-    [SerializeField] private float chaseDuration;
     [SerializeField] private float patrolRange;
-    [SerializeField] private float attackCooldown;
-    [SerializeField] private float comboChance;
-    [SerializeField] private bool canFreeze, canJump;
-    [SerializeField] private float freezeDuration;
-    [SerializeField] private float freezeCooldown;
+    private int _knockbackDir;
+    private bool _hasPlayerBeenSeen;
+    private Vector3 _lastPosition;
+    private Vector3 _playerDir;
+    private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
+    private enum States { Idle, Patrol, Chase, Attack, Retreat, Frozen, Jumping, Crouching }
+    private States _currentState = States.Idle;
+    private int _jumpCount;
+    
+    [Header("Timing")]
+    [SerializeField] private float attackCooldown; // time between attacks
+    [SerializeField] private float chaseDuration; // how long the enemy will chase after player leaves range
+    [SerializeField] private float freezeDuration; // how long the enemy is frozen for
+    [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
+    private float _playerBelowTimer;
+    
+    [Header("Enemy Properties")]
+    public bool isBomb;
+    [SerializeField] private bool canBeFrozen;
+    [SerializeField] private bool canBeStunned;
+    [SerializeField] private bool isIdle;
+    [SerializeField] private bool canJump;
+    [SerializeField] private int maxJumpCount;
     [SerializeField] private float movementSpeed;
     [SerializeField] private float jumpForce, jumpTriggerDistance;
-    [SerializeField] private Transform atkHitbox;
-    [SerializeField] private float fallThroughTime = 2f;
+    private bool _isFrozen;
+    private bool _isPoisoned;
+    private bool _lowHealth;
+    private bool _isStuck;
+    private int _poisonBuildup;
+    private int _poiseBuildup;
+    private bool _isFallingThrough;
+    private bool _isStunned;
+    private bool _isAttacking, _isDead, _isJumping, _isKnockedBack;
     
-    private float _playerBelowTimer;
-    private bool _isFallingThrough, _isStunned;
-    private int _currentHealth, _poisonBuildup, _poiseBuildup, _jumpCount;
-    private bool _isAttacking, _isFrozen, _isDead, _isPoisoned, _hasPlayerBeenSeen, _isJumping, _isKnockedBack;
-    private Vector3 _patrolPoint1, _patrolPoint2, _currentPatrolTarget;
+    [Header("References")] 
+    [SerializeField] private Transform atkHitbox;
+    [SerializeField] private Image healthFillImage;
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private float fallThroughTime = 2f;
+    private CinemachineImpulseSource _impulseSource;
+    private Vector3 _impulseVector; 
+    private Collider _bossCollider;
     private CharacterMovement _characterMovement;
     private RoomScripting _roomScripting;
     private LockOnController _lockOnController;
-    private CinemachineImpulseSource _impulseSource;
-    private Vector3 _impulseVector;
-    private int _knockbackDir;
-
-    [Header("UI")]
-    [SerializeField] private Slider healthSlider;
-    [SerializeField] private Image healthFillImage;
-    private Collider _bossCollider;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -74,13 +100,10 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _lockOnController = _player.GetComponent<LockOnController>();
 
-        _currentHealth = maxHealth;
+        _health = maxHealth;
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
         healthSlider.gameObject.SetActive(false);
-
-        //PickPatrolPoints();
-        _currentPatrolTarget = _patrolPoint1;
     }
 
     private void Update()
@@ -359,7 +382,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private IEnumerator BeginFreeze()
     {
-        if (!canFreeze) yield break;
+        if (!canBeFrozen) yield break;
 
         _isFrozen = true;
         healthFillImage.color = Color.cyan;
@@ -376,9 +399,9 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private IEnumerator StartFreezeCooldown()
     {
-        canFreeze = false;
+        canBeFrozen = false;
         yield return new WaitForSeconds(freezeCooldown);
-        canFreeze = true;
+        canBeFrozen = true;
     }
     
     private IEnumerator TakePoisonDamage()
@@ -406,15 +429,15 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         if (_isDead) return;
 
-        _currentHealth -= damage;
-        healthSlider.value = _currentHealth;
-        if (_currentHealth <= maxHealth / 2)
+        _health -= damage;
+        healthSlider.value = _health;
+        if (_health <= maxHealth / 2)
         {
             AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
         }
         
         
-        if (_currentHealth <= 0)
+        if (_health <= 0)
         {
             Die();
         }
@@ -435,7 +458,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         switch (effect)
         {
             case ConsumableEffect.Ice:
-                if (!canFreeze) return;
+                if (!canBeFrozen) return;
                 _isFrozen = true;
                 break;
             case ConsumableEffect.Poison:

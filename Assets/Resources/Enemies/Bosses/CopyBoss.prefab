@@ -739,9 +739,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5967027629837530894}
-  - component: {fileID: 410324089879113830}
   - component: {fileID: 6864468631746765176}
   - component: {fileID: 6103851270667772436}
+  - component: {fileID: 410324089879113830}
   - component: {fileID: 6417974471265160124}
   - component: {fileID: 2123765925253177802}
   - component: {fileID: 1299688431869215202}
@@ -773,27 +773,6 @@ Transform:
   - {fileID: 2232506293074089170}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &410324089879113830
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6832886180655181025}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6d35096c92f732641a086e2b73fbf9d0, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &6864468631746765176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -806,30 +785,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219b7179daa085c4da3de6837d1ad6e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentState: 0
   maxHealth: 600
-  attack: 20
   poise: 70
+  defense: 0
   poisonResistance: 50
-  maxJumpCount: 1
+  attack: 20
   poiseDamage: 5
+  comboChance: 0.8
   attackRange: 4
   chaseRange: 25
-  chaseDuration: 5
   patrolRange: 8
   attackCooldown: 1
-  comboChance: 0.8
-  canFreeze: 1
-  canJump: 1
+  chaseDuration: 5
   freezeDuration: 3
   freezeCooldown: 6
+  isBomb: 0
+  canBeFrozen: 1
+  canBeStunned: 1
+  isIdle: 1
+  canJump: 1
+  maxJumpCount: 1
   movementSpeed: 6
   jumpForce: 11
   jumpTriggerDistance: 1
   atkHitbox: {fileID: 7175001486363548954}
-  fallThroughTime: 1.5
-  healthSlider: {fileID: 4682983767272477717}
   healthFillImage: {fileID: 3526286783963002442}
+  healthSlider: {fileID: 4682983767272477717}
+  fallThroughTime: 1.5
 --- !u!54 &6103851270667772436
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -857,6 +839,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!95 &410324089879113830
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6832886180655181025}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6d35096c92f732641a086e2b73fbf9d0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!136 &6417974471265160124
 CapsuleCollider:
   m_ObjectHideFlags: 0
