@@ -31,7 +31,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float patrolRange;
     [SerializeField] private float freezeDuration;
     [SerializeField] private float freezeCooldown;
-    [SerializeField] private bool canFreeze, canBeStunned, isBomb; // if by default set to false the enemy will never freeze
+    [SerializeField] private bool canFreeze, canBeStunned; // if by default set to false the enemy will never freeze
+    public bool isBomb;
     [SerializeField] private int atkNumber;
     
     private int _poisonBuildup, _poiseBuildup, _health;

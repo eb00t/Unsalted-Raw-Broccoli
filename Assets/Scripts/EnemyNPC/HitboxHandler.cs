@@ -4,29 +4,50 @@ using UnityEngine;
 public class HitboxHandler : MonoBehaviour
 {
     [SerializeField] private bool _canDamage = true;
+    private bool _canDamageEnemies = true;
+
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player")) return;
-        Debug.Log("Player Hit");
-        
-        if (!_canDamage) return;
-        
-        var characterAttack = other.GetComponentInChildren<CharacterAttack>();
         var damageable = GetComponentInParent<IDamageable>();
         
-        characterAttack.TakeDamagePlayer(damageable.Attack, damageable.PoiseDamage);
-        StartCoroutine(AtkCooldown());
+        if (other.CompareTag("Player"))
+        {
+            if (!_canDamage) return;
+
+            var characterAttack = other.GetComponentInChildren<CharacterAttack>();
+
+            characterAttack.TakeDamagePlayer(damageable.Attack, damageable.PoiseDamage);
+            StartCoroutine(AtkCooldown());
+        }
+
+        if (other.CompareTag("Enemy"))
+        {
+            var enemyHandler = GetComponentInParent<EnemyHandler>();
+            
+            if (enemyHandler != null && enemyHandler.isBomb)
+            {
+                var otherDamageable = other.GetComponent<IDamageable>();
+
+                if (!_canDamageEnemies) return;
+                
+                otherDamageable.TakeDamage(damageable.Attack, damageable.PoiseDamage, null);
+                StartCoroutine(AtkCooldown());
+            }
+        }
     }
 
     private IEnumerator AtkCooldown()
     {
         _canDamage = false;
+        _canDamageEnemies = false;
         yield return new WaitForSecondsRealtime(0.25f);
         _canDamage = true;
+        _canDamageEnemies = true;
     }
 
     private void OnEnable()
     {
         _canDamage = true;
+        _canDamageEnemies = true;
     }
 }
