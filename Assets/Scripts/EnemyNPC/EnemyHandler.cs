@@ -15,34 +15,53 @@ using Random = UnityEngine.Random;
 
 public class EnemyHandler : MonoBehaviour, IDamageable
 {
+    [Header("Defensive Stats")]
+    [SerializeField] private int maxHealth;
+    private int _health;
+    [SerializeField] private int poise;
+    [SerializeField] private int defense;
+    [SerializeField] private int poisonResistance;
+
+    [Header("Offensive Stats")] 
+    [SerializeField] private int attack;
+    [SerializeField] private int poiseDamage;
+    [SerializeField] private int numberOfAttacks;
+
+    [Header("Tracking")] 
+    [SerializeField] private float attackRange;
+    [SerializeField] private float chaseRange;
+    [SerializeField] private float patrolRange;
+    private int _knockbackDir;
+    private bool _hasPlayerBeenSeen;
+    private Vector3 _lastPosition;
+    private Vector3 _playerDir;
+    private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
     private enum States { Idle, Patrol, Chase, Attack, Frozen }
     private States _state = States.Idle;
     
-    [Header("Enemy Stats")]
-    [SerializeField] private int maxHealth;
-    [SerializeField] private int attack;
-    [SerializeField] private int poise;
-    [SerializeField] private int poiseDamage;
-    [SerializeField] private int poisonResistance;
-    [SerializeField] private float attackRange;
-    [SerializeField] private float attackCooldown;
-    [SerializeField] private float chaseRange;
-    [SerializeField] private float chaseDuration;
-    [SerializeField] private float patrolRange;
-    [SerializeField] private float freezeDuration;
-    [SerializeField] private float freezeCooldown;
-    [SerializeField] private bool canFreeze, canBeStunned; // if by default set to false the enemy will never freeze
-    public bool isBomb;
-    [SerializeField] private int atkNumber;
-    
-    private int _poisonBuildup, _poiseBuildup, _health;
-    private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen;
+    [Header("Timing")]
+    [SerializeField] private float attackCooldown; // time between attacks
+    [SerializeField] private float chaseDuration; // how long the enemy will chase after player leaves range
+    [SerializeField] private float freezeDuration; // how long the enemy is frozen for
+    [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
+    [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
+    private float _timeSinceLastMove;
     private float _targetTime;
-    private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
-    private Vector3 playerDir;
     
-    [Header("References")]
-    [SerializeField] private BoxCollider atkHitbox;
+    [Header("Enemy Properties")]
+    public bool isBomb;
+    [SerializeField] private bool canBeFrozen;
+    [SerializeField] private bool canBeStunned;
+    [SerializeField] private bool isIdle;
+    private bool _isFrozen;
+    private bool _isPoisoned;
+    private bool _lowHealth;
+    private bool _isStuck;
+    private int _poisonBuildup;
+    private int _poiseBuildup;
+    
+    [Header("References")] 
+    [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
     private Slider _healthSlider;
     private Animator _animator;
@@ -52,16 +71,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private CharacterMovement _characterMovement;
     private LockOnController _lockOnController;
     private SpriteRenderer _spriteRenderer;
+    
+    [Header("Sound")]
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
-    
-    [SerializeField] private bool isIdle, debugPatrol, debugRange;
-    [SerializeField] private float maxTimeToReachTarget = 5f;
-    private float _timeSinceLastMove;
-    private Vector3 _lastPosition;
-    private int _knockbackDir;
-    private bool _isStuck;
-    private bool _lowHealth;
     
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -95,12 +108,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
+        
         if (gameObject.name.Contains("Stalker"))
         {
             gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
         }
-        
-        if (gameObject.name.Contains("Robot"))
+        else if (gameObject.name.Contains("Robot"))
         {
             gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         }
@@ -116,7 +129,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Update()
     {
         var distance = Vector3.Distance(transform.position, _target.position);
-        playerDir = _target.position - transform.position;
+        _playerDir = _target.position - transform.position;
         var velocity = _agent.velocity;
 
         if (_isFrozen)
@@ -204,7 +217,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
         
         _spriteRenderer.transform.localScale = localScale;
-        atkHitbox.transform.localScale = localScale;
+        attackHitbox.transform.localScale = localScale;
     }
 
     private void Patrol()
@@ -276,7 +289,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         _targetTime -= Time.deltaTime;
         
-        UpdateSpriteDirection(playerDir.x < 0);
+        UpdateSpriteDirection(_playerDir.x < 0);
 
         if (!(_targetTime <= 0.0f)) return;
         
@@ -286,7 +299,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
         else
         {
-            var i = Random.Range(0, atkNumber);
+            var i = Random.Range(0, numberOfAttacks);
 
             switch (i)
             {
@@ -314,7 +327,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private void Frozen()
     {
-        if (!canFreeze) return;
+        if (!canBeFrozen) return;
         StartCoroutine(BeginFreeze());
     }
 
@@ -330,9 +343,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private IEnumerator StartCooldown()
     {
-        canFreeze = false;
+        canBeFrozen = false;
         yield return new WaitForSecondsRealtime(freezeCooldown);
-        canFreeze = true;
+        canBeFrozen = true;
     }
 
     private IEnumerator TakePoisonDamage()
@@ -392,7 +405,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         switch (effect)
         {
             case ConsumableEffect.Ice:
-                if (!canFreeze) return;
+                if (!canBeFrozen) return;
                 _isFrozen = true;
                 break;
             case ConsumableEffect.Poison:
@@ -446,33 +459,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
         _alarmEvent.stop(STOP_MODE.IMMEDIATE);
         _alarmEvent.release();
-    }
-    
-
-    private void OnDrawGizmos()
-    {
-        var position = transform.position;
-        //PickPatrolPoints();
-
-        if (debugRange)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(position, attackRange);
-
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(position, chaseRange);
-        }
-
-        if (debugPatrol)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(position, patrolRange);
-
-            var v = new Vector3(1, 1, 1);
-
-            Gizmos.DrawWireCube(_patrolPoint1, v);
-            Gizmos.DrawWireCube(_patrolPoint2, v);
-        }
     }
     
     private void OnDisable()

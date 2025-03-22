@@ -539,8 +539,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2289394862844830997}
-  - component: {fileID: 5814182676477144372}
   - component: {fileID: 2492710688041543829}
+  - component: {fileID: 5814182676477144372}
   - component: {fileID: 4485577030525050633}
   m_Layer: 8
   m_Name: MainBoss
@@ -572,6 +572,47 @@ Transform:
   - {fileID: 8403890130857164371}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2492710688041543829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3964061166220364551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01d8890da723b9a4e88f76cf31ac1d7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 350
+  defense: 0
+  poisonResistance: 60
+  attack: 10
+  poiseDamage: 10
+  attackCooldown: 4
+  freezeDuration: 2
+  freezeCooldown: 2
+  handLerpSpeed: 1.5
+  handHoverHeight: 8
+  bossName: The Other Blank Construct
+  canBeFrozen: 0
+  canBeStunned: 0
+  isIdle: 0
+  healthFillImage: {fileID: 3786656424194055331}
+  bossNameTxt: {fileID: 1344281777784514113}
+  leftHand: {fileID: 257467735486826967}
+  rightHand: {fileID: 2212177813976856691}
+  groundPosition: {fileID: 4452955902958484965}
+  bossEyePosition: {fileID: 8403890130857164371}
+  lhColliderDown: {fileID: 4248103763576319546}
+  rhColliderDown: {fileID: 6414840995051913820}
+  lhColliderUp: {fileID: 6482317407110828599}
+  rhColliderUp: {fileID: 3461010989411024312}
+  handDownL: {fileID: 5122731438240112699}
+  handDownR: {fileID: 5978280297001009636}
+  handUpL: {fileID: 6356542846984324077}
+  handUpR: {fileID: 34866456218787815}
+  bossTitle: {fileID: 1344281777784514113}
 --- !u!95 &5814182676477144372
 Animator:
   serializedVersion: 5
@@ -593,41 +634,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2492710688041543829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3964061166220364551}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01d8890da723b9a4e88f76cf31ac1d7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bossName: The Other Blank Construct
-  maxHealth: 250
-  attackCooldown: 4
-  handLerpSpeed: 1.5
-  handHoverHeight: 8
-  poisonResistance: 60
-  poiseDamage: 10
-  canFreeze: 0
-  attack: 5
-  healthFillImage: {fileID: 3786656424194055331}
-  leftHand: {fileID: 257467735486826967}
-  rightHand: {fileID: 2212177813976856691}
-  groundPosition: {fileID: 4452955902958484965}
-  bossEyePosition: {fileID: 8403890130857164371}
-  lhColliderDown: {fileID: 4248103763576319546}
-  rhColliderDown: {fileID: 6414840995051913820}
-  lhColliderUp: {fileID: 6482317407110828599}
-  rhColliderUp: {fileID: 3461010989411024312}
-  handDownL: {fileID: 5122731438240112699}
-  handDownR: {fileID: 5978280297001009636}
-  handUpL: {fileID: 6356542846984324077}
-  handUpR: {fileID: 34866456218787815}
-  bossTitle: {fileID: 1344281777784514113}
 --- !u!114 &4485577030525050633
 MonoBehaviour:
   m_ObjectHideFlags: 0

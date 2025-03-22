@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8810324875042115482}
-  - component: {fileID: 1730301689728780009}
   - component: {fileID: 3755830582083018366}
   - component: {fileID: 8040960076720273050}
   - component: {fileID: 5829437419276728552}
+  - component: {fileID: 1730301689728780009}
   m_Layer: 8
   m_Name: FlyingEnemy
   m_TagString: Enemy
@@ -40,27 +40,6 @@ Transform:
   - {fileID: 1973299437338840528}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1730301689728780009
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2069409593576255661}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1dbdf0e98fadb5f44a56dff41c904aec, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &3755830582083018366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,26 +53,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 70
-  poisonResistance: 40
   poise: 20
+  defense: 0
+  poisonResistance: 40
+  attack: 10
   poiseDamage: 5
-  atkDelay: 1.8
+  numberOfAttacks: 1
   attackRange: 3
   chaseRange: 15
+  patrolRange: 0
+  attackCooldown: 0
   chaseDuration: 2
-  minPatrolRange: 6
-  maxPatrolRange: 10
   freezeDuration: 3
   freezeCooldown: 4
-  canFreeze: 1
-  attack: 10
-  _state: 0
-  atkHitbox: {fileID: 3665861034403590735}
-  healthFillImage: {fileID: 953913091542431065}
+  maxTimeToReachTarget: 0
+  isBomb: 0
+  canBeFrozen: 0
+  canBeStunned: 0
   isIdle: 0
-  debugPatrol: 0
-  debugRange: 0
   moveSpeed: 2
+  attackHitbox: {fileID: 3665861034403590735}
+  healthFillImage: {fileID: 953913091542431065}
 --- !u!54 &8040960076720273050
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -142,6 +122,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.647962, y: 1.7273042, z: 1}
   m_Center: {x: 0.07273036, y: 0.9983903, z: 0}
+--- !u!95 &1730301689728780009
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069409593576255661}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1dbdf0e98fadb5f44a56dff41c904aec, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2464476070265717929
 GameObject:
   m_ObjectHideFlags: 0

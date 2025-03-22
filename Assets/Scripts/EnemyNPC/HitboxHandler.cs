@@ -28,7 +28,7 @@ public class HitboxHandler : MonoBehaviour
             {
                 var otherDamageable = other.GetComponent<IDamageable>();
 
-                if (!_canDamageEnemies) return;
+                if (!_canDamageEnemies || otherDamageable == null) return;
                 
                 otherDamageable.TakeDamage(damageable.Attack, damageable.PoiseDamage, null);
                 StartCoroutine(AtkCooldown());

@@ -10,44 +10,72 @@ using Random = UnityEngine.Random;
 
 public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 {
-    [Header("Enemy Stats")] 
+    [Header("Defensive Stats")]
     [SerializeField] private int maxHealth;
-    [SerializeField] private int  poisonResistance, poise, poiseDamage;
-    [SerializeField] private float atkDelay, attackRange;
-    [SerializeField] private float chaseRange, chaseDuration;
-    [SerializeField] private float minPatrolRange, maxPatrolRange;
-    [SerializeField] private float freezeDuration, freezeCooldown;
-    [SerializeField] private bool canFreeze;
-    public int attack;
-    private int _poisonBuildup, _health;
-    private bool _isFrozen, _isPoisoned, _hasPlayerBeenSeen, _isKnockedBack, _isStunned;
+    private int _health;
+    [SerializeField] private int poise;
+    [SerializeField] private int defense;
+    [SerializeField] private int poisonResistance;
 
-    [Header("Values")]
+    [Header("Offensive Stats")] 
+    [SerializeField] private int attack;
+    [SerializeField] private int poiseDamage;
+    [SerializeField] private int numberOfAttacks;
+
+    [Header("Tracking")] 
+    [SerializeField] private float attackRange;
+    [SerializeField] private float chaseRange;
+    [SerializeField] private float patrolRange;
+    private Vector3 _currentVelocity;
+    private int _knockbackDir;
+    private bool _hasPlayerBeenSeen;
+    private Vector3 _lastPosition;
+    private Vector3 _playerDir;
+    private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
+    private States _state = States.Idle;
+    
+    [Header("Timing")]
+    [SerializeField] private float attackCooldown; // time between attacks
+    [SerializeField] private float chaseDuration; // how long the enemy will chase after player leaves range
+    [SerializeField] private float freezeDuration; // how long the enemy is frozen for
+    [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
+    [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
+    private float _timeSinceLastMove;
     private float _targetTime;
+    
+    [Header("Enemy Properties")]
+    public bool isBomb;
+    [SerializeField] private bool canBeFrozen;
+    [SerializeField] private bool canBeStunned;
+    [SerializeField] private bool isIdle;
+    [SerializeField] private float moveSpeed;
+    private bool _isKnockedBack;
+    private bool _isStunned;
+    private bool _isFrozen;
+    private bool _isPoisoned;
+    private bool _lowHealth;
+    private bool _isStuck;
+    private int _poisonBuildup;
     private int _poiseBuildup;
-    private Vector3 _patrolTarget, _patrol1, _patrol2;
-    [SerializeField] private States _state = States.Idle;
-
-    [Header("References")]
-    [SerializeField] private BoxCollider atkHitbox;
+    
+    [Header("References")] 
+    [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
-    private BoxCollider _collider;
     private Slider _healthSlider;
     private Animator _animator;
-    private Transform _target, _spriteTransform;
+    private Transform _target;
+    private NavMeshAgent _agent;
+    private CharacterAttack _characterAttack;
     private CharacterMovement _characterMovement;
     private LockOnController _lockOnController;
+    private SpriteRenderer _spriteRenderer;
+    private Transform _spriteTransform;
+    private BoxCollider _collider;
+    private Rigidbody _rigidbody;
+    
+    [Header("Sound")]
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
-    private Rigidbody _rigidbody;
-    private int _knockbackDir;
-
-    [SerializeField] private bool isIdle, debugPatrol, debugRange;
-
-    [Header("Movement")]
-    [SerializeField] private float moveSpeed = 5f;
-    private Vector3 _currentVelocity;
-    private bool _lowHealth;
     
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -87,7 +115,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _collider = GetComponent<BoxCollider>();
 
         PickPatrolPoints();
-        _patrolTarget = _patrol1;
+        _patrolTarget = _patrolPoint1;
     }
 
     private void Update()
@@ -147,7 +175,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         if (Vector3.Distance(transform.position, _patrolTarget) < 1f)
         {
-            _patrolTarget = _patrolTarget == _patrol1 ? _patrol2 : _patrol1;
+            _patrolTarget = _patrolTarget == _patrolPoint1 ? _patrolPoint2 : _patrolPoint1;
         }
         MoveTowards(_patrolTarget);
     }
@@ -179,7 +207,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         if (_targetTime <= 0.0f)
         {
             _animator.SetTrigger("Attack");
-            _targetTime = atkDelay;
+            _targetTime = attackCooldown;
         }
     }
 
@@ -187,11 +215,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         var position = transform.position;
         
-        var newPatrol1 = new Vector3(position.x + Random.Range(minPatrolRange, maxPatrolRange), position.y, position.z);
-        var newPatrol2 = new Vector3(position.x - Random.Range(minPatrolRange, maxPatrolRange), position.y, position.z);
+        var newPatrol1 = new Vector3(position.x + Random.Range(transform.position.x, patrolRange), position.y, position.z);
+        var newPatrol2 = new Vector3(position.x - Random.Range(transform.position.x, patrolRange), position.y, position.z);
         
-        _patrol1 = newPatrol1;
-        _patrol2 = newPatrol2;
+        _patrolPoint1 = newPatrol1;
+        _patrolPoint2 = newPatrol2;
     }
 
     private void MoveTowards(Vector3 target)
@@ -220,7 +248,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             _rigidbody.velocity = direction * moveSpeed;
 
             var localScale = _spriteTransform.localScale;
-            var hitboxLocalScale = atkHitbox.transform.localScale;
+            var hitboxLocalScale = attackHitbox.transform.localScale;
             if (Mathf.Abs(direction.x) > 0.1f)
             {
                 localScale.x = direction.x > 0 ? Mathf.Abs(localScale.x) : -Mathf.Abs(localScale.x);
@@ -228,7 +256,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             }
 
             _spriteTransform.localScale = localScale;
-            atkHitbox.transform.localScale = hitboxLocalScale;
+            attackHitbox.transform.localScale = hitboxLocalScale;
         }
     }
     
@@ -275,7 +303,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     
     private void Frozen()
     {
-        if (!canFreeze) return;
+        if (!canBeFrozen) return;
         StartCoroutine(BeginFreeze());
     }
     
@@ -290,9 +318,9 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
     private IEnumerator StartCooldown()
     {
-        canFreeze = false;
+        canBeFrozen = false;
         yield return new WaitForSecondsRealtime(freezeCooldown);
-        canFreeze = true;
+        canBeFrozen = true;
     }
 
     private IEnumerator TakePoisonDamage()
@@ -321,7 +349,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         switch (effect)
         {
             case ConsumableEffect.Ice:
-                if (!canFreeze) return;
+                if (!canBeFrozen) return;
                 _isFrozen = true;
                 break;
             case ConsumableEffect.Poison:
@@ -382,33 +410,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(2f);
 
         gameObject.SetActive(false);
-    }
-
-    private void OnDrawGizmos()
-    {
-        var position = transform.position;
-        //PickPatrolPoints();
-
-        if (debugRange)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(position, attackRange);
-
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(position, chaseRange);
-        }
-
-        if (debugPatrol)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(position, maxPatrolRange);
-            Gizmos.DrawWireSphere(position, minPatrolRange);
-
-            var v = new Vector3(1, 1, 1);
-
-            Gizmos.DrawWireCube(_patrol1, v);
-            Gizmos.DrawWireCube(_patrol2, v);
-        }
     }
     
     public void ApplyKnockback(Vector2 knockbackPower)
