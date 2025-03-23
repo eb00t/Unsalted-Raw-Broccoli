@@ -8,9 +8,6 @@ using Random = UnityEngine.Random;
 
 public class CopyBoss : MonoBehaviour, IDamageable
 {
-    
-    
-
     private Rigidbody _rigidbody;
     private Animator _animator;
     private Transform _player;
@@ -74,7 +71,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private float fallThroughTime = 2f;
     private CinemachineImpulseSource _impulseSource;
     private Vector3 _impulseVector; 
-    private Collider _bossCollider;
+    private CapsuleCollider _bossCollider;
     private CharacterMovement _characterMovement;
     private RoomScripting _roomScripting;
     private LockOnController _lockOnController;
@@ -92,7 +89,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
         _impulseSource = GetComponent<CinemachineImpulseSource>();
-        _bossCollider = GetComponent<Collider>();
+        _bossCollider = GetComponent<CapsuleCollider>();
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -231,14 +228,24 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         if (platform != null)
         {
-            StartCoroutine(DisableCollision());
+            StartCoroutine(DisableCollision(platform));
         }
     }
     
-    private Collider FindPlatform(Vector3 dir)
+    private GameObject FindPlatform(Vector3 dir)
     {
         var layerMask = LayerMask.GetMask("Ground");
-        return Physics.Raycast(transform.position, dir, out var hit, 20f, layerMask) ? hit.collider : null;
+        
+        if (Physics.Raycast(transform.position, dir, out var hit, 10f, layerMask))
+        {
+            var platform = hit.collider.GetComponentInParent<SemiSolidPlatform>();
+            if (platform != null)
+            {
+                return platform.gameObject;
+            }
+        }
+        
+        return null;
     }
 
     private void Jump()
@@ -247,11 +254,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         _jumpCount++;
 
-        var col = FindPlatform(Vector3.up);
+        var platform = FindPlatform(Vector3.up);
     
-        if (col != null)
+        if (platform != null)
         {
-            StartCoroutine(DisableCollision());
+            StartCoroutine(DisableCollision(platform));
         }
 
         var newForce = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * (_player.position.y - transform.position.y + 1.5f));
@@ -265,18 +272,28 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _animator.SetTrigger("Jump");
     }
 
-    private IEnumerator DisableCollision()
+    private IEnumerator DisableCollision(GameObject platform)
     {
-        if (_bossCollider != null)
-            _bossCollider.enabled = false;
-
-        yield return new WaitForSeconds(.8f);
-
-        if (_bossCollider != null)
-            _bossCollider.enabled = true;
+        if (platform.GetComponent<SemiSolidPlatform>() == null) yield break;
+        
+        if (_bossCollider != null && platform != null)
+        {
+            Debug.Log("collision disabled");
+            
+            foreach (var collider in platform.GetComponentsInChildren<Collider>())
+            {
+                Physics.IgnoreCollision(_bossCollider, collider, true);  
+            }
+            
+            yield return new WaitForSeconds(.8f);
+            
+            foreach (var collider in platform.GetComponentsInChildren<Collider>())
+            {
+                Physics.IgnoreCollision(_bossCollider, collider, false);
+            }
+        }
 
         _isFallingThrough = false;
-        _currentState = States.Chase;
     }
     
     private void MoveTowards(Vector3 target)

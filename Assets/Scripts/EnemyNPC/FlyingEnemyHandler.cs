@@ -268,16 +268,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
         if (Physics.Raycast(transform.position, direction, out var hit, 1f))
         {
-            if (!hit.collider.CompareTag("Player") &&
-                !hit.collider.CompareTag("Top Wall") &&
-                !hit.collider.CompareTag("Bottom Wall") &&
-                !hit.collider.CompareTag("Left Wall") &&
-                !hit.collider.CompareTag("Right Wall") &&
-                !hit.collider.CompareTag("Right Door") &&
-                !hit.collider.CompareTag("Left Door") &&
-                !hit.collider.CompareTag("Bottom Door") &&
-                !hit.collider.CompareTag("Top Door") &&
-                !hit.collider.isTrigger)
+            if (hit.collider.CompareTag("Untagged") && !hit.collider.isTrigger)
             {
                 StartCoroutine(DisableCollision());
             }
