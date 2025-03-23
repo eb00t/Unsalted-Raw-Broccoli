@@ -29,7 +29,15 @@ public class CameraTrigger : MonoBehaviour
         {
             case RoomOrConnector.Room:
             {
-                _camera = transform.root.transform.Find("RoomCam").GetComponent<CinemachineVirtualCamera>();
+                if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
+                {
+                    _camera = transform.root.transform.Find("RoomCam").GetComponent<CinemachineVirtualCamera>();
+                }
+                else
+                {
+                    _camera = transform.parent.transform.Find("RoomCam").GetComponent<CinemachineVirtualCamera>();
+                }
+
                 break;
             }
         }

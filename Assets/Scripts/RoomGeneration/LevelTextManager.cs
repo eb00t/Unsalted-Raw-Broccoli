@@ -51,7 +51,7 @@ public class LevelTextManager : MonoBehaviour
                 titleText.text = ("FLOOR 3");
                 break;
             case LevelBuilder.LevelMode.Intermission:
-                titleText.text = ("");
+                titleText.text = ("INTERMISSION");
                 break;
             case LevelBuilder.LevelMode.Tutorial:
                 titleText.text = ("TUTORIAL");
@@ -78,7 +78,7 @@ public class LevelTextManager : MonoBehaviour
                 subtitleText.text = ("...");
                 break;
             case LevelBuilder.LevelMode.Intermission:
-                subtitleText.text = ("");
+                subtitleText.text = ("A brief respite...");
                 break;
             case LevelBuilder.LevelMode.Tutorial:
                 subtitleText.text = ("");
