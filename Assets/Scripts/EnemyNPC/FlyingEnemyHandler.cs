@@ -294,6 +294,10 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
+        defense = Mathf.Clamp(defense, 0, 100);
+        var dmgReduction = (100 - defense) / 100f;
+        damage = Mathf.RoundToInt(damage * dmgReduction);
+        
         if (_health - damage > 0)
         {
             _health -= damage;

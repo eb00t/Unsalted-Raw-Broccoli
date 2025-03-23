@@ -225,9 +225,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         OneHandAttackSoundFinish(false, true);
         
         UpdateColliders(false, false, false, false); // give player opening to attack
-
+        defense = 0;
+        
         yield return new WaitForSecondsRealtime(2f);
 
+        defense = 50;
         UpdateColliders(false, false, true, true);
         UpdateHandImg(false, false, true, true);
         
@@ -279,9 +281,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         {
             yield return StartCoroutine(MoveHands(null, slamPosition, 0.5f));
             _impulseVector = new Vector3(0, 2, 0);
+            defense = 0;
             OneHandAttackSoundFinish(isLeft, true);
             UpdateColliders(false, false, false, false);
             yield return new WaitForSecondsRealtime(2f);
+            defense = 50;
             yield return StartCoroutine(MoveHands(null, hoverPosition, 0.5f));
             OneHandAttackSoundFinish(isLeft, false);
         }
@@ -290,8 +294,10 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             yield return StartCoroutine(MoveHands(slamPosition, null, 0.5f));
             _impulseVector = new Vector3(0, 2, 0);
             UpdateColliders(false, false, false, false);
+            defense = 0;
             OneHandAttackSoundFinish(isLeft, true);
             yield return new WaitForSecondsRealtime(2f);
+            defense = 50;
             yield return StartCoroutine(MoveHands(hoverPosition, null, 0.5f));
             OneHandAttackSoundFinish(isLeft, false);
         }
@@ -316,7 +322,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var rightWidePos = _target.position + Vector3.right * 5;
         var clapCount = Random.Range(1, 4);
         var clapTarget = _target.position;
-        
+
+        defense = 0;
 
         for (var i = 0; i <= clapCount; i++)
         {
@@ -332,6 +339,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
             UpdateColliders(false, false, false, false);
         }
+
+        defense = 50;
 
         _canAttack = true;
     }
@@ -466,6 +475,10 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
+        defense = Mathf.Clamp(defense, 0, 100);
+        var dmgReduction = (100 - defense) / 100f;
+        damage = Mathf.RoundToInt(damage * dmgReduction);
+        
         if (_health - damage > 0)
         {
             _health -= damage;
@@ -481,8 +494,6 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             _healthSlider.value = 0;
             Die();
         }
-        
-        
     }
     
     private IEnumerator TakePoisonDamage()

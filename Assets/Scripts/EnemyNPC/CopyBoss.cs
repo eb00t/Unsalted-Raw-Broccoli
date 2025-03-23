@@ -445,7 +445,10 @@ public class CopyBoss : MonoBehaviour, IDamageable
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
         if (_isDead) return;
-
+        defense = Mathf.Clamp(defense, 0, 100);
+        var dmgReduction = (100 - defense) / 100f;
+        damage = Mathf.RoundToInt(damage * dmgReduction);
+        
         _health -= damage;
         healthSlider.value = _health;
         if (_health <= maxHealth / 2)
