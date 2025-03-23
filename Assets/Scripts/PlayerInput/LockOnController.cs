@@ -77,6 +77,7 @@ public class LockOnController : MonoBehaviour
     // this just updates the direction that the player is facing while locked on to the locked on target
     private void UpdateDir()
     {
+        if (lockedTarget == null) return;
         var direction = Mathf.Sign(lockedTarget.position.x - transform.position.x);
         transform.localScale = new Vector3(Mathf.Abs(_originalLocalScale.x) * direction, _originalLocalScale.y, _originalLocalScale.z);
     }

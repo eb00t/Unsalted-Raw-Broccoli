@@ -44,7 +44,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private float _targetTime;
     
     [Header("Enemy Properties")]
-    public bool isBomb;
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool isIdle;
@@ -60,6 +59,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     
     [Header("References")] 
     [SerializeField] private BoxCollider attackHitbox;
+    [SerializeField] private GameObject flashEffect;
     [SerializeField] private Image healthFillImage;
     private Slider _healthSlider;
     private Animator _animator;
@@ -123,7 +123,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         if (_animator.GetBool("isDead")) return;
         
         var distance = Vector3.Distance(transform.position, _target.position);
-        var playerDir =  Mathf.Abs(_target.position.x - transform.position.x);
+        _playerDir = _target.position - transform.position;
 
         if (_isStunned) return;
 
@@ -203,12 +203,52 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
     private void Attack()
     {
+        _rigidbody.velocity = Vector3.zero;
+        UpdateSpriteDirection(_playerDir.x < 0f);
         _targetTime -= Time.deltaTime;
+        
         if (_targetTime <= 0.0f)
         {
-            _animator.SetTrigger("Attack");
+            var i = Random.Range(0, 2);
+
+            switch (i)
+            {
+                case 0:
+                    _animator.SetTrigger("Attack");
+                    break;
+                case 1:
+                    _animator.SetTrigger("Attack2");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
             _targetTime = attackCooldown;
         }
+    }
+    
+    private void UpdateSpriteDirection(bool isLeft)
+    {
+        var localScale = _spriteTransform.localScale;
+        var hitboxLocalScale = attackHitbox.transform.localScale;
+        var flashLocalScale = flashEffect.transform.localScale;
+        
+        if (!isLeft)
+        {
+            localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
+            hitboxLocalScale = new Vector3(Mathf.Abs(hitboxLocalScale.x), hitboxLocalScale.y, hitboxLocalScale.z);
+            flashLocalScale = new Vector3(Mathf.Abs(flashLocalScale.x), flashLocalScale.y, flashLocalScale.z);
+        }
+        else
+        {
+            localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
+            hitboxLocalScale = new Vector3(-Mathf.Abs(hitboxLocalScale.x), hitboxLocalScale.y, hitboxLocalScale.z);
+            flashLocalScale = new Vector3(-Mathf.Abs(flashLocalScale.x), flashLocalScale.y, flashLocalScale.z);
+        }
+
+        _spriteTransform.localScale = localScale;
+        attackHitbox.transform.localScale = hitboxLocalScale;
+        flashEffect.transform.localScale = flashLocalScale;
     }
 
     private void PickPatrolPoints()
@@ -246,17 +286,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         if (!_isKnockedBack)
         {
             _rigidbody.velocity = direction * moveSpeed;
-
-            var localScale = _spriteTransform.localScale;
-            var hitboxLocalScale = attackHitbox.transform.localScale;
-            if (Mathf.Abs(direction.x) > 0.1f)
-            {
-                localScale.x = direction.x > 0 ? Mathf.Abs(localScale.x) : -Mathf.Abs(localScale.x);
-                hitboxLocalScale.x = direction.x > 0 ? Mathf.Abs(hitboxLocalScale.x) : -Mathf.Abs(hitboxLocalScale.x);
-            }
-
-            _spriteTransform.localScale = localScale;
-            attackHitbox.transform.localScale = hitboxLocalScale;
+            UpdateSpriteDirection(direction.x < 0f);
         }
     }
     
@@ -434,15 +464,22 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         _isKnockedBack = true;
 
-        _rigidbody.velocity = Vector3.zero;
-        yield return null;
+        var timer = 0f;
+        var startPos = transform.position;
+        var targetPos = startPos + force;
 
-        _rigidbody.AddForce(force, ForceMode.Impulse);
+        while (timer < duration)
+        {
+            var t = timer / duration;
+            transform.position = Vector3.Lerp(startPos, targetPos, t);
+            timer += Time.deltaTime;
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(duration);
-
+        transform.position = targetPos;
         _isKnockedBack = false;
     }
+
     
     private IEnumerator StunTimer(float stunTime)
     {
