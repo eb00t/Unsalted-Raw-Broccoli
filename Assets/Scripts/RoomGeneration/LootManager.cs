@@ -100,11 +100,10 @@ public class LootManager : MonoBehaviour
     
     public void SpawnRandomLoreHere(Transform here)
     {
-        int chosenLoot = RandomiseNumber(majorLoot.Count);
-        GameObject lootToSpawn = Instantiate(majorLoot[chosenLoot], here.position, Quaternion.identity);
+        int chosenLoot = RandomiseNumber(lore.Count);
+        GameObject lootToSpawn = Instantiate(lore[chosenLoot], here.position, Quaternion.identity);
         lootToSpawn.SetActive(true);
         lootToSpawn.transform.parent = here.transform; 
-        majorLoot.Remove(majorLoot[chosenLoot]);
     }
     
     private int RandomiseNumber(int setSize)
