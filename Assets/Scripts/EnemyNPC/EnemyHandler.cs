@@ -15,8 +15,8 @@ using Random = UnityEngine.Random;
 
 public class EnemyHandler : MonoBehaviour, IDamageable
 {
-    [Header("Defensive Stats")]
-    [SerializeField] private int maxHealth;
+    [Header("Defensive Stats")] [SerializeField]
+    private int maxHealth;
     private int _health;
     [SerializeField] private int poise;
     [SerializeField] private int defense;
@@ -27,8 +27,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int poiseDamage;
     [SerializeField] private int numberOfAttacks;
 
-    [Header("Tracking")] 
-    [SerializeField] private float attackRange;
+    [Header("Tracking")] [SerializeField] private float attackRange;
     [SerializeField] private float chaseRange;
     [SerializeField] private float patrolRange;
     private int _knockbackDir;
@@ -36,31 +35,31 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Vector3 _lastPosition;
     private Vector3 _playerDir;
     private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
-    private enum States { Idle, Patrol, Chase, Attack, Frozen }
+    private enum States { Idle, Patrol, Chase, Attack, Frozen, Passive }
     private States _state = States.Idle;
-    
-    [Header("Timing")]
-    [SerializeField] private float attackCooldown; // time between attacks
+
+    [Header("Timing")] [SerializeField] private float attackCooldown; // time between attacks
     [SerializeField] private float chaseDuration; // how long the enemy will chase after player leaves range
     [SerializeField] private float freezeDuration; // how long the enemy is frozen for
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
     [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
     private float _timeSinceLastMove;
     private float _targetTime;
-    
-    [Header("Enemy Properties")]
-    public bool isBomb;
+
+    [Header("Enemy Properties")] public bool isBomb;
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool isIdle;
+    [SerializeField] private bool isPassive;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
     private bool _isStuck;
     private int _poisonBuildup;
     private int _poiseBuildup;
-    
+
     [Header("References")] 
+    [SerializeField] private Transform passiveTarget;
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
     private Slider _healthSlider;
@@ -86,7 +85,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        if (!SceneManager.GetActiveScene().name.Contains("Tutorial"))
+        if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
         {
             RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
             RoomScripting.enemies.Add(gameObject);
@@ -128,13 +127,31 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        var velocity = _agent.velocity;
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;
-        var velocity = _agent.velocity;
-
+        
         if (_isFrozen)
         {
             _state = States.Frozen;
+        }
+        else if (isPassive)
+        {
+            _state = States.Passive;
+            _playerDir = passiveTarget.position - transform.position;
+            
+            UpdateSpriteDirection(_playerDir.x < 0);
+            
+            if (velocity.x > 0.1f)
+            {
+                UpdateSpriteDirection(false);
+            }
+            else if (velocity.x < -0.1f)
+            {
+                UpdateSpriteDirection(true);
+            }
+            
+            _target = passiveTarget;
         }
         else
         {
@@ -145,7 +162,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             else if (distance < chaseRange || _hasPlayerBeenSeen)
             {
                 _state = States.Chase;
-                
+            
                 if (velocity.x > 0.1f)
                 {
                     UpdateSpriteDirection(false);
@@ -158,7 +175,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             else if (!isIdle)
             {
                 _state = States.Patrol;
-                
+            
                 if (velocity.x > 0.1f)
                 {
                     UpdateSpriteDirection(false);
@@ -193,10 +210,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 _agent.isStopped = true;
                 Frozen();
                 break;
+            case States.Passive:
+                Passive();
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
         
         _animator.SetFloat("vel", Mathf.Abs(velocity.x));
     }
@@ -208,12 +227,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (!isLeft)
         {
             localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
-            //atkHitbox.center = new Vector3(1.2f, -0.1546797f, 0);
         }
         else
         {
             localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
-            //atkHitbox.center = new Vector3(-1.2f, -0.1546797f, 0);
         }
         
         _spriteRenderer.transform.localScale = localScale;
@@ -261,7 +278,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         PickPatrolPoints();
     }
 
-
     private void Chase()
     {
         _agent.isStopped = false;
@@ -282,11 +298,18 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _hasPlayerBeenSeen = false;
     }
 
+    private void Passive()
+    {
+        _agent.isStopped = false;
+        _healthSlider.gameObject.SetActive(true);
+        _agent.SetDestination(passiveTarget.position);
+    }
+
     private void Attack()
     {
         _agent.ResetPath();
         _agent.isStopped = true;
-        
+        _healthSlider.gameObject.SetActive(true);
         _targetTime -= Time.deltaTime;
         
         UpdateSpriteDirection(_playerDir.x < 0);
@@ -375,6 +398,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
         
+        Debug.Log(damage);
+        
         if (_health - damage > 0)
         {
             _health -= damage;
@@ -431,7 +456,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _lockOnController.lockedTarget = null;
         StopAllCoroutines();
 
-        if (!SceneManager.GetActiveScene().name.Contains("Tutorial"))
+        if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
         {
             Spawner.spawnedEnemy = null;
             Spawner.SpawnEnemies(); 
@@ -467,7 +492,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void OnDisable()
     {
-        if (!SceneManager.GetActiveScene().name.Contains("Tutorial"))
+        if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
         {
             RoomScripting.enemies.Remove(gameObject);
             RoomScripting._enemyCount--;
