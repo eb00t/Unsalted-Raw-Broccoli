@@ -54,7 +54,6 @@ public class LockOnController : MonoBehaviour
 
             if (!(_switchDirection.magnitude >= switchThreshold)) return;
             if (_isSwitchingInProgress) return;
-            Debug.Log("Target switched");
 
             _isSwitchingInProgress = true;
 
@@ -87,9 +86,9 @@ public class LockOnController : MonoBehaviour
     {
         if (!target.activeSelf) return;
         
-        foreach (var i in target.GetComponentsInChildren<SpriteRenderer>(true))
+        foreach (var i in target.GetComponentsInChildren<Animator>(true))
         {
-            if (i.name == "LockOnImg")
+            if (i.name == "Indicator")
             {
                 i.gameObject.SetActive(setActive);
             }
