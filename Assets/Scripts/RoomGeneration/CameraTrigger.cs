@@ -35,7 +35,7 @@ public class CameraTrigger : MonoBehaviour
                 }
                 else
                 {
-                    _camera = transform.parent.transform.Find("RoomCam").GetComponent<CinemachineVirtualCamera>();
+                    _camera = transform.parent.transform.parent.transform.parent.Find("RoomCam").GetComponent<CinemachineVirtualCamera>();
                 }
 
                 break;

@@ -7,7 +7,7 @@ public interface IDamageable
     bool isPlayerInRange { get; set; }
     bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
-    public Spawner Spawner { get; set; }
+    public EnemySpawner EnemySpawner { get; set; }
     void TakeDamage(int damage, int? poiseDmg, Vector3? knockback);
     void TriggerStatusEffect(ConsumableEffect effect);
     void ApplyKnockback(Vector2 knockbackPower);

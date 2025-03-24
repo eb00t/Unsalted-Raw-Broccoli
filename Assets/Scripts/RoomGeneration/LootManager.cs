@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 public class LootManager : MonoBehaviour
 {    
     public static LootManager Instance { get; private set; }
-    public List<GameObject> minorLoot, majorLoot;
+    public List<GameObject> minorLoot, majorLoot, lore;
     private readonly int _willLootSpawn = 2; //It has a 10% chance to spawn by default
     private int _willMajorLootSpawn = 10;
     private void Awake()
@@ -19,6 +19,10 @@ public class LootManager : MonoBehaviour
         foreach (var item in Resources.LoadAll<GameObject>("ItemPrefabs/Major Items"))
         {
             majorLoot.Add(item);
+        }
+        foreach (var item in Resources.LoadAll<GameObject>("ItemPrefabs/Lore"))
+        {
+            lore.Add(item);
         }
         if (Instance != null)
         {
@@ -92,6 +96,15 @@ public class LootManager : MonoBehaviour
         lootToSpawn.SetActive(true);
         lootToSpawn.transform.parent = here.transform;
         majorLoot.Remove(chosenLoot);
+    }
+    
+    public void SpawnRandomLoreHere(Transform here)
+    {
+        int chosenLoot = RandomiseNumber(majorLoot.Count);
+        GameObject lootToSpawn = Instantiate(majorLoot[chosenLoot], here.position, Quaternion.identity);
+        lootToSpawn.SetActive(true);
+        lootToSpawn.transform.parent = here.transform; 
+        majorLoot.Remove(majorLoot[chosenLoot]);
     }
     
     private int RandomiseNumber(int setSize)

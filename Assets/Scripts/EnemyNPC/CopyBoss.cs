@@ -82,7 +82,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
-    public Spawner Spawner { get; set; }
+    public EnemySpawner EnemySpawner { get; set; }
 
     private void Start()
     {

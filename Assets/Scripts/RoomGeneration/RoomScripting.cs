@@ -130,7 +130,7 @@ public class RoomScripting : MonoBehaviour
         allDoorsClosed = true;
         foreach (var spawner in spawners)
         {
-            spawner.GetComponent<Spawner>().SpawnEnemies();
+            spawner.GetComponent<EnemySpawner>().SpawnEnemies();
         }
     }
 

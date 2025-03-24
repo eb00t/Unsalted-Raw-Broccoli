@@ -81,7 +81,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
-    public Spawner Spawner { get; set; }
+    public EnemySpawner EnemySpawner { get; set; }
     
     private void Start()
     {
@@ -458,8 +458,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
         {
-            Spawner.spawnedEnemy = null;
-            Spawner.SpawnEnemies(); 
+            EnemySpawner.spawnedEnemy = null;
+            EnemySpawner.SpawnEnemies(); 
         }
         else if (SceneManager.GetActiveScene().name.Contains("Tutorial"))
         {
@@ -496,7 +496,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         {
             RoomScripting.enemies.Remove(gameObject);
             RoomScripting._enemyCount--;
-            Spawner.spawnedEnemies.Remove(gameObject);
+            EnemySpawner.spawnedEnemies.Remove(gameObject);
         }
     }
 

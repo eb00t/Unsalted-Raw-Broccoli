@@ -16,6 +16,7 @@ public class RoomInfo : MonoBehaviour
     public bool bossRoom = false;
     public bool shop = false;
     public bool lootRoom = false;
+    public bool loreRoom = false;
     public bool bigRoom = false;
     [field: Header("Door Config (MAKE ABSOLUTELY SURE YOU SET THESE PROPERLY)")] 
     [field: Tooltip("SERIOUSLY! MAKE SURE THESE ARE ACCURATE TO THE DESIGN OF THE ROOM")]
@@ -112,21 +113,34 @@ public class RoomInfo : MonoBehaviour
 
         if (lootRoom)
         {
+            if (LevelBuilder.Instance.lootRoomsToSpawn == 0)
+            {
+                markedForDiscard = true;
+                LevelBuilder.Instance.discardedRooms.Add(gameObject);
+            }
             LevelBuilder.Instance.spawnedLootRooms.Add(gameObject);
             LevelBuilder.Instance.lootRoomsToSpawn--;
         }
 
         if (shop)
         {
-            if (LevelBuilder.Instance.shopSpawned)
+            LevelBuilder.Instance.spawnedShops.Add(gameObject);
+            if (LevelBuilder.Instance.spawnedShops.Count > 1)
             {
                 markedForDiscard = true;
-            }
-            else
-            {
-                LevelBuilder.Instance.shopSpawned = true;
+                LevelBuilder.Instance.discardedRooms.Add(gameObject);
             }
             
+        }
+        
+        if (loreRoom)
+        {
+            LevelBuilder.Instance.spawnedLoreRooms.Add(gameObject);
+            if (LevelBuilder.Instance.spawnedLoreRooms.Count > 1)
+            {
+                markedForDiscard = true;
+                LevelBuilder.Instance.discardedRooms.Add(gameObject);
+            }
         }
         CameraManager.Instance.virtualCameras.Add(roomCam.GetComponent<CinemachineVirtualCamera>());
         //connectorSpawnedOff = LevelBuilder.Instance._spawnedConnectors[^1];
@@ -146,21 +160,26 @@ public class RoomInfo : MonoBehaviour
         CameraManager.Instance.virtualCameras.Remove(roomCam.GetComponent<CinemachineVirtualCamera>());
         if (specialRoom)
         {
-            
             LevelBuilder.Instance.possibleSpecialRooms.Add(Resources.Load<GameObject>(roomPath));
         }
         if (shop)
         {
-            LevelBuilder.Instance.shopSpawned = false;
-            LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.Shop;
-            LevelBuilder.Instance.spawnModeChangedByDestroy = true;
+            if (LevelBuilder.Instance.spawnedShops.Count == 0)
+            {
+                LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.Shops;
+                LevelBuilder.Instance.spawnModeChangedByDestroy = true;
+            }
+            LevelBuilder.Instance.spawnedShops.Remove(gameObject);
         }
         if (lootRoom)
         {
             LevelBuilder.Instance.spawnedLootRooms.Remove(gameObject);
-            LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.LootRoom;
+            LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.LootRooms;
             LevelBuilder.Instance.spawnModeChangedByDestroy = true;
-            LevelBuilder.Instance.lootRoomsToSpawn++;
+            if (LevelBuilder.Instance.lootRoomsToSpawn > 0)
+            {
+                LevelBuilder.Instance.lootRoomsToSpawn++;
+            }
         }
         if (bossRoom)
         {
@@ -181,6 +200,12 @@ public class RoomInfo : MonoBehaviour
                     break;
             }
         }
+
+        if (loreRoom)
+        {
+            LevelBuilder.Instance.spawnedLoreRooms.Remove(gameObject);
+            LevelBuilder.Instance.spawnModeChangedByDestroy = true;
+        }
        
         if (LevelBuilder.Instance.discardedRooms.Contains(gameObject))
         {
@@ -198,7 +223,7 @@ public class RoomInfo : MonoBehaviour
 
         switch (LevelBuilder.Instance._spawnMode)
         {
-            case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms or LevelBuilder.SpawnMode.Shop or LevelBuilder.SpawnMode.LootRoom:
+            case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms or LevelBuilder.SpawnMode.Shops or LevelBuilder.SpawnMode.LootRooms or LevelBuilder.SpawnMode.LoreRooms:
                 LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.spawnPoints.Count);
                 break;
             case LevelBuilder.SpawnMode.BossRooms:

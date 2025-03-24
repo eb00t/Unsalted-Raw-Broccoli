@@ -6,15 +6,15 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class Spawner : MonoBehaviour
+public class EnemySpawner : MonoBehaviour
 {
     [field: Header("Configuration")]
-    public enum SpawnMode
+    public enum HowToSpawn
     {
         Random,
         Specific_NOT_IMPLEMENTED
     }
-    public SpawnMode spawnMode = SpawnMode.Random;
+    public HowToSpawn howToSpawn = HowToSpawn.Random;
     private int _waves, _waveCount = 1;
     private int _rng;
     public GameObject spawnedEnemy;
@@ -48,7 +48,7 @@ public class Spawner : MonoBehaviour
         }
 
         Debug.Log("Wave count: " + _waveCount);
-        if (spawnMode == SpawnMode.Random)
+        if (howToSpawn == HowToSpawn.Random)
         {
             foreach (var enemy in Resources.LoadAll<GameObject>("Enemies/Normal Enemies"))
             {
@@ -73,7 +73,7 @@ public class Spawner : MonoBehaviour
                 GameObject enemyToSpawn = spawnQueue[0];
                 enemyToSpawn = Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
                 enemyToSpawn.GetComponent<IDamageable>().RoomScripting = roomScripting;
-                enemyToSpawn.GetComponent<IDamageable>().Spawner = this;
+                enemyToSpawn.GetComponent<IDamageable>().EnemySpawner = this;
                 enemyToSpawn.transform.parent = gameObject.transform;
                 spawnedEnemy = enemyToSpawn;
                 spawnedEnemies.Add(enemyToSpawn);

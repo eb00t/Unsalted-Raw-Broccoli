@@ -83,7 +83,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
-    public Spawner Spawner { get; set; }
+    public EnemySpawner EnemySpawner { get; set; }
 
     private enum States
     {
@@ -397,7 +397,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         //_lockOnController.lockedTarget = null;
         RoomScripting.enemies.Remove(gameObject);
         RoomScripting._enemyCount--;
-        Spawner.spawnedEnemies.Remove(gameObject);
+        EnemySpawner.spawnedEnemies.Remove(gameObject);
         
         StopAllCoroutines();
         StartCoroutine(FallToGround());
@@ -407,8 +407,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             hb.gameObject.SetActive(false);
         }
         
-        Spawner.spawnedEnemy = null;
-        Spawner.SpawnEnemies();
+        EnemySpawner.spawnedEnemy = null;
+        EnemySpawner.SpawnEnemies();
         AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);
         _deathEvent.start();
         _deathEvent.release();

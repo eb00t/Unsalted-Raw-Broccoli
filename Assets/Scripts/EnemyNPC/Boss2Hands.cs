@@ -82,7 +82,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     bool IDamageable.isPlayerInRange { get => _isPlayerInRange; set => _isPlayerInRange = value; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
-    public Spawner Spawner { get; set; }
+    public EnemySpawner EnemySpawner { get; set; }
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
 
