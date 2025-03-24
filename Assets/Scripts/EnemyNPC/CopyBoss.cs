@@ -543,8 +543,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
         AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
-        _characterMovement.lockedOn = false;
-        _lockOnController.lockedTarget = null;
+        //_characterMovement.lockedOn = false;
+        //_lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);
         gameObject.SetActive(false);
     }

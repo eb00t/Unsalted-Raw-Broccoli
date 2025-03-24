@@ -46,7 +46,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [Header("Enemy Properties")]
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
-    [SerializeField] private bool isIdle;
+    [SerializeField] private bool doesEnemyPatrol;
     [SerializeField] private float moveSpeed;
     private bool _isKnockedBack;
     private bool _isStunned;
@@ -141,7 +141,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             {
                 _state = States.Chase;
             }
-            else if (!isIdle)
+            else if (doesEnemyPatrol)
             {
                 _state = States.Patrol;
             }
@@ -393,8 +393,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         _animator.SetBool("isDead", true);
         isDead = true;
-        _characterMovement.lockedOn = false;
-        _lockOnController.lockedTarget = null;
+        //_characterMovement.lockedOn = false;
+        //_lockOnController.lockedTarget = null;
         RoomScripting.enemies.Remove(gameObject);
         RoomScripting._enemyCount--;
         Spawner.spawnedEnemies.Remove(gameObject);

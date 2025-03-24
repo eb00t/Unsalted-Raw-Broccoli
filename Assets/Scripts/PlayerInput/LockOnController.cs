@@ -85,6 +85,8 @@ public class LockOnController : MonoBehaviour
     // updates the X that shows up to signify which enemy is locked on to
     private void UpdateTargetImg(GameObject target, bool setActive)
     {
+        if (!target.activeSelf) return;
+        
         foreach (var i in target.GetComponentsInChildren<SpriteRenderer>(true))
         {
             if (i.name == "LockOnImg")
@@ -103,15 +105,18 @@ public class LockOnController : MonoBehaviour
 
         foreach (var enemy in enemies)
         {
-            if (enemy.GetComponent<IDamageable>() == null) continue;
+            var dmg = enemy.GetComponent<IDamageable>();
+            if (dmg == null || dmg.isDead) continue;
+
             var distance = Vector3.Distance(transform.position, enemy.transform.position);
-            
-            if (!(distance < minDistance) || !(distance <= lockOnRadius) || enemy.GetComponent<IDamageable>().isDead) continue;
-            
-            minDistance = distance;
-            nearestTarget = enemy.transform;
+
+            if (distance < minDistance && distance <= lockOnRadius)
+            {
+                minDistance = distance;
+                nearestTarget = enemy.transform;
+            }
         }
-        
+
         return nearestTarget;
     }
 
@@ -159,14 +164,33 @@ public class LockOnController : MonoBehaviour
         if (lockedTarget == null) return;
 
         var damageable = lockedTarget.GetComponent<IDamageable>();
+        
+        if (damageable == null)
+        {
+            lockedTarget = null;
+            _characterMovement.lockedOn = false;
+            return;
+        }
 
         if (isAutoSwitchEnabled && damageable.isDead)
         {
+            UpdateTargetImg(lockedTarget.gameObject, false);
             var nearestTarget = FindNearestTarget();
-            if (nearestTarget != null)
+
+            if (nearestTarget != null && nearestTarget != lockedTarget)
             {
                 lockedTarget = nearestTarget;
                 UpdateTargetImg(lockedTarget.gameObject, true);
+                _characterMovement.lockedOn = true;
+                UpdateDir();
+                
+                damageable = lockedTarget.GetComponent<IDamageable>();
+            }
+            else
+            {
+                lockedTarget = null;
+                _characterMovement.lockedOn = false;
+                return;
             }
         }
 
@@ -175,9 +199,9 @@ public class LockOnController : MonoBehaviour
             UpdateTargetImg(lockedTarget.gameObject, false);
             lockedTarget = null;
             _characterMovement.lockedOn = false;
-            transform.localScale = _originalLocalScale;
+            return;
         }
-        
+
         UpdateDir();
     }
 

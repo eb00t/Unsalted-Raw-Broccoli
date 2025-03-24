@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2308ab9f6866004ebf515788c23a5b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 40
+  maxHealth: 30
   poise: 20
   defense: 0
   poisonResistance: 20
@@ -63,7 +63,7 @@ MonoBehaviour:
   attackRange: 3
   chaseRange: 8
   patrolRange: 0
-  attackCooldown: 0.35
+  attackCooldown: 0.2
   chaseDuration: 2
   freezeDuration: 3
   freezeCooldown: 1
@@ -71,7 +71,9 @@ MonoBehaviour:
   isBomb: 1
   canBeFrozen: 0
   canBeStunned: 1
-  isIdle: 1
+  doesEnemyPatrol: 1
+  isPassive: 0
+  passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 3665861034403590735}
   healthFillImage: {fileID: 953913091542431065}
 --- !u!195 &9145869978663843985

@@ -573,8 +573,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, leftHand.position);
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, rightHand.position);
         AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
-        _characterMovement.lockedOn = false;
-        _lockOnController.lockedTarget = null;
+        //_characterMovement.lockedOn = false;
+        //_lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);
         gameObject.SetActive(false);
     }

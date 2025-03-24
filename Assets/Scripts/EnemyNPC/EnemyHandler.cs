@@ -1,12 +1,9 @@
 using System;
 using System.Collections;
 using FMOD.Studio;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -15,8 +12,8 @@ using Random = UnityEngine.Random;
 
 public class EnemyHandler : MonoBehaviour, IDamageable
 {
-    [Header("Defensive Stats")] [SerializeField]
-    private int maxHealth;
+    [Header("Defensive Stats")] 
+    [SerializeField] private int maxHealth;
     private int _health;
     [SerializeField] private int poise;
     [SerializeField] private int defense;
@@ -27,7 +24,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int poiseDamage;
     [SerializeField] private int numberOfAttacks;
 
-    [Header("Tracking")] [SerializeField] private float attackRange;
+    [Header("Tracking")] 
+    [SerializeField] private float attackRange;
     [SerializeField] private float chaseRange;
     [SerializeField] private float patrolRange;
     private int _knockbackDir;
@@ -38,7 +36,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private enum States { Idle, Patrol, Chase, Attack, Frozen, Passive }
     private States _state = States.Idle;
 
-    [Header("Timing")] [SerializeField] private float attackCooldown; // time between attacks
+    [Header("Timing")]
+    [SerializeField] private float attackCooldown; // time between attacks
     [SerializeField] private float chaseDuration; // how long the enemy will chase after player leaves range
     [SerializeField] private float freezeDuration; // how long the enemy is frozen for
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
@@ -46,10 +45,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private float _timeSinceLastMove;
     private float _targetTime;
 
-    [Header("Enemy Properties")] public bool isBomb;
+    [Header("Enemy Properties")] 
+    public bool isBomb;
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
-    [SerializeField] private bool isIdle;
+    [SerializeField] private bool doesEnemyPatrol;
     [SerializeField] private bool isPassive;
     private bool _isFrozen;
     private bool _isPoisoned;
@@ -172,7 +172,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                     UpdateSpriteDirection(true);
                 }
             }
-            else if (!isIdle)
+            else if (doesEnemyPatrol)
             {
                 _state = States.Patrol;
             
@@ -452,8 +452,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Die()
     {
         isDead = true;
-        _characterMovement.lockedOn = false;
-        _lockOnController.lockedTarget = null;
+        //_characterMovement.lockedOn = false;
+        //_lockOnController.lockedTarget = null;
         StopAllCoroutines();
 
         if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
