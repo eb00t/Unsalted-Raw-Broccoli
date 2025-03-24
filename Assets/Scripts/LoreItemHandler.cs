@@ -6,6 +6,7 @@ using UnityEngine;
 public class LoreItemHandler : ScriptableObject
 {
     public string loreTitle;
+    public string whoWroteThis;
     [TextArea(3, 10)]
     public string[] loreBodyText;
     public bool discoveredByPlayer;
