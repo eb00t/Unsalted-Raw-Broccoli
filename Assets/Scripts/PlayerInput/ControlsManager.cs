@@ -112,7 +112,6 @@ public class ControlsManager : MonoBehaviour
             else
             {
                 dataHolder.currentControl = ControlScheme.Xbox;
-                Debug.Log("Using another gamepad: " + deviceName);
             }
         }
 

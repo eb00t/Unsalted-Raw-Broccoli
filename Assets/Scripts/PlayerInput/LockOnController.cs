@@ -77,6 +77,7 @@ public class LockOnController : MonoBehaviour
     private void UpdateDir()
     {
         if (lockedTarget == null) return;
+        // if (MathF.Abs(_characterMovement.Velocity.x) > 0.1f) return;
         var direction = Mathf.Sign(lockedTarget.position.x - transform.position.x);
         transform.localScale = new Vector3(Mathf.Abs(_originalLocalScale.x) * direction, _originalLocalScale.y, _originalLocalScale.z);
     }

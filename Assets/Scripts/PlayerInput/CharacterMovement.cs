@@ -24,7 +24,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private bool grounded;
     [SerializeField] private bool doubleJumpPerformed;
     public bool isCrouching;
-    [SerializeField] private Vector3 Velocity;
+    public Vector3 Velocity;
     private GameObject _playerGroundPosition;
 
     private bool dashAllowed = true;
@@ -169,6 +169,18 @@ public class CharacterMovement : MonoBehaviour
         if (!lockedOn && Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(Velocity.x)) // this has a check if the player is locked on to prevent them flipping
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+        }
+        
+        var direction = Mathf.Sign(rb.velocity.x);
+        var scaleDirection = Mathf.Sign(transform.localScale.x);
+        
+        if (direction != 0 && direction != scaleDirection)
+        {
+            PlayerAnimator.SetBool("isWalkingBackwards", true);
+        }
+        else
+        {
+            PlayerAnimator.SetBool("isWalkingBackwards", false);
         }
         
         if (startSlideTimer)
