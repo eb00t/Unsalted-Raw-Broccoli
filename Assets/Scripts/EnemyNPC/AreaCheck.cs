@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class AreaCheck : MonoBehaviour
 {
+    [SerializeField] private GameObject activeEnemy;
     private IDamageable _damageable;
 
     private void Start()
     {
-        _damageable = GetComponentInParent<IDamageable>();
+        _damageable = activeEnemy.GetComponent<IDamageable>();
     }
 
     private void OnTriggerEnter(Collider other)

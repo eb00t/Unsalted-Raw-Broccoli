@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Cinemachine;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -8,11 +9,6 @@ using Random = UnityEngine.Random;
 
 public class CopyBoss : MonoBehaviour, IDamageable
 {
-    private Rigidbody _rigidbody;
-    private Animator _animator;
-    private Transform _player;
-    private SpriteRenderer _spriteRenderer;
-    
     [Header("Defensive Stats")] 
     [SerializeField] private int maxHealth;
     private int _health;
@@ -27,14 +23,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
     
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
-    [SerializeField] private float chaseRange;
-    [SerializeField] private float patrolRange;
     private int _knockbackDir;
     private bool _hasPlayerBeenSeen;
     private Vector3 _lastPosition;
     private Vector3 _playerDir;
     private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
-    private enum States { Idle, Patrol, Chase, Attack, Retreat, Frozen, Jumping, Crouching }
+    private enum States { Idle, Chase, Attack, Frozen, Jumping, Crouching }
     private States _currentState = States.Idle;
     private int _jumpCount;
     
@@ -44,16 +38,17 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private float freezeDuration; // how long the enemy is frozen for
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
     private float _playerBelowTimer;
+    private float _activeAtkDelay;
     
     [Header("Enemy Properties")]
-    public bool isBomb;
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool isIdle;
     [SerializeField] private bool canJump;
     [SerializeField] private int maxJumpCount;
     [SerializeField] private float movementSpeed;
-    [SerializeField] private float jumpForce, jumpTriggerDistance;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float jumpTriggerDistance;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
@@ -72,9 +67,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private CinemachineImpulseSource _impulseSource;
     private Vector3 _impulseVector; 
     private CapsuleCollider _bossCollider;
-    private CharacterMovement _characterMovement;
     private RoomScripting _roomScripting;
-    private LockOnController _lockOnController;
+    private Rigidbody _rigidbody;
+    private Animator _animator;
+    private Transform _player;
+    private SpriteRenderer _spriteRenderer;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -94,8 +91,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
-        _characterMovement = _player.GetComponent<CharacterMovement>();
-        _lockOnController = _player.GetComponent<LockOnController>();
 
         _health = maxHealth;
         healthSlider.maxValue = maxHealth;
@@ -117,6 +112,16 @@ public class CopyBoss : MonoBehaviour, IDamageable
             _jumpCount = 0;
         }
 
+        switch (isPlayerInRange)
+        {
+            case true when !healthSlider.gameObject.activeSelf:
+                healthSlider.gameObject.SetActive(true);
+                break;
+            case false when healthSlider.gameObject.activeSelf:
+                healthSlider.gameObject.SetActive(false);
+                break;
+        }
+
         if (_isStunned) return;
         
         if (_isFrozen)
@@ -127,7 +132,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             _currentState = States.Attack;
         }
-        else if (distance < chaseRange || _hasPlayerBeenSeen)
+        else if (isPlayerInRange || _hasPlayerBeenSeen)
         {
             if (canJump && heightDiffAbove > jumpTriggerDistance)
             {
@@ -150,10 +155,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
         switch (_currentState)
         {
             case States.Idle:
-                healthSlider.gameObject.SetActive(false);
-                break;
-            case States.Patrol:
-                //Patrol();
                 break;
             case States.Chase:
                 Chase();
@@ -163,9 +164,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 {
                     StartCoroutine(Attack());
                 }
-                break;
-            case States.Retreat:
-                Retreat();
                 break;
             case States.Frozen:
                 StartCoroutine(BeginFreeze());
@@ -265,10 +263,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
         newForce = Mathf.Max(newForce, jumpForce);
         
         var dirX = Mathf.Sign(transform.localScale.x);
-        var speed = 2f;
         
-        _rigidbody.velocity = new Vector3(speed * dirX, newForce, _rigidbody.velocity.z);
-
+        _rigidbody.velocity = new Vector3(2f * dirX, newForce, _rigidbody.velocity.z);
         _animator.SetTrigger("Jump");
     }
 
@@ -278,8 +274,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
         
         if (_bossCollider != null && platform != null)
         {
-            Debug.Log("collision disabled");
-            
             foreach (var collider in platform.GetComponentsInChildren<Collider>())
             {
                 Physics.IgnoreCollision(_bossCollider, collider, true);  
@@ -304,29 +298,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _rigidbody.velocity = new Vector3(direction.x * movementSpeed, _rigidbody.velocity.y, direction.z);
     }
 
-    /*
-    private void Patrol()
-    {
-        MoveTowards(_currentPatrolTarget);
-
-        if (Vector3.Distance(transform.position, _currentPatrolTarget) < 0.5f)
-        {
-            _currentPatrolTarget = (_currentPatrolTarget == _patrolPoint1) ? _patrolPoint2 : _patrolPoint1;
-        }
-    }
-
-    private void PickPatrolPoints()
-    {
-        var randomOffset = Random.Range(4f, patrolRange);
-        _patrolPoint1 = transform.position + new Vector3(randomOffset, 0, 0);
-        _patrolPoint2 = transform.position + new Vector3(-randomOffset, 0, 0);
-    }
-    */
-
     private void Chase()
     {
-        healthSlider.gameObject.SetActive(true);
-
         if (!_hasPlayerBeenSeen)
         {
             StartCoroutine(StartChaseDelay());
@@ -347,7 +320,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _isAttacking = true;
         _rigidbody.velocity = Vector3.zero;
 
-        var comboCount = Random.Range(2, 4);
+        var comboCount = Random.Range(2, 6);
+        defense = 40;
 
         for (var i = 0; i < comboCount; i++)
         {
@@ -375,26 +349,22 @@ public class CopyBoss : MonoBehaviour, IDamageable
                     break;
             }
 
-            yield return new WaitForSeconds(attackCooldown);
+            yield return new WaitForSeconds(_activeAtkDelay);
 
-            if (Random.value > comboChance) break;
+            if (Random.value > comboChance) // if combo stopped increase chance to combo
+            {
+                comboChance += 0.1f;
+                defense = 0;
+                _activeAtkDelay = attackCooldown;
+                break;
+            }
+
+            _activeAtkDelay = 0f;
+            comboChance -= 0.05f; // if combo triggered reduce chance to combo
         }
 
+        defense = 0;
         _isAttacking = false;
-        _currentState = States.Retreat;
-    }
-
-    private void Retreat()
-    {
-        var retreatDirection = (transform.position - _player.position).normalized;
-        var retreatPosition = transform.position + retreatDirection * 3f;
-        
-        MoveTowards(transform.position + retreatDirection * 3f);
-
-        if (Vector3.Distance(transform.position, retreatPosition) < 0.5f)
-        {
-            _currentState = States.Chase;
-        }
     }
 
     private IEnumerator BeginFreeze()
