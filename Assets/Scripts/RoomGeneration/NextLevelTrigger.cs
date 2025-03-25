@@ -75,7 +75,7 @@ public class NextLevelTrigger : MonoBehaviour
                 else
                 {
                     dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
-                    scene = "MainScene";
+                    scene = "StartScreen";
                 }
                 break;
             case SceneToLoad.TitleScreen:
