@@ -1,13 +1,15 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
 
 public class dialogueControllerScript : MonoBehaviour
 {
+    [SerializeField] private DialogueObjectHandler dialogueObjectHandler;
     //DIALOGUE CODE
     public TextMeshProUGUI DialogueText;
+    public TextMeshProUGUI speakerText;
     [TextArea(3, 10)]
     public string[] Sentences;
     private int Index; // = 0;
@@ -16,10 +18,24 @@ public class dialogueControllerScript : MonoBehaviour
     public GameObject dialogueCanvas, yesText, noText; // normalText; // normalBox;
 
 
+    private void Awake()
+    {
+        if (dialogueObjectHandler == null)
+        {
+            Debug.LogError(gameObject.name + " is missing a dialogueObjectHandler");
+        }
+    }
+
     private void Start()
     {
+        speakerText = DialogueText.transform.parent.Find("SpeakerText").GetComponent<TextMeshProUGUI>();
+        if (dialogueObjectHandler.isAnyoneSpeaking == false)
+        {
+            speakerText.gameObject.SetActive(false);
+        }
         //Start writing sentences
         DialogueText.text = string.Empty;
+        speakerText.text = dialogueObjectHandler.whoIsSpeaking[0];
         startSentence();
     }
 
@@ -53,13 +69,18 @@ public class dialogueControllerScript : MonoBehaviour
         if (!context.performed) return;
         if (!gameObject.activeSelf) return;
         
-        if (DialogueText.text == Sentences[Index])
+        if (DialogueText.text == dialogueObjectHandler.dialogueBodyText[Index])
         {
             // nextSen() moved here
-            if(Index < Sentences.Length - 1)
+            if(Index < dialogueObjectHandler.dialogueBodyText.Length - 1)
             {
                 Index++;
                 DialogueText.text = string.Empty;
+                if (dialogueObjectHandler.whoIsSpeaking[Index] == null)
+                {
+                    dialogueObjectHandler.whoIsSpeaking[Index] = dialogueObjectHandler.whoIsSpeaking[Index - 1];
+                }
+                speakerText.text = dialogueObjectHandler.whoIsSpeaking[Index];
                 StartCoroutine(typeSentence());
             }
             else
@@ -71,7 +92,7 @@ public class dialogueControllerScript : MonoBehaviour
         else
         {
             StopAllCoroutines();
-            DialogueText.text = Sentences[Index];
+            DialogueText.text = dialogueObjectHandler.dialogueBodyText[Index];
         }
     }
 
@@ -83,7 +104,7 @@ public class dialogueControllerScript : MonoBehaviour
 
     IEnumerator typeSentence()
     {
-        foreach (char Character in Sentences[Index].ToCharArray())
+        foreach (char Character in dialogueObjectHandler.dialogueBodyText[Index].ToCharArray())
         {
             DialogueText.text += Character;
             yield return new WaitForSeconds(DialogueSpeed);
