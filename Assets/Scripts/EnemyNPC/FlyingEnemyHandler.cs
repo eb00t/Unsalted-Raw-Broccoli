@@ -265,13 +265,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private void MoveTowards(Vector3 target)
     {
         var direction = (target - transform.position).normalized;
+        var platform = FindPlatform(direction);
 
-        if (Physics.Raycast(transform.position, direction, out var hit, 1f))
+        if (platform != null)
         {
-            if (hit.collider.CompareTag("Untagged") && !hit.collider.isTrigger)
-            {
-                StartCoroutine(DisableCollision());
-            }
+            StartCoroutine(DisableCollision(platform));
         }
 
         if (!_isKnockedBack)
@@ -281,15 +279,40 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         }
     }
     
-    private IEnumerator DisableCollision()
+    private GameObject FindPlatform(Vector3 dir)
     {
-        if (_collider != null)
-            _collider.enabled = false;
-
-        yield return new WaitForSeconds(1.5f);
-
-        if (_collider != null)
-            _collider.enabled = true;
+        var layerMask = LayerMask.GetMask("Ground");
+        
+        if (Physics.Raycast(transform.position, dir, out var hit, 10f, layerMask))
+        {
+            var platform = hit.collider.GetComponentInParent<SemiSolidPlatform>();
+            if (platform != null)
+            {
+                return platform.gameObject;
+            }
+        }
+        
+        return null;
+    }
+    
+    private IEnumerator DisableCollision(GameObject platform)
+    {
+        if (platform.GetComponent<SemiSolidPlatform>() == null) yield break;
+        
+        if (_collider != null && platform != null)
+        {
+            foreach (var collider in platform.GetComponentsInChildren<Collider>())
+            {
+                Physics.IgnoreCollision(_collider, collider, true);  
+            }
+            
+            yield return new WaitForSeconds(2f);
+            
+            foreach (var collider in platform.GetComponentsInChildren<Collider>())
+            {
+                Physics.IgnoreCollision(_collider, collider, false);
+            }
+        }
     }
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
