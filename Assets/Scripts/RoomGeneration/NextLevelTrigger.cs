@@ -17,7 +17,9 @@ public class NextLevelTrigger : MonoBehaviour
     {
         Intermission,
         NextFloor,
-        TitleScreen
+        TitleScreen,
+        Credits,
+        EndScreen,
     }
 
     public SceneToLoad sceneToLoad;
@@ -69,7 +71,7 @@ public class NextLevelTrigger : MonoBehaviour
                     }
                     else if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor2)
                     {
-                        scene = "StartScreen";
+                        scene = "creditsScene";
                     }
                 }
                 else
@@ -80,6 +82,12 @@ public class NextLevelTrigger : MonoBehaviour
                 break;
             case SceneToLoad.TitleScreen:
                 scene = "StartScreen";
+                break;
+            case SceneToLoad.Credits:
+                scene = "creditsScene";
+                break;
+            case SceneToLoad.EndScreen:
+                scene = "EndScreen";
                 break;
         }
             BlackoutManager.Instance.RaiseOpacity();
