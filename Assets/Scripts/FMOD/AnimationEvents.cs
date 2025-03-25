@@ -5,6 +5,7 @@ using Cinemachine;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
+using Random = UnityEngine.Random;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 public class AnimationEvents : MonoBehaviour
@@ -17,7 +18,13 @@ public class AnimationEvents : MonoBehaviour
         _heavyAttackEvent,
         _jumpEvent;
     private CharacterAttack _characterAttack;
-    
+    private SettingManager _settingManager;
+
+    private void Start()
+    {
+        _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
+    }
+
     //PLAYER
     public void PlayPlayerFootstepSound()
     {
@@ -86,7 +93,7 @@ public class AnimationEvents : MonoBehaviour
 
     public void BlowUp()
     {
-        gameObject.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+        gameObject.GetComponent<CinemachineImpulseSource>().GenerateImpulseWithVelocity(new Vector3(Random.Range(-1f, 1f), 3f, 0f) * _settingManager.screenShakeMultiplier);
     }
 
     //COPY BOSS

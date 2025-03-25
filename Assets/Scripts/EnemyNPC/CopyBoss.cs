@@ -72,6 +72,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private Animator _animator;
     private Transform _player;
     private SpriteRenderer _spriteRenderer;
+    private SettingManager _settingManager;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -86,6 +87,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
         _impulseSource = GetComponent<CinemachineImpulseSource>();
+        _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
         _bossCollider = GetComponent<CapsuleCollider>();
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
@@ -510,7 +512,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         LevelBuilder.Instance.bossDead = true;
         _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
         _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
-        _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
+        _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
         AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
         //_characterMovement.lockedOn = false;

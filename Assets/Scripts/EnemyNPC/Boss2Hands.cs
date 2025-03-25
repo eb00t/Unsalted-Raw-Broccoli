@@ -72,6 +72,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private GameObject lhColliderDown, rhColliderDown, lhColliderUp, rhColliderUp;
     [SerializeField] private GameObject handDownL, handDownR, handUpL, handUpR;
     [SerializeField] private TextMeshProUGUI bossTitle;
+    private SettingManager _settingManager;
     
     [Header("Sound")]
     private EventInstance _armMovementL, _armMovementR;
@@ -91,6 +92,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
         _impulseSource = GetComponent<CinemachineImpulseSource>();
+        _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -568,7 +570,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _armMovementR.release();
         _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
         _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
-        _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
+        _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, leftHand.position);
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, rightHand.position);
@@ -604,12 +606,12 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         switch (slam)
         {
             case true when isLeft is true:
-                _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
+                _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
                 AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, leftHand.position);
                 _impulseVector = Vector3.zero;
                 break;
             case true when isLeft is false:
-                _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
+                _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
                 AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, rightHand.position);
                 _impulseVector = Vector3.zero;
                 break;
@@ -624,7 +626,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _armMovementR.release();
         if (slam)
         {
-            _impulseSource.GenerateImpulseWithVelocity(_impulseVector);
+            _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
             AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, slamTarget);
             _impulseVector = Vector3.zero;
         }

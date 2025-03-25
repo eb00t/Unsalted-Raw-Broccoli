@@ -127,6 +127,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        if (isPassive)
+        {
+            _health = maxHealth;
+            _healthSlider.value = maxHealth;
+        }
         var velocity = _agent.velocity;
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;

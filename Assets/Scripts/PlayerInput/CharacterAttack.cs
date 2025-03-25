@@ -52,6 +52,7 @@ public class CharacterAttack : MonoBehaviour
     private PlayerStatus _playerStatus;
     public GameObject hitFlash;
     private EventInstance _enemyDamageEvent;
+    private SettingManager _settingManager;
 
     [Header("Knockback Types")]
     public Vector2 knockbackPowerLight = new Vector2(10f, 1f);
@@ -64,6 +65,7 @@ public class CharacterAttack : MonoBehaviour
         _characterMovement = transform.root.GetComponent<CharacterMovement>();
         _attackCollider = GetComponent<MeshCollider>();
         _playerAnimator = GameObject.FindGameObjectWithTag("PlayerRenderer").GetComponent<Animator>();
+        _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
         _playerStatus = _uiManager.GetComponent<PlayerStatus>();
@@ -348,7 +350,7 @@ public class CharacterAttack : MonoBehaviour
             if (_impulseSource != null)
             {
                 _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.05f;
-                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0));
+                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0) * _settingManager.screenShakeMultiplier);
             }
         }
         //Layer = Heavy
@@ -364,7 +366,7 @@ public class CharacterAttack : MonoBehaviour
             if (_impulseSource != null)
             {
                 _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;
-                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0));
+                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0) * _settingManager.screenShakeMultiplier);
             }
         }
 // Layer = Medium (final hit of light combo)
@@ -382,7 +384,7 @@ public class CharacterAttack : MonoBehaviour
             if (_impulseSource != null)
             {
                 _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.1f;
-                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0));
+                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0) * _settingManager.screenShakeMultiplier);
             }
         }
         if (isPoison)

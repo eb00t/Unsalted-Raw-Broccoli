@@ -10,6 +10,8 @@ public class SettingManager : MonoBehaviour
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private Slider masterSlider, musicSlider, sfxSlider;
     [SerializeField] private TMP_Dropdown controlSchemeDropdown;
+    [Range(0, 1)]
+    public float screenShakeMultiplier = 1;
     private float _currentSlider;
     private AudioManager _audioManager;
     private GameObject _lastSelected;
