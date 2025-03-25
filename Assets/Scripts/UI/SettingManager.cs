@@ -13,12 +13,14 @@ public class SettingManager : MonoBehaviour
     [Range(0, 1)]
     public float screenShakeMultiplier = 1;
     private float _currentSlider;
+    private float _currentSliderValue;
     private AudioManager _audioManager;
     private GameObject _lastSelected;
     
     private void Start()
     {
         _audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
+        screenShakeMultiplier = dataHolder.screenShakeMultiplier;
         LoadVolume();
     }
 
@@ -57,26 +59,34 @@ public class SettingManager : MonoBehaviour
         sfxSlider.value = dataHolder.sfxVolume;
     }
 
+    public void UpdateScreenShake()
+    {
+        _currentSliderValue = EventSystem.current.currentSelectedGameObject.GetComponentInParent<Slider>().value;
+
+        screenShakeMultiplier = _currentSliderValue;
+        dataHolder.screenShakeMultiplier = _currentSliderValue;
+    }
+
     public void UpdateVolume(int volumeType)
     {
         // gets current selected gameobject (slider handle)
-        _currentSlider = EventSystem.current.currentSelectedGameObject.GetComponentInParent<Slider>().value;
+        _currentSliderValue = EventSystem.current.currentSelectedGameObject.GetComponentInParent<Slider>().value;
         
         switch (volumeType)
         {
             case 0: // master
-                dataHolder.masterVolume = _currentSlider;
-                _audioManager.masterVolume = _currentSlider;
+                dataHolder.masterVolume = _currentSliderValue;
+                _audioManager.masterVolume = _currentSliderValue;
                 break;
             case 2: // music
-                dataHolder.musicVolume = _currentSlider;
-                _audioManager.musicVolume = _currentSlider;
-                _audioManager.ambienceVolume = _currentSlider;
+                dataHolder.musicVolume = _currentSliderValue;
+                _audioManager.musicVolume = _currentSliderValue;
+                _audioManager.ambienceVolume = _currentSliderValue;
                 break;
             case 3: // sfx
-                dataHolder.sfxVolume = _currentSlider;
-                _audioManager.sfxVolume = _currentSlider;
-                _audioManager.uiSfxVolume = _currentSlider;
+                dataHolder.sfxVolume = _currentSliderValue;
+                _audioManager.sfxVolume = _currentSliderValue;
+                _audioManager.uiSfxVolume = _currentSliderValue;
                 break;
         }
     }

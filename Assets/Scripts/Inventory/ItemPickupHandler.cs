@@ -50,10 +50,10 @@ public class ItemPickupHandler : MonoBehaviour
                 TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
                 break;
             case 1:
-                TogglePrompt("Pick Up Item", true, ControlsManager.ButtonType.ButtonEast);
+                TogglePrompt("Pick up item", true, ControlsManager.ButtonType.ButtonEast);
                 break;
             default:
-                TogglePrompt("Pick Up Items", true, ControlsManager.ButtonType.ButtonEast);
+                TogglePrompt("Pick up items", true, ControlsManager.ButtonType.ButtonEast);
                 break;
         }
     }

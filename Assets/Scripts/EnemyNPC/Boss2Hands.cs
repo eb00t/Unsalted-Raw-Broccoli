@@ -63,8 +63,6 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private Transform _target;
     private RoomScripting _roomScripting;
     private CharacterAttack _characterAttack;
-    private CharacterMovement _characterMovement;
-    private LockOnController _lockOnController;
     private SpriteRenderer _spriteRenderer;
     private LineRenderer _lineRenderer;
     private CinemachineImpulseSource _impulseSource;
@@ -97,8 +95,6 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
-        _lockOnController = _target.GetComponent<LockOnController>();
-        _characterMovement = _target.GetComponent<CharacterMovement>();
         _health = maxHealth;
         _leftHandInitialPos = leftHand.position;
         _rightHandInitialPos = rightHand.position;

@@ -21,6 +21,8 @@ public class DataHolder : ScriptableObject
     public float musicVolume;
     [Range(0, 1)] 
     public float sfxVolume;
+    [Range(0, 1)] 
+    public float screenShakeMultiplier;
     
     [Header("Inventory")]
     public List<int> savedItems = new List<int>();
