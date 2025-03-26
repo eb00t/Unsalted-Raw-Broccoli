@@ -75,7 +75,6 @@ public class TutorialController : MonoBehaviour
         }
         
         _currentStep++;
-        Debug.Log($"Tutorial advanced to: {_currentStep}");
         ShowPrompt();
     }
 
