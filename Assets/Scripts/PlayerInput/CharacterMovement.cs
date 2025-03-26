@@ -73,7 +73,7 @@ public class CharacterMovement : MonoBehaviour
     public void XAxis(InputAction.CallbackContext ctx)
     {
         if (uiOpen) return;
-        if (!allowMovement) return;
+        //if (!allowMovement) return;
         input = ctx.ReadValue<float>();
         PlayerAnimator.SetFloat("Input", input);
     }
@@ -216,8 +216,8 @@ public class CharacterMovement : MonoBehaviour
             }
             else if (BlackoutManager.Instance.blackoutComplete && uiOpen == false)
             {
-                allowMovement = true;
-                walkAllowed = true;
+                //allowMovement = true;
+                //walkAllowed = true;
             }
         }
     }

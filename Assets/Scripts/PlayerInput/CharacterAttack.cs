@@ -87,9 +87,7 @@ public class CharacterAttack : MonoBehaviour
             _playerAnimator.SetBool("HeavyAttack1", false);
             _playerAnimator.SetBool("HeavyAttack2", false);
             gameObject.layer = 13;
-            //Debug.Log("LightAttack");
-            //_playerAnimator.SetBool("LightAttack1", true);
-            //InitiateAttack();
+
             animEnd = false;
 
             // Start of chain
@@ -140,33 +138,6 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
-    /*public void LightAttack1(InputAction.CallbackContext ctx)
-    {
-        if (ctx.performed && _playerAnimator.GetBool("Grounded"))
-        {
-            //Debug.Log("LightAttack1");
-            //_playerAnimator.SetBool("LightAttack2", true);
-            //InitiateAttack();
-
-            if (lightCombo[1])
-            {
-                if (timer1 <= maxInputDelay && timer1 > 0f)
-                {
-                    lightCombo[3] = true;
-                }
-            }
-            if (lightCombo[3])
-            {
-                timer1 = 0f; lightCombo[1] = false;
-                timer = 0f; lightCombo[0] = false;
-
-                _playerAnimator.StopPlayback();
-                Debug.Log("LightAttack1");
-                _playerAnimator.SetBool("LightAttack2", true);
-                lightCombo[3] = false;
-            }
-        }
-    }*/
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
     {
@@ -176,8 +147,7 @@ public class CharacterAttack : MonoBehaviour
             _playerAnimator.SetBool("LightPunch", false);
             _playerAnimator.SetBool("LightAttack2", false);
             gameObject.layer = 14;
-            //Debug.Log("LightAttack");
-            //_playerAnimator.SetBool("LightAttack1", true);
+
             //InitiateAttack();
             animEnd = false;
 
