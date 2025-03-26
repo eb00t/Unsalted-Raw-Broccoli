@@ -28,7 +28,7 @@ public class dialogueControllerScript : MonoBehaviour
 
     private void Start()
     {
-        speakerText = DialogueText.transform.parent.Find("SpeakerText").GetComponent<TextMeshProUGUI>();
+        speakerText = DialogueText.transform.parent.Find("SpeakerHolder").transform.Find("SpeakerText").GetComponent<TextMeshProUGUI>();
         if (dialogueObjectHandler.isAnyoneSpeaking == false)
         {
             speakerText.gameObject.SetActive(false);
