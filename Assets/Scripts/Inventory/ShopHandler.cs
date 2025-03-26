@@ -109,7 +109,6 @@ public class ShopHandler : MonoBehaviour
 		{
 			ShopItemSelected(indexHolder);
 		});
-		
 
 		foreach (var s in newBlock.GetComponentsInChildren<Image>())
 		{
@@ -160,7 +159,7 @@ public class ShopHandler : MonoBehaviour
 		{
 			if (i.GetComponent<IndexHolder>().consumable == consumable)
 			{
-				i.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
+				i.GetComponentInChildren<TextMeshProUGUI>().text = "Stock:" + indexHolder.numHeld;
 			}
 		}
 	}
