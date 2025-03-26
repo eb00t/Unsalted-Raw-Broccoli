@@ -22,6 +22,8 @@ public class StartMenuController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		if (SceneManager.GetActiveScene().name == "EndScreen") return;
+		
 		_controlsManager.CheckControl();
 	}
 
