@@ -35,20 +35,23 @@ public class NextLevelTrigger : MonoBehaviour
 
     private void Update()
     {
-        if (!_characterMovement.uiOpen)
+        if (SceneManager.GetActiveScene().name != "creditsScene")
         {
-            var dist = Vector3.Distance(transform.position, _player.transform.position);
+            if (!_characterMovement.uiOpen)
+            {
+                var dist = Vector3.Distance(transform.position, _player.transform.position);
 
-            if (dist <= range)
-            {
-                _itemPickupHandler.isPlrNearEnd = true;
-                _itemPickupHandler.TogglePrompt("Continue ahead?", true, ControlsManager.ButtonType.ButtonEast);
-            }
-            else if (dist > range)
-            {
-                if (_itemPickupHandler.itemCount > 0) return;
-                _itemPickupHandler.isPlrNearEnd = false;
-                //_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
+                if (dist <= range)
+                {
+                    _itemPickupHandler.isPlrNearEnd = true;
+                    _itemPickupHandler.TogglePrompt("Continue ahead?", true, ControlsManager.ButtonType.ButtonEast);
+                }
+                else if (dist > range)
+                {
+                    if (_itemPickupHandler.itemCount > 0) return;
+                    _itemPickupHandler.isPlrNearEnd = false;
+                    //_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
+                }
             }
         }
     }
@@ -100,4 +103,17 @@ public class NextLevelTrigger : MonoBehaviour
         yield return new WaitForSecondsRealtime(2f);
         SceneManager.LoadScene(scene);
     }
+
+    public void ManuallyLoadTitleScreen() // This is just here for buttons
+    {
+        ButtonHandler.Instance.PlayConfirmSound();
+        SceneManager.LoadScene("StartScreen");
+    }
+
+    public void ManuallyQuit() // Ditto
+    {
+        ButtonHandler.Instance.PlayBackSound();
+        Application.Quit();
+    }
+    
 }

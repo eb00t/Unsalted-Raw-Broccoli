@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using FMOD.Studio;
 using FMODUnity;
+using UnityEngine.SceneManagement;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 public class AudioManager : MonoBehaviour
@@ -170,9 +171,13 @@ public class AudioManager : MonoBehaviour
                     break;
             }
         }
-        else if (LevelBuilder.Instance == null)
+        else if (LevelBuilder.Instance == null && SceneManager.GetActiveScene().name == "StartScreen")
         {
             SetGlobalEventParameter("Music Track", 0);
+        }
+        else
+        {
+            SetGlobalEventParameter("Music Track", 6);
         }
         MusicEventInstance.start();
     }
