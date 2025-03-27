@@ -88,7 +88,7 @@ public class CharacterMovement : MonoBehaviour
             PlayerAnimator.SetBool("Jump", true);
             grounded = false;
         }
-        else if (!grounded && wallJumpingCounter > 0f && (startSlideTimer || sliding))
+        else if (!grounded && wallJumpingCounter > 0f && (startSlideTimer || sliding) && !isWallJumping)
         {
             slideAllowed = false;
             startSlideTimer = false;
