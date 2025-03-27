@@ -114,13 +114,13 @@ public class ShopHandler : MonoBehaviour
 		{
 			if (s.name != "Image") continue;
 			s.sprite = itemConsumable.uiIcon;
-			s.GetComponentInChildren<TextMeshProUGUI>().text = "Stock: " + indexHolder.numHeld;
+			s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
 		}
 
 		foreach (var b in grid.GetComponentsInChildren<TextMeshProUGUI>())
 		{
 			if (b.name != "Price") continue;
-			b.text = "Price: " + itemPrice[i];
+			b.text = itemPrice[i].ToString();
 		}
 	}
 
@@ -163,7 +163,7 @@ public class ShopHandler : MonoBehaviour
 		{
 			if (i.GetComponent<IndexHolder>().consumable == consumable)
 			{
-				i.GetComponentInChildren<TextMeshProUGUI>().text = "Stock:" + indexHolder.numHeld;
+				i.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
 			}
 		}
 	}
