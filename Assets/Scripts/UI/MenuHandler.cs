@@ -207,6 +207,8 @@ public class MenuHandler : MonoBehaviour
 	// If player has items, switches navigation to inventory to add item to selected toolbar index when toolbar button is pressed
 	public void SlotSelected(int slot)
 	{
+		_toolbarHandler.slotNo = slot;
+		
 		if (dataHolder.savedItems.Count > 0)
 		{
 			SwitchSelected(grid.GetComponentInChildren<Button>().gameObject);
@@ -220,15 +222,14 @@ public class MenuHandler : MonoBehaviour
 			{
 				s.interactable = false;
 			}
-
-			_toolbarHandler.slotNo = slot;
+			
 			infoGui.SetActive(true);
 			_toolbarHandler.isInfoOpen = true;
 		}
 		else
 		{
 			// no items held popup
-			Debug.Log("No items in inventory");
+			_inventoryStore.TriggerNotification(null, "No items held in inventory");
 		}
 	}
 

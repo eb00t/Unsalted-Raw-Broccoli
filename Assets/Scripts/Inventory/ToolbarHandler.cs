@@ -11,7 +11,8 @@ using UnityEngine.UI;
 
 public class ToolbarHandler : MonoBehaviour
 {
-    [Header("Navigation Tracking")] public int slotNo;
+    [Header("Navigation Tracking")] 
+    public int slotNo;
     private int _activeConsumable;
 
     [Header("Item Tracking")] [SerializeField]
@@ -120,8 +121,7 @@ public class ToolbarHandler : MonoBehaviour
         UpdateToolbar();
         UpdateSlots();
     }
-
-
+    
     // updates the text and images of slots
     private void UpdateSlotUI(IndexHolder slot, Consumable consumable)
     {
@@ -390,6 +390,7 @@ public class ToolbarHandler : MonoBehaviour
     {
         if (!context.performed) return;
         if (!_characterMovement.uiOpen) return;
+        if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard) return;
 
         foreach (var slot in slots)
         {
