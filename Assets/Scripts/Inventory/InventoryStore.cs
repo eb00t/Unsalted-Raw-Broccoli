@@ -134,7 +134,6 @@ public class InventoryStore : MonoBehaviour
         }
     }
 
-
     private void UpdateStoredCount(int itemID, int newCount)
     {
         var index = dataHolder.savedItems.IndexOf(itemID);

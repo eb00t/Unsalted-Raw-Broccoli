@@ -88,50 +88,39 @@ public class ToolbarHandler : MonoBehaviour
     // adds consumable to equip menu slot, if the consumable exists in a slot already it removes it from that slot
     public void AddToToolbar(Consumable consumable)
     {
-        foreach (var slot in slots)
-        {
-            var indexHolder = slot.GetComponent<IndexHolder>();
-
-            if (indexHolder == null || indexHolder.consumable == null) continue;
-
-            if (indexHolder.consumable.itemID != consumable.itemID) continue;
-            indexHolder.consumable = null;
-
-            UpdateSlotUI(indexHolder, null);
-        }
-
         GameObject targetSlot;
 
         if (dataHolder.isAutoEquipEnabled && !_characterMovement.uiOpen)
         {
             targetSlot = slots.FirstOrDefault(slot => slot.GetComponent<IndexHolder>().consumable == null);
+            if (targetSlot == null) return;
         }
         else
         {
             targetSlot = slots[slotNo];
         }
-
-        // updates toolbar text
-        if (targetSlot != null) 
+        
+        foreach (var slot in slots)
         {
-            var indexHolder = targetSlot.GetComponent<IndexHolder>();
-            indexHolder.consumable = consumable;
-            
-            var itemIndex = dataHolder.savedItems.IndexOf(consumable.itemID);
-            if (itemIndex >= 0)
-            {
-                indexHolder.numHeld = dataHolder.savedItemCounts[itemIndex];
-                toolbarTxt.text = indexHolder.numHeld.ToString();
-            }
-            else
-            {
-                toolbarTxt.text = "0";
-            }
+            var indexHolder = slot.GetComponent<IndexHolder>();
+            if (indexHolder?.consumable == null || indexHolder.consumable.itemID != consumable.itemID) continue;
+            indexHolder.consumable = null;
+            UpdateSlotUI(indexHolder, null);
+            break;
         }
+        
+        var targetIndexHolder = targetSlot.GetComponent<IndexHolder>();
+        targetIndexHolder.consumable = consumable;
+
+        var itemIndex = dataHolder.savedItems.IndexOf(consumable.itemID);
+        targetIndexHolder.numHeld = (itemIndex >= 0) ? dataHolder.savedItemCounts[itemIndex] : 0;
+
+        toolbarTxt.text = targetIndexHolder.numHeld.ToString();
 
         UpdateToolbar();
         UpdateSlots();
     }
+
 
     // updates the text and images of slots
     private void UpdateSlotUI(IndexHolder slot, Consumable consumable)

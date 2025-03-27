@@ -132,7 +132,7 @@ public class ShopHandler : MonoBehaviour
 			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseFailed, transform.position);
 			return;
 		}
-		if (indexHolder.numHeld <= 0) 
+		if (indexHolder.numHeld <= 0)
 		{
 			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseFailed, transform.position);
 			return;
@@ -149,9 +149,13 @@ public class ShopHandler : MonoBehaviour
 		var consumable = indexHolder.consumable;
 		indexHolder.numHeld--;
 		
-		// add item to inventory when bought
+		// add item to inventory when bought, instantiation prevents errors due to using a prefab
 		var inventoryStore = _uiManager.GetComponent<InventoryStore>();
-		inventoryStore.AddNewItem(indexHolder.consumable);
+		var newItem = Instantiate(indexHolder.consumable.gameObject);
+		var newConsumable = newItem.GetComponent<Consumable>();
+		inventoryStore.AddNewItem(newConsumable);
+		Destroy(newItem);
+		
 		AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseMade, transform.position);
 		
 		// update ui text for amount held in stock
