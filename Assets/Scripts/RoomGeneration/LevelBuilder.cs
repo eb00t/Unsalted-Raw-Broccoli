@@ -191,7 +191,7 @@ public class LevelBuilder : MonoBehaviour
                 break;
             case LevelMode.Floor3:
                 _floorSpecificRoomPath = "Room Layouts/Floor 3";
-                _bossRoomPath = "Room Layouts/Boss Rooms/Hands Boss";
+                _bossRoomPath = "Room Layouts/Boss Rooms/CloneBoss";
                 break;
         }
 

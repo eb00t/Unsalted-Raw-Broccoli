@@ -74,7 +74,8 @@ public class NextLevelTrigger : MonoBehaviour
                     }
                     else if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor2)
                     {
-                        scene = "creditsScene";
+                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor3;
+                        scene = "MainScene";
                     }
                 }
                 else
