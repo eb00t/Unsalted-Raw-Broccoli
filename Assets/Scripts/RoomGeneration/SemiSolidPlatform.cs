@@ -60,7 +60,7 @@ public class SemiSolidPlatform : MonoBehaviour
             }
         }
 
-        if (playerFeet.transform.position.y < transform.position.y && collisionOff == false)
+        if (playerFeet.transform.position.y < transform.position.y)
         {
             TurnOffCollision(playerCollider);
             
