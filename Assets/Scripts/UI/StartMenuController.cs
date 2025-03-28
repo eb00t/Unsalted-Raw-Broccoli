@@ -73,7 +73,7 @@ public class StartMenuController : MonoBehaviour
 	{
 		dataHolder.savedItems.Clear();
 		dataHolder.savedItemCounts.Clear();
-		dataHolder.equippedConsumables.Clear();
+		dataHolder.equippedConsumables = new int[5];
 		dataHolder.currencyHeld = 0;
 		dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
 	}

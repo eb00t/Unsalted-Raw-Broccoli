@@ -27,5 +27,5 @@ public class DataHolder : ScriptableObject
     [Header("Inventory")]
     public List<int> savedItems = new List<int>();
     public List<int> savedItemCounts = new List<int>();  
-    public List<int> equippedConsumables = new List<int>();
+    public int[] equippedConsumables = new int[5];
 }
