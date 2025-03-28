@@ -11,7 +11,7 @@ public class CameraTrigger : MonoBehaviour
     private CinemachineVirtualCamera _playerCam;
     private CinemachineVirtualCamera _camera;
     public List<RoomScripting> allRooms;
-    private RoomScripting _roomScripting;
+    private ResizeBoxCollider _resizeBoxCollider;
 
     public enum RoomOrConnector
     {
@@ -23,12 +23,11 @@ public class CameraTrigger : MonoBehaviour
 
     void Start()
     {
+        _resizeBoxCollider = transform.root.GetComponent<ResizeBoxCollider>();
         foreach (GameObject room in LevelBuilder.Instance.spawnedRooms)
         {
             allRooms.Add(room.GetComponent<RoomScripting>());
         }
-
-        _roomScripting = transform.root.GetComponent<RoomScripting>();
         //_doorInfo = transform.parent.GetComponent<DoorInfo>();
         _playerCam = CameraManager.Instance.playerCam;
         Debug.Log(_playerCam.name);
@@ -73,6 +72,7 @@ public class CameraTrigger : MonoBehaviour
                         cam.Priority = 0;
                     }
                     _camera.Priority = 10;
+                    _resizeBoxCollider.doorsCanClose = false;
                     break;
                 case RoomOrConnector.Connector:
                     foreach (var cam in CameraManager.Instance.virtualCameras)
@@ -115,6 +115,8 @@ public class CameraTrigger : MonoBehaviour
                     cam.Priority = 0;
                 }
                 _camera.Priority = 10;
+                _resizeBoxCollider.doorsCanClose = true;
+                
             }
         }
     }

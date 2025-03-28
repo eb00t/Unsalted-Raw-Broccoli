@@ -207,7 +207,6 @@ public class RoomScripting : MonoBehaviour
             if (_failsafeTeleport <= 0)
             {
                 _roomCam.Priority = 999;
-                playerIsInRoom = true;
                 _player.transform.position = gameObject.transform.position;
                 _failsafeTeleport = 3.5f;
             }

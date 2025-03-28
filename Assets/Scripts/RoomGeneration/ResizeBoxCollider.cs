@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(BoxCollider))]
 public class ResizeBoxCollider : MonoBehaviour
@@ -10,6 +11,7 @@ public class ResizeBoxCollider : MonoBehaviour
     private RoomInfo _roomInfo;
     private RoomScripting _roomScripting;
     private ConnectorRoomInfo _connectorRoomInfo;
+    [FormerlySerializedAs("_doorsCanClose")] public bool doorsCanClose;
     public enum RoomType
     {
         Room,
@@ -40,13 +42,13 @@ public class ResizeBoxCollider : MonoBehaviour
     }
 
     void Start()
-    {
+    { 
         _roomScripting = GetComponent<RoomScripting>();
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player") && roomType == RoomType.Room)
+        if (other.CompareTag("Player") && roomType == RoomType.Room && doorsCanClose)
         {
             _roomScripting.playerIsInRoom = true;
         }
@@ -54,7 +56,7 @@ public class ResizeBoxCollider : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player") && roomType == RoomType.Room)
+        if (other.CompareTag("Player") && roomType == RoomType.Room && doorsCanClose)
         {
             _roomScripting.playerIsInRoom = false;
         }
