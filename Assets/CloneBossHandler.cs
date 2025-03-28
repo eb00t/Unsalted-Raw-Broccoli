@@ -85,6 +85,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateRotation = false;
+        _agent.updateUpAxis = false;
+        _agent.updatePosition = true;
         
         gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         
@@ -93,6 +95,10 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        var vector3 = transform.position;
+        vector3.z = 0;
+        transform.position = vector3;
+        
         if (isPassive)
         {
             health = maxHealth;
@@ -191,17 +197,34 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     }
 
     private void Chase()
-    {
-        _agent.isStopped = false;
-        _healthSlider.gameObject.SetActive(true);
-        
-        if (_hasPlayerBeenSeen == false)
-        {
-            StartCoroutine(StartChaseDelay());
-        }
-        
-        _agent.SetDestination(_target.position);
-    }
+     {
+         _agent.isStopped = false;
+         _healthSlider.gameObject.SetActive(true);
+     
+         if (_hasPlayerBeenSeen == false)
+         {
+             StartCoroutine(StartChaseDelay());
+         }
+         
+         var offset = Vector3.zero;
+     
+         foreach (var other in cloneBossManager.cloneBossHandlers)
+         {
+             if (other == this || other.isDead) continue;
+
+             var dist = Vector3.Distance(transform.position, other.transform.position);
+
+             if (dist > 0.01f && dist < 4f)
+             {
+                 offset += (transform.position - other.transform.position).normalized / dist;
+             }
+         }
+         
+         var destination = _target.position + new Vector3(offset.x, offset.y, 0);
+         destination.z = transform.position.z;
+     
+         _agent.SetDestination(destination);
+     }
     
     private IEnumerator StartChaseDelay()
     {
