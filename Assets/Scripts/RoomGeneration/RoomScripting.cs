@@ -179,6 +179,8 @@ public class RoomScripting : MonoBehaviour
     {
         _enemyCount = enemies.Count;
         enabledSpawnerCount = spawners.Count;
+        
+        /*
         if (_roomCam.Priority > 9 && allDoorsClosed == false)
         {
             CameraManager.Instance.currentCamera = _roomCam;
@@ -197,6 +199,7 @@ public class RoomScripting : MonoBehaviour
                 ExitSpecialRoom();
             }
         }
+        */
 
         if (allDoorsClosed && playerIsInRoom == false)
         {

@@ -22,7 +22,7 @@ public class StartMenuController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		if (SceneManager.GetActiveScene().name == "EndScreen") return;
+		if (SceneManager.GetActiveScene().name == "EndScreen" || SceneManager.GetActiveScene().name == "creditsScene") return;
 		
 		_controlsManager.CheckControl();
 	}
