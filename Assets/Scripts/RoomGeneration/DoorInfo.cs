@@ -6,6 +6,7 @@ using UnityEngine.Serialization;
 
 public class DoorInfo : MonoBehaviour
 {
+    private static readonly int CloseDoors = Animator.StringToHash("closeDoors");
     public bool hasDoor = false;
     private RoomInfo _roomInfo;
     private ConnectorRoomInfo _connectorRoomInfo;
@@ -13,11 +14,13 @@ public class DoorInfo : MonoBehaviour
     public bool closed;
     private float _lerpTime;
     private Renderer _renderer;
+    private Animator _doorAnimator;
 private void Awake()
     {
         _renderer = GetComponent<Renderer>();
         _roomInfo = transform.root.GetComponent<RoomInfo>();
         _initialPosition = transform.position;
+        _doorAnimator = gameObject.GetComponent<Animator>();
     }
     public void CheckDoors()
     {
@@ -64,7 +67,7 @@ private void Awake()
                 }
             }
         }
-        if (hasDoor) //TODO: Animate this
+        if (hasDoor)
         {
             OpenDoor();
         }
@@ -73,29 +76,21 @@ private void Awake()
 
    public void OpenDoor()
    { 
-       Vector3 transformPos = new Vector3(_initialPosition.x, _initialPosition.y, _initialPosition.z + 2.99f);
-       _renderer.material.color = Color.cyan;
-       transform.position = transformPos;
+       _doorAnimator.SetBool(CloseDoors, false);
        Debug.Log("Opening door (" + gameObject.name + ") in " + transform.root.name);
-       if (closed)
-       {
-            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DoorSlam, transform.position);
-       }
       
    }
 
    public void CloseDoor()
    {
-      transform.position = _initialPosition;
-      _renderer.material.color = Color.red;
+       _doorAnimator.SetBool(CloseDoors, true);
       Debug.Log("Closing door (" + gameObject.name + ") in " + transform.root.name);
-       if (!closed)
-       { 
-           AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DoorSlam, transform.position);
-       }
      
        
    }
-
+   public void PlaySlamSound()
+   {
+       AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DoorSlam, transform.position);
+   }
 
 }

@@ -37,10 +37,6 @@ public class RoomScripting : MonoBehaviour
         _roomInfo = GetComponent<RoomInfo>();
         _roomCam = _roomInfo.roomCam;
         allDoors = new List<GameObject>(_roomInfo.allDoors);
-        foreach (var door in allDoors)
-        {
-            door.AddComponent<DoorInfo>();
-        }
         ChangeCombatWeight();
         StartCoroutine(CheckIfRoomHasEnemies());
     }
@@ -86,7 +82,7 @@ public class RoomScripting : MonoBehaviour
             {
                 ChangeCombatWeight();
             }
-            Debug.Log("Last enemy count: " + lastEnemyCount);
+            //Debug.Log("Last enemy count: " + lastEnemyCount);
             lastEnemyCount = _enemyCount;
             
             yield return new WaitForSeconds(.25f);
