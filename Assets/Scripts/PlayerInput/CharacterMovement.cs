@@ -22,6 +22,8 @@ public class CharacterMovement : MonoBehaviour
     public float holdTime = 1f;
 
     [SerializeField] private bool grounded;
+    private float groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time. 
+    private bool fallingThrough; // Bool to fix player not entering the fall state if they drop through platforms
     [SerializeField] private bool doubleJumpPerformed;
     public bool isCrouching;
     public Vector3 Velocity;
@@ -62,10 +64,12 @@ public class CharacterMovement : MonoBehaviour
         if (!allowMovement) return;
         if (ctx.ReadValue<float>() > 0)
         {
+            fallingThrough = true;
             isCrouching = true;
         }
         else
         {
+            fallingThrough = true;
             isCrouching = false;
         }
     }
@@ -81,7 +85,7 @@ public class CharacterMovement : MonoBehaviour
     public void Jump(InputAction.CallbackContext ctx)
     {
         if (uiOpen || !allowMovement|| !ctx.performed) return;
-        
+        groundTimer = 0;
         if (grounded && !doubleJumpPerformed && !startSlideTimer && !sliding)
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpForce, 0f);
@@ -156,6 +160,8 @@ public class CharacterMovement : MonoBehaviour
 
     public void Update()
     {
+        groundTimer -= Time.deltaTime;
+        groundTimer = Mathf.Clamp(groundTimer, 0, 1f);
         PlayerAnimator.SetBool("WallJump", isWallJumping);
         Velocity = rb.velocity;
         PlayerAnimator.SetFloat("XVelocity", rb.velocity.x);
@@ -264,12 +270,39 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == 10)
+        if (fallingThrough)
+        {
+            groundTimer = 0f;
+        }
+        else 
+        {
+            groundTimer = 0.15f;
+        }
+        
+        if (other.gameObject.layer == 10 && groundTimer <= 0)
         {
             grounded = false;
+            fallingThrough = false;
+        }
+        else if (groundTimer >= 0)
+        {
+            StartCoroutine(CheckIfStillInAir());
         }
     }
 
+    IEnumerator CheckIfStillInAir()
+    {
+        yield return new WaitForSecondsRealtime(groundTimer);
+        if (groundTimer == 0)
+        {
+            grounded = false;
+        }
+        else
+        {
+            grounded = true;
+        }
+    }
+    
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag("Right Wall") || collision.collider.CompareTag("Left Wall"))

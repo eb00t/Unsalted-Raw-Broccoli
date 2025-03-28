@@ -8,6 +8,7 @@ public class ResizeBoxCollider : MonoBehaviour
 {
     private BoxCollider _collider;
     private RoomInfo _roomInfo;
+    private RoomScripting _roomScripting;
     private ConnectorRoomInfo _connectorRoomInfo;
     public enum RoomType
     {
@@ -36,5 +37,26 @@ public class ResizeBoxCollider : MonoBehaviour
             _collider.size = colliderSize;
         }
        
+    }
+
+    void Start()
+    {
+        _roomScripting = GetComponent<RoomScripting>();
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player") && roomType == RoomType.Room)
+        {
+            _roomScripting.playerIsInRoom = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player") && roomType == RoomType.Room)
+        {
+            _roomScripting.playerIsInRoom = false;
+        }
     }
 }

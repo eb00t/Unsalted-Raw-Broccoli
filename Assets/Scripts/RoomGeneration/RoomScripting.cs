@@ -20,13 +20,16 @@ public class RoomScripting : MonoBehaviour
     public bool playerIsInRoom;
     public bool playerHasEnteredRoom;
     public bool roomHadEnemies;
+    private GameObject _player;
     private bool _musicHasChanged;
     private bool _lootSpawned;
     public CinemachineVirtualCamera _roomCam;
+    private float _failsafeTeleport = 3.5f;
 
     private void Start()
     {
         currentWave = 0;
+        _player = GameObject.FindWithTag("Player");
         foreach (var spawner in transform.GetComponentsInChildren<Transform>())
         {
             if (spawner.CompareTag("Spawner"))
@@ -193,6 +196,22 @@ public class RoomScripting : MonoBehaviour
             {
                 ExitSpecialRoom();
             }
+        }
+
+        if (allDoorsClosed && playerIsInRoom == false)
+        {
+            _failsafeTeleport -= Time.deltaTime;
+            if (_failsafeTeleport <= 0)
+            {
+                _roomCam.Priority = 999;
+                playerIsInRoom = true;
+                _player.transform.position = gameObject.transform.position;
+                _failsafeTeleport = 3.5f;
+            }
+        }
+        else if (allDoorsClosed && playerIsInRoom)
+        {
+            _failsafeTeleport = 3.5f;
         }
     }
     

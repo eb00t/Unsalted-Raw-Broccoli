@@ -10,6 +10,8 @@ public class CameraTrigger : MonoBehaviour
     //private DoorInfo _doorInfo;
     private CinemachineVirtualCamera _playerCam;
     private CinemachineVirtualCamera _camera;
+    public List<RoomScripting> allRooms;
+    private RoomScripting _roomScripting;
 
     public enum RoomOrConnector
     {
@@ -21,6 +23,12 @@ public class CameraTrigger : MonoBehaviour
 
     void Start()
     {
+        foreach (GameObject room in LevelBuilder.Instance.spawnedRooms)
+        {
+            allRooms.Add(room.GetComponent<RoomScripting>());
+        }
+
+        _roomScripting = transform.root.GetComponent<RoomScripting>();
         //_doorInfo = transform.parent.GetComponent<DoorInfo>();
         _playerCam = CameraManager.Instance.playerCam;
         Debug.Log(_playerCam.name);
@@ -35,13 +43,13 @@ public class CameraTrigger : MonoBehaviour
                 }
                 else
                 {
-                    _camera = transform.parent.transform.parent.transform.parent.Find("RoomCam").GetComponent<CinemachineVirtualCamera>();
+                    _camera = transform.parent.transform.parent.transform.parent.Find("RoomCam")
+                        .GetComponent<CinemachineVirtualCamera>();
                 }
 
-                break;
             }
+                break;
         }
-
     }
 
     IEnumerator CheckIfDoorCanOpen()
@@ -87,7 +95,10 @@ public class CameraTrigger : MonoBehaviour
                 {
                     cam.Priority = 0;
                 }
-
+                foreach (var room in allRooms)
+                {
+                    room.playerIsInRoom = false;
+                }
                 _playerCam.Priority = 10;
             }
         }
@@ -103,7 +114,6 @@ public class CameraTrigger : MonoBehaviour
                 {
                     cam.Priority = 0;
                 }
-
                 _camera.Priority = 10;
             }
         }
