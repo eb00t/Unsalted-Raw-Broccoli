@@ -631,6 +631,7 @@ GameObject:
   - component: {fileID: 5418796485676047007}
   - component: {fileID: 543560988434361953}
   - component: {fileID: 5404688144565359110}
+  - component: {fileID: 6735366493873326907}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -669,16 +670,22 @@ MonoBehaviour:
   howManyRoomsToSpawn: 5
   roomsDiscarded: 0
   currentFloor: 0
+  randomSeed: 0
+  lootRoomsToSpawn: 0
   possibleRooms: []
   possibleBossRooms: []
   possibleSpecialRooms: []
   possibleLootRooms: []
+  possibleLoreRooms: []
+  possibleShops: []
   roomsRemaining: 0
   discardedRooms: []
   possibleConnectors: []
   spawnedRooms: []
   spawnedBossRooms: []
   spawnedLootRooms: []
+  spawnedLoreRooms: []
+  spawnedShops: []
   firstBossRoomSpawnPoints: []
   secondBossRoomSpawnPoints: []
   thirdBossRoomSpawnPoints: []
@@ -696,11 +703,9 @@ MonoBehaviour:
   roomToSpawn: {fileID: 0}
   roomGeneratingFinished: 0
   bossRoomGeneratingFinished: 0
-  floorSpecificRoomPath: 
-  shopSpawned: 0
-  lootRoomsToSpawn: 0
   spawnModeChangedByDestroy: 0
   bossDead: 0
+  loreRoomChance: 0
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
   _spawnMode: 0
 --- !u!114 &543560988434361953
@@ -733,6 +738,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minorLoot: []
   majorLoot: []
+  lore: []
+--- !u!114 &6735366493873326907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5617660318742304912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f277e9bf38f8f74fa2fbe71700e16d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allDialogueObjects:
+  - {fileID: 11400000, guid: 517e07d4c49464d4ca1201fe51f24e85, type: 2}
+  - {fileID: 11400000, guid: f996e90537e2f794e8b3a9a6baa25de0, type: 2}
+  allLoreItems:
+  - {fileID: 11400000, guid: 1bdb5b68699e3c24294f392baa34c23b, type: 2}
+  allViewedLoreItems: []
+  loadedTitleText: 
+  loadedBodyText: []
+  loadedSpeakerText: []
 --- !u!1 &6937896342876284815
 GameObject:
   m_ObjectHideFlags: 0
