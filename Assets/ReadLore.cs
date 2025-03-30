@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,12 @@ public class ReadLore : MonoBehaviour
     private string _lorePath;
     private string _loreObject;
     private string _fullLorePath;
+    private CharacterMovement _characterMovement;
+    private ItemPickupHandler _itemPickupHandler;
+    private MenuHandler _menuHandler;
+    private GameObject _uiManager;
+    [SerializeField] private float pickupRange;
+    private GameObject _player;
     public enum LoreType
     {
         Book,
@@ -16,9 +23,15 @@ public class ReadLore : MonoBehaviour
         Other
     }
     public LoreType loreType;
-    private List<ScriptableObject> _allLore;
-    void Start()
+    public List<ScriptableObject> _allLore;
+    private void Start()
     {
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _uiManager = GameObject.FindGameObjectWithTag("UIManager");
+        _menuHandler = _uiManager.GetComponent<MenuHandler>();
+        _characterMovement = _player.GetComponent<CharacterMovement>();
+        _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+        
         switch (loreType)
         {
             case LoreType.Book:
@@ -31,6 +44,7 @@ public class ReadLore : MonoBehaviour
                 _loreObject = "Scrap Of Paper Lore";
                 break;
         }
+        
         _lorePath = "Lore";
         _language = "English"; //TODO: Fix this to make it work with whatever language the game is.
         _fullLorePath = _lorePath + "/" + _language + "/" + _loreObject;
@@ -41,7 +55,23 @@ public class ReadLore : MonoBehaviour
             _allLore.Add(lore);
         }
     }
-    
-    
-    
+
+    private void Update()
+    {
+        if (!_characterMovement.uiOpen)
+        {
+            var dist = Vector3.Distance(transform.position, _player.transform.position);
+
+            if (dist <= pickupRange)
+            {
+                _itemPickupHandler.isPlrNearLore = true;
+                _itemPickupHandler.TogglePrompt("Read " + _loreObject, true, ControlsManager.ButtonType.ButtonEast);
+                _menuHandler.nearestLore = this;
+            }
+            else if (dist > pickupRange)
+            {
+                _itemPickupHandler.isPlrNearLore = false;
+            }
+        }
+    }
 }

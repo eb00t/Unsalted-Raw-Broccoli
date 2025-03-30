@@ -8,6 +8,7 @@ public class MenuHandler : MonoBehaviour
 {
 	[Header("Code References")]
 	[SerializeField] private CharacterMovement characterMovement;
+	private ItemPickupHandler _itemPickupHandler;
 	private InventoryStore _inventoryStore;
 	private ToolbarHandler _toolbarHandler;
 	private GameObject _player;
@@ -24,12 +25,14 @@ public class MenuHandler : MonoBehaviour
 
 	public GameObject shopGUI, nextLevelTrigger;
 	[SerializeField] private DataHolder dataHolder;
+	public ReadLore nearestLore;
 
 	private void Start()
 	{
 		_inventoryStore = GetComponent<InventoryStore>();
 		_toolbarHandler = GetComponent<ToolbarHandler>();
 		_player = GameObject.FindGameObjectWithTag("Player");
+		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
 	}
 
 	private void Update()
@@ -161,10 +164,22 @@ public class MenuHandler : MonoBehaviour
 	public void DeathReload(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
-		
+
 		if (diedScreen.activeSelf)
 		{
 			SceneReload();
+		}
+	}
+
+	public void ShowLore(InputAction.CallbackContext context)
+	{
+		if (!context.performed) return;
+		
+		if (_itemPickupHandler.isPlrNearLore)
+		{
+			// when lore is interacted with do something here
+			// you can check anything in the nearest ReadLore script from nearestLore variable
+			Debug.Log(nearestLore.loreType);
 		}
 	}
 

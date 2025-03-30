@@ -28,7 +28,7 @@ public class dialogueAppear : MonoBehaviour
         if (!context.performed) return;
         if (_characterMovement.uiOpen) return;
 
-        if (GetComponent<ItemPickupHandler>().isPlrNearDialogue || GetComponent<ItemPickupHandler>().isPlrNearDialogue1)
+        if (GetComponent<ItemPickupHandler>().isPlrNearDialogue)
         {
             dialogueBox.SetActive(true);
         }
