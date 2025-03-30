@@ -70,6 +70,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private CharacterMovement _characterMovement;
     private LockOnController _lockOnController;
     private SpriteRenderer _spriteRenderer;
+    private MaterialPropertyBlock _propertyBlock;
+    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -104,6 +106,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _agent.updateRotation = false;
         _characterMovement = _target.GetComponent<CharacterMovement>();
         _lockOnController = _target.GetComponent<LockOnController>();
+        _propertyBlock = new MaterialPropertyBlock();
         
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
@@ -409,6 +412,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         {
             _health -= damage;
             _healthSlider.value = _health;
+            StartCoroutine(HitFlash(Color.red, 0.1f));
         }
         else
         {
@@ -516,11 +520,19 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
         StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .2f));
-        StartCoroutine(StunTimer(.1f));
+        //StartCoroutine(StunTimer(.1f));
+        if (!isBomb)
+        {
+            _animator.SetTrigger("lightStagger");
+        }
 
         if (_poiseBuildup >= poise)
         {
-            StartCoroutine(StunTimer(1f));
+            if (!isBomb)
+            {
+                StartCoroutine(StunTimer(1f));
+            }
+
             _poiseBuildup = 0;
         }
     }
@@ -561,5 +573,31 @@ public class EnemyHandler : MonoBehaviour, IDamageable
        yield return new WaitForSecondsRealtime(stunTime);
        _agent.velocity = Vector3.zero;
        _animator.SetBool("isStaggered", false);
+    }
+    
+    private IEnumerator HitFlash(Color flashColor, float duration)
+    {
+        _spriteRenderer.GetPropertyBlock(_propertyBlock);
+        _propertyBlock.SetColor(BaseColor, flashColor);
+        _spriteRenderer.SetPropertyBlock(_propertyBlock);
+
+        yield return new WaitForSecondsRealtime(duration);
+        
+        var elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            var newColor = Color.Lerp(flashColor, flashColor, elapsed / duration);
+
+            _spriteRenderer.GetPropertyBlock(_propertyBlock);
+            _propertyBlock.SetColor(BaseColor, newColor);
+            _spriteRenderer.SetPropertyBlock(_propertyBlock);
+
+            yield return null;
+        }
+        
+        _spriteRenderer.GetPropertyBlock(_propertyBlock);
+        _propertyBlock.SetColor(BaseColor, Color.white);
+        _spriteRenderer.SetPropertyBlock(_propertyBlock);
     }
 }

@@ -72,6 +72,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private Transform _player;
     private SpriteRenderer _spriteRenderer;
     private SettingManager _settingManager;
+    private MaterialPropertyBlock _propertyBlock;
+    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -92,6 +94,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
+        _propertyBlock = new MaterialPropertyBlock();
 
         _health = maxHealth;
         healthSlider.maxValue = maxHealth;
@@ -422,11 +425,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
         
         _health -= damage;
         healthSlider.value = _health;
+        StartCoroutine(HitFlash(Color.cyan, 0.1f));
+        
         if (_health <= maxHealth / 2)
         {
             AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
         }
-        
         
         if (_health <= 0)
         {
@@ -524,5 +528,31 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         var dist = 3f;
         Gizmos.DrawRay(transform.position, Vector3.down * dist);
+    }
+    
+    private IEnumerator HitFlash(Color flashColor, float duration)
+    {
+        _spriteRenderer.GetPropertyBlock(_propertyBlock);
+        _propertyBlock.SetColor(BaseColor, flashColor);
+        _spriteRenderer.SetPropertyBlock(_propertyBlock);
+
+        yield return new WaitForSecondsRealtime(duration);
+        
+        var elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            var newColor = Color.Lerp(flashColor, flashColor, elapsed / duration);
+
+            _spriteRenderer.GetPropertyBlock(_propertyBlock);
+            _propertyBlock.SetColor(BaseColor, newColor);
+            _spriteRenderer.SetPropertyBlock(_propertyBlock);
+
+            yield return null;
+        }
+        
+        _spriteRenderer.GetPropertyBlock(_propertyBlock);
+        _propertyBlock.SetColor(BaseColor, new Color(11, 57, 94));
+        _spriteRenderer.SetPropertyBlock(_propertyBlock);
     }
 }
