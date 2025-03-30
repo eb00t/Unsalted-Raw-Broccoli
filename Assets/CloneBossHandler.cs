@@ -56,7 +56,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     [SerializeField] private Transform passiveTarget;
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
-    [NonSerialized] public CloneBossManager cloneBossManager;
+    public CloneBossManager cloneBossManager;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;

@@ -45,15 +45,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67fea903dd1263648bd6214bb35dfdce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cloneBossHandlers: []
+  cloneBossHandlers:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   spawnPoint: {fileID: 0}
   parent: {fileID: 0}
-  individualHealth: 100
+  individualHealth: 80
   bossPrefab: {fileID: 2069409593576255661, guid: 16bc1fde0c331fd4fa8c4162f208672d,
     type: 3}
-  maxNumberOfBosses: 10
+  maxNumberOfBosses: 12
   healthSlider: {fileID: 0}
-  spawnCooldown: 3
+  spawnCooldown: 2.5
   canvas: {fileID: 0}
 --- !u!65 &4306822144331364894
 BoxCollider:

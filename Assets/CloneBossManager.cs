@@ -26,9 +26,9 @@ public class CloneBossManager : MonoBehaviour
     {
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
-        InstantiateBoss(1);
         _maxHealth = maxNumberOfBosses * individualHealth;
         healthSlider.maxValue = _maxHealth;
+        UpdateCollectiveHealth();
     }
 
     private void Update()
@@ -55,7 +55,7 @@ public class CloneBossManager : MonoBehaviour
         
         InstantiateBoss(1);
 
-        _targetTime = spawnCooldown * cloneBossHandlers.Count;
+        _targetTime = spawnCooldown * (cloneBossHandlers.Count / 2);
     }
 
     private void InstantiateBoss(int numberToSpawn)

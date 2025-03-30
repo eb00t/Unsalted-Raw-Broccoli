@@ -61,13 +61,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private GameObject flashEffect;
     [SerializeField] private Image healthFillImage;
+    private Collider _roomBounds;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
-    private NavMeshAgent _agent;
     private CharacterAttack _characterAttack;
-    private CharacterMovement _characterMovement;
-    private LockOnController _lockOnController;
     private SpriteRenderer _spriteRenderer;
     private Transform _spriteTransform;
     private BoxCollider _collider;
@@ -98,6 +96,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         RoomScripting.enemies.Add(gameObject);
+        _roomBounds = RoomScripting.GetComponent<Collider>();
         gameObject.transform.parent = gameObject.transform.root;
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
         _healthSlider = GetComponentInChildren<Slider>();
@@ -109,8 +108,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _spriteTransform = GetComponentInChildren<SpriteRenderer>().transform;
 
         _target = GameObject.FindGameObjectWithTag("Player").transform;
-        _lockOnController = _target.GetComponent<LockOnController>();
-        _characterMovement = _target.GetComponent<CharacterMovement>();
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
 
@@ -121,6 +118,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private void Update()
     {
         if (_animator.GetBool("isDead")) return;
+        
+        CheckIfStuck();
         
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;
@@ -173,11 +172,46 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
     private void Patrol()
     {
-        if (Vector3.Distance(transform.position, _patrolTarget) < 1f)
+        if (Vector3.Distance(transform.position, _patrolTarget) < 1f || _isStuck)
         {
-            _patrolTarget = _patrolTarget == _patrolPoint1 ? _patrolPoint2 : _patrolPoint1;
+            _patrolTarget = (_patrolTarget == _patrolPoint1) ? _patrolPoint2 : _patrolPoint1;
+            _isStuck = false;
+            _timeSinceLastMove = 0f;
         }
+
         MoveTowards(_patrolTarget);
+        _healthSlider.gameObject.SetActive(false);
+    }
+    
+    private void CheckIfStuck()
+    {
+        if (Vector3.Distance(transform.position, _lastPosition) > 0.1f)
+        {
+            _timeSinceLastMove = 0f;
+            _lastPosition = transform.position;
+            _isStuck = false;
+        }
+        else
+        {
+            _timeSinceLastMove += Time.deltaTime;
+        }
+
+        if (_timeSinceLastMove > maxTimeToReachTarget)
+        {
+            _isStuck = true;
+            PickPatrolPoints();
+        }
+    }
+    
+    private void PickPatrolPoints()
+    {
+        var position = transform.position;
+
+        var xOffset = Random.Range(3f, patrolRange);
+        var yOffset = Random.Range(-1f, 1f);
+
+        _patrolPoint1 = position + new Vector3(xOffset, yOffset, 0);
+        _patrolPoint2 = position - new Vector3(xOffset, yOffset, 0);
     }
 
     private void Chase()
@@ -251,51 +285,81 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         flashEffect.transform.localScale = flashLocalScale;
     }
 
-    private void PickPatrolPoints()
-    {
-        var position = transform.position;
-        
-        var newPatrol1 = new Vector3(position.x + Random.Range(transform.position.x, patrolRange), position.y, position.z);
-        var newPatrol2 = new Vector3(position.x - Random.Range(transform.position.x, patrolRange), position.y, position.z);
-        
-        _patrolPoint1 = newPatrol1;
-        _patrolPoint2 = newPatrol2;
-    }
-
     private void MoveTowards(Vector3 target)
     {
         var direction = (target - transform.position).normalized;
-        /*
+        
         var platform = FindPlatform(direction);
 
         if (platform != null)
         {
             StartCoroutine(DisableCollision(platform));
         }
-        */
 
         if (!_isKnockedBack)
         {
             _rigidbody.velocity = direction * moveSpeed;
             UpdateSpriteDirection(direction.x < 0f);
         }
+        
+        ClampToRoom();
     }
     
-    private GameObject FindPlatform(Vector3 dir)
+    private void ClampToRoom()
     {
-        var layerMask = LayerMask.GetMask("Ground");
+        if (_roomBounds == null) return;
+
+        var bounds = _roomBounds.bounds;
+        var pos = transform.position;
         
-        if (Physics.Raycast(transform.position, dir, out var hit, 10f, layerMask))
+        pos.x = Mathf.Clamp(pos.x, bounds.min.x + 0.5f, bounds.max.x - 0.5f);
+        pos.y = Mathf.Clamp(pos.y, bounds.min.y + 0.5f, bounds.max.y - 0.5f);
+
+        transform.position = pos;
+    }
+
+    
+    private GameObject FindPlatform(Vector3 movementDir)
+    {
+        var directionsToCheck = new List<Vector3> { _playerDir.normalized };
+        
+        switch (movementDir.x)
         {
-            var platform = hit.collider.GetComponentInParent<SemiSolidPlatform>();
-            if (platform != null)
+            case > 0.1f:
+                directionsToCheck.Add(Vector3.right);
+                break;
+            case < -0.1f:
+                directionsToCheck.Add(Vector3.left);
+                break;
+        }
+
+        switch (movementDir.y)
+        {
+            case > 0.1f:
+                directionsToCheck.Add(Vector3.up);
+                break;
+            case < -0.1f:
+                directionsToCheck.Add(Vector3.down);
+                break;
+        }
+
+        var layerMask = LayerMask.GetMask("Ground");
+
+        foreach (var dir in directionsToCheck)
+        {
+            if (Physics.Raycast(transform.position, dir, out var hit, 2f, layerMask))
             {
-                return platform.gameObject;
+                var platform = hit.collider.GetComponentInParent<SemiSolidPlatform>();
+                if (platform != null)
+                {
+                    return platform.gameObject;
+                }
             }
         }
-        
+
         return null;
     }
+
     
     private IEnumerator DisableCollision(GameObject platform)
     {
@@ -418,8 +482,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         _animator.SetBool("isDead", true);
         isDead = true;
-        //_characterMovement.lockedOn = false;
-        //_lockOnController.lockedTarget = null;
         RoomScripting.enemies.Remove(gameObject);
         RoomScripting._enemyCount--;
         EnemySpawner.spawnedEnemies.Remove(gameObject);
@@ -483,23 +545,15 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
     {
         _isKnockedBack = true;
+        
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.AddForce(force, ForceMode.Impulse);
 
-        var timer = 0f;
-        var startPos = transform.position;
-        var targetPos = startPos + force;
+        yield return new WaitForSeconds(duration);
 
-        while (timer < duration)
-        {
-            var t = timer / duration;
-            transform.position = Vector3.Lerp(startPos, targetPos, t);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.position = targetPos;
+        _rigidbody.velocity = Vector3.zero;
         _isKnockedBack = false;
     }
-
     
     private IEnumerator StunTimer(float stunTime)
     {
