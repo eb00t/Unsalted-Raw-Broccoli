@@ -516,6 +516,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
         StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .2f));
+        StartCoroutine(StunTimer(.1f));
 
         if (_poiseBuildup >= poise)
         {
