@@ -8,7 +8,7 @@ public class DialogueObjectHandler : ScriptableObject
     public List<string> whoIsSpeaking;
 
     [field: Tooltip("The contents of the dialogue.")] [TextArea(3, 10)]
-    public string[] dialogueBodyText;
+    public List<string> dialogueBodyText;
 
     [field: Tooltip("If you don't want the dialogue to have a speaker, set this to false")]
     public bool isAnyoneSpeaking;

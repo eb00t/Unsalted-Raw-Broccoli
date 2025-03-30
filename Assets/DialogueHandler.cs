@@ -16,7 +16,7 @@ public class DialogueHandler : MonoBehaviour
    public bool eraseViewedLore;
 
    [field: Header("Objects to Load")] public string loadedTitleText;
-   public string[] loadedBodyText;
+   public List<string> loadedBodyText;
    public List<string> loadedSpeakerText;
 
 
@@ -46,7 +46,6 @@ public class DialogueHandler : MonoBehaviour
          {
             allViewedLoreItems.Add(lore);
             allLoreItems.Remove(lore);
-            
          }
       }
    }

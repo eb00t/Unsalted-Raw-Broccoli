@@ -23,7 +23,7 @@ public class ReadLore : MonoBehaviour
         Other
     }
     public LoreType loreType;
-    public List<ScriptableObject> _allLore;
+    
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
@@ -49,11 +49,6 @@ public class ReadLore : MonoBehaviour
         _language = "English"; //TODO: Fix this to make it work with whatever language the game is.
         _fullLorePath = _lorePath + "/" + _language + "/" + _loreObject;
         Debug.Log(_fullLorePath);
-        _allLore = new List<ScriptableObject>();
-        foreach (var lore in Resources.LoadAll<ScriptableObject>(_fullLorePath))
-        {
-            _allLore.Add(lore);
-        }
     }
 
     private void Update()
