@@ -177,37 +177,35 @@ public class ToolbarHandler : MonoBehaviour
     // checks a consumables effect and triggers it based on which consumable is active (num = slot active)
     private void CheckItemEffect()
     {
-        if (dataHolder.equippedConsumables == null || _activeConsumable < 0 || 
-            _activeConsumable >= dataHolder.equippedConsumables.Length) return;
-        
-        var itemID = dataHolder.equippedConsumables[_activeConsumable];
-        
-        if (itemID <= 0) return;
-        
-        var consumable = _inventoryStore.FindConsumable(itemID);
-        
-        if (consumable == null) return;
-        
-        var itemIndex = dataHolder.savedItems.IndexOf(itemID);
+        if (dataHolder.equippedConsumables == null || _activeConsumable < 0 || _activeConsumable >= dataHolder.equippedConsumables.Length) return;
+        Debug.Log(_activeConsumable);
 
+        var itemID = dataHolder.equippedConsumables[_activeConsumable];
+        if (itemID <= 0) return;
+
+        var consumable = _inventoryStore.FindConsumable(itemID);
+        if (consumable == null) return;
+
+        var itemIndex = dataHolder.savedItems.IndexOf(itemID);
+        
         if (itemIndex >= 0)
         {
-            dataHolder.savedItemCounts[itemIndex] -= 1;
-
+            dataHolder.savedItemCounts[itemIndex]--;
+            
             if (dataHolder.savedItemCounts[itemIndex] <= 0)
             {
-                dataHolder.equippedConsumables[_activeConsumable] = -1;
                 dataHolder.savedItems.RemoveAt(itemIndex);
                 dataHolder.savedItemCounts.RemoveAt(itemIndex);
-                CycleToolbar(1);
+                dataHolder.equippedConsumables[_activeConsumable] = -1;
             }
         }
         
+        _inventoryStore.UpdateItemsHeld(consumable);
         UseItemEffect(consumable);
         UpdateSlots();
         UpdateToolbar();
-        _inventoryStore.UpdateItemsHeld(consumable);
     }
+
 
     // updates the number of the specified item id held in dataholder
     public void UseItemEffect(Consumable consumable)
@@ -385,7 +383,12 @@ public class ToolbarHandler : MonoBehaviour
             UpdateSlotUI(indexHolder, indexHolder.consumable);
         }
         
-        _activeConsumable = Mathf.Max(0, Array.FindLastIndex(dataHolder.equippedConsumables, id => id != -1));
+        if (_activeConsumable < 0 || _activeConsumable >= dataHolder.equippedConsumables.Length || dataHolder.equippedConsumables[_activeConsumable] <= 0)
+        {
+            _activeConsumable = Array.FindIndex(dataHolder.equippedConsumables, id => id > 0);
+            if (_activeConsumable == -1) _activeConsumable = 0;
+        }
+
     
         UpdateCurrentTool();
     }
