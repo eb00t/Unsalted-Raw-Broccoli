@@ -70,6 +70,7 @@ public class ReadLore : MonoBehaviour
             }
             else if (dist > pickupRange)
             {
+                if (_menuHandler.nearestLore != this) return;
                 _itemPickupHandler.isPlrNearLore = false;
             }
         }

@@ -13,12 +13,15 @@ public class dialogueControllerScript : MonoBehaviour
     public bool isLore;
     public AllDialogue dialogueToLoad;
     private AllLore _loreToLoad;
-
+    private ItemPickupHandler _itemPickupHandler;
+    [SerializeField] private float range;
     private int _dialogueID;
+    private GameObject _player, _dialogueCanvas, _uiManager;
+    private MenuHandler _menuHandler;
 
     //DIALOGUE CODE
-    public TextMeshProUGUI dialogueText;
-    public TextMeshProUGUI speakerText;
+    private TextMeshProUGUI dialogueText;
+    private TextMeshProUGUI speakerText;
     [TextArea(3, 10)] public string[] sentences;
     private string _title;
     private int _index; // = 0;
@@ -26,7 +29,7 @@ public class dialogueControllerScript : MonoBehaviour
     public float dialogueSpeed;
 
     //public float fasterSpeed;
-    public GameObject dialogueCanvas, yesText, noText; // normalText; // normalBox;
+    public GameObject yesText, noText; // normalText; // normalBox;
 
 
     private void Awake()
@@ -39,8 +42,25 @@ public class dialogueControllerScript : MonoBehaviour
 
     private void Start()
     {
-        dialogueCanvas = GameObject.FindWithTag("Dialogue");
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _dialogueCanvas = GameObject.FindWithTag("Dialogue");
+        _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+        _uiManager = GameObject.FindGameObjectWithTag("UIManager");
+        _menuHandler = _uiManager.GetComponent<MenuHandler>();
         
+        foreach (var text in _dialogueCanvas.GetComponentsInChildren<TextMeshProUGUI>())
+        {
+            switch (text.name)
+            {
+                case "Normal Text":
+                    dialogueText = text;
+                    break;
+                case "SpeakerText":
+                    speakerText = text;
+                    break;
+            }
+        }
+
         switch (isLore)
         {
             case false:
@@ -52,8 +72,8 @@ public class dialogueControllerScript : MonoBehaviour
         }
         
         LoadDialogue();
-        speakerText = dialogueCanvas.transform.Find("Text box").transform.Find("SpeakerHolder").transform.Find("SpeakerText").GetComponent<TextMeshProUGUI>();
-        dialogueText = dialogueCanvas.transform.Find("Text box").transform.Find("Normal Text").GetComponent<TextMeshProUGUI>();
+        speakerText = _dialogueCanvas.transform.Find("Text box").transform.Find("SpeakerHolder").transform.Find("SpeakerText").GetComponent<TextMeshProUGUI>();
+        dialogueText = _dialogueCanvas.transform.Find("Text box").transform.Find("Normal Text").GetComponent<TextMeshProUGUI>();
         if (_dialogueObjectHandler.isAnyoneSpeaking == false)
         {
             speakerText.gameObject.SetActive(false);
@@ -67,6 +87,28 @@ public class dialogueControllerScript : MonoBehaviour
 
     private void Update()
     {
+        var dist = Vector3.Distance(transform.position, _player.transform.position);
+
+        if (dist <= range)
+        {
+            _itemPickupHandler.isPlrNearDialogue = true;
+            
+            if (_dialogueCanvas.activeSelf)
+            {
+                _itemPickupHandler.TogglePrompt("Next sentence", true, ControlsManager.ButtonType.ButtonSouth);
+            }
+            else
+            {
+                _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.ButtonEast);
+                _menuHandler.dialogueController = this;
+            }
+        }
+        else if (dist > range)
+        {
+            if (_menuHandler.dialogueController != this) return;
+            _itemPickupHandler.isPlrNearDialogue = false;
+        }
+        
         /*
         //ANSWERS
         if (Input.GetKeyDown(KeyCode.Y))
@@ -113,7 +155,7 @@ public class dialogueControllerScript : MonoBehaviour
             else
             {
                 _index = 0;
-                dialogueCanvas.SetActive(false);
+                _dialogueCanvas.SetActive(false);
                 
             }
         }
@@ -143,7 +185,7 @@ public class dialogueControllerScript : MonoBehaviour
     {
         yesText.SetActive(true);
         noText.SetActive(false);
-        dialogueCanvas.SetActive(false);
+        _dialogueCanvas.SetActive(false);
         //  Debug.Log("YES!");
     }
 
@@ -151,7 +193,7 @@ public class dialogueControllerScript : MonoBehaviour
     {
         noText.SetActive(true);
         yesText.SetActive(false);
-        dialogueCanvas.SetActive(false);
+        _dialogueCanvas.SetActive(false);
         //    Debug.Log("NO");
     }
 

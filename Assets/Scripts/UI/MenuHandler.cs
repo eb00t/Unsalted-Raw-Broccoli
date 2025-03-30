@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -25,7 +26,8 @@ public class MenuHandler : MonoBehaviour
 
 	public GameObject shopGUI, nextLevelTrigger;
 	[SerializeField] private DataHolder dataHolder;
-	public ReadLore nearestLore;
+	[NonSerialized] public ReadLore nearestLore;
+	[NonSerialized] public dialogueControllerScript dialogueController;
 
 	private void Start()
 	{
@@ -168,6 +170,17 @@ public class MenuHandler : MonoBehaviour
 		if (diedScreen.activeSelf)
 		{
 			SceneReload();
+		}
+	}
+	
+	public void EnableDialogueBox(InputAction.CallbackContext context)
+	{
+		if (!context.performed) return;
+		if (characterMovement.uiOpen) return;
+
+		if (_itemPickupHandler.isPlrNearDialogue)
+		{
+			dialogueGUI.SetActive(true);
 		}
 	}
 

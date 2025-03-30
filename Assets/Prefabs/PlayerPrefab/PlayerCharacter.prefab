@@ -342,7 +342,6 @@ GameObject:
   - component: {fileID: 2624940746732787405}
   - component: {fileID: 4592323685554638241}
   - component: {fileID: 2398015274289911549}
-  - component: {fileID: 3773342949230833633}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -492,7 +491,7 @@ MonoBehaviour:
   isPlrNearShop: 0
   isPlrNearEnd: 0
   isPlrNearDialogue: 0
-  isPlrNearDialogue1: 0
+  isPlrNearLore: 0
   itemCount: 0
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
 --- !u!114 &4592323685554638241
@@ -544,23 +543,3 @@ MonoBehaviour:
   enemy: {fileID: 0}
   rangeToEnemy: 12
   _currentStep: 0
---- !u!114 &3773342949230833633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7748169234227478159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d2b1804d739b2d4286a0c23b68e081a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialogueBox: {fileID: 0}
-  dialogueConA: {fileID: 0}
-  dialogueConB: {fileID: 0}
-  enemyChar: {fileID: 0}
-  npcChar: {fileID: 0}
-  bossIndicator: {fileID: 0}
-  indicator: {fileID: 0}
-  range: 0
