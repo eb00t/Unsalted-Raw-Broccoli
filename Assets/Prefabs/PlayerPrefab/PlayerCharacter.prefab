@@ -63,11 +63,12 @@ MonoBehaviour:
   maxEnergy: 40
   currentEnergy: 40
   baseAtk: 10
-  charAtk: 10
+  mediumAtkMultiplier: 2
+  heavyAtkMultiplier: 3
   poise: 30
   poiseDamageLight: 10
   poiseDamageHeavy: 50
-  poiseDamageMedium: 50
+  poiseDamageMedium: 20
   isInvincible: 0
   isPoison: 0
   isIce: 0
@@ -77,9 +78,9 @@ MonoBehaviour:
   energySlider: {fileID: 0}
   diedScreen: {fileID: 0}
   hitFlash: {fileID: 0}
-  knockbackPowerLight: {x: 0.2, y: 0.1}
-  knockbackPowerMedium: {x: 5, y: 0.5}
-  knockbackPowerHeavy: {x: 10, y: 1}
+  knockbackPowerLight: {x: 0.5, y: 0.1}
+  knockbackPowerMedium: {x: 1.5, y: 0.5}
+  knockbackPowerHeavy: {x: 3, y: 1}
 --- !u!64 &3621395720539083714
 MeshCollider:
   m_ObjectHideFlags: 0

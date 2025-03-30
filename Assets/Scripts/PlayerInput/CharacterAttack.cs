@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -35,7 +36,9 @@ public class CharacterAttack : MonoBehaviour
     public int maxEnergy;
     public int currentEnergy;
     public int baseAtk;
-    public int charAtk = 10;
+    [SerializeField] private float mediumAtkMultiplier;
+    [SerializeField] private float heavyAtkMultiplier;
+    [NonSerialized] public int charAtk;
     [SerializeField] private int poise;
     public int poiseDamageLight, poiseDamageHeavy, poiseDamageMedium;
     public int isInvincible;
@@ -74,7 +77,7 @@ public class CharacterAttack : MonoBehaviour
         energySlider.value = currentEnergy;
         healthSlider.value = maxHealth;
         currentHealth = maxHealth;
-        baseAtk = charAtk;
+        charAtk = baseAtk;
         hitFlash = GameObject.FindWithTag("Hit Flash");
         hitFlash.SetActive(false);
     }
@@ -303,7 +306,6 @@ public class CharacterAttack : MonoBehaviour
 
         var damageable = other.GetComponentInParent<IDamageable>();
         if (damageable == null) return;
-        
        
         //Layer = Light
         if (gameObject.layer == 13)
@@ -323,12 +325,14 @@ public class CharacterAttack : MonoBehaviour
                 _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0) * _settingManager.screenShakeMultiplier);
             }
         }
+        
         //Layer = Heavy
         if (gameObject.layer == 14)
         {
             float randomTinyX = Random.Range(1.5f, 2f);
             float randomTinyY = Random.Range(-1f, 1f);
-            damageable.TakeDamage(charAtk, poiseDamageHeavy, knockbackPowerHeavy);
+            var calcAtk = (charAtk - baseAtk) + (baseAtk * heavyAtkMultiplier);
+            damageable.TakeDamage((int)calcAtk, poiseDamageHeavy, knockbackPowerHeavy);
             _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
@@ -339,12 +343,14 @@ public class CharacterAttack : MonoBehaviour
                 _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0) * _settingManager.screenShakeMultiplier);
             }
         }
-// Layer = Medium (final hit of light combo)
+        
+        // Layer = Medium (final hit of light combo)
         if (gameObject.layer == 15)
         {
             float randomTinyX = Random.Range(0.5f, 1f);
             float randomTinyY = Random.Range(-0.25f, 0.25f);
-            damageable.TakeDamage(charAtk, poiseDamageMedium, knockbackPowerMedium);
+            var calcAtk = (charAtk - baseAtk) + (baseAtk * mediumAtkMultiplier);
+            damageable.TakeDamage((int)calcAtk, poiseDamageMedium, knockbackPowerMedium);
             
             _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
@@ -357,6 +363,7 @@ public class CharacterAttack : MonoBehaviour
                 _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0) * _settingManager.screenShakeMultiplier);
             }
         }
+        
         if (isPoison)
         {
             damageable.TriggerStatusEffect(ConsumableEffect.Poison);

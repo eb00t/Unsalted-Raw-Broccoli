@@ -265,12 +265,14 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private void MoveTowards(Vector3 target)
     {
         var direction = (target - transform.position).normalized;
+        /*
         var platform = FindPlatform(direction);
 
         if (platform != null)
         {
             StartCoroutine(DisableCollision(platform));
         }
+        */
 
         if (!_isKnockedBack)
         {
