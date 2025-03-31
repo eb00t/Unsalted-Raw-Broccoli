@@ -150,6 +150,7 @@ public class dialogueControllerScript : MonoBehaviour
                 break;
             case true:
                 DialogueHandler.Instance.LoadLoreScriptableObject(_dialogueID);
+                DialogueHandler.Instance.StartSentence();
                 break;
         }
 

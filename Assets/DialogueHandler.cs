@@ -89,9 +89,9 @@ public class DialogueHandler : MonoBehaviour
             
             if (loadedSpeakerText[index] == null)
             {
-              loadedSpeakerText[index] = loadedSpeakerText[index - 1];
+               loadedSpeakerText[index] = loadedSpeakerText[index - 1];
             }
-            if (loadedBodyText == null)
+            if (loadedBodyText[index] == null)
             {
                loadedBodyText[index] = loadedBodyText[index - 1];
             }
@@ -119,13 +119,14 @@ public class DialogueHandler : MonoBehaviour
    public void StartSentence()
    {
       index = 0;
-      _speakerText.text = loadedSpeakerText[index];
+      //_speakerText.text = loadedSpeakerText[index];
       //_dialogueText.text = loadedBodyText[index];
       StartCoroutine(TypeSentence());
    }
 
    IEnumerator TypeSentence()
    {
+      _speakerText.text = loadedSpeakerText[index];
       foreach (char Character in loadedBodyText[index].ToCharArray())
       {
          _dialogueText.text += Character;
