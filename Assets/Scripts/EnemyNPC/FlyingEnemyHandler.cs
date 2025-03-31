@@ -116,6 +116,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
+        
+        DisablePlatformCollisions();
     }
 
     private void Update()
@@ -251,7 +253,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             switch (i)
             {
                 case 0:
-                    _animator.SetTrigger("Attack");
+                    //_animator.SetTrigger("Attack");
+                    StartCoroutine(FlingAttack());
                     break;
                 case 1:
                     _animator.SetTrigger("Attack2");
@@ -259,9 +262,54 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             
             _targetTime = attackCooldown;
         }
+    }
+    
+    private IEnumerator FlingAttack()
+    {
+        _rigidbody.velocity = Vector3.zero;
+        
+        var retreatDir = (transform.position - _target.position).normalized;
+        var retreatSpeed = moveSpeed * 1.5f;
+        var retreatDur = 0.5f;
+
+        var elapsed = 0f;
+        while (elapsed < retreatDur)
+        {
+            _rigidbody.velocity = retreatDir * retreatSpeed;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        _rigidbody.velocity = Vector3.zero;
+        yield return new WaitForSeconds(0.2f);
+
+        var flyDir = (_target.position - transform.position).normalized;
+        var flySpeed = moveSpeed * 4f;
+        var flyThroughDistance = 4f;
+        var startPos = transform.position;
+        
+        if (Physics.Raycast(startPos, flyDir, out var hit, flyThroughDistance))
+        {
+            if (!hit.collider.CompareTag("Player"))
+            {
+                flyThroughDistance = hit.distance - 0.5f;
+            }
+        }
+
+        _animator.SetTrigger("Attack");
+
+        while (Vector3.Distance(transform.position, startPos) < flyThroughDistance)
+        {
+            _rigidbody.velocity = flyDir * flySpeed;
+            yield return null;
+        }
+        
+        _rigidbody.velocity = Vector3.zero;
+        _state = States.Chase;
     }
     
     private void UpdateSpriteDirection(bool isLeft)
@@ -291,13 +339,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private void MoveTowards(Vector3 target)
     {
         var direction = (target - transform.position).normalized;
-        
-        var platform = FindPlatform(direction);
-
-        if (platform != null)
-        {
-            StartCoroutine(DisableCollision(platform));
-        }
 
         if (!_isKnockedBack)
         {
@@ -321,66 +362,14 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         transform.position = pos;
     }
 
-    
-    private GameObject FindPlatform(Vector3 movementDir)
+    private void DisablePlatformCollisions()
     {
-        var directionsToCheck = new List<Vector3> { _playerDir.normalized };
+        var platforms = gameObject.transform.root.GetComponentsInChildren<SemiSolidPlatform>();
         
-        switch (movementDir.x)
+        foreach (var semiSolidPlatform in platforms)
         {
-            case > 0.1f:
-                directionsToCheck.Add(Vector3.right);
-                break;
-            case < -0.1f:
-                directionsToCheck.Add(Vector3.left);
-                break;
-        }
-
-        switch (movementDir.y)
-        {
-            case > 0.1f:
-                directionsToCheck.Add(Vector3.up);
-                break;
-            case < -0.1f:
-                directionsToCheck.Add(Vector3.down);
-                break;
-        }
-
-        var layerMask = LayerMask.GetMask("Ground");
-
-        foreach (var dir in directionsToCheck)
-        {
-            if (Physics.Raycast(transform.position, dir, out var hit, 2f, layerMask))
-            {
-                var platform = hit.collider.GetComponentInParent<SemiSolidPlatform>();
-                if (platform != null)
-                {
-                    return platform.gameObject;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    
-    private IEnumerator DisableCollision(GameObject platform)
-    {
-        if (platform.GetComponent<SemiSolidPlatform>() == null) yield break;
-        
-        if (_collider != null && platform != null)
-        {
-            foreach (var collider in platform.GetComponentsInChildren<Collider>())
-            {
-                Physics.IgnoreCollision(_collider, collider, true);  
-            }
-            
-            yield return new WaitForSeconds(2f);
-            
-            foreach (var collider in platform.GetComponentsInChildren<Collider>())
-            {
-                Physics.IgnoreCollision(_collider, collider, false);
-            }
+            var collider2 = semiSolidPlatform.GetComponent<Collider>();
+            Physics.IgnoreCollision(_collider, collider2, true);
         }
     }
 
@@ -394,7 +383,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         {
             _health -= damage;
             _healthSlider.value = _health;
-            StartCoroutine(HitFlash(Color.red, 0.1f));
+            //StartCoroutine(HitFlash(Color.red, 0.1f));
         }
         else
         {
