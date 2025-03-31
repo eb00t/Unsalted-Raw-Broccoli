@@ -79,7 +79,7 @@ public class BlackoutManager : MonoBehaviour
         _lerpDirection = LerpDirection.FadeIn;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial))
         {
@@ -99,7 +99,7 @@ public class BlackoutManager : MonoBehaviour
         switch (_lerpDirection)
         {
             case LerpDirection.Neither:
-                blackoutImage.color = new Color(0.02745098f, 0.1019608f, 0.2235294f);
+                blackoutImage.color = blackoutColor;
                 break;
             case LerpDirection.FadeOut:
                 blackoutImage.color = Color.Lerp(blackoutColor, transparentColor, _lerpTime);

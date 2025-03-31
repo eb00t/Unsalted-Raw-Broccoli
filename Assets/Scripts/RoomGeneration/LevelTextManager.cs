@@ -116,7 +116,7 @@ public class LevelTextManager : MonoBehaviour
         _lerpDirection = LerpDirection.FadeIn;
     }
     
-    private void FixedUpdate()
+    private void Update()
     {
         if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial))
         {
