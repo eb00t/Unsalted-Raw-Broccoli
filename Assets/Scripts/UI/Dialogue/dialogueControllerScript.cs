@@ -128,7 +128,7 @@ public class dialogueControllerScript : MonoBehaviour
     public void NextSentence(InputAction.CallbackContext context) // when space/a is pressed
     {
         if (!context.performed) return;
-        if (!gameObject.activeSelf) return;
+        if (!_dialogueCanvas.activeSelf) return;
 
         if (dialogueText.text == _menuHandler.dialogueController.sentences[_index])
         {
