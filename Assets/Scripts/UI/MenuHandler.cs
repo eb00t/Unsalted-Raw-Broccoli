@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -47,12 +48,42 @@ public class MenuHandler : MonoBehaviour
 		
 		Time.timeScale = pauseGuisOpen ? 0 : 1;
 
+		if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard)
+		{
+			var interactable = GetInteractable();
+			if (interactable != null)
+			{
+				SwitchSelected(interactable);
+			}
+		}
+		
 		if (eventSystem.currentSelectedGameObject != _lastSelected)
 		{
 			if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard) return;
 			ButtonHandler.Instance.PlayNavigateSound();
 			_lastSelected = eventSystem.currentSelectedGameObject;
 		}
+	}
+	
+	// checks if there is an interactable ui element below the mouse with a raycast
+	private static GameObject GetInteractable()
+	{
+		var pointerData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
+
+		var raycastResults = new List<RaycastResult>();
+		EventSystem.current.RaycastAll(pointerData, raycastResults);
+
+		foreach (var result in raycastResults)
+		{
+			var go = result.gameObject;
+			
+			if (go.TryGetComponent<Selectable>(out var selectable) && selectable.interactable)
+			{
+				return selectable.gameObject;
+			}
+		}
+
+		return null;
 	}
 
 	// opens equip menu (with inventory), hides other menus and resets interaction bool to prevent unwanted ui navigation

@@ -97,6 +97,7 @@ public class ToolbarHandler : MonoBehaviour
             {
                 if (slot.GetComponent<IndexHolder>().consumable != null) continue;
                 targetSlot = slot;
+                break;
             }
         }
         else
