@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelTextManager : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class LevelTextManager : MonoBehaviour
     private bool _fadedOut;
     private Color _startColor;
     private float _timer = 2;
+    
+    public Color loadBckColor, loadSqrColor;
+    [SerializeField] private Image loadBck, loadSqr;
     private enum LerpDirection
     {
         Neither,
@@ -150,6 +154,8 @@ public class LevelTextManager : MonoBehaviour
             case LerpDirection.FadeIn:
                 _lerpTime += .006f; 
                 titleText.color = Color.Lerp(transparentColor, textColor, _lerpTime);
+                loadBck.color = Color.Lerp(transparentColor, loadBckColor, _lerpTime);
+                loadSqr.color = Color.Lerp(transparentColor, loadSqrColor, _lerpTime);
                 subtitleText.color = titleText.color;
                 break;
         }

@@ -12,6 +12,7 @@ public class BlackoutManager : MonoBehaviour
 
     public Image blackoutImage;
     public Image vignetteImage;
+    public Image loadBck;
     public Color blackoutColor;
     public Color vignetteColor;
     public Color transparentColor;
@@ -103,6 +104,8 @@ public class BlackoutManager : MonoBehaviour
             case LerpDirection.FadeOut:
                 blackoutImage.color = Color.Lerp(blackoutColor, transparentColor, _lerpTime);
                 vignetteImage.color = Color.Lerp(vignetteColor, transparentColor, _lerpTime);
+                loadBck.gameObject.SetActive(false);
+                
                 if (blackoutImage.color.a <= 0)
                 {
                     blackoutImage.gameObject.SetActive(false);
