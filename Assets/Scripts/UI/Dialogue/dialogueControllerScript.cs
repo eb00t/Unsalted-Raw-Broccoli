@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
@@ -10,6 +9,7 @@ using Random = UnityEngine.Random;
 public class dialogueControllerScript : MonoBehaviour
 {
     public bool isLore;
+    public bool replayable;
     public AllDialogue dialogueToLoad;
     private AllLore _loreToLoad;
     private ItemPickupHandler _itemPickupHandler;
@@ -21,8 +21,6 @@ public class dialogueControllerScript : MonoBehaviour
     //DIALOGUE CODE
     private TextMeshProUGUI dialogueText;
     private TextMeshProUGUI speakerText;
-    public List<string> speakers;
-    [TextArea(3, 10)] public List<string> sentences;
     private string _title;
     [SerializeField] private int _index; // = 0;
 
@@ -147,13 +145,20 @@ public class dialogueControllerScript : MonoBehaviour
             case false:
                 DialogueHandler.Instance.LoadDialogueScriptableObject(_dialogueID);
                 DialogueHandler.Instance.StartSentence();
+                if (replayable == false)
+                {
+                    DialogueHandler.Instance.trigger = transform.gameObject;
+                }
                 break;
             case true:
                 DialogueHandler.Instance.LoadLoreScriptableObject(_dialogueID);
                 DialogueHandler.Instance.StartSentence();
+                if (replayable == false)
+                {
+                    DialogueHandler.Instance.trigger = transform.parent.gameObject;
+                }
                 break;
         }
-
     }
 }
 

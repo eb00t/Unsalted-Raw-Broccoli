@@ -28,6 +28,7 @@ public class DialogueHandler : MonoBehaviour
    private TextMeshProUGUI _speakerText; // Speaker text object
    private GameObject _player, _dialogueCanvas, _uiManager;
    private MenuHandler _menuHandler;
+   public GameObject trigger;
 
    [field: Header("Objects to Load")] public string loadedTitleText; // The title (only used in lore)
    public List<string> loadedBodyText; // All the messages that need to displayed
@@ -106,6 +107,10 @@ public class DialogueHandler : MonoBehaviour
             _speakerText.text = "";
             _dialogueText.text = "";
             _dialogueCanvas.SetActive(false);
+            if (trigger != null)
+            {
+               trigger.SetActive(false);
+            }
          }
       }
       else
@@ -136,24 +141,42 @@ public class DialogueHandler : MonoBehaviour
 
    public void LoadDialogueScriptableObject(int scriptableObjectID)
    {
-      if (currentDialogueObject != null)
+      if (currentLoreItem != null)
       {
          loadedSpeakerText.Clear();
          loadedBodyText.Clear();
+         currentLoreItem = null;
       }
       currentDialogueObject = allDialogueObjects[scriptableObjectID];
       loadedSpeakerText = new List<string>(currentDialogueObject.whoIsSpeaking);
       loadedBodyText = new List<string>(currentDialogueObject.dialogueBodyText);
       if (currentDialogueObject.isAnyoneSpeaking == false)
       {
+         _speakerText.transform.parent.gameObject.SetActive(false);
          _speakerText.gameObject.SetActive(false);
       }
    }
    
-   public LoreItemHandler LoadLoreScriptableObject(int scriptableObjectID)
+   public void LoadLoreScriptableObject(int scriptableObjectID)
    {
+      if (currentDialogueObject != null)
+      {
+         loadedSpeakerText.Clear();
+         loadedBodyText.Clear();
+         currentDialogueObject = null;
+      }
       allLoreItems[scriptableObjectID].discoveredByPlayer = true;
-      return allLoreItems[scriptableObjectID];
+      currentLoreItem = allLoreItems[scriptableObjectID];
+      loadedTitleText = currentLoreItem.loreTitle;
+      loadedSpeakerText = new List<string>(currentLoreItem.whoWroteThis);
+      loadedBodyText = new List<string>(currentLoreItem.loreBodyText);
+      loadedBodyText.Insert(0, loadedTitleText);
+      loadedSpeakerText.Insert(0, loadedSpeakerText[0]);
+      if (currentLoreItem.didAnyoneWriteThis == false)
+      {
+         _speakerText.transform.parent.gameObject.SetActive(false);
+         _speakerText.gameObject.SetActive(false);
+      }
    }
 }
    
