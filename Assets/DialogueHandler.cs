@@ -120,7 +120,7 @@ public class DialogueHandler : MonoBehaviour
    {
       index = 0;
       _speakerText.text = loadedSpeakerText[index];
-      _dialogueText.text = loadedBodyText[index];
+      //_dialogueText.text = loadedBodyText[index];
       StartCoroutine(TypeSentence());
    }
 
@@ -154,7 +154,6 @@ public class DialogueHandler : MonoBehaviour
       allLoreItems[scriptableObjectID].discoveredByPlayer = true;
       return allLoreItems[scriptableObjectID];
    }
-
 }
    
 
