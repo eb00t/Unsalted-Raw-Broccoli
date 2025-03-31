@@ -17,7 +17,8 @@ public class MenuHandler : MonoBehaviour
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
-	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui, controlGui, diedScreen, dialogueGUI;
+	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui, controlGui, diedScreen;
+	public GameObject dialogueGUI;
 	[SerializeField] private GameObject settingsBtn, controlsBtn, quitBtn;
 	
 	[Header("Navigation")]

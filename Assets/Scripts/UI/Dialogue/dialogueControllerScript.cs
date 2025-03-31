@@ -41,10 +41,10 @@ public class dialogueControllerScript : MonoBehaviour
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
-        _dialogueCanvas = GameObject.FindWithTag("Dialogue");
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
+        _dialogueCanvas = _menuHandler.dialogueGUI;
       /* foreach (var text in _dialogueCanvas.GetComponentsInChildren<TextMeshProUGUI>())
        {
            switch (text.name)
@@ -119,9 +119,6 @@ public class dialogueControllerScript : MonoBehaviour
 
     // move through sentences
     
-
-   
-
     void answerY()
     {
         yesText.SetActive(true);

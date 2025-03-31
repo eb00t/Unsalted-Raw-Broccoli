@@ -53,6 +53,7 @@ public class ReadLore : MonoBehaviour
 
     private void Update()
     {
+        /*
         if (!_characterMovement.uiOpen)
         {
             var dist = Vector3.Distance(transform.position, _player.transform.position);
@@ -69,5 +70,6 @@ public class ReadLore : MonoBehaviour
                 _itemPickupHandler.isPlrNearLore = false;
             }
         }
+        */
     }
 }

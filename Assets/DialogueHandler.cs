@@ -34,6 +34,7 @@ public class DialogueHandler : MonoBehaviour
    public List<string> loadedBodyText; // All the messages that need to displayed
    public List<string> loadedSpeakerText; // All the speakers that need to be displayed (this should always be the same size as the loadedBodyText string)
 
+   private ItemPickupHandler _itemPickupHandler;
 
    private void Awake()
    {
@@ -48,6 +49,7 @@ public class DialogueHandler : MonoBehaviour
    private void Start()
    {
       _player = GameObject.FindGameObjectWithTag("Player");
+      _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
       _dialogueCanvas = GameObject.FindWithTag("Dialogue");
       _player.GetComponent<ItemPickupHandler>();
       _uiManager = GameObject.FindGameObjectWithTag("UIManager");
@@ -110,6 +112,7 @@ public class DialogueHandler : MonoBehaviour
             if (trigger != null)
             {
                trigger.SetActive(false);
+               _itemPickupHandler.isPlrNearDialogue = false;
             }
          }
       }
