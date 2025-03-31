@@ -9,8 +9,6 @@ using Random = UnityEngine.Random;
 
 public class dialogueControllerScript : MonoBehaviour
 {
-    public DialogueObjectHandler dialogueObjectHandler;
-    private LoreItemHandler _loreItemHandler;
     public bool isLore;
     public AllDialogue dialogueToLoad;
     private AllLore _loreToLoad;
@@ -49,33 +47,30 @@ public class dialogueControllerScript : MonoBehaviour
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
-        
-       foreach (var text in _dialogueCanvas.GetComponentsInChildren<TextMeshProUGUI>())
-        {
-            switch (text.name)
-            {
-                case "Normal Text":
-                    dialogueText = text;
-                    break;
-                case "SpeakerText":
-                    speakerText = text;
-                    break;
-            }
-        }
+      /* foreach (var text in _dialogueCanvas.GetComponentsInChildren<TextMeshProUGUI>())
+       {
+           switch (text.name)
+           {
+               case "Normal Text":
+                   dialogueText = text;
+                   break;
+               case "SpeakerText":
+                   speakerText = text;
+                   break;
+           }
+       }*/
 
-        switch (isLore)
-        {
-            case false:
-                _dialogueID = (int)dialogueToLoad;
-                break;
-            case true:
-                _dialogueID = Random.Range(0, DialogueHandler.Instance.allLoreItems.Count);
-                break;
-        }
-        speakerText = _dialogueCanvas.transform.Find("Text box").transform.Find("SpeakerHolder").transform.Find("SpeakerText").GetComponent<TextMeshProUGUI>();
-        dialogueText = _dialogueCanvas.transform.Find("Text box").transform.Find("Normal Text").GetComponent<TextMeshProUGUI>();
-        //Start writing sentences
-        //startSentence();
+       switch (isLore)
+       {
+           case false:
+               _dialogueID = (int)dialogueToLoad;
+               break;
+           case true:
+               _dialogueID = Random.Range(0, DialogueHandler.Instance.allLoreItems.Count);
+               break;
+       }
+       //Start writing sentences
+       //startSentence();
     }
 
     private void Update()
@@ -125,61 +120,9 @@ public class dialogueControllerScript : MonoBehaviour
     }
 
     // move through sentences
-    public void NextSentence(InputAction.CallbackContext context) // when space/a is pressed
-    {
-        if (!context.performed) return;
-        if (!_dialogueCanvas.activeSelf) return;
+    
 
-        if (dialogueText.text == _menuHandler.dialogueController.sentences[_index])
-        {
-            // nextSen() moved here
-            if (_index < _menuHandler.dialogueController.sentences.Count - 1)
-            {
-                _index++;
-                dialogueText.text = string.Empty;
-                if (_menuHandler.dialogueController.speakers[_index] == null)
-                {
-                    _menuHandler.dialogueController.speakers[_index] = _menuHandler.dialogueController.speakers[_index - 1];
-                }
-                if (_menuHandler.dialogueController.sentences == null)
-                {
-                    _menuHandler.dialogueController.sentences[_index] = _menuHandler.dialogueController.sentences[_index - 1];
-                }
-
-                StartCoroutine(TypeSentence());
-            }
-            else
-            {
-                _index = 0;
-                _menuHandler.dialogueController.sentences.Clear();
-                dialogueText.text = "";
-                _dialogueCanvas.SetActive(false);
-            }
-        }
-        else
-        {
-            StopAllCoroutines();
-            dialogueText.text = _menuHandler.dialogueController.sentences[_index];
-            speakerText.text = _menuHandler.dialogueController.speakers[_index];
-        }
-    }
-
-    void StartSentence()
-    {
-        _index = 0;
-        speakerText.text = _menuHandler.dialogueController.speakers[_index];
-        dialogueText.text = _menuHandler.dialogueController.sentences[_index];
-        StartCoroutine(TypeSentence());
-    }
-
-    IEnumerator TypeSentence()
-    {
-        foreach (char Character in sentences[_index].ToCharArray())
-        {
-            dialogueText.text += Character;
-            yield return new WaitForSeconds(dialogueSpeed);
-        }
-    }
+   
 
     void answerY()
     {
@@ -202,19 +145,11 @@ public class dialogueControllerScript : MonoBehaviour
         switch (isLore)
         {
             case false:
-                dialogueObjectHandler = DialogueHandler.Instance.LoadDialogueScriptableObject(_dialogueID);
-                speakers.Clear();
-                sentences.Clear();
-                speakers = new List<string>(_menuHandler.dialogueController.dialogueObjectHandler.whoIsSpeaking);
-                sentences = new List<string>(_menuHandler.dialogueController.dialogueObjectHandler.dialogueBodyText);
-                if (dialogueObjectHandler.isAnyoneSpeaking == false)
-                {
-                    speakerText.gameObject.SetActive(false);
-                }
-                StartSentence();
+                DialogueHandler.Instance.LoadDialogueScriptableObject(_dialogueID);
+                DialogueHandler.Instance.StartSentence();
                 break;
             case true:
-                _loreItemHandler = DialogueHandler.Instance.LoadLoreScriptableObject(_dialogueID);
+                DialogueHandler.Instance.LoadLoreScriptableObject(_dialogueID);
                 break;
         }
 

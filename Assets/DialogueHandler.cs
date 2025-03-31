@@ -2,22 +2,36 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 public class DialogueHandler : MonoBehaviour
 {
    public static DialogueHandler Instance { get; private set; }
 
+   [field: Header("Lists")]
    public List<DialogueObjectHandler> allDialogueObjects;
    public List<LoreItemHandler> allLoreItems;
    public List<LoreItemHandler> allViewedLoreItems;
+   
    private AllDialogue _allDialogue;
-   public bool eraseViewedLore;
+   public bool eraseViewedLore; // Bool to allow all lore to respawn
+   public int index; // The currently displayed message + speaker combo
+   public DialogueObjectHandler currentDialogueObject; // The scriptable object that has been loaded
+   public LoreItemHandler currentLoreItem; // The lore that has been loaded
+   public float dialogueSpeed;
+   
+   [field: Header("References")]
+   private TextMeshProUGUI _dialogueText; //Dialogue text object
+   private TextMeshProUGUI _speakerText; // Speaker text object
+   private GameObject _player, _dialogueCanvas, _uiManager;
+   private MenuHandler _menuHandler;
 
-   [field: Header("Objects to Load")] public string loadedTitleText;
-   public List<string> loadedBodyText;
-   public List<string> loadedSpeakerText;
+   [field: Header("Objects to Load")] public string loadedTitleText; // The title (only used in lore)
+   public List<string> loadedBodyText; // All the messages that need to displayed
+   public List<string> loadedSpeakerText; // All the speakers that need to be displayed (this should always be the same size as the loadedBodyText string)
 
 
    private void Awake()
@@ -32,6 +46,12 @@ public class DialogueHandler : MonoBehaviour
 
    private void Start()
    {
+      _player = GameObject.FindGameObjectWithTag("Player");
+      _dialogueCanvas = GameObject.FindWithTag("Dialogue");
+      _player.GetComponent<ItemPickupHandler>();
+      _uiManager = GameObject.FindGameObjectWithTag("UIManager");
+      _menuHandler = _uiManager.GetComponent<MenuHandler>();
+      
       if (eraseViewedLore)
       {
          foreach (var lore in allLoreItems)
@@ -40,6 +60,7 @@ public class DialogueHandler : MonoBehaviour
          }
          eraseViewedLore = false;
       }
+      
       foreach (var lore in allLoreItems.ToList())
       {
          if (lore.discoveredByPlayer)
@@ -48,12 +69,84 @@ public class DialogueHandler : MonoBehaviour
             allLoreItems.Remove(lore);
          }
       }
+      
+      _speakerText = _dialogueCanvas.transform.Find("Text box").transform.Find("SpeakerHolder").transform.Find("SpeakerText").GetComponent<TextMeshProUGUI>();
+      _dialogueText = _dialogueCanvas.transform.Find("Text box").transform.Find("Normal Text").GetComponent<TextMeshProUGUI>();
    }
 
-
-   public DialogueObjectHandler LoadDialogueScriptableObject(int scriptableObjectID)
+   public void NextSentence(InputAction.CallbackContext context) // when space/A is pressed
    {
-      return allDialogueObjects[scriptableObjectID];
+      if (!context.performed) return;
+      if (!_dialogueCanvas.activeSelf) return;
+
+      if (_dialogueText.text == loadedBodyText[index])
+      {
+         // nextSen() moved here
+         if (index < loadedBodyText.Count - 1)
+         {
+            index++;
+            _dialogueText.text = string.Empty;
+            
+            if (loadedSpeakerText[index] == null)
+            {
+              loadedSpeakerText[index] = loadedSpeakerText[index - 1];
+            }
+            if (loadedBodyText == null)
+            {
+               loadedBodyText[index] = loadedBodyText[index - 1];
+            }
+
+            StartCoroutine(TypeSentence());
+         }
+         else
+         {
+            index = 0;
+            loadedBodyText.Clear();
+            loadedSpeakerText.Clear();
+            _speakerText.text = "";
+            _dialogueText.text = "";
+            _dialogueCanvas.SetActive(false);
+         }
+      }
+      else
+      {
+         StopAllCoroutines();
+         _dialogueText.text = loadedBodyText[index];
+         _speakerText.text = loadedSpeakerText[index];
+      }
+   }
+
+   public void StartSentence()
+   {
+      index = 0;
+      _speakerText.text = loadedSpeakerText[index];
+      _dialogueText.text = loadedBodyText[index];
+      StartCoroutine(TypeSentence());
+   }
+
+   IEnumerator TypeSentence()
+   {
+      foreach (char Character in loadedBodyText[index].ToCharArray())
+      {
+         _dialogueText.text += Character;
+         yield return new WaitForSeconds(dialogueSpeed);
+      }
+   }
+
+   public void LoadDialogueScriptableObject(int scriptableObjectID)
+   {
+      if (currentDialogueObject != null)
+      {
+         loadedSpeakerText.Clear();
+         loadedBodyText.Clear();
+      }
+      currentDialogueObject = allDialogueObjects[scriptableObjectID];
+      loadedSpeakerText = new List<string>(currentDialogueObject.whoIsSpeaking);
+      loadedBodyText = new List<string>(currentDialogueObject.dialogueBodyText);
+      if (currentDialogueObject.isAnyoneSpeaking == false)
+      {
+         _speakerText.gameObject.SetActive(false);
+      }
    }
    
    public LoreItemHandler LoadLoreScriptableObject(int scriptableObjectID)
