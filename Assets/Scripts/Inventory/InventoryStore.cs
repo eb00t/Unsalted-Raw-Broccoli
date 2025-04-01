@@ -12,10 +12,13 @@ public class InventoryStore : MonoBehaviour
     private ToolbarHandler _toolbarHandler;
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private ItemDatabase itemDatabase;
+    private MenuHandler _menuHandler;
+    [SerializeField] private Color notifPositiveColor, notifNegativeColor, iconPositiveColor, iconNegativeColor;
 
     private void Start()
     {
         _toolbarHandler = GetComponent<ToolbarHandler>();
+        _menuHandler = GetComponent<MenuHandler>();
         LoadItems();
         RefreshList();
     }
@@ -45,7 +48,7 @@ public class InventoryStore : MonoBehaviour
 
         newBlock.GetComponent<Button>().onClick.AddListener(delegate
         {
-            _toolbarHandler.InvItemSelected(indexHolder);
+            _toolbarHandler.InvItemSelected(item);
         });
 
         UpdateUI(indexHolder);
@@ -94,8 +97,8 @@ public class InventoryStore : MonoBehaviour
             {
                 b.numHeld++;
                 UpdateStoredCount(consumable.itemID, b.numHeld);
-                TriggerNotification(consumable.uiIcon, consumable.title);
-                _toolbarHandler.UpdateActiveConsumables();
+                TriggerNotification(consumable.uiIcon, consumable.title, true);
+                _toolbarHandler.UpdateToolbar();
                 UpdateUI(b);
                         
                 consumable.gameObject.SetActive(false);
@@ -103,16 +106,17 @@ public class InventoryStore : MonoBehaviour
             }
             else
             {
-                TriggerNotification(consumable.uiIcon, "Maximum number of item held");
+                TriggerNotification(consumable.uiIcon, "Maximum number of item held", false);
             }
             return;
         }
+
 
         // if the item did not exist in inventory already then a new inventory button is created
         dataHolder.savedItems.Add(consumable.itemID);
         dataHolder.savedItemCounts.Add(1);
 
-        TriggerNotification(consumable.uiIcon, consumable.title);
+        TriggerNotification(consumable.uiIcon, consumable.title, true);
         consumable.gameObject.SetActive(false);
         consumable.gameObject.GetComponent<ItemPickup>().canPickup = false;
 
@@ -124,12 +128,13 @@ public class InventoryStore : MonoBehaviour
         indexHolder.numHeld = 1;
         
         // updates the onclick for the new inventory item button
-        newBlock.GetComponent<Button>().onClick.AddListener(delegate { _toolbarHandler.InvItemSelected(indexHolder); });
+        newBlock.GetComponent<Button>().onClick.AddListener(delegate { _toolbarHandler.InvItemSelected(consumable); });
 
         UpdateUI(indexHolder);
 
         if (dataHolder.isAutoEquipEnabled)
         {
+            if (_menuHandler.shopGUI != null && _menuHandler.shopGUI.activeSelf) return;
             _toolbarHandler.AddToToolbar(consumable);
         }
     }
@@ -157,16 +162,28 @@ public class InventoryStore : MonoBehaviour
         }
     }
 
-    public void TriggerNotification(Sprite icon, string text)
+    public void TriggerNotification(Sprite icon, string text, bool isPositive)
     {
-        var newNotif = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation,
-            notifHolder.transform);
+        var newNotif = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation, notifHolder.transform);
         newNotif.GetComponentInChildren<TextMeshProUGUI>().text = text;
+        newNotif.GetComponentInChildren<TextMeshProUGUI>().color = isPositive ? notifPositiveColor : notifNegativeColor;
 
         foreach (var img in newNotif.GetComponentsInChildren<Image>())
         {
-            if (img.name != "IconImg") continue;
-            img.sprite = icon;
+            if (img.name == "Image")
+            {
+                img.color = isPositive ? notifPositiveColor : notifNegativeColor;
+            }
+
+            if (img.name == "GameObject")
+            {
+                img.color = isPositive ? iconPositiveColor : iconNegativeColor;
+            }
+
+            if (img.name == "IconImg")
+            {
+                img.sprite = icon;
+            }
         }
     }
 
@@ -202,7 +219,7 @@ public class InventoryStore : MonoBehaviour
                     }
                 }
 
-                _toolbarHandler.UpdateActiveConsumables();
+                _toolbarHandler.UpdateToolbar();
                 break;
             }
         }

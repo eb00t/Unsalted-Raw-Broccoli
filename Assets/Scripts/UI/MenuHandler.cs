@@ -290,7 +290,7 @@ public class MenuHandler : MonoBehaviour
 		else
 		{
 			// no items held popup
-			_inventoryStore.TriggerNotification(null, "No items held in inventory");
+			_inventoryStore.TriggerNotification(null, "No items held in inventory", false);
 		}
 	}
 

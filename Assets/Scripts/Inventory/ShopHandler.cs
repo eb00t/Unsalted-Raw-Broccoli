@@ -117,10 +117,10 @@ public class ShopHandler : MonoBehaviour
 			s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
 		}
 
-		foreach (var b in grid.GetComponentsInChildren<TextMeshProUGUI>())
+		foreach (var b in newBlock.GetComponentsInChildren<TextMeshProUGUI>())
 		{
 			if (b.name != "Price") continue;
-			b.text = itemPrice[i].ToString();
+			b.text = indexHolder.price.ToString();
 		}
 	}
 
@@ -151,10 +151,7 @@ public class ShopHandler : MonoBehaviour
 		
 		// add item to inventory when bought, instantiation prevents errors due to using a prefab
 		var inventoryStore = _uiManager.GetComponent<InventoryStore>();
-		var newItem = Instantiate(indexHolder.consumable.gameObject);
-		var newConsumable = newItem.GetComponent<Consumable>();
-		inventoryStore.AddNewItem(newConsumable);
-		Destroy(newItem);
+		inventoryStore.AddNewItem(indexHolder.consumable);
 		
 		AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseMade, transform.position);
 		
@@ -166,5 +163,7 @@ public class ShopHandler : MonoBehaviour
 				i.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld.ToString();
 			}
 		}
+		
+		_uiManager.GetComponent<ToolbarHandler>().UpdateToolbar();
 	}
 }

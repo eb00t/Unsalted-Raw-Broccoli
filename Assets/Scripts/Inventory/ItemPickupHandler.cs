@@ -62,7 +62,7 @@ public class ItemPickupHandler : MonoBehaviour
     public void PickUpItem(InputAction.CallbackContext context)
     {
         if (!context.performed || characterMovement.uiOpen) return;
-        
+         
         foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
         {
             var itemPickup = item.GetComponent<ItemPickup>();
