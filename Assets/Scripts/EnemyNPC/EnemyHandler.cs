@@ -350,6 +350,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private IEnumerator BeginExplode()
     {
+        StopAlarmSound();
         _animator.SetBool("isExplode", true);
         yield return new WaitForSecondsRealtime(attackCooldown);
         _animator.SetBool("isExplode", false);

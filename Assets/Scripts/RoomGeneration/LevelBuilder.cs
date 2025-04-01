@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using FMOD.Studio;
 using Unity.Mathematics;
 using UnityEngine;
@@ -602,7 +603,7 @@ public class LevelBuilder : MonoBehaviour
                     }
                     break;
                 case > 60 and <= 90:
-                    if (lootRoomsToSpawn > 0)
+                    if (spawnedLootRooms.Count < lootRoomsToSpawn)
                     {
                         Debug.Log("LOOT ROOM SPAWNING");
                         _spawnMode = SpawnMode.LootRooms;
@@ -617,12 +618,11 @@ public class LevelBuilder : MonoBehaviour
                     break;
             }
 
-            if (lootRoomsToSpawn > 0 && roomsRemaining - 1 < lootRoomsToSpawn)
+            if (spawnedLootRooms.Count < lootRoomsToSpawn && roomsRemaining is 2 or 3)
             {
                 Debug.Log("FORCED LOOT ROOM SPAWNING");
                 _spawnMode = SpawnMode.LootRooms;
             }
-            
             if (spawnedShops.Count == 0 && roomsRemaining == 1)
             {
                 Debug.Log("FORCED SHOP SPAWNING");
@@ -721,15 +721,17 @@ public class LevelBuilder : MonoBehaviour
 
     public void CleanUpBadRooms()
     {
-       foreach (var room in discardedRooms)
+       foreach (var room in discardedRooms.ToList())
        {
            RoomInfo badRoomInfo = room.GetComponent<RoomInfo>();
            if (badRoomInfo.markedForDiscard)
            {
                Debug.Log(room.name + " has been discarded.");
+               discardedRooms.Remove(room);
                Destroy(badRoomInfo.connectorSpawnedOff);
                Destroy(room);
            }
+           roomsDiscarded++;
        }
     }
 

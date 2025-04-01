@@ -222,19 +222,7 @@ public class IntersectionRaycast : MonoBehaviour
         if (discard)
         {
             Debug.Log(name + " is trying to spawn in occupied space.");
-            _roomInfo.markedForDiscard = true;
-            foreach (var room in _roomInfo.doorSpawnPoints)
-            {
-                LevelBuilder.Instance.spawnPoints.Remove(room.transform);
-            }
-
-            _roomInfo.doorSpawnPoints.Clear();
-
-            if (!LevelBuilder.Instance.discardedRooms.Contains(gameObject))
-            {
-                LevelBuilder.Instance.discardedRooms.Add(gameObject);
-            }
-            LevelBuilder.Instance.CleanUpBadRooms();
+            _roomInfo.MarkRoomForDiscard();
             _collider.enabled = true;
         }
         else

@@ -113,13 +113,11 @@ public class RoomInfo : MonoBehaviour
 
         if (lootRoom)
         {
-            if (LevelBuilder.Instance.lootRoomsToSpawn == 0)
-            {
-                markedForDiscard = true;
-                LevelBuilder.Instance.discardedRooms.Add(gameObject);
-            }
             LevelBuilder.Instance.spawnedLootRooms.Add(gameObject);
-            LevelBuilder.Instance.lootRoomsToSpawn--;
+            if (LevelBuilder.Instance.spawnedLootRooms.Count > LevelBuilder.Instance.lootRoomsToSpawn)
+            {
+               MarkRoomForDiscard();
+            }
         }
 
         if (shop)
@@ -127,19 +125,15 @@ public class RoomInfo : MonoBehaviour
             LevelBuilder.Instance.spawnedShops.Add(gameObject);
             if (LevelBuilder.Instance.spawnedShops.Count > 1)
             {
-                markedForDiscard = true;
-                LevelBuilder.Instance.discardedRooms.Add(gameObject);
+               MarkRoomForDiscard();
             }
-            
         }
-        
         if (loreRoom)
         {
             LevelBuilder.Instance.spawnedLoreRooms.Add(gameObject);
             if (LevelBuilder.Instance.spawnedLoreRooms.Count > 1)
             {
-                markedForDiscard = true;
-                LevelBuilder.Instance.discardedRooms.Add(gameObject);
+                MarkRoomForDiscard();
             }
         }
         CameraManager.Instance.virtualCameras.Add(roomCam.GetComponent<CinemachineVirtualCamera>());
@@ -150,21 +144,22 @@ public class RoomInfo : MonoBehaviour
         Debug.Log(gameObject + "Distance between top/bottom walls and centre: " + distToRoomCentre.y);*/
     }
 
-    private void OnDestroy()
+    public void MarkRoomForDiscard()
     {
-        LevelBuilder.Instance.spawnedRooms.Remove(gameObject);
-        foreach (var door in doorSpawnPoints)
+        markedForDiscard = true;
+        if (!LevelBuilder.Instance.discardedRooms.Contains(gameObject))
         {
-           LevelBuilder.Instance.spawnPoints.Remove(door.transform); 
+            LevelBuilder.Instance.discardedRooms.Add(gameObject);
         }
-        CameraManager.Instance.virtualCameras.Remove(roomCam.GetComponent<CinemachineVirtualCamera>());
+
+        LevelBuilder.Instance.spawnedRooms.Remove(gameObject);
         if (specialRoom)
         {
             LevelBuilder.Instance.possibleSpecialRooms.Add(Resources.Load<GameObject>(roomPath));
         }
         if (shop)
         {
-            if (LevelBuilder.Instance.spawnedShops.Count == 0)
+            if (LevelBuilder.Instance.spawnedShops.Count <= 0)
             {
                 LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.Shops;
                 LevelBuilder.Instance.spawnModeChangedByDestroy = true;
@@ -174,12 +169,6 @@ public class RoomInfo : MonoBehaviour
         if (lootRoom)
         {
             LevelBuilder.Instance.spawnedLootRooms.Remove(gameObject);
-            LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.LootRooms;
-            LevelBuilder.Instance.spawnModeChangedByDestroy = true;
-            if (LevelBuilder.Instance.lootRoomsToSpawn > 0)
-            {
-                LevelBuilder.Instance.lootRoomsToSpawn++;
-            }
         }
         if (bossRoom)
         {
@@ -200,19 +189,11 @@ public class RoomInfo : MonoBehaviour
                     break;
             }
         }
-
         if (loreRoom)
         {
             LevelBuilder.Instance.spawnedLoreRooms.Remove(gameObject);
             LevelBuilder.Instance.spawnModeChangedByDestroy = true;
         }
-       
-        if (LevelBuilder.Instance.discardedRooms.Contains(gameObject))
-        {
-            LevelBuilder.Instance.discardedRooms.Remove(gameObject);
-            LevelBuilder.Instance.roomsDiscarded += 1;
-        }
-        
         foreach (var connector in attachedConnectors)
         {
             if (connector != null)
@@ -220,7 +201,16 @@ public class RoomInfo : MonoBehaviour
                 connector.GetComponent<ConnectorRoomInfo>().attachedRooms.Remove(gameObject);
             }
         }
-
+        foreach (var door in doorSpawnPoints)
+        {
+            LevelBuilder.Instance.spawnPoints.Remove(door.transform); 
+        }
+        doorSpawnPoints.Clear();
+        CameraManager.Instance.virtualCameras.Remove(roomCam.GetComponent<CinemachineVirtualCamera>());
+        LevelBuilder.Instance.CleanUpBadRooms();
+    }
+    private void OnDestroy()
+    {
         switch (LevelBuilder.Instance._spawnMode)
         {
             case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms or LevelBuilder.SpawnMode.Shops or LevelBuilder.SpawnMode.LootRooms or LevelBuilder.SpawnMode.LoreRooms:
