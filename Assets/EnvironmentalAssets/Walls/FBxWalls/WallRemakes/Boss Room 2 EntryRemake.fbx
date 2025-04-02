@@ -8,11 +8,11 @@ FBXHeaderExtension:  {
 		Version: 1000
 		Year: 2025
 		Month: 3
-		Day: 19
-		Hour: 13
+		Day: 27
+		Hour: 8
 		Minute: 58
-		Second: 55
-		Millisecond: 892
+		Second: 35
+		Millisecond: 239
 	}
 	Creator: "FBX SDK/FBX Plugins version 2020.3.2"
 	OtherFlags:  {
@@ -31,8 +31,8 @@ FBXHeaderExtension:  {
 			Comment: ""
 		}
 		Properties70:  {
-			P: "DocumentUrl", "KString", "Url", "", "C:\Unity\Unsalted-Raw-Broccoli\Assets\EnvironmentalAssets\ScienceAssets\Walls\FBxWalls\oww1zx6v_TestRoom2.fbx"
-			P: "SrcDocumentUrl", "KString", "Url", "", "C:\Unity\Unsalted-Raw-Broccoli\Assets\EnvironmentalAssets\ScienceAssets\Walls\FBxWalls\oww1zx6v_TestRoom2.fbx"
+			P: "DocumentUrl", "KString", "Url", "", "C:\Unity\Unsalted-Raw-Broccoli\Assets\EnvironmentalAssets\ScienceAssets\Walls\FBxWalls\WallModels\kvurtd1e_Boss Room 2 EntryRemake.fbx"
+			P: "SrcDocumentUrl", "KString", "Url", "", "C:\Unity\Unsalted-Raw-Broccoli\Assets\EnvironmentalAssets\ScienceAssets\Walls\FBxWalls\WallModels\kvurtd1e_Boss Room 2 EntryRemake.fbx"
 			P: "Original", "Compound", "", ""
 			P: "Original|ApplicationVendor", "KString", "", "", ""
 			P: "Original|ApplicationName", "KString", "", "", "Unity FBX Exporter"
@@ -78,7 +78,7 @@ GlobalSettings:  {
 
 Documents:  {
 	Count: 1
-	Document: 1842604696544, "Scene", "Scene" {
+	Document: 2058942566384, "Scene", "Scene" {
 		Properties70:  {
 			P: "SourceObject", "object", "", ""
 			P: "ActiveAnimStackName", "KString", "", "", ""
@@ -98,12 +98,12 @@ References:  {
 
 Definitions:  {
 	Version: 100
-	Count: 29
+	Count: 16
 	ObjectType: "GlobalSettings" {
 		Count: 1
 	}
 	ObjectType: "Model" {
-		Count: 19
+		Count: 13
 		PropertyTemplate: "FbxNode" {
 			Properties70:  {
 				P: "QuaternionInterpolate", "enum", "", "",0
@@ -194,7 +194,7 @@ Definitions:  {
 		}
 	}
 	ObjectType: "Material" {
-		Count: 4
+		Count: 1
 		PropertyTemplate: "FbxSurfaceLambert" {
 			Properties70:  {
 				P: "ShadingModel", "KString", "", "", "Lambert"
@@ -217,63 +217,13 @@ Definitions:  {
 			}
 		}
 	}
-	ObjectType: "Texture" {
-		Count: 2
-		PropertyTemplate: "FbxFileTexture" {
-			Properties70:  {
-				P: "TextureTypeUse", "enum", "", "",0
-				P: "Texture alpha", "Number", "", "A",1
-				P: "CurrentMappingType", "enum", "", "",0
-				P: "WrapModeU", "enum", "", "",0
-				P: "WrapModeV", "enum", "", "",0
-				P: "UVSwap", "bool", "", "",0
-				P: "PremultiplyAlpha", "bool", "", "",1
-				P: "Translation", "Vector", "", "A",0,0,0
-				P: "Rotation", "Vector", "", "A",0,0,0
-				P: "Scaling", "Vector", "", "A",1,1,1
-				P: "TextureRotationPivot", "Vector3D", "Vector", "",0,0,0
-				P: "TextureScalingPivot", "Vector3D", "Vector", "",0,0,0
-				P: "CurrentTextureBlendMode", "enum", "", "",1
-				P: "UVSet", "KString", "", "", "default"
-				P: "UseMaterial", "bool", "", "",0
-				P: "UseMipMap", "bool", "", "",0
-			}
-		}
-	}
-	ObjectType: "Video" {
-		Count: 2
-		PropertyTemplate: "FbxVideo" {
-			Properties70:  {
-				P: "Path", "KString", "XRefUrl", "", ""
-				P: "RelPath", "KString", "XRefUrl", "", ""
-				P: "Color", "ColorRGB", "Color", "",0.8,0.8,0.8
-				P: "ClipIn", "KTime", "Time", "",0
-				P: "ClipOut", "KTime", "Time", "",0
-				P: "Offset", "KTime", "Time", "",0
-				P: "PlaySpeed", "double", "Number", "",0
-				P: "FreeRunning", "bool", "", "",0
-				P: "Loop", "bool", "", "",0
-				P: "Mute", "bool", "", "",0
-				P: "AccessMode", "enum", "", "",0
-				P: "ImageSequence", "bool", "", "",0
-				P: "ImageSequenceOffset", "int", "Integer", "",0
-				P: "FrameRate", "double", "Number", "",0
-				P: "LastFrame", "int", "Integer", "",0
-				P: "Width", "int", "Integer", "",0
-				P: "Height", "int", "Integer", "",0
-				P: "StartFrame", "int", "Integer", "",0
-				P: "StopFrame", "int", "Integer", "",0
-				P: "InterlaceMode", "enum", "", "",0
-			}
-		}
-	}
 }
 
 ; Object properties
 ;------------------------------------------------------------------
 
 Objects:  {
-	Geometry: 1843072930544, "Geometry::Scene", "Mesh" {
+	Geometry: 2071790147328, "Geometry::Scene", "Mesh" {
 		Vertices: *24 {
 			a: -50,-50,50,50,-50,50,-50,50,50,50,50,50,-50,50,-50,50,50,-50,-50,-50,-50,50,-50,-50
 		} 
@@ -382,7 +332,31 @@ Objects:  {
 			}
 		}
 	}
-	Model: 1837610975488, "Model::TestRoom2", "Mesh" {
+	Model: 2073953155712, "Model::Boss Room 2 EntryRemake", "Null" {
+		Version: 232
+		Properties70:  {
+			P: "RotationOrder", "enum", "", "",4
+			P: "RotationActive", "bool", "", "",1
+			P: "InheritType", "enum", "", "",1
+			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
+		}
+		Shading: Y
+		Culling: "CullingOff"
+	}
+	Model: 2073953143712, "Model::RightBottom", "Null" {
+		Version: 232
+		Properties70:  {
+			P: "RotationOrder", "enum", "", "",4
+			P: "RotationActive", "bool", "", "",1
+			P: "InheritType", "enum", "", "",1
+			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
+			P: "Lcl Translation", "Lcl Translation", "", "A",2932.99999237061,528.000020980835,773.999977111816
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,1.00262999534607,1
+		}
+		Shading: Y
+		Culling: "CullingOff"
+	}
+	Model: 2073953147712, "Model::Cube", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -390,13 +364,13 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Rotation", "Lcl Rotation", "", "A",-0,-90,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1.00000023841858,1,1.00000023841858
+			P: "Lcl Translation", "Lcl Translation", "", "A",31.0000002384186,0,180.999994277954
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",2.99448800086975,1,8.41415023803711
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 1841389815728, "Model::TopWall", "Mesh" {
+	Model: 2073880341616, "Model::Cube (1)", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -404,13 +378,28 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",0,1050,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",30,1,3
+			P: "Lcl Translation", "Lcl Translation", "", "A",31.0000091791153,378.999996185303,-196.000254154205
+			P: "Lcl Rotation", "Lcl Rotation", "", "A",90,0,-0
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",2.99448800086975,1,8.35050010681152
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 1841389793728, "Model::DoorT", "Mesh" {
+	Model: 2073880339616, "Model::leftBottom", "Null" {
+		Version: 232
+		Properties70:  {
+			P: "RotationOrder", "enum", "", "",4
+			P: "RotationActive", "bool", "", "",1
+			P: "InheritType", "enum", "", "",1
+			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
+			P: "Lcl Translation", "Lcl Translation", "", "A",2996.99993133545,528.999996185303,2480.99994659424
+			P: "Lcl Rotation", "Lcl Rotation", "", "A",-0,-180,0
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,1.00262999534607,1
+		}
+		Shading: Y
+		Culling: "CullingOff"
+	}
+	Model: 2073880343616, "Model::Cube_1", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -418,12 +407,13 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",0.166666656732559,1,1
+			P: "Lcl Translation", "Lcl Translation", "", "A",31.0000002384186,0,180.999994277954
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",2.99448800086975,1,8.41415023803711
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 1841389795728, "Model::TopHalfWallL", "Mesh" {
+	Model: 2073880345616, "Model::Cube (1)_1", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -431,13 +421,28 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-29.1666746139526,0,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",0.416666686534882,1,1
+			P: "Lcl Translation", "Lcl Translation", "", "A",31.0000091791153,378.999996185303,-196.000254154205
+			P: "Lcl Rotation", "Lcl Rotation", "", "A",90,0,-0
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",2.99448800086975,1,8.35050010681152
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 1841389835728, "Model::TopHalfWallR", "Mesh" {
+	Model: 2073880347616, "Model::leftTop", "Null" {
+		Version: 232
+		Properties70:  {
+			P: "RotationOrder", "enum", "", "",4
+			P: "RotationActive", "bool", "", "",1
+			P: "InheritType", "enum", "", "",1
+			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
+			P: "Lcl Translation", "Lcl Translation", "", "A",2996.99993133545,2432.99999237061,2673.99997711182
+			P: "Lcl Rotation", "Lcl Rotation", "", "A",90,0,180
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,1.00262999534607,1
+		}
+		Shading: Y
+		Culling: "CullingOff"
+	}
+	Model: 2073880333616, "Model::Cube_2", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -445,13 +450,13 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",29.1666686534882,0,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",0.416666686534882,1,1
+			P: "Lcl Translation", "Lcl Translation", "", "A",31.0000002384186,0,180.999994277954
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",2.99448800086975,1,8.41415023803711
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 1841389851728, "Model::BottomWall", "Mesh" {
+	Model: 2073880335616, "Model::Cube (1)_2", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -459,13 +464,28 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",0,-1050,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",30,1,3
+			P: "Lcl Translation", "Lcl Translation", "", "A",31.0000091791153,378.999996185303,-196.000254154205
+			P: "Lcl Rotation", "Lcl Rotation", "", "A",90,0,-0
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",2.99448800086975,1,8.35050010681152
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 1839220502304, "Model::DoorB", "Mesh" {
+	Model: 2073880337616, "Model::leftTop (1)", "Null" {
+		Version: 232
+		Properties70:  {
+			P: "RotationOrder", "enum", "", "",4
+			P: "RotationActive", "bool", "", "",1
+			P: "InheritType", "enum", "", "",1
+			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
+			P: "Lcl Translation", "Lcl Translation", "", "A",2931.99996948242,2432.99999237061,578.000020980835
+			P: "Lcl Rotation", "Lcl Rotation", "", "A",90,0,-0
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,1.00262999534607,1
+		}
+		Shading: Y
+		Culling: "CullingOff"
+	}
+	Model: 2073880250320, "Model::Cube_3", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -473,12 +493,13 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",0.166666641831398,1,1
+			P: "Lcl Translation", "Lcl Translation", "", "A",31.0000002384186,0,180.999994277954
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",2.99448800086975,1,8.41415023803711
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 1839220490304, "Model::BottomHalfWallR", "Mesh" {
+	Model: 2073880252320, "Model::Cube (1)_3", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationOrder", "enum", "", "",4
@@ -486,167 +507,14 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-29.1666805744171,0,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",0.416666716337204,1,1
+			P: "Lcl Translation", "Lcl Translation", "", "A",31.0000091791153,378.999996185303,-196.000254154205
+			P: "Lcl Rotation", "Lcl Rotation", "", "A",90,0,-0
+			P: "Lcl Scaling", "Lcl Scaling", "", "A",2.99448800086975,1,8.35050010681152
 		}
 		Shading: W
 		Culling: "CullingOff"
 	}
-	Model: 1829489127696, "Model::BottomHalfWallL", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",29.1666775941849,0,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",0.416666716337204,1,1
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 1839229228480, "Model::RightWall", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-1550,0,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,20,3
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 1843141917488, "Model::DoorR", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",0,-37.5,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,0.25,1
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 1843141921488, "Model::HalfRightWallT", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",0,12.5,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,0.75,1
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 1843141937488, "Model::LeftWall", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",1550,0,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,20,3
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 1843141913488, "Model::HalfLeftWallT", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",0.00123977661132812,12.5,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,0.75,1
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 1843141925488, "Model::DoorL", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",0,-37.5,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,0.25,1
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 1843141939488, "Model::CornerTR", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",1550,1050,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,1,3
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 1843141941488, "Model::CornerTL", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-1550,1050,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,1,3
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 1843141915488, "Model::CornerBR", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",1550,-1050,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,1,3
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Model: 1843141943488, "Model::CornerBL", "Mesh" {
-		Version: 232
-		Properties70:  {
-			P: "RotationOrder", "enum", "", "",4
-			P: "RotationActive", "bool", "", "",1
-			P: "InheritType", "enum", "", "",1
-			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
-			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",-1550,-1050,0
-			P: "Lcl Scaling", "Lcl Scaling", "", "A",1,1,3
-		}
-		Shading: W
-		Culling: "CullingOff"
-	}
-	Material: 1842275579760, "Material::Lit", "" {
+	Material: 2073737235936, "Material::Lit", "" {
 		Version: 102
 		ShadingModel: "lambert"
 		MultiLayer: 0
@@ -659,89 +527,6 @@ Objects:  {
 			P: "Opacity", "double", "Number", "",1
 		}
 	}
-	Material: 1842275584560, "Material::DoorTest", "" {
-		Version: 102
-		ShadingModel: "lambert"
-		MultiLayer: 0
-		Properties70:  {
-			P: "AmbientColor", "Color", "", "A",0,0,0
-			P: "DiffuseColor", "Color", "", "A",0,0,0
-			P: "Emissive", "Vector3D", "Vector", "",0,0,0
-			P: "Ambient", "Vector3D", "Vector", "",0,0,0
-			P: "Diffuse", "Vector3D", "Vector", "",0,0,0
-			P: "Opacity", "double", "Number", "",1
-		}
-	}
-	Material: 1842275585760, "Material::TopGround", "" {
-		Version: 102
-		ShadingModel: "lambert"
-		MultiLayer: 0
-		Properties70:  {
-			P: "AmbientColor", "Color", "", "A",0,0,0
-			P: "DiffuseColor", "Color", "", "A",1,1,1
-			P: "Emissive", "Vector3D", "Vector", "",0,0,0
-			P: "Ambient", "Vector3D", "Vector", "",0,0,0
-			P: "Diffuse", "Vector3D", "Vector", "",1,1,1
-			P: "Opacity", "double", "Number", "",1
-		}
-	}
-	Material: 1842275589760, "Material::TopGround2", "" {
-		Version: 102
-		ShadingModel: "lambert"
-		MultiLayer: 0
-		Properties70:  {
-			P: "AmbientColor", "Color", "", "A",0,0,0
-			P: "DiffuseColor", "Color", "", "A",1,1,1
-			P: "Emissive", "Vector3D", "Vector", "",0,0,0
-			P: "Ambient", "Vector3D", "Vector", "",0,0,0
-			P: "Diffuse", "Vector3D", "Vector", "",1,1,1
-			P: "Opacity", "double", "Number", "",1
-		}
-	}
-	Video: 1839226161808, "Video::DiffuseColor_Texture", "Clip" {
-		Type: "Clip"
-		Properties70:  {
-			P: "Path", "KString", "XRefUrl", "", "C:\Unity\Unsalted-Raw-Broccoli\Assets\EnvironmentalAssets\ScienceAssets\Sprites\TopGround.png"
-			P: "RelPath", "KString", "XRefUrl", "", "..\..\Sprites\TopGround.png"
-		}
-		UseMipMap: 0
-		Filename: "C:\Unity\Unsalted-Raw-Broccoli\Assets\EnvironmentalAssets\ScienceAssets\Sprites\TopGround.png"
-		RelativeFilename: "..\..\Sprites\TopGround.png"
-	}
-	Video: 1839226151728, "Video::DiffuseColor_Texture_1", "Clip" {
-		Type: "Clip"
-		Properties70:  {
-			P: "Path", "KString", "XRefUrl", "", "C:\Unity\Unsalted-Raw-Broccoli\Assets\EnvironmentalAssets\ScienceAssets\Sprites\TopGround2.png"
-			P: "RelPath", "KString", "XRefUrl", "", "..\..\Sprites\TopGround2.png"
-		}
-		UseMipMap: 0
-		Filename: "C:\Unity\Unsalted-Raw-Broccoli\Assets\EnvironmentalAssets\ScienceAssets\Sprites\TopGround2.png"
-		RelativeFilename: "..\..\Sprites\TopGround2.png"
-	}
-	Texture: 1839226151248, "Texture::DiffuseColor_Texture", "" {
-		Type: "TextureVideoClip"
-		Version: 202
-		TextureName: "Texture::DiffuseColor_Texture"
-		Media: "Video::DiffuseColor_Texture"
-		FileName: "C:\Unity\Unsalted-Raw-Broccoli\Assets\EnvironmentalAssets\ScienceAssets\Sprites\TopGround.png"
-		RelativeFilename: "..\..\Sprites\TopGround.png"
-		ModelUVTranslation: 0,0
-		ModelUVScaling: 1,1
-		Texture_Alpha_Source: "None"
-		Cropping: 0,0,0,0
-	}
-	Texture: 1839226157968, "Texture::DiffuseColor_Texture_1", "" {
-		Type: "TextureVideoClip"
-		Version: 202
-		TextureName: "Texture::DiffuseColor_Texture_1"
-		Media: "Video::DiffuseColor_Texture_1"
-		FileName: "C:\Unity\Unsalted-Raw-Broccoli\Assets\EnvironmentalAssets\ScienceAssets\Sprites\TopGround2.png"
-		RelativeFilename: "..\..\Sprites\TopGround2.png"
-		ModelUVTranslation: 0,0
-		ModelUVScaling: 1,1
-		Texture_Alpha_Source: "None"
-		Cropping: 0,0,0,0
-	}
 }
 
 ; Object connections
@@ -749,194 +534,92 @@ Objects:  {
 
 Connections:  {
 	
-	;Model::TestRoom2, Model::RootNode
-	C: "OO",1837610975488,0
+	;Model::Boss Room 2 EntryRemake, Model::RootNode
+	C: "OO",2073953155712,0
 	
-	;Model::TopWall, Model::TestRoom2
-	C: "OO",1841389815728,1837610975488
+	;Model::RightBottom, Model::Boss Room 2 EntryRemake
+	C: "OO",2073953143712,2073953155712
 	
-	;Model::BottomWall, Model::TestRoom2
-	C: "OO",1841389851728,1837610975488
+	;Model::leftBottom, Model::Boss Room 2 EntryRemake
+	C: "OO",2073880339616,2073953155712
 	
-	;Model::RightWall, Model::TestRoom2
-	C: "OO",1839229228480,1837610975488
+	;Model::leftTop, Model::Boss Room 2 EntryRemake
+	C: "OO",2073880347616,2073953155712
 	
-	;Model::LeftWall, Model::TestRoom2
-	C: "OO",1843141937488,1837610975488
+	;Model::leftTop (1), Model::Boss Room 2 EntryRemake
+	C: "OO",2073880337616,2073953155712
 	
-	;Model::CornerTR, Model::TestRoom2
-	C: "OO",1843141939488,1837610975488
+	;Model::Cube, Model::RightBottom
+	C: "OO",2073953147712,2073953143712
 	
-	;Model::CornerTL, Model::TestRoom2
-	C: "OO",1843141941488,1837610975488
+	;Model::Cube (1), Model::RightBottom
+	C: "OO",2073880341616,2073953143712
 	
-	;Model::CornerBR, Model::TestRoom2
-	C: "OO",1843141915488,1837610975488
+	;Material::Lit, Model::Cube
+	C: "OO",2073737235936,2073953147712
 	
-	;Model::CornerBL, Model::TestRoom2
-	C: "OO",1843141943488,1837610975488
+	;Geometry::Scene, Model::Cube
+	C: "OO",2071790147328,2073953147712
 	
-	;Material::Lit, Model::TestRoom2
-	C: "OO",1842275579760,1837610975488
+	;Material::Lit, Model::Cube (1)
+	C: "OO",2073737235936,2073880341616
 	
-	;Geometry::Scene, Model::TestRoom2
-	C: "OO",1843072930544,1837610975488
+	;Geometry::Scene, Model::Cube (1)
+	C: "OO",2071790147328,2073880341616
 	
-	;Model::DoorT, Model::TopWall
-	C: "OO",1841389793728,1841389815728
+	;Model::Cube_1, Model::leftBottom
+	C: "OO",2073880343616,2073880339616
 	
-	;Model::TopHalfWallL, Model::TopWall
-	C: "OO",1841389795728,1841389815728
+	;Model::Cube (1)_1, Model::leftBottom
+	C: "OO",2073880345616,2073880339616
 	
-	;Model::TopHalfWallR, Model::TopWall
-	C: "OO",1841389835728,1841389815728
+	;Material::Lit, Model::Cube_1
+	C: "OO",2073737235936,2073880343616
 	
-	;Material::Lit, Model::TopWall
-	C: "OO",1842275579760,1841389815728
+	;Geometry::Scene, Model::Cube_1
+	C: "OO",2071790147328,2073880343616
 	
-	;Geometry::Scene, Model::TopWall
-	C: "OO",1843072930544,1841389815728
+	;Material::Lit, Model::Cube (1)_1
+	C: "OO",2073737235936,2073880345616
 	
-	;Material::DoorTest, Model::DoorT
-	C: "OO",1842275584560,1841389793728
+	;Geometry::Scene, Model::Cube (1)_1
+	C: "OO",2071790147328,2073880345616
 	
-	;Geometry::Scene, Model::DoorT
-	C: "OO",1843072930544,1841389793728
+	;Model::Cube_2, Model::leftTop
+	C: "OO",2073880333616,2073880347616
 	
-	;Material::TopGround, Model::TopHalfWallL
-	C: "OO",1842275585760,1841389795728
+	;Model::Cube (1)_2, Model::leftTop
+	C: "OO",2073880335616,2073880347616
 	
-	;Geometry::Scene, Model::TopHalfWallL
-	C: "OO",1843072930544,1841389795728
+	;Material::Lit, Model::Cube_2
+	C: "OO",2073737235936,2073880333616
 	
-	;Material::TopGround, Model::TopHalfWallR
-	C: "OO",1842275585760,1841389835728
+	;Geometry::Scene, Model::Cube_2
+	C: "OO",2071790147328,2073880333616
 	
-	;Geometry::Scene, Model::TopHalfWallR
-	C: "OO",1843072930544,1841389835728
+	;Material::Lit, Model::Cube (1)_2
+	C: "OO",2073737235936,2073880335616
 	
-	;Model::DoorB, Model::BottomWall
-	C: "OO",1839220502304,1841389851728
+	;Geometry::Scene, Model::Cube (1)_2
+	C: "OO",2071790147328,2073880335616
 	
-	;Model::BottomHalfWallR, Model::BottomWall
-	C: "OO",1839220490304,1841389851728
+	;Model::Cube_3, Model::leftTop (1)
+	C: "OO",2073880250320,2073880337616
 	
-	;Model::BottomHalfWallL, Model::BottomWall
-	C: "OO",1829489127696,1841389851728
+	;Model::Cube (1)_3, Model::leftTop (1)
+	C: "OO",2073880252320,2073880337616
 	
-	;Material::Lit, Model::BottomWall
-	C: "OO",1842275579760,1841389851728
+	;Material::Lit, Model::Cube_3
+	C: "OO",2073737235936,2073880250320
 	
-	;Geometry::Scene, Model::BottomWall
-	C: "OO",1843072930544,1841389851728
+	;Geometry::Scene, Model::Cube_3
+	C: "OO",2071790147328,2073880250320
 	
-	;Material::DoorTest, Model::DoorB
-	C: "OO",1842275584560,1839220502304
+	;Material::Lit, Model::Cube (1)_3
+	C: "OO",2073737235936,2073880252320
 	
-	;Geometry::Scene, Model::DoorB
-	C: "OO",1843072930544,1839220502304
-	
-	;Material::TopGround2, Model::BottomHalfWallR
-	C: "OO",1842275589760,1839220490304
-	
-	;Geometry::Scene, Model::BottomHalfWallR
-	C: "OO",1843072930544,1839220490304
-	
-	;Material::TopGround2, Model::BottomHalfWallL
-	C: "OO",1842275589760,1829489127696
-	
-	;Geometry::Scene, Model::BottomHalfWallL
-	C: "OO",1843072930544,1829489127696
-	
-	;Model::DoorR, Model::RightWall
-	C: "OO",1843141917488,1839229228480
-	
-	;Model::HalfRightWallT, Model::RightWall
-	C: "OO",1843141921488,1839229228480
-	
-	;Material::Lit, Model::RightWall
-	C: "OO",1842275579760,1839229228480
-	
-	;Geometry::Scene, Model::RightWall
-	C: "OO",1843072930544,1839229228480
-	
-	;Material::DoorTest, Model::DoorR
-	C: "OO",1842275584560,1843141917488
-	
-	;Geometry::Scene, Model::DoorR
-	C: "OO",1843072930544,1843141917488
-	
-	;Material::TopGround, Model::HalfRightWallT
-	C: "OO",1842275585760,1843141921488
-	
-	;Geometry::Scene, Model::HalfRightWallT
-	C: "OO",1843072930544,1843141921488
-	
-	;Model::HalfLeftWallT, Model::LeftWall
-	C: "OO",1843141913488,1843141937488
-	
-	;Model::DoorL, Model::LeftWall
-	C: "OO",1843141925488,1843141937488
-	
-	;Material::Lit, Model::LeftWall
-	C: "OO",1842275579760,1843141937488
-	
-	;Geometry::Scene, Model::LeftWall
-	C: "OO",1843072930544,1843141937488
-	
-	;Material::TopGround, Model::HalfLeftWallT
-	C: "OO",1842275585760,1843141913488
-	
-	;Geometry::Scene, Model::HalfLeftWallT
-	C: "OO",1843072930544,1843141913488
-	
-	;Material::DoorTest, Model::DoorL
-	C: "OO",1842275584560,1843141925488
-	
-	;Geometry::Scene, Model::DoorL
-	C: "OO",1843072930544,1843141925488
-	
-	;Material::TopGround2, Model::CornerTR
-	C: "OO",1842275589760,1843141939488
-	
-	;Geometry::Scene, Model::CornerTR
-	C: "OO",1843072930544,1843141939488
-	
-	;Material::TopGround2, Model::CornerTL
-	C: "OO",1842275589760,1843141941488
-	
-	;Geometry::Scene, Model::CornerTL
-	C: "OO",1843072930544,1843141941488
-	
-	;Material::TopGround2, Model::CornerBR
-	C: "OO",1842275589760,1843141915488
-	
-	;Geometry::Scene, Model::CornerBR
-	C: "OO",1843072930544,1843141915488
-	
-	;Material::TopGround2, Model::CornerBL
-	C: "OO",1842275589760,1843141943488
-	
-	;Geometry::Scene, Model::CornerBL
-	C: "OO",1843072930544,1843141943488
-	
-	;Texture::DiffuseColor_Texture, Material::TopGround
-	C: "OO",1839226151248,1842275585760
-	
-	;Texture::DiffuseColor_Texture, Material::TopGround
-	C: "OP",1839226151248,1842275585760, "DiffuseColor"
-	
-	;Video::DiffuseColor_Texture, Texture::DiffuseColor_Texture
-	C: "OO",1839226161808,1839226151248
-	
-	;Texture::DiffuseColor_Texture_1, Material::TopGround2
-	C: "OO",1839226157968,1842275589760
-	
-	;Texture::DiffuseColor_Texture_1, Material::TopGround2
-	C: "OP",1839226157968,1842275589760, "DiffuseColor"
-	
-	;Video::DiffuseColor_Texture_1, Texture::DiffuseColor_Texture_1
-	C: "OO",1839226151728,1839226157968
+	;Geometry::Scene, Model::Cube (1)_3
+	C: "OO",2071790147328,2073880252320
 }
 ;Takes section
 ;----------------------------------------------------
