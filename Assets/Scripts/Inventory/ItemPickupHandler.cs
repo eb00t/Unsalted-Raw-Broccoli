@@ -16,8 +16,8 @@ public class ItemPickupHandler : MonoBehaviour
     [SerializeField] private UpdateButton updateButton;
 
     [Header("Item Handling")] 
-    public bool isPlrNearShop, isPlrNearEnd, isPlrNearDialogue, isPlrNearLore;
     public int itemCount;
+    public bool isPlrNearShop, isPlrNearEnd, isPlrNearDialogue, isPlrNearLore;
     
     private ControlsManager controlsManager;
     [SerializeField] private DataHolder dataHolder;
