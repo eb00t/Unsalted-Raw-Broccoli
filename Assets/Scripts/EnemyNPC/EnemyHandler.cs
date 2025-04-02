@@ -319,10 +319,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _agent.isStopped = true;
         _healthSlider.gameObject.SetActive(true);
         _targetTime -= Time.deltaTime;
-        
-        UpdateSpriteDirection(_playerDir.x < 0);
 
         if (!(_targetTime <= 0.0f)) return;
+        
+        UpdateSpriteDirection(_playerDir.x < 0);
         
         if (isBomb)
         {
@@ -521,11 +521,14 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
         StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .2f));
-        //StartCoroutine(StunTimer(.1f));
-        if (!isBomb)
+        StartCoroutine(StunTimer(.1f));
+        
+        /*
+        if (!isBomb) // layered hitstun
         {
             _animator.SetTrigger("lightStagger");
         }
+        */
 
         if (_poiseBuildup >= poise)
         {

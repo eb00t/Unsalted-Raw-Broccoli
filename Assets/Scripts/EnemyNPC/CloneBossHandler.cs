@@ -300,10 +300,10 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _agent.isStopped = true;
         _healthSlider.gameObject.SetActive(true);
         _targetTime -= Time.deltaTime;
-        
-        UpdateSpriteDirection(_playerDir.x < 0);
 
         if (!(_targetTime <= 0.0f)) return;
+        
+        UpdateSpriteDirection(_playerDir.x < 0);
         
         var i = Random.Range(0, numberOfAttacks);
 
@@ -459,9 +459,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
         StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .2f));
-        //StartCoroutine(StunTimer(.1f));
+        StartCoroutine(StunTimer(.1f));
         
-        _animator.SetTrigger("lightStagger");
+        //_animator.SetTrigger("lightStagger");
 
         if (_poiseBuildup >= poise)
         {

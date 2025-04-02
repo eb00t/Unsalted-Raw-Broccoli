@@ -526,7 +526,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 2f : 1f; 
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
-        StartCoroutine(TriggerKnockback(knockbackForce, 0.5f));
+        StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
 
         if (_poiseBuildup >= poise)
         {
