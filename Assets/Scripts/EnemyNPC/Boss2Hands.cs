@@ -154,7 +154,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private IEnumerator Attack() // randomly pick an attack
     {
         _attackCdCounter = attackCooldown;
-        attack = 5;
+        attack = 50;
         
         var attackType = Random.Range(0, 5);
 
@@ -209,6 +209,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private IEnumerator GroundPoundAndLunge()
     {
         yield return StartCoroutine(ResetHands());
+        attack = 20;
         _canAttack = false;
         
         UpdateColliders(true, true, false, false);
@@ -249,7 +250,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         yield return StartCoroutine(ResetHands());
         _canAttack = false;
-        attack = 30;
+        attack = 60;
         
         var hoverPosition = _target.position + Vector3.up * handHoverHeight;
         
@@ -312,6 +313,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private IEnumerator ClapAttack()
     {
         yield return StartCoroutine(ResetHands());
+        attack = 20;
         _canAttack = false;
         
         UpdateHandImg(false, false, true, true);
@@ -346,6 +348,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private IEnumerator LaserAttack() // aims laser at player that tracks, then it stops and starts doing damage
     {
         yield return StartCoroutine(ResetHands());
+        attack = 10;
         _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandLaser);
         _canAttack = false;
         _lineRenderer.enabled = true;

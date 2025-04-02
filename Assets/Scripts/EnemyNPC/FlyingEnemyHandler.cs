@@ -76,7 +76,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [Header("Sound")]
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
-    
+    private EventInstance _laserEvent;
+    private bool _canAttack = true;
+    private LineRenderer _lineRenderer;
+    [SerializeField] private Transform bossEyePosition;
+
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
     int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
@@ -113,7 +117,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
-
+        _lineRenderer = GetComponentInChildren<LineRenderer>();
+        
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
         
@@ -242,22 +247,23 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
     private void Attack()
     {
+        _healthSlider.gameObject.SetActive(true);
         _rigidbody.velocity = Vector3.zero;
         UpdateSpriteDirection(_playerDir.x < 0f);
         _targetTime -= Time.deltaTime;
         
-        if (_targetTime <= 0.0f)
+        if (_targetTime <= 0.0f && _canAttack)
         {
-            var i = Random.Range(0, 2);
+            var i = Random.Range(0, 1);
 
             switch (i)
             {
                 case 0:
                     //_animator.SetTrigger("Attack");
-                    StartCoroutine(FlingAttack());
+                    StartCoroutine(LaserAttack());
                     break;
                 case 1:
-                    _animator.SetTrigger("Attack2");
+                    //_animator.SetTrigger("Attack2");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -268,72 +274,100 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         }
     }
     
-    private IEnumerator FlingAttack()
+    private IEnumerator LaserAttack() // aims laser at player that tracks, then it stops and starts doing damage
     {
-        _rigidbody.velocity = Vector3.zero;
-        
-        var retreatDir = (transform.position - _target.position).normalized;
-        var retreatSpeed = moveSpeed * 1.5f;
-        var retreatDur = 0.5f;
-
+        _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandLaser);
+        _canAttack = false;
+        _lineRenderer.enabled = true;
+        _lineRenderer.SetPosition(0, bossEyePosition.position);
+        var laserStartPos = _lineRenderer.GetPosition(0);;
+        var chargeTime = 1f;
+        var fireTime = .5f;
+        var trackSpeed = 0.5f;
+        var delay = 0.1f;
+        var targetPos = new Vector3(0, 0, 0);
         var elapsed = 0f;
-        while (elapsed < retreatDur)
+
+        AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
+        _laserEvent.start();
+        
+        while (elapsed < chargeTime)
         {
-            _rigidbody.velocity = retreatDir * retreatSpeed;
+            targetPos = _target.position;
+
+            _lineRenderer.SetPosition(0, laserStartPos); 
+            _lineRenderer.SetPosition(1, targetPos);
+            _lineRenderer.startColor = Color.white;
+            _lineRenderer.endColor = Color.white;
+        
+            elapsed += Time.deltaTime * trackSpeed;
+            yield return null;
+        }
+
+        yield return new WaitForSecondsRealtime(delay);
+        
+        elapsed = 0f;
+        var lastDamageTime = 0f;
+        
+        AudioManager.Instance.SetEventParameter(_laserEvent, "Firing", 1);
+        _laserEvent.release();
+        while (elapsed < fireTime)
+        {
+            var dist = Vector3.Distance(targetPos, laserStartPos);
+            var direction = (targetPos - laserStartPos).normalized;
+            var laserEndPos = laserStartPos + direction * (dist + 5f);
+
+            _lineRenderer.SetPosition(1, laserEndPos);
+            _lineRenderer.endColor = Color.red;
+            var layerMask = LayerMask.GetMask("Player");
+            
+            if (Physics.Raycast(laserStartPos, direction, out var hit, 50f, layerMask))
+            {
+                if (hit.collider.CompareTag("Player"))
+                {
+                    var player = hit.collider.GetComponentInChildren<CharacterAttack>();
+                    if (player != null)
+                    {
+                        if (Time.time >= lastDamageTime + 0.25f) // makes sure player only takes damage at intervals
+                        {
+                            player.TakeDamagePlayer(attack, poiseDamage);
+                            lastDamageTime = Time.time;
+                        }
+                    }
+                }
+            }
+            
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        _rigidbody.velocity = Vector3.zero;
-        yield return new WaitForSeconds(0.2f);
 
-        var flyDir = (_target.position - transform.position).normalized;
-        var flySpeed = moveSpeed * 4f;
-        var flyThroughDistance = 4f;
-        var startPos = transform.position;
-        
-        if (Physics.Raycast(startPos, flyDir, out var hit, flyThroughDistance))
-        {
-            if (!hit.collider.CompareTag("Player"))
-            {
-                flyThroughDistance = hit.distance - 0.5f;
-            }
-        }
-
-        _animator.SetTrigger("Attack");
-
-        while (Vector3.Distance(transform.position, startPos) < flyThroughDistance)
-        {
-            _rigidbody.velocity = flyDir * flySpeed;
-            yield return null;
-        }
-        
-        _rigidbody.velocity = Vector3.zero;
-        _state = States.Chase;
+        _lineRenderer.enabled = false;
+        _canAttack = true;
     }
     
     private void UpdateSpriteDirection(bool isLeft)
     {
         var localScale = _spriteTransform.localScale;
         var hitboxLocalScale = attackHitbox.transform.localScale;
-        var flashLocalScale = flashEffect.transform.localScale;
+        //var flashLocalScale = flashEffect.transform.localScale;
         
         if (!isLeft)
         {
             localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
             hitboxLocalScale = new Vector3(Mathf.Abs(hitboxLocalScale.x), hitboxLocalScale.y, hitboxLocalScale.z);
-            flashLocalScale = new Vector3(Mathf.Abs(flashLocalScale.x), flashLocalScale.y, flashLocalScale.z);
+            //flashLocalScale = new Vector3(Mathf.Abs(flashLocalScale.x), flashLocalScale.y, flashLocalScale.z);
         }
         else
         {
             localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
             hitboxLocalScale = new Vector3(-Mathf.Abs(hitboxLocalScale.x), hitboxLocalScale.y, hitboxLocalScale.z);
-            flashLocalScale = new Vector3(-Mathf.Abs(flashLocalScale.x), flashLocalScale.y, flashLocalScale.z);
+            //flashLocalScale = new Vector3(-Mathf.Abs(flashLocalScale.x), flashLocalScale.y, flashLocalScale.z);
         }
 
         _spriteTransform.localScale = localScale;
         attackHitbox.transform.localScale = hitboxLocalScale;
-        flashEffect.transform.localScale = flashLocalScale;
+        //flashEffect.transform.localScale = flashLocalScale;
     }
 
     private void MoveTowards(Vector3 target)
