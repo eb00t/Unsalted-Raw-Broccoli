@@ -33,7 +33,7 @@ public class LootManager : MonoBehaviour
     }
     
 
-    public void SpawnLootInCurrentRoom(GameObject room) //TODO: Add a chance to spawn an item from the other loot table
+    public void SpawnLootInCurrentRoom(GameObject room) 
     {
         int spawnChance = RandomiseNumber(_willLootSpawn);
         int majorLootChance = RandomiseNumber(_willMajorLootSpawn);
