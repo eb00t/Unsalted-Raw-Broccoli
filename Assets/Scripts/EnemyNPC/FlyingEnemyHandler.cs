@@ -254,26 +254,58 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         if (_targetTime <= 0.0f && _canAttack)
         {
-            var i = Random.Range(0, 1);
+            var i = Random.Range(0, 5);
 
             switch (i)
             {
-                case 0:
+                case < 3:
                     //_animator.SetTrigger("Attack");
                     StartCoroutine(LaserAttack());
+                    attackCooldown = 4f;
                     break;
-                case 1:
-                    //_animator.SetTrigger("Attack2");
+                case >= 3:
+                    Reposition();
+                    attackCooldown = 1f;
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
-
             
             _targetTime = attackCooldown;
         }
     }
+
+    private void Reposition() // makes enemy more difficult to track down
+    {
+        _canAttack = false;
+        StartCoroutine(NewPosition());
+    }
     
+    private IEnumerator NewPosition() // picks a new position within the room and moves to it
+    {
+        if (_roomBounds == null)
+        {
+            _canAttack = true;
+            yield break;
+        }
+
+        var bounds = _roomBounds.bounds;
+        var newPos = new Vector3(Random.Range(bounds.min.x + 1f, bounds.max.x - 1f), Random.Range(bounds.min.y + 1f, bounds.max.y - 1f), transform.position.z);
+
+        var distance = Vector3.Distance(transform.position, newPos);
+        var travelTime = distance / moveSpeed;
+        var elapsed = 0f;
+
+        while (elapsed < travelTime)
+        {
+            MoveTowards(newPos);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        _rigidbody.velocity = Vector3.zero;
+        _canAttack = true;
+    }
+
+
     private IEnumerator LaserAttack() // aims laser at player that tracks, then it stops and starts doing damage
     {
         _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandLaser);
@@ -350,24 +382,20 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         var localScale = _spriteTransform.localScale;
         var hitboxLocalScale = attackHitbox.transform.localScale;
-        //var flashLocalScale = flashEffect.transform.localScale;
         
         if (!isLeft)
         {
             localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
             hitboxLocalScale = new Vector3(Mathf.Abs(hitboxLocalScale.x), hitboxLocalScale.y, hitboxLocalScale.z);
-            //flashLocalScale = new Vector3(Mathf.Abs(flashLocalScale.x), flashLocalScale.y, flashLocalScale.z);
         }
         else
         {
             localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
             hitboxLocalScale = new Vector3(-Mathf.Abs(hitboxLocalScale.x), hitboxLocalScale.y, hitboxLocalScale.z);
-            //flashLocalScale = new Vector3(-Mathf.Abs(flashLocalScale.x), flashLocalScale.y, flashLocalScale.z);
         }
 
         _spriteTransform.localScale = localScale;
         attackHitbox.transform.localScale = hitboxLocalScale;
-        //flashEffect.transform.localScale = flashLocalScale;
     }
 
     private void MoveTowards(Vector3 target)
@@ -528,6 +556,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _deathEvent.release();
         StopAlarmSound();
     }
+    
     public void PlayAlarmSound()
     {
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
