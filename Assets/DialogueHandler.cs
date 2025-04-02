@@ -173,8 +173,11 @@ public class DialogueHandler : MonoBehaviour
       loadedTitleText = currentLoreItem.loreTitle;
       loadedSpeakerText = new List<string>(currentLoreItem.whoWroteThis);
       loadedBodyText = new List<string>(currentLoreItem.loreBodyText);
-      loadedBodyText.Insert(0, loadedTitleText);
-      loadedSpeakerText.Insert(0, loadedSpeakerText[0]);
+      if (currentLoreItem.doesThisHaveATitle)
+      {
+         loadedBodyText.Insert(0, loadedTitleText);
+         loadedSpeakerText.Insert(0, loadedSpeakerText[0]);
+      }
       if (currentLoreItem.didAnyoneWriteThis == false)
       {
          _speakerText.transform.parent.gameObject.SetActive(false);
