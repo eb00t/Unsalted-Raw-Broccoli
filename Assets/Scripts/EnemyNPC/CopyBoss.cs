@@ -425,7 +425,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         
         _health -= damage;
         healthSlider.value = _health;
-        StartCoroutine(HitFlash(Color.cyan, 0.1f));
+        //StartCoroutine(HitFlash(Color.cyan, 0.1f));
         
         if (_health <= maxHealth / 2)
         {

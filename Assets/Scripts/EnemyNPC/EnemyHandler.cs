@@ -510,7 +510,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
     }
 
-    public void ApplyKnockback(Vector2 knockbackPower)
+    public void ApplyKnockback(Vector2 knockbackPower) // TODO: make knockback in player facing direction
     {
         if (_isFrozen || isDead) return;
 

@@ -10,39 +10,55 @@ using Random = UnityEngine.Random;
 
 public class CloneBossHandler : MonoBehaviour, IDamageable
 {
-    [Header("Defensive Stats")] 
-    [NonSerialized] public int maxHealth;
+    [Header("Defensive Stats")] [NonSerialized]
+    public int maxHealth;
+
     public int health;
     [SerializeField] private int poise;
     [SerializeField] private int defense;
     [SerializeField] private int poisonResistance;
 
-    [Header("Offensive Stats")] 
-    [SerializeField] private int attack;
+    [Header("Offensive Stats")] [SerializeField]
+    private int attack;
+
     [SerializeField] private int poiseDamage;
     [SerializeField] private int numberOfAttacks;
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
     [SerializeField] private float chaseRange;
+    [SerializeField] private float retreatDistance;
     private int _knockbackDir;
     private bool _hasPlayerBeenSeen;
     private Vector3 _lastPosition;
     private Vector3 _playerDir;
-    private enum States { Idle, Chase, Attack, Frozen, Passive }
+
+    private enum States
+    {
+        Idle,
+        Chase,
+        Attack,
+        Frozen,
+        Passive,
+        Retreat
+    }
+
     private States _state = States.Idle;
 
-    [Header("Timing")]
-    [SerializeField] private float attackCooldown; // time between attacks
+    [Header("Timing")] [SerializeField] private float attackCooldown; // time between attacks
     [SerializeField] private float chaseDuration; // how long the enemy will chase after player leaves range
     [SerializeField] private float freezeDuration; // how long the enemy is frozen for
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
-    [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
+
+    [SerializeField]
+    private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
+
     private float _timeSinceLastMove;
     private float _targetTime;
 
-    [Header("Enemy Properties")] 
-    [SerializeField] private bool canBeFrozen;
+    [Header("Enemy Properties")] [SerializeField]
+    private bool canBeFrozen;
+
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool isPassive;
     private bool _isFrozen;
@@ -52,8 +68,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private int _poisonBuildup;
     private int _poiseBuildup;
 
-    [Header("References")] 
-    [SerializeField] private Transform passiveTarget;
+    [Header("References")] [SerializeField]
+    private Transform passiveTarget;
+
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
     public CloneBossManager cloneBossManager;
@@ -65,34 +82,48 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private SpriteRenderer _spriteRenderer;
     private MaterialPropertyBlock _propertyBlock;
     private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
-    
-    [Header("Sound")]
-    private EventInstance _alarmEvent;
+
+    [Header("Sound")] private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
-    
-    int IDamageable.Attack { get => attack; set => attack = value; }
-    int IDamageable.Poise { get => poise; set => poise = value; }
-    int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
+
+    int IDamageable.Attack
+    {
+        get => attack;
+        set => attack = value;
+    }
+
+    int IDamageable.Poise
+    {
+        get => poise;
+        set => poise = value;
+    }
+
+    int IDamageable.PoiseDamage
+    {
+        get => poiseDamage;
+        set => poiseDamage = value;
+    }
+
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
     public EnemySpawner EnemySpawner { get; set; }
-    
+
     private void Start()
     {
         _healthSlider = GetComponentInChildren<Slider>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        
+
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateRotation = false;
         _agent.updateUpAxis = false;
         _agent.updatePosition = true;
         _propertyBlock = new MaterialPropertyBlock();
-        
+
         gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-        
+
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
     }
 
@@ -101,16 +132,17 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         var vector3 = transform.position;
         vector3.z = 0;
         transform.position = vector3;
-        
+
         if (isPassive)
         {
             health = maxHealth;
             _healthSlider.value = maxHealth;
         }
+
         var velocity = _agent.velocity;
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;
-        
+
         if (_isFrozen)
         {
             _state = States.Frozen;
@@ -119,9 +151,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         {
             _state = States.Passive;
             _playerDir = passiveTarget.position - transform.position;
-            
+
             UpdateSpriteDirection(_playerDir.x < 0);
-            
+
             if (velocity.x > 0.1f)
             {
                 UpdateSpriteDirection(false);
@@ -130,7 +162,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
             {
                 UpdateSpriteDirection(true);
             }
-            
+
             _target = passiveTarget;
         }
         else
@@ -142,7 +174,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
             else if (distance < chaseRange || _hasPlayerBeenSeen)
             {
                 _state = States.Chase;
-            
+
                 if (velocity.x > 0.1f)
                 {
                     UpdateSpriteDirection(false);
@@ -157,7 +189,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
                 _state = States.Idle;
             }
         }
-        
+
         switch (_state)
         {
             case States.Idle:
@@ -178,8 +210,44 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
+
         _animator.SetFloat("vel", Mathf.Abs(velocity.x));
+    }
+
+    private void Retreat()
+    {
+        if (_agent.pathPending && !_isStuck) return;
+        if (!(_agent.remainingDistance <= _agent.stoppingDistance)) return;
+        
+        var awayDir = -(_target.position - transform.position);
+        var newPos = new Vector3(transform.position.x + (retreatDistance * awayDir.x), transform.position.y, transform.position.z);
+
+        _agent.SetDestination(newPos);
+        _isStuck = false;
+        _timeSinceLastMove = 0;
+
+        //_agent.SetDestination(_patrolTarget);
+
+        // pick point in the opposite direction of the player
+        // go to that point 
+        // call check if stuck to prevent running into walls
+    }
+
+    private void CheckIfStuck()
+    {
+        if (Vector3.Distance(transform.position, _lastPosition) > 0.1f) 
+        {
+            _timeSinceLastMove = 0f;
+            _lastPosition = transform.position;
+            _isStuck = false;
+        }
+        else
+        {
+            _timeSinceLastMove += Time.deltaTime;
+        }
+        
+        if (!(_timeSinceLastMove > maxTimeToReachTarget)) return;
+        _isStuck = true;
     }
 
     private void UpdateSpriteDirection(bool isLeft)
