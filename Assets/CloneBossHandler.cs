@@ -10,30 +10,28 @@ using Random = UnityEngine.Random;
 
 public class CloneBossHandler : MonoBehaviour, IDamageable
 {
-    [Header("Defensive Stats")] [NonSerialized]
-    public int maxHealth;
-
+    [Header("Defensive Stats")] 
+    [NonSerialized] public int maxHealth;
     public int health;
     [SerializeField] private int poise;
     [SerializeField] private int defense;
     [SerializeField] private int poisonResistance;
 
-    [Header("Offensive Stats")] [SerializeField]
-    private int attack;
-
+    [Header("Offensive Stats")] 
+    [SerializeField] private int attack;
     [SerializeField] private int poiseDamage;
     [SerializeField] private int numberOfAttacks;
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
     [SerializeField] private float chaseRange;
-    [SerializeField] private float retreatDistance;
+    public float retreatDistance;
     private int _knockbackDir;
     private bool _hasPlayerBeenSeen;
     private Vector3 _lastPosition;
     private Vector3 _playerDir;
 
-    private enum States
+    public enum States
     {
         Idle,
         Chase,
@@ -43,22 +41,21 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         Retreat
     }
 
-    private States _state = States.Idle;
+    public States _state = States.Idle;
 
-    [Header("Timing")] [SerializeField] private float attackCooldown; // time between attacks
+    [Header("Timing")] 
+    [SerializeField] private float attackCooldown; // time between attacks
     [SerializeField] private float chaseDuration; // how long the enemy will chase after player leaves range
     [SerializeField] private float freezeDuration; // how long the enemy is frozen for
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
-
-    [SerializeField]
-    private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
+    [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
 
     private float _timeSinceLastMove;
     private float _targetTime;
 
-    [Header("Enemy Properties")] [SerializeField]
-    private bool canBeFrozen;
-
+    [Header("Enemy Properties")] 
+    [SerializeField] private bool canBeFrozen;
+    public bool isRetreating;
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool isPassive;
     private bool _isFrozen;
@@ -68,9 +65,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private int _poisonBuildup;
     private int _poiseBuildup;
 
-    [Header("References")] [SerializeField]
-    private Transform passiveTarget;
-
+    [Header("References")] 
+    [SerializeField] private Transform passiveTarget;
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
     public CloneBossManager cloneBossManager;
@@ -86,23 +82,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     [Header("Sound")] private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
 
-    int IDamageable.Attack
-    {
-        get => attack;
-        set => attack = value;
-    }
-
-    int IDamageable.Poise
-    {
-        get => poise;
-        set => poise = value;
-    }
-
-    int IDamageable.PoiseDamage
-    {
-        get => poiseDamage;
-        set => poiseDamage = value;
-    }
+    int IDamageable.Attack { get => attack; set => attack = value; }
+    int IDamageable.Poise { get => poise; set => poise = value; }
+    int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
 
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
@@ -165,6 +147,10 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
             _target = passiveTarget;
         }
+        else if (isRetreating)
+        {
+            _state = States.Retreat;
+        }
         else
         {
             if (distance < attackRange)
@@ -207,6 +193,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
                 break;
             case States.Passive:
                 break;
+            case States.Retreat:
+                Retreat();
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -216,6 +205,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
     private void Retreat()
     {
+        CheckIfStuck();
         if (_agent.pathPending && !_isStuck) return;
         if (!(_agent.remainingDistance <= _agent.stoppingDistance)) return;
         

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 public class CloneBossManager : MonoBehaviour
@@ -14,13 +15,18 @@ public class CloneBossManager : MonoBehaviour
     private int _maxHealth;
     [SerializeField] private GameObject bossPrefab;
     [SerializeField] private int maxNumberOfBosses;
+    [SerializeField] private int maxAttackingCount;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private float spawnCooldown;
+    [SerializeField] private float individualRetreatDist;
     private RoomScripting _roomScripting;
     private bool _lowHealth;
     private float _targetTime;
     private bool _isPlayerInRange;
     [SerializeField] private Canvas canvas;
+    private int _attackingCount;
+    [SerializeField] private float atkCheckCooldown;
+    private bool _isChecking;
 
     private void Start()
     {
@@ -48,6 +54,11 @@ public class CloneBossManager : MonoBehaviour
             return;
         }
 
+        if (!_isChecking)
+        {
+            CheckAttacking();
+        }
+
         if (cloneBossHandlers.Count >= maxNumberOfBosses) return;
 
         _targetTime -= Time.deltaTime;
@@ -58,6 +69,43 @@ public class CloneBossManager : MonoBehaviour
         _targetTime = spawnCooldown * (cloneBossHandlers.Count / 2);
     }
 
+    public void CheckAttacking()
+    {
+        _isChecking = true;
+        foreach (var boss in cloneBossHandlers)
+        {
+            if (boss._state == CloneBossHandler.States.Chase || boss._state == CloneBossHandler.States.Attack)
+            {
+                _attackingCount++;
+            }
+        }
+
+        if (_attackingCount > maxAttackingCount)
+        {
+            var changedCount = 0;
+
+            foreach (var boss in cloneBossHandlers)
+            {
+                if (changedCount >= maxAttackingCount)
+                {
+                    boss.isRetreating = true;
+                }
+                else
+                {
+                    boss.isRetreating = false;
+                }
+            }
+        }
+
+        StartCoroutine(WaitToCheck());
+    }
+
+    private IEnumerator WaitToCheck()
+    {
+        yield return new WaitForSecondsRealtime(atkCheckCooldown);
+        _isChecking = false;
+    }
+
     private void InstantiateBoss(int numberToSpawn)
     {
         for (var i = 0; i < numberToSpawn; i++)
@@ -66,6 +114,7 @@ public class CloneBossManager : MonoBehaviour
             var handler = newBoss.GetComponent<CloneBossHandler>();
             handler.maxHealth = individualHealth;
             handler.health = individualHealth;
+            handler.retreatDistance = individualRetreatDist;
             handler.cloneBossManager = this;
             newBoss.SetActive(true);
 
