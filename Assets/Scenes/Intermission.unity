@@ -2032,12 +2032,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueBox: {fileID: 115100974}
-  dialogueConA: {fileID: 0}
-  dialogueConB: {fileID: 0}
   enemyChar: {fileID: 1223722021}
-  npcChar: {fileID: 391000279}
-  bossIndicator: {fileID: 0}
-  indicator: {fileID: 0}
   range: 0
 --- !u!1 &350778594
 GameObject:
@@ -2275,14 +2270,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27e233e3a5da7c9489c36e49a91e3be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueObjectHandler: {fileID: 0}
-  DialogueText: {fileID: 0}
-  speakerText: {fileID: 0}
-  Sentences:
-  - Who goes there?
-  - You shouldn't be here, how did you get in?
-  DialogueSpeed: 0
-  dialogueCanvas: {fileID: 219135083}
+  isLore: 0
+  replayable: 0
+  dialogueToLoad: 0
+  range: 0
+  _dialogueID: 0
+  _index: 0
+  dialogueSpeed: 0
   yesText: {fileID: 0}
   noText: {fileID: 0}
 --- !u!114 &391000283
@@ -2298,12 +2292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueBox: {fileID: 219135083}
-  dialogueConA: {fileID: 0}
-  dialogueConB: {fileID: 0}
   enemyChar: {fileID: 391000279}
-  npcChar: {fileID: 391000279}
-  bossIndicator: {fileID: 0}
-  indicator: {fileID: 0}
   range: 0
 --- !u!1 &392235278
 GameObject:
@@ -3225,7 +3214,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 1007035034}
+      objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[4].m_Target
@@ -5616,6 +5605,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 805750311322191328, guid: 0e60639cc3f11644b8bcdf57bf321cca,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1375388479255926977, guid: 0e60639cc3f11644b8bcdf57bf321cca,
         type: 3}
       propertyPath: m_IsActive
@@ -5637,6 +5631,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2810183976101149656, guid: 0e60639cc3f11644b8bcdf57bf321cca,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3660439939189970701, guid: 0e60639cc3f11644b8bcdf57bf321cca,
         type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -5981,18 +5980,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f3fd3e67c191a224ab3e01639d2ef7b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1007035034 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3773342949230833633, guid: 4bd14efd408c3b943816001b9eeae0eb,
-    type: 3}
-  m_PrefabInstance: {fileID: 1007035028}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 907745041}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d2b1804d739b2d4286a0c23b68e081a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1007628583
@@ -10081,6 +10068,11 @@ PrefabInstance:
     - target: {fileID: 7169563527229664998, guid: 941a9af0699c05344ba70ed8898ac7c5,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8071131258339124112, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9119745588816469748, guid: 941a9af0699c05344ba70ed8898ac7c5,
