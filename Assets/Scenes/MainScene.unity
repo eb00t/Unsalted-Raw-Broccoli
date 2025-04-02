@@ -1897,7 +1897,11 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 1287804099056687150, guid: 4e52fc17a0bc9b648967f5ce08073dd2, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 817331351}
   m_SourcePrefab: {fileID: 100100000, guid: 4e52fc17a0bc9b648967f5ce08073dd2, type: 3}
 --- !u!1 &817331348 stripped
 GameObject:
@@ -1905,6 +1909,20 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 817331347}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &817331351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817331348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da60c28fc08fa2a44a714cf6e9e63703, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentFloor: 0
+  dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
 --- !u!1001 &909250203
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3128,6 +3146,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Dialogue Controller (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4338080822893355786, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915112397423299955, guid: 4e52fc17a0bc9b648967f5ce08073dd2,
         type: 3}

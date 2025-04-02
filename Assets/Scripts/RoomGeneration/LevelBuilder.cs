@@ -100,6 +100,10 @@ public class LevelBuilder : MonoBehaviour
         }
 
         Instance = this;
+        if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission")
+        {
+            currentFloor = dataHolder.currentLevel;
+        }
     }
 
     void Start()
@@ -128,10 +132,6 @@ public class LevelBuilder : MonoBehaviour
             lootRoomsToSpawn = 2;
         }
         _numberOfRoomsToSpawn += lootRoomsToSpawn;
-        if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission")
-        {
-           currentFloor = dataHolder.currentLevel;
-        }
         Debug.Log("Loot rooms to spawn: " + lootRoomsToSpawn);
         StartCoroutine(DelayStart());
     }
@@ -188,11 +188,11 @@ public class LevelBuilder : MonoBehaviour
                 break;
             case LevelMode.Floor2:
                 _floorSpecificRoomPath = "Room Layouts/Floor 2";
-                _bossRoomPath = "Room Layouts/Boss Rooms/Hands Boss"; //TODO: TEMP, FOR BETA ONLY
+                _bossRoomPath = "Room Layouts/Boss Rooms/CloneBoss";
                 break;
             case LevelMode.Floor3:
                 _floorSpecificRoomPath = "Room Layouts/Floor 3";
-                _bossRoomPath = "Room Layouts/Boss Rooms/CloneBoss";
+                _bossRoomPath = "Room Layouts/Boss Rooms/Hands Boss";
                 break;
         }
 
@@ -819,4 +819,3 @@ public class LevelBuilder : MonoBehaviour
         _spawnTimer -= Time.deltaTime;
     }
 }
-
