@@ -45,7 +45,7 @@ public class CurrencyBehaviour : MonoBehaviour
                 break;
             case 100:
                 currencySize = CurrencySize.VeryLarge;
-                _spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE VERY CURRENCY SPRITE HERE");
+                _spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE VERY LARGE CURRENCY SPRITE HERE");
                 break;
         }
     }
