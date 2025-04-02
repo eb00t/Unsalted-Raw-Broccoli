@@ -19,7 +19,7 @@ public class CharacterMovement : MonoBehaviour
     public float jumpForce = 1f;
     public float dashSpeed = 1f;
     public float slideSpeed = 1f;
-    public float holdTime = 1f;
+    public float slideHoldTime = 1f;
 
     [SerializeField] private bool grounded;
     private float groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time. 
@@ -92,14 +92,16 @@ public class CharacterMovement : MonoBehaviour
             PlayerAnimator.SetBool("Jump", true);
             grounded = false;
         }
-        else if (!grounded && wallJumpingCounter > 0f && (startSlideTimer || sliding) && !isWallJumping)
+        /*else if (!grounded && wallJumpingCounter > 0f && (startSlideTimer || sliding) && !isWallJumping)
         {
             slideAllowed = false;
             startSlideTimer = false;
             isWallJumping = true;
                 
             var direction = (input != 0) ? -Mathf.Sign(input) : -Mathf.Sign(transform.localScale.x);
-            rb.velocity = new Vector3(direction * wallJumpForce.x, wallJumpForce.y, 0f);
+            //rb.velocity = new Vector3(direction * wallJumpForce.x, wallJumpForce.y, 0f);
+            Vector3 _wallJumpForce = new Vector3(direction * wallJumpForce.x, wallJumpForce.y, 0f);
+            rb.AddForce(_wallJumpForce);
 
             wallJumpingCounter = 0f;
                 
@@ -109,7 +111,7 @@ public class CharacterMovement : MonoBehaviour
             }
 
             Invoke(nameof(stopWallJump), wallJumpingDuration);
-        }
+        }*/
         else if (!grounded && !startSlideTimer && !sliding && !doubleJumpPerformed && !PlayerAnimator.GetBool("WallCling"))
         {
             doubleJumpPerformed = true;
@@ -162,7 +164,7 @@ public class CharacterMovement : MonoBehaviour
     {
         groundTimer -= Time.deltaTime;
         groundTimer = Mathf.Clamp(groundTimer, 0, 1f);
-        PlayerAnimator.SetBool("WallJump", isWallJumping);
+        //PlayerAnimator.SetBool("WallJump", isWallJumping);
         Velocity = rb.velocity;
         PlayerAnimator.SetFloat("XVelocity", rb.velocity.x);
         PlayerAnimator.SetFloat("YVelocity", rb.velocity.y);
@@ -170,14 +172,18 @@ public class CharacterMovement : MonoBehaviour
         
         if (uiOpen) return;
         
-        wallJump();
+        //wallJump();
 
         if (!lockedOn && Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(Velocity.x)) // this has a check if the player is locked on to prevent them flipping
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
-        
-        var direction = Mathf.Sign(rb.velocity.x);
+        if (!lockedOn && PlayerAnimator.GetBool("WallCling") && Mathf.Sign(transform.localScale.x) != Mathf.Sign(input)) // if wallcling is true and player isn't facing direction of input, flip the player
+        { 
+            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+        }
+
+        var direction = Mathf.Sign(input);
         var scaleDirection = Mathf.Sign(transform.localScale.x);
         
         if (direction != 0 && direction != scaleDirection)
@@ -193,7 +199,7 @@ public class CharacterMovement : MonoBehaviour
         {
             slideTimer += 10f * Time.deltaTime;
             //Debug.Log(slideTimer);
-            if(slideTimer >= holdTime)
+            if(slideTimer >= slideHoldTime)
             {
                 startSlide = true;
                 slideTimer = 0f;
@@ -235,7 +241,6 @@ public class CharacterMovement : MonoBehaviour
         {
             if ((rb.velocity.x <= maxSpeed && Mathf.Sign(rb.velocity.x) == 1) || (rb.velocity.x >= -maxSpeed && Mathf.Sign(rb.velocity.x) == -1) || (Mathf.Sign(rb.velocity.x) != input))
             {
-                //rb.AddForce((inputDir * acceleration * 1000f) * Time.deltaTime, ForceMode.Force);
                 Vector3 walk = new Vector3(input * acceleration, rb.velocity.y, rb.velocity.z);
                 rb.velocity = walk;
             }
@@ -243,7 +248,7 @@ public class CharacterMovement : MonoBehaviour
 
         if (slideAllowed && !grounded)
         {
-            Vector3 wallSlide = new Vector3(0f, -slideSpeed, 0f);
+            Vector3 wallSlide = new Vector3(rb.velocity.x, -slideSpeed, 0f);
             rb.velocity = wallSlide;
             sliding = true;
             Debug.Log("StartSlide");
@@ -324,6 +329,7 @@ public class CharacterMovement : MonoBehaviour
         {
             if (!grounded && input != 0)
             {
+                PlayerAnimator.SetBool("WallCling", true);
                 if (startSlide)
                 {
                     slideAllowed = true;
