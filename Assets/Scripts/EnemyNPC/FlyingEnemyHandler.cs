@@ -308,8 +308,10 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             
             _lineRenderer.SetPosition(0, bossEyePosition.position); 
             _lineRenderer.SetPosition(1, targetPos);
-            _lineRenderer.startColor = Color.white;
-            _lineRenderer.endColor = Color.white;
+            _lineRenderer.startWidth = 0.01f;
+            _lineRenderer.endWidth = 0.01f;
+            //_lineRenderer.startColor = Color.white;
+            //_lineRenderer.endColor = Color.white;
         
             elapsed += Time.deltaTime;
             yield return null;
@@ -330,7 +332,9 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
             _lineRenderer.SetPosition(0, bossEyePosition.position);
             _lineRenderer.SetPosition(1, laserEndPos);
-            _lineRenderer.endColor = Color.red;
+            _lineRenderer.startWidth = 0.1f;
+            _lineRenderer.endWidth = 0.05f;
+            //_lineRenderer.endColor = Color.red;
             var layerMask = LayerMask.GetMask("Player");
             
             if (Physics.Raycast(bossEyePosition.position, direction, out var hit, 50f, layerMask))

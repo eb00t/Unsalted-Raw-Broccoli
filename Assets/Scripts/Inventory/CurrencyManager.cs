@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -11,34 +12,48 @@ public class CurrencyManager : MonoBehaviour
     private Animator _animator;
     private TextMeshProUGUI _newCurrencyTxt;
     private Coroutine _currencyCounting;
+    private Queue<int> _currencyQueue;
+    private bool _isCounting;
 
     private void Start()
     {
         currencyHeldText.text = dataHolder.currencyHeld.ToString();
         _animator = newCurrencyObj.GetComponent<Animator>();
         _newCurrencyTxt = newCurrencyObj.GetComponent<TextMeshProUGUI>();
+        _currencyQueue = new Queue<int>();
     }
 
     public void UpdateCurrency(int amount)
     {
-        var oldValue = dataHolder.currencyHeld;
-        dataHolder.currencyHeld = Mathf.Max(dataHolder.currencyHeld + amount, 0);
-        var newValue = dataHolder.currencyHeld;
+        if (amount == 0) return;
 
-        var changeAmount = newValue - oldValue;
+        _currencyQueue.Enqueue(amount);
 
-        if (changeAmount != 0)
+        if (!_isCounting)
         {
+            StartCoroutine(Counting());
+        }
+    }
+    
+    private IEnumerator Counting()
+    {
+        _isCounting = true;
+
+        while (_currencyQueue.Count > 0)
+        {
+            var amount = _currencyQueue.Dequeue();
+            var oldValue = dataHolder.currencyHeld;
+            dataHolder.currencyHeld = Mathf.Max(dataHolder.currencyHeld + amount, 0);
+            var newValue = dataHolder.currencyHeld;
+            var changeAmount = newValue - oldValue;
+
             _newCurrencyTxt.text = (changeAmount > 0 ? "+ " : "- ") + Mathf.Abs(changeAmount);
             _animator.SetTrigger("currencyChanged");
+
+            yield return StartCoroutine(UpdateOverTime(oldValue, newValue));
         }
 
-        if (_currencyCounting != null)
-        {
-            StopCoroutine(_currencyCounting);
-        }
-
-        _currencyCounting = StartCoroutine(UpdateOverTime(oldValue, newValue));
+        _isCounting = false;
     }
 
     private IEnumerator UpdateOverTime(int startValue, int endValue)

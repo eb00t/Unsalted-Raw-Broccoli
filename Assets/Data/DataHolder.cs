@@ -11,6 +11,7 @@ public class DataHolder : ScriptableObject
     public ControlsManager.ControlScheme currentControl;
     public bool isAutoEquipEnabled;
     public bool isAutoSwitchEnabled;
+    public bool isAutoLockOnEnabled;
     public bool forceControlScheme;
     public bool isGamepad;
     

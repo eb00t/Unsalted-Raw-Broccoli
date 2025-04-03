@@ -12,14 +12,32 @@ public class LockOnController : MonoBehaviour
 
     public Transform lockedTarget;
     public bool isAutoSwitchEnabled;
+    public bool isAutoLockOnEnabled;
     private Vector2 _switchDirection;
     private Vector3 _originalLocalScale;
     private CharacterMovement _characterMovement;
     private bool _isSwitchingInProgress;
+    private RoomScripting _roomScripting;
     
     private void Awake()
     {
         _characterMovement = GetComponent<CharacterMovement>();
+    }
+
+    private void Start()
+    {
+        FindCurrentRoom();
+    }
+
+    private void FindCurrentRoom()
+    {
+        foreach (var rs in FindObjectsOfType<RoomScripting>())
+        {
+            if (rs != null && rs.playerIsInRoom)
+            {
+                _roomScripting = rs;
+            }
+        }
     }
 
     public void ToggleLockOn(InputAction.CallbackContext context)
@@ -56,7 +74,7 @@ public class LockOnController : MonoBehaviour
             if (_isSwitchingInProgress) return;
 
             _isSwitchingInProgress = true;
-
+            
             var newTarget = FindTargetInDirection(_switchDirection);
 
             if (newTarget == lockedTarget || newTarget == null) return;
@@ -109,8 +127,9 @@ public class LockOnController : MonoBehaviour
             if (dmg == null || dmg.isDead) continue;
 
             var distance = Vector3.Distance(transform.position, enemy.transform.position);
+            FindCurrentRoom();
 
-            if (distance < minDistance && distance <= lockOnRadius)
+            if (distance < minDistance && enemy.transform.root.GetComponent<RoomScripting>() == _roomScripting)
             {
                 minDistance = distance;
                 nearestTarget = enemy.transform;
@@ -125,12 +144,12 @@ public class LockOnController : MonoBehaviour
     {
         var origin = lockedTarget != null ? lockedTarget.position : transform.position;
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        FindCurrentRoom();
         
         var validTargets = enemies.Select(e => e.transform)
             .Where(t => t != null 
                         && t != lockedTarget
-                        && Vector3.Distance(transform.position, t.position) <= maxDistance
-                        && Vector3.Distance(origin, t.position) <= lockOnRadius
+                        && t.gameObject.transform.root.GetComponent<RoomScripting>() == _roomScripting
                         && t.GetComponent<IDamageable>() != null 
                         && !t.GetComponent<IDamageable>().isDead)
             .ToList();
@@ -193,8 +212,10 @@ public class LockOnController : MonoBehaviour
                 return;
             }
         }
-
-        if (Vector3.Distance(transform.position, lockedTarget.position) > maxDistance || damageable.isDead)
+        
+        FindCurrentRoom();
+        
+        if (lockedTarget.transform.root.GetComponent<RoomScripting>() != _roomScripting || damageable.isDead)
         {
             UpdateTargetImg(lockedTarget.gameObject, false);
             lockedTarget = null;
@@ -203,11 +224,5 @@ public class LockOnController : MonoBehaviour
         }
 
         UpdateDir();
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawWireSphere(transform.position, lockOnRadius);
-        Gizmos.DrawWireSphere(transform.position, maxDistance);
     }
 }
