@@ -21,17 +21,23 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int attack;
     [SerializeField] private int poiseDamage;
     [SerializeField] private int numberOfAttacks;
+    [SerializeField] private float projectileSpeed;
+    
+    [Header("Laser Stats")]
+    [SerializeField] private float chargeTime;
+    [SerializeField] private float fireTime;
+    [SerializeField] private float trackSpeed;
+    [SerializeField] private float delay;
+    [SerializeField] private float laserTickCooldown;
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
     [SerializeField] private float chaseRange;
-    [SerializeField] private float patrolRange;
     private Vector3 _currentVelocity;
     private int _knockbackDir;
     private bool _hasPlayerBeenSeen;
     private Vector3 _lastPosition;
     private Vector3 _playerDir;
-    private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
     private States _state = States.Idle;
     
     [Header("Timing")]
@@ -46,7 +52,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [Header("Enemy Properties")]
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
-    [SerializeField] private bool doesEnemyPatrol;
     [SerializeField] private float moveSpeed;
     private bool _isKnockedBack;
     private bool _isStunned;
@@ -61,6 +66,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private GameObject flashEffect;
     [SerializeField] private Image healthFillImage;
+    [SerializeField] private GameObject lightProjectile;
+    [SerializeField] private GameObject projectileOrigin;
     private Collider _roomBounds;
     private Slider _healthSlider;
     private Animator _animator;
@@ -92,7 +99,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private enum States
     {
         Idle,
-        Patrol,
         Chase,
         Attack,
         Frozen
@@ -119,9 +125,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _collider = GetComponent<BoxCollider>();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
         
-        PickPatrolPoints();
-        _patrolTarget = _patrolPoint1;
-        
         DisablePlatformCollisions();
     }
 
@@ -133,7 +136,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;
-
+        
         if (_isStunned) return;
 
         if (_isFrozen)
@@ -142,17 +145,13 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         }
         else
         {
-            if (distance <= attackRange)
+            if (distance <= attackRange && IsPlayerInRoom())
             {
                 _state = States.Attack;
             }
-            else if (distance <= chaseRange || _hasPlayerBeenSeen)
+            else if (IsPlayerInRoom())
             {
                 _state = States.Chase;
-            }
-            else if (doesEnemyPatrol)
-            {
-                _state = States.Patrol;
             }
             else
             {
@@ -165,9 +164,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             case States.Idle:
                 _healthSlider.gameObject.SetActive(false);
                 break;
-            case States.Patrol:
-                Patrol();
-                break;
             case States.Chase:
                 Chase();
                 break;
@@ -179,18 +175,10 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
                 break;
         }
     }
-
-    private void Patrol()
+    
+    private bool IsPlayerInRoom()
     {
-        if (Vector3.Distance(transform.position, _patrolTarget) < 1f || _isStuck)
-        {
-            _patrolTarget = (_patrolTarget == _patrolPoint1) ? _patrolPoint2 : _patrolPoint1;
-            _isStuck = false;
-            _timeSinceLastMove = 0f;
-        }
-
-        MoveTowards(_patrolTarget);
-        _healthSlider.gameObject.SetActive(false);
+        return _roomBounds != null && _roomBounds.bounds.Contains(_target.position);
     }
     
     private void CheckIfStuck()
@@ -209,40 +197,16 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         if (_timeSinceLastMove > maxTimeToReachTarget)
         {
             _isStuck = true;
-            PickPatrolPoints();
         }
-    }
-    
-    private void PickPatrolPoints()
-    {
-        var position = transform.position;
-
-        var xOffset = Random.Range(3f, patrolRange);
-        var yOffset = Random.Range(-1f, 1f);
-
-        _patrolPoint1 = position + new Vector3(xOffset, yOffset, 0);
-        _patrolPoint2 = position - new Vector3(xOffset, yOffset, 0);
     }
 
     private void Chase()
     {
         _healthSlider.gameObject.SetActive(true);
-    
-        if (!_hasPlayerBeenSeen)
-        {
-            StartCoroutine(StartChaseDelay());
-        }
 
         var targetPosition = _target.position;
 
         MoveTowards(targetPosition);
-    }
-
-    private IEnumerator StartChaseDelay()
-    {
-        _hasPlayerBeenSeen = true;
-        yield return new WaitForSecondsRealtime(chaseDuration);
-        _hasPlayerBeenSeen = false;
     }
 
     private void Attack()
@@ -254,16 +218,19 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         if (_targetTime <= 0.0f && _canAttack)
         {
-            var i = Random.Range(0, 5);
+            var i = Random.Range(0, 10);
 
             switch (i)
             {
-                case < 3:
-                    //_animator.SetTrigger("Attack");
+                case < 4:
                     StartCoroutine(LaserAttack());
                     attackCooldown = 4f;
                     break;
-                case >= 3:
+                case >= 4 and <= 8:
+                    _animator.SetTrigger("Attack");
+                    attackCooldown = 3f;
+                    break;
+                case > 8:
                     Reposition();
                     attackCooldown = 1f;
                     break;
@@ -271,6 +238,22 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             
             _targetTime = attackCooldown;
         }
+    }
+
+    public void ProjectileAttack()
+    {
+        _canAttack = false;
+        var newProjectile = Instantiate(lightProjectile, transform.position, Quaternion.identity);
+        newProjectile.GetComponent<HitboxHandler>().damageable = this;
+        newProjectile.SetActive(true);
+        var rb = newProjectile.GetComponent<Rigidbody>();
+        var dir = _playerDir.normalized;
+        var newVelocity = new Vector3(dir.x, dir.y, 0);
+        var newRot = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+ 
+        rb.velocity = newVelocity * projectileSpeed;
+        rb.rotation = Quaternion.Euler(0, 0, newRot);
+        _canAttack = true;
     }
 
     private void Reposition() // makes enemy more difficult to track down
@@ -312,12 +295,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _canAttack = false;
         _lineRenderer.enabled = true;
         _lineRenderer.SetPosition(0, bossEyePosition.position);
-        var laserStartPos = _lineRenderer.GetPosition(0);;
-        var chargeTime = 1f;
-        var fireTime = .5f;
-        var trackSpeed = 0.5f;
-        var delay = 0.1f;
-        var targetPos = new Vector3(0, 0, 0);
+        
+        var targetPos = _target.position;
         var elapsed = 0f;
 
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
@@ -325,14 +304,14 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         while (elapsed < chargeTime)
         {
-            targetPos = _target.position;
-
-            _lineRenderer.SetPosition(0, laserStartPos); 
+            targetPos = Vector3.Lerp(targetPos, _target.position, Time.deltaTime * trackSpeed);
+            
+            _lineRenderer.SetPosition(0, bossEyePosition.position); 
             _lineRenderer.SetPosition(1, targetPos);
             _lineRenderer.startColor = Color.white;
             _lineRenderer.endColor = Color.white;
         
-            elapsed += Time.deltaTime * trackSpeed;
+            elapsed += Time.deltaTime;
             yield return null;
         }
 
@@ -345,22 +324,23 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _laserEvent.release();
         while (elapsed < fireTime)
         {
-            var dist = Vector3.Distance(targetPos, laserStartPos);
-            var direction = (targetPos - laserStartPos).normalized;
-            var laserEndPos = laserStartPos + direction * (dist + 5f);
+            var dist = Vector3.Distance(targetPos, bossEyePosition.position);
+            var direction = (targetPos - bossEyePosition.position).normalized;
+            var laserEndPos = bossEyePosition.position + direction * (dist + 5f);
 
+            _lineRenderer.SetPosition(0, bossEyePosition.position);
             _lineRenderer.SetPosition(1, laserEndPos);
             _lineRenderer.endColor = Color.red;
             var layerMask = LayerMask.GetMask("Player");
             
-            if (Physics.Raycast(laserStartPos, direction, out var hit, 50f, layerMask))
+            if (Physics.Raycast(bossEyePosition.position, direction, out var hit, 50f, layerMask))
             {
                 if (hit.collider.CompareTag("Player"))
                 {
                     var player = hit.collider.GetComponentInChildren<CharacterAttack>();
                     if (player != null)
                     {
-                        if (Time.time >= lastDamageTime + 0.25f) // makes sure player only takes damage at intervals
+                        if (Time.time >= lastDamageTime + laserTickCooldown) // makes sure player only takes damage at intervals
                         {
                             player.TakeDamagePlayer(attack, poiseDamage);
                             lastDamageTime = Time.time;
@@ -372,7 +352,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             elapsed += Time.deltaTime;
             yield return null;
         }
-
 
         _lineRenderer.enabled = false;
         _canAttack = true;

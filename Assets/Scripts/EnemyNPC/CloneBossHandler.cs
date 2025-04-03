@@ -27,9 +27,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     [SerializeField] private float chaseRange;
     public float retreatDistance;
     private int _knockbackDir;
-    private bool _hasPlayerBeenSeen;
     private Vector3 _lastPosition;
     private Vector3 _playerDir;
+    private Collider _roomBounds;
 
     public enum States
     {
@@ -45,11 +45,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
     [Header("Timing")] 
     [SerializeField] private float attackCooldown; // time between attacks
-    [SerializeField] private float chaseDuration; // how long the enemy will chase after player leaves range
     [SerializeField] private float freezeDuration; // how long the enemy is frozen for
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
     [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
-
     private float _timeSinceLastMove;
     private float _targetTime;
 
@@ -93,6 +91,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        _roomBounds = RoomScripting.GetComponent<Collider>();
         _healthSlider = GetComponentInChildren<Slider>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -157,7 +157,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
             {
                 _state = States.Attack;
             }
-            else if (distance < chaseRange || _hasPlayerBeenSeen)
+            else if (IsPlayerInRoom())
             {
                 _state = States.Chase;
 
@@ -201,6 +201,11 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         }
 
         _animator.SetFloat("vel", Mathf.Abs(velocity.x));
+    }
+    
+    private bool IsPlayerInRoom()
+    {
+        return _roomBounds != null && _roomBounds.bounds.Contains(_target.position);
     }
 
     private void Retreat()
@@ -261,11 +266,6 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
      {
          _agent.isStopped = false;
          _healthSlider.gameObject.SetActive(true);
-     
-         if (_hasPlayerBeenSeen == false)
-         {
-             StartCoroutine(StartChaseDelay());
-         }
          
          var offset = Vector3.zero;
      
@@ -286,13 +286,6 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
      
          _agent.SetDestination(destination);
      }
-    
-    private IEnumerator StartChaseDelay()
-    {
-        _hasPlayerBeenSeen = true;
-        yield return new WaitForSecondsRealtime(chaseDuration);
-        _hasPlayerBeenSeen = false;
-    }
 
     private void Attack()
     {

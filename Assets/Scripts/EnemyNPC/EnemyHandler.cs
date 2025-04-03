@@ -26,11 +26,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
-    [SerializeField] private float chaseRange;
     [SerializeField] private float patrolRange;
     private int _knockbackDir;
-    private bool _hasPlayerBeenSeen;
     private Vector3 _lastPosition;
+    private Collider _roomBounds;
     private Vector3 _playerDir;
     private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
     private enum States { Idle, Patrol, Chase, Attack, Frozen, Passive }
@@ -38,7 +37,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     [Header("Timing")]
     [SerializeField] private float attackCooldown; // time between attacks
-    [SerializeField] private float chaseDuration; // how long the enemy will chase after player leaves range
     [SerializeField] private float freezeDuration; // how long the enemy is frozen for
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
     [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
@@ -67,8 +65,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Transform _target;
     private NavMeshAgent _agent;
     private CharacterAttack _characterAttack;
-    private CharacterMovement _characterMovement;
-    private LockOnController _lockOnController;
     private SpriteRenderer _spriteRenderer;
     private MaterialPropertyBlock _propertyBlock;
     private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
@@ -87,11 +83,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
-        {
-            RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
-            RoomScripting.enemies.Add(gameObject);
-        }
+        RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+        RoomScripting.enemies.Add(gameObject);
+        _roomBounds = RoomScripting.GetComponent<Collider>();
 
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
@@ -104,8 +98,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateRotation = false;
-        _characterMovement = _target.GetComponent<CharacterMovement>();
-        _lockOnController = _target.GetComponent<LockOnController>();
         _propertyBlock = new MaterialPropertyBlock();
         
         PickPatrolPoints();
@@ -163,11 +155,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
         else
         {
-            if (distance < attackRange)
+            if (distance < attackRange && IsPlayerInRoom())
             {
                 _state = States.Attack;
             }
-            else if (distance < chaseRange || _hasPlayerBeenSeen)
+            else if (IsPlayerInRoom())
             {
                 _state = States.Chase;
             
@@ -226,6 +218,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
         
         _animator.SetFloat("vel", Mathf.Abs(velocity.x));
+    }
+    
+    private bool IsPlayerInRoom()
+    {
+        return _roomBounds != null && _roomBounds.bounds.Contains(_target.position);
     }
 
     private void UpdateSpriteDirection(bool isLeft)
@@ -291,19 +288,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _agent.isStopped = false;
         _healthSlider.gameObject.SetActive(true);
         
-        if (_hasPlayerBeenSeen == false)
-        {
-            StartCoroutine(StartChaseDelay());
-        }
-        
         _agent.SetDestination(_target.position);
-    }
-    
-    private IEnumerator StartChaseDelay()
-    {
-        _hasPlayerBeenSeen = true;
-        yield return new WaitForSecondsRealtime(chaseDuration);
-        _hasPlayerBeenSeen = false;
     }
 
     private void Passive()

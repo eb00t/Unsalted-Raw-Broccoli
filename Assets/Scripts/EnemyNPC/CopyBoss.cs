@@ -30,6 +30,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private enum States { Idle, Chase, Attack, Frozen, Jumping, Crouching }
     private States _currentState = States.Idle;
     private int _jumpCount;
+    private Collider _roomBounds;
     
     [Header("Timing")]
     [SerializeField] private float attackCooldown; // time between attacks
@@ -88,6 +89,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
+        _roomBounds = _roomScripting.GetComponent<Collider>();
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
         _bossCollider = GetComponent<CapsuleCollider>();
@@ -117,7 +119,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
             _jumpCount = 0;
         }
 
-        switch (isPlayerInRange)
+        switch (IsPlayerInRoom())
         {
             case true when !healthSlider.gameObject.activeSelf:
                 healthSlider.gameObject.SetActive(true);
@@ -137,7 +139,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             _currentState = States.Attack;
         }
-        else if (isPlayerInRange || _hasPlayerBeenSeen)
+        else if (IsPlayerInRoom())
         {
             if (canJump && heightDiffAbove > jumpTriggerDistance)
             {
@@ -206,6 +208,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
             _spriteRenderer.transform.localScale = localScale;
             atkHitbox.localScale = localScale2;
         }
+    }
+    
+    private bool IsPlayerInRoom()
+    {
+        return _roomBounds != null && _roomBounds.bounds.Contains(_player.position);
     }
     
     private bool IsGrounded()
@@ -305,21 +312,9 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void Chase()
     {
-        if (!_hasPlayerBeenSeen)
-        {
-            StartCoroutine(StartChaseDelay());
-        }
-
         MoveTowards(_player.position);
     }
-
-    private IEnumerator StartChaseDelay()
-    {
-        _hasPlayerBeenSeen = true;
-        yield return new WaitForSeconds(chaseDuration);
-        _hasPlayerBeenSeen = false;
-    }
-
+    
     private IEnumerator Attack()
     {
         _isAttacking = true;

@@ -5,11 +5,12 @@ public class HitboxHandler : MonoBehaviour
 {
     [SerializeField] private bool _canDamage = true;
     private bool _canDamageEnemies = true;
+    public IDamageable damageable;
 
     private void OnTriggerEnter(Collider other)
     {
-        var damageable = GetComponentInParent<IDamageable>();
-        
+        damageable ??= GetComponentInParent<IDamageable>();
+
         if (other.CompareTag("Player"))
         {
             if (!_canDamage) return;
