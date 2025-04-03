@@ -552,6 +552,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         EnemySpawner.spawnedEnemy = null;
         EnemySpawner.SpawnEnemies();
         AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);
+        int currencyToDrop = Random.Range(0, 5);
+        for (int i = 0; i < currencyToDrop; i++)
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Currency Prefab"), transform.position, Quaternion.identity);
+        }
         _deathEvent.start();
         _deathEvent.release();
         StopAlarmSound();

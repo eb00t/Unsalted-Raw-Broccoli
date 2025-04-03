@@ -11,7 +11,11 @@ public class CurrencyBehaviour : MonoBehaviour
     private Rigidbody _rigidbody;
     private GameObject _player;
     private bool _moveToPlayer;
+    private bool _collected;
     private SpriteRenderer _spriteRenderer;
+    private int _currencyAmount;
+    private CurrencyManager _currencyManager;
+    private BoxCollider _boxCollider;
     [Range(0, 3)]
     private int _randomCurrencySize;
     public enum CurrencySize
@@ -33,26 +37,33 @@ public class CurrencyBehaviour : MonoBehaviour
         {
             case <= 49:
                 currencySize = CurrencySize.Small;
-                _spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE SMALL CURRENCY SPRITE HERE");
+                _currencyAmount = 1;
+                //_spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE SMALL CURRENCY SPRITE HERE");
                 break;
             case >= 50 and <= 75:
                 currencySize = CurrencySize.Medium;
-                _spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE MEDIUM CURRENCY SPRITE HERE");
+                _currencyAmount = 2;
+                //_spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE MEDIUM CURRENCY SPRITE HERE");
                 break;
             case >= 75 and <= 99:
                 currencySize = CurrencySize.Large;
-                _spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE LARGE CURRENCY SPRITE HERE");
+                _currencyAmount = 5;
+                //_spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE LARGE CURRENCY SPRITE HERE");
                 break;
             case 100:
                 currencySize = CurrencySize.VeryLarge;
-                _spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE VERY LARGE CURRENCY SPRITE HERE");
+                _currencyAmount = 20;
+               //_spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE VERY LARGE CURRENCY SPRITE HERE");
                 break;
         }
     }
 
     private void Start()
     {
+        _currencyManager = GameObject.FindWithTag("UIManager").GetComponent<CurrencyManager>();
         _player = GameObject.FindWithTag("Player");
+        _boxCollider = GetComponent<BoxCollider>();
+        _boxCollider.enabled = false;
         _rigidbody.AddForce(launchPower, ForceMode.Impulse);
         StartCoroutine(GoToPlayer());
     }
@@ -61,23 +72,58 @@ public class CurrencyBehaviour : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         _moveToPlayer = true;
+        _boxCollider.enabled = true;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.useGravity = false;
         StartCoroutine(TeleportToPlayer());
     }
 
     IEnumerator TeleportToPlayer()
     {
         yield return new WaitForSeconds(5f);
-        _rigidbody.velocity = Vector3.zero;
-        transform.position = _player.transform.position;
-        Debug.Log("Currency not collected; warping it to player");
+        if (_collected == false)
+        {
+            GetComponent<TrailRenderer>().Clear();
+            _rigidbody.velocity = Vector3.zero;
+            transform.position = _player.transform.position;
+            Debug.Log("Currency not collected; warping it to player");
+        }
+        
     }
     
     private void Update()
     {
         if (_moveToPlayer)
         {
-            transform.position = Vector3.Lerp(transform.position, _player.transform.position, 2 * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, 15f * Time.deltaTime);
+        }
+
+        if (_collected)
+        {
+            _rigidbody.isKinematic = true;
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            _currencyManager.UpdateCurrency(_currencyAmount);
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.CurrencyPickup, _player.transform.position);
+            _collected = true;
+            _spriteRenderer.enabled = false;
+            _boxCollider.enabled = false;
+            _rigidbody.velocity = Vector3.zero;
+            _moveToPlayer = false;
+            StartCoroutine(WaitToDestroy());
+        }
+    }
+
+    IEnumerator WaitToDestroy()
+    {
+        yield return new WaitForSeconds(5f);
+        Destroy(gameObject);
+    }
+    
 }
 

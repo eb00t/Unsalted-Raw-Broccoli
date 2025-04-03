@@ -458,7 +458,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 break;
         }
     }
-    
+
     private void Die()
     {
         isDead = true;
@@ -466,27 +466,36 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         //_lockOnController.lockedTarget = null;
         StopAllCoroutines();
 
-        if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
+        if (!SceneManager.GetActiveScene().name.Contains("Tutorial") &&
+            !SceneManager.GetActiveScene().name.Contains("Intermission"))
         {
             EnemySpawner.spawnedEnemy = null;
-            EnemySpawner.SpawnEnemies(); 
+            EnemySpawner.SpawnEnemies();
         }
         else if (SceneManager.GetActiveScene().name.Contains("Tutorial"))
         {
             _target.GetComponent<TutorialController>().EnemyDefeated();
         }
-        
+
         if (!isBomb)
         {
             AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);
             _deathEvent.start();
             _deathEvent.release();
         }
-        gameObject.SetActive(false);
+
+        int currencyToDrop = Random.Range(0, 6);
+        for (int i = 0; i < currencyToDrop; i++)
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Currency Prefab"), transform.position, Quaternion.identity);
+        }
+        
+
         StopAlarmSound();
-       
+        gameObject.SetActive(false);
+
     }
-    
+
     public void PlayAlarmSound()
     {
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);

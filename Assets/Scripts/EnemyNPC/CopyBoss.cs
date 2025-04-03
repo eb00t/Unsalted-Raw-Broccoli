@@ -73,6 +73,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private SpriteRenderer _spriteRenderer;
     private SettingManager _settingManager;
     private MaterialPropertyBlock _propertyBlock;
+    private bool _tookDamage;
     private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
 
     int IDamageable.Attack { get => attack; set => attack = value; }
@@ -513,6 +514,21 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         isDead = true; 
         LevelBuilder.Instance.bossDead = true;
+        int currencyToDrop = 0;
+        switch (_tookDamage)
+        {
+            case false:
+                currencyToDrop = Random.Range(3, 11);
+                break;
+            case true:
+                currencyToDrop = Random.Range(0, 5);
+                break;
+        }
+       
+        for (int i = 0; i < currencyToDrop; i++)
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Currency Prefab"), transform.position, Quaternion.identity);
+        }
         _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
         _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
         _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
