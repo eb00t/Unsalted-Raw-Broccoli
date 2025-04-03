@@ -286,10 +286,8 @@ MonoBehaviour:
   poiseDamage: 5
   numberOfAttacks: 1
   attackRange: 3
-  chaseRange: 8
   patrolRange: 0
   attackCooldown: 0.3
-  chaseDuration: 5
   freezeDuration: 3
   freezeCooldown: 1
   maxTimeToReachTarget: 5
@@ -764,11 +762,11 @@ GameObject:
   - component: {fileID: 8394206519580724231}
   m_Layer: 5
   m_Name: Indicator
-  m_TagString: Untagged
+  m_TagString: LockOnPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5028783417499556022
 Transform:
   m_ObjectHideFlags: 0
@@ -793,7 +791,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5592242937076614246}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: fc0905fb6e88f324abdffe7679e36e91, type: 2}
   m_CullingMode: 0
@@ -911,7 +909,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8991250336382025120
 Transform:
   m_ObjectHideFlags: 0
