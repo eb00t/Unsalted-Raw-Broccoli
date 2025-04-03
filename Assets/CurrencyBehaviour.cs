@@ -16,6 +16,7 @@ public class CurrencyBehaviour : MonoBehaviour
     private int _currencyAmount;
     private CurrencyManager _currencyManager;
     private BoxCollider _boxCollider;
+    private Light _light;
     [Range(0, 3)]
     private int _randomCurrencySize;
     public enum CurrencySize
@@ -45,12 +46,12 @@ public class CurrencyBehaviour : MonoBehaviour
                 _currencyAmount = 2;
                 //_spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE MEDIUM CURRENCY SPRITE HERE");
                 break;
-            case >= 75 and <= 99:
+            case >= 75 and < 99:
                 currencySize = CurrencySize.Large;
                 _currencyAmount = 5;
                 //_spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE LARGE CURRENCY SPRITE HERE");
                 break;
-            case 100:
+            case 99:
                 currencySize = CurrencySize.VeryLarge;
                 _currencyAmount = 20;
                //_spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE VERY LARGE CURRENCY SPRITE HERE");
@@ -62,6 +63,7 @@ public class CurrencyBehaviour : MonoBehaviour
     {
         _currencyManager = GameObject.FindWithTag("UIManager").GetComponent<CurrencyManager>();
         _player = GameObject.FindWithTag("Player");
+        _light = gameObject.GetComponentInChildren<Light>();
         _boxCollider = GetComponent<BoxCollider>();
         _boxCollider.enabled = false;
         _rigidbody.AddForce(launchPower, ForceMode.Impulse);
@@ -73,7 +75,6 @@ public class CurrencyBehaviour : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         _moveToPlayer = true;
         _boxCollider.enabled = true;
-        _rigidbody.velocity = Vector3.zero;
         _rigidbody.useGravity = false;
         StartCoroutine(TeleportToPlayer());
     }
@@ -95,7 +96,7 @@ public class CurrencyBehaviour : MonoBehaviour
     {
         if (_moveToPlayer)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, 15f * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, 20f * Time.deltaTime);
         }
 
         if (_collected)
@@ -113,6 +114,7 @@ public class CurrencyBehaviour : MonoBehaviour
             _collected = true;
             _spriteRenderer.enabled = false;
             _boxCollider.enabled = false;
+            _light.enabled = false;
             _rigidbody.velocity = Vector3.zero;
             _moveToPlayer = false;
             StartCoroutine(WaitToDestroy());
