@@ -53,6 +53,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
     [SerializeField] private float moveSpeed;
+    private bool _isRepositioning;
     private bool _isKnockedBack;
     private bool _isStunned;
     private bool _isFrozen;
@@ -67,7 +68,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private GameObject flashEffect;
     [SerializeField] private Image healthFillImage;
     [SerializeField] private GameObject lightProjectile;
-    [SerializeField] private GameObject projectileOrigin;
+    [SerializeField] private Transform projectileOrigin;
     private Collider _roomBounds;
     private Slider _healthSlider;
     private Animator _animator;
@@ -215,24 +216,32 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _rigidbody.velocity = Vector3.zero;
         UpdateSpriteDirection(_playerDir.x < 0f);
         _targetTime -= Time.deltaTime;
-        
+
+        if (!_isRepositioning)
+        {
+            var x = Random.Range(0, 10);
+
+            if (x >= 6)
+            {
+                Reposition();
+                attackCooldown = 2f;
+            }
+        }
+
         if (_targetTime <= 0.0f && _canAttack)
         {
             var i = Random.Range(0, 10);
 
             switch (i)
             {
-                case < 4:
+                case < 5:
                     StartCoroutine(LaserAttack());
-                    attackCooldown = 4f;
+                    attackCooldown = 5f;
                     break;
-                case >= 4 and <= 8:
-                    _animator.SetTrigger("Attack");
-                    attackCooldown = 3f;
-                    break;
-                case > 8:
-                    Reposition();
-                    attackCooldown = 1f;
+                case >= 5:
+                    ProjectileAttack();
+                    //_animator.SetTrigger("Attack");
+                    attackCooldown = 5f;
                     break;
             }
             
@@ -243,7 +252,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     public void ProjectileAttack()
     {
         _canAttack = false;
-        var newProjectile = Instantiate(lightProjectile, transform.position, Quaternion.identity);
+        var newProjectile = Instantiate(lightProjectile, projectileOrigin.position, Quaternion.identity);
         newProjectile.GetComponent<HitboxHandler>().damageable = this;
         newProjectile.SetActive(true);
         var rb = newProjectile.GetComponent<Rigidbody>();
@@ -258,7 +267,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
     private void Reposition() // makes enemy more difficult to track down
     {
-        _canAttack = false;
+        _isRepositioning = true;
         StartCoroutine(NewPosition());
     }
     
@@ -285,9 +294,9 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         }
 
         _rigidbody.velocity = Vector3.zero;
-        _canAttack = true;
+        yield return new WaitForSecondsRealtime(4f);
+        _isRepositioning = false;
     }
-
 
     private IEnumerator LaserAttack() // aims laser at player that tracks, then it stops and starts doing damage
     {
@@ -578,6 +587,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
+        StartCoroutine(StunTimer(0.1f));
 
         if (_poiseBuildup >= poise)
         {
@@ -601,11 +611,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     
     private IEnumerator StunTimer(float stunTime)
     {
-        //_animator.SetBool("isStaggered", true);
+        _animator.SetBool("isStaggered", true);
         _isStunned = true;
         yield return new WaitForSecondsRealtime(stunTime);
         _isStunned = false;
-        //_animator.SetBool("isStaggered", false);
+        _animator.SetBool("isStaggered", false);
     }
     
     private IEnumerator HitFlash(Color flashColor, float duration)

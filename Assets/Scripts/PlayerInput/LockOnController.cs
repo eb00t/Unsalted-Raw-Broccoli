@@ -6,9 +6,10 @@ using System.Collections;
 
 public class LockOnController : MonoBehaviour
 {
-    [SerializeField] private float lockOnRadius;
-    [SerializeField] private float maxDistance;
-    [SerializeField] private float autoLockDistance;
+    [SerializeField] private float manualLockOnDist;
+    [SerializeField] private float autoLockOnDist;
+    [SerializeField] private float autoSwitchDist;
+    [SerializeField] private float maxLockOnDist;
     [SerializeField] private float switchThreshold;
 
     public Transform lockedTarget;
@@ -18,6 +19,13 @@ public class LockOnController : MonoBehaviour
     private Vector3 _originalLocalScale;
     private CharacterMovement _characterMovement;
     private bool _isSwitchingInProgress;
+    public bool isNearBoss;
+
+    [Header("Debugging")]
+    [SerializeField] private bool visualiseManualLockOn;
+    [SerializeField] private bool visualiseAutoLockOn;
+    [SerializeField] private bool visualiseAutoSwitch;
+    [SerializeField] private bool visualiseMaxLockOn;
     
     private void Awake()
     {
@@ -33,7 +41,14 @@ public class LockOnController : MonoBehaviour
     {
         if (lockedTarget == null)
         {
-            lockedTarget = FindNearestTarget();
+            if (isAutoLockOnEnabled && isAuto)
+            {
+                lockedTarget = isNearBoss ? FindNearestTarget(autoLockOnDist * 2) : FindNearestTarget(autoLockOnDist);
+            }
+            else
+            {
+                lockedTarget = FindNearestTarget(manualLockOnDist);
+            }
 
             if (lockedTarget == null) return;
 
@@ -97,7 +112,7 @@ public class LockOnController : MonoBehaviour
     }
     
     // if the player is not locked on this finds the closest enemy to the player and locks onto them
-    private Transform FindNearestTarget()
+    private Transform FindNearestTarget(float radius)
     {
         var points = GameObject.FindGameObjectsWithTag("LockOnPoint");
         var minDistance = Mathf.Infinity;
@@ -110,7 +125,7 @@ public class LockOnController : MonoBehaviour
 
             var distance = Vector3.Distance(transform.position, point.transform.position);
 
-            if (distance < minDistance && distance <= lockOnRadius)
+            if (distance < minDistance && distance <= radius)
             {
                 minDistance = distance;
                 nearestTarget = point.transform;
@@ -129,8 +144,8 @@ public class LockOnController : MonoBehaviour
         var validTargets = points.Select(e => e.transform)
             .Where(t => t != null 
                         && t != lockedTarget
-                        && Vector3.Distance(transform.position, t.position) <= maxDistance
-                        && Vector3.Distance(origin, t.position) <= lockOnRadius
+                        && Vector3.Distance(transform.position, t.position) <= maxLockOnDist
+                        && Vector3.Distance(origin, t.position) <= manualLockOnDist
                         && t.GetComponentInParent<IDamageable>() != null 
                         && !t.GetComponentInParent<IDamageable>().isDead)
             .ToList();
@@ -182,7 +197,7 @@ public class LockOnController : MonoBehaviour
         if (isAutoSwitchEnabled && damageable.isDead)
         {
             UpdateTargetImg(lockedTarget.gameObject, false);
-            var nearestTarget = FindNearestTarget();
+            var nearestTarget = FindNearestTarget(autoSwitchDist);
 
             if (nearestTarget != null && nearestTarget != lockedTarget)
             {
@@ -201,7 +216,14 @@ public class LockOnController : MonoBehaviour
             }
         }
 
-        if (Vector3.Distance(transform.position, lockedTarget.position) > maxDistance || damageable.isDead)
+        var unlockDist = isAutoLockOnEnabled ? autoLockOnDist : autoSwitchDist;
+        
+        if (isAutoLockOnEnabled)
+        {
+            unlockDist = isNearBoss ? autoLockOnDist * 2 : autoLockOnDist;
+        }
+
+        if (Vector3.Distance(transform.position, lockedTarget.position) > unlockDist || damageable.isDead)
         {
             UpdateTargetImg(lockedTarget.gameObject, false);
             lockedTarget = null;
@@ -212,9 +234,11 @@ public class LockOnController : MonoBehaviour
         UpdateDir();
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, lockOnRadius);
-        Gizmos.DrawWireSphere(transform.position, maxDistance);
+        if (visualiseManualLockOn) { Gizmos.color = Color.green; Gizmos.DrawWireSphere(transform.position, manualLockOnDist); }
+        if (visualiseAutoSwitch) { Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(transform.position, autoSwitchDist); }
+        if (visualiseAutoLockOn) { Gizmos.color = Color.magenta; Gizmos.DrawWireSphere(transform.position, autoLockOnDist); }
+        if (visualiseMaxLockOn) { Gizmos.color = Color.red; Gizmos.DrawWireSphere(transform.position, maxLockOnDist); }
     }
 }

@@ -6,6 +6,15 @@ public class HitboxHandler : MonoBehaviour
     [SerializeField] private bool _canDamage = true;
     private bool _canDamageEnemies = true;
     public IDamageable damageable;
+    [SerializeField] private bool doesSelfDestruct;
+
+    private void Start()
+    {
+        if (doesSelfDestruct)
+        {
+            StartCoroutine(SelfDestructAfterSeconds(15));
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -18,7 +27,14 @@ public class HitboxHandler : MonoBehaviour
             var characterAttack = other.GetComponentInChildren<CharacterAttack>();
 
             characterAttack.TakeDamagePlayer(damageable.Attack, damageable.PoiseDamage);
+            if (doesSelfDestruct) { Destroy(gameObject); }
             StartCoroutine(AtkCooldown());
+        }
+
+        if (!other.GetComponent<SemiSolidPlatform>() && !other.GetComponent<SemiSolidPlatformTrigger>() && !other.CompareTag("Player") && !other.CompareTag("Enemy") && !other.isTrigger)
+        {
+            Debug.Log(other.name);
+            if (doesSelfDestruct) { Destroy(gameObject); }
         }
 
         if (other.CompareTag("Enemy"))
@@ -29,10 +45,9 @@ public class HitboxHandler : MonoBehaviour
             {
                 var otherDamageable = other.GetComponent<IDamageable>();
 
-                if (!_canDamageEnemies || otherDamageable == null) return;
+                if (otherDamageable == null) return;
                 
                 otherDamageable.TakeDamage(damageable.Attack, damageable.PoiseDamage, null);
-                StartCoroutine(AtkCooldown());
             }
         }
     }
@@ -44,6 +59,12 @@ public class HitboxHandler : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.25f);
         _canDamage = true;
         _canDamageEnemies = true;
+    }
+
+    private IEnumerator SelfDestructAfterSeconds(float seconds)
+    {
+        yield return new WaitForSecondsRealtime(seconds);
+        Destroy(gameObject);
     }
 
     private void OnEnable()

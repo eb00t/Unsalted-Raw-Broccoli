@@ -71,6 +71,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private GameObject handDownL, handDownR, handUpL, handUpR;
     [SerializeField] private TextMeshProUGUI bossTitle;
     private SettingManager _settingManager;
+    private LockOnController _lockOnController;
     
     [Header("Sound")]
     private EventInstance _armMovementL, _armMovementR;
@@ -101,6 +102,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _canAttack = true;
         bossTitle.text = bossName;
         _lineRenderer = GetComponentInChildren<LineRenderer>();
+        _lockOnController = _target.GetComponent<LockOnController>();
     }
 
     private void Update()
@@ -110,10 +112,12 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         if (_isPlayerInRange)
         {
             _state = States.Attack;
+            _lockOnController.isNearBoss = true;
         }
         else
         {
             _healthSlider.gameObject.SetActive(false);
+            _lockOnController.isNearBoss = false;
             if (_state == States.Idle) return;
             {
                 _state = States.Idle;
