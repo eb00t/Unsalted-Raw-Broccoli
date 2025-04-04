@@ -287,10 +287,11 @@ MonoBehaviour:
   numberOfAttacks: 1
   attackRange: 3
   patrolRange: 0
-  attackCooldown: 0.3
+  attackCooldown: 0.5
   freezeDuration: 3
   freezeCooldown: 1
   maxTimeToReachTarget: 5
+  bombTimeVariability: 1.5
   isBomb: 1
   canBeFrozen: 0
   canBeStunned: 1
@@ -564,6 +565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canDamage: 1
+  doesSelfDestruct: 0
 --- !u!1 &4973278753106217272
 GameObject:
   m_ObjectHideFlags: 0

@@ -40,6 +40,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float freezeDuration; // how long the enemy is frozen for
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
     [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
+    [SerializeField] private float bombTimeVariability;
     private float _timeSinceLastMove;
     private float _targetTime;
 
@@ -114,7 +115,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         if (isBomb)
         {
-            _targetTime = attackCooldown;
+            var newCooldown = attackCooldown + Random.Range(-bombTimeVariability, bombTimeVariability);
+            newCooldown = Mathf.Clamp(newCooldown, 0.1f, attackCooldown + bombTimeVariability);
+            _targetTime = newCooldown;
         }
 
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
@@ -337,7 +340,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
         StopAlarmSound();
         _animator.SetBool("isExplode", true);
-        yield return new WaitForSecondsRealtime(attackCooldown);
+        var newCooldown = attackCooldown + Random.Range(-bombTimeVariability, bombTimeVariability);
+        newCooldown = Mathf.Clamp(newCooldown, 0.1f, attackCooldown + bombTimeVariability);
+        yield return new WaitForSecondsRealtime(newCooldown);
         _animator.SetBool("isExplode", false);
         _animator.SetTrigger("Detonate");
     }
