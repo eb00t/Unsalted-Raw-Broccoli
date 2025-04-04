@@ -65,6 +65,7 @@ MonoBehaviour:
   baseAtk: 10
   mediumAtkMultiplier: 2
   heavyAtkMultiplier: 3
+  charAtk: 0
   poise: 30
   poiseDamageLight: 10
   poiseDamageHeavy: 50
@@ -506,13 +507,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f431e614a7e88bf4888422965d955171, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnRadius: 15
-  maxDistance: 15
-  autoLockDistance: 4
+  manualLockOnDist: 15
+  autoLockOnDist: 6
+  autoSwitchDist: 10
+  maxLockOnDist: 20
   switchThreshold: 0.5
+  dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
   lockedTarget: {fileID: 0}
-  isAutoSwitchEnabled: 1
-  isAutoLockOnEnabled: 1
+  isNearBoss: 0
+  visualiseManualLockOn: 0
+  visualiseAutoLockOn: 0
+  visualiseAutoSwitch: 0
+  visualiseMaxLockOn: 0
 --- !u!114 &2398015274289911549
 MonoBehaviour:
   m_ObjectHideFlags: 0

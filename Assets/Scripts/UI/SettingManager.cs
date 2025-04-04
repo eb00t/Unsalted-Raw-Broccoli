@@ -40,6 +40,12 @@ public class SettingManager : MonoBehaviour
         ButtonHandler.Instance.PlayConfirmSound();
     }
 
+    public void ToggleAutoLockOn()
+    {
+        dataHolder.isAutoLockOnEnabled = !dataHolder.isAutoLockOnEnabled;
+        ButtonHandler.Instance.PlayConfirmSound();
+    }
+
     public void ToggleAutoSwitchLockTarget()
     {
         dataHolder.isAutoSwitchEnabled = !dataHolder.isAutoSwitchEnabled;

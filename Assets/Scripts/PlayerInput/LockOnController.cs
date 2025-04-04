@@ -4,17 +4,15 @@ using UnityEngine.InputSystem;
 using System.Linq;
 using System.Collections;
 
-public class LockOnController : MonoBehaviour
+public class LockOnController : MonoBehaviour // TODO: Make toggle states load from dataholder
 {
     [SerializeField] private float manualLockOnDist;
     [SerializeField] private float autoLockOnDist;
     [SerializeField] private float autoSwitchDist;
     [SerializeField] private float maxLockOnDist;
     [SerializeField] private float switchThreshold;
-
+    [SerializeField] private DataHolder dataHolder;
     public Transform lockedTarget;
-    public bool isAutoSwitchEnabled;
-    public bool isAutoLockOnEnabled;
     private Vector2 _switchDirection;
     private Vector3 _originalLocalScale;
     private CharacterMovement _characterMovement;
@@ -41,7 +39,7 @@ public class LockOnController : MonoBehaviour
     {
         if (lockedTarget == null)
         {
-            if (isAutoLockOnEnabled && isAuto)
+            if (dataHolder.isAutoLockOnEnabled && isAuto)
             {
                 lockedTarget = isNearBoss ? FindNearestTarget(autoLockOnDist * 2) : FindNearestTarget(autoLockOnDist);
             }
@@ -178,7 +176,7 @@ public class LockOnController : MonoBehaviour
     {
         if (lockedTarget == null)
         {
-            if (isAutoLockOnEnabled)
+            if (dataHolder.isAutoLockOnEnabled)
             {
                 LockOn(true);
             }
@@ -194,7 +192,7 @@ public class LockOnController : MonoBehaviour
             return;
         }
 
-        if (isAutoSwitchEnabled && damageable.isDead)
+        if (dataHolder.isAutoSwitchEnabled && damageable.isDead)
         {
             UpdateTargetImg(lockedTarget.gameObject, false);
             var nearestTarget = FindNearestTarget(autoSwitchDist);
@@ -216,9 +214,9 @@ public class LockOnController : MonoBehaviour
             }
         }
 
-        var unlockDist = isAutoLockOnEnabled ? autoLockOnDist : autoSwitchDist;
+        var unlockDist = dataHolder.isAutoLockOnEnabled ? autoLockOnDist : autoSwitchDist;
         
-        if (isAutoLockOnEnabled)
+        if (dataHolder.isAutoLockOnEnabled)
         {
             unlockDist = isNearBoss ? autoLockOnDist * 2 : autoLockOnDist;
         }
