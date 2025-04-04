@@ -358,11 +358,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _lineRenderer.enabled = true;
         _lineRenderer.SetPosition(0, bossEyePosition.position);
         var laserStartPos = _lineRenderer.GetPosition(0);;
-        var chargeTime = 1.5f;
+        var chargeTime = 3f;
         var fireTime = 1f;
-        var trackSpeed = 0.5f;
-        var delay = 0.1f;
-        var targetPos = new Vector3(0, 0, 0);
+        var trackSpeed = 5f;
+        var delay = 0.2f;
+        var targetPos = _target.position;
         var elapsed = 0f;
 
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
@@ -370,14 +370,14 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         
         while (elapsed < chargeTime)
         {
-            targetPos = _target.position;
+            targetPos = Vector3.Lerp(targetPos, _target.position, Time.deltaTime * trackSpeed);
 
             _lineRenderer.SetPosition(0, laserStartPos); 
             _lineRenderer.SetPosition(1, targetPos);
-            _lineRenderer.startColor = Color.white;
-            _lineRenderer.endColor = Color.white;
+            _lineRenderer.startWidth = 0.01f;
+            _lineRenderer.endWidth = 0.01f;
         
-            elapsed += Time.deltaTime * trackSpeed;
+            elapsed += Time.deltaTime;
             yield return null;
         }
 
@@ -392,10 +392,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         {
             var dist = Vector3.Distance(targetPos, laserStartPos);
             var direction = (targetPos - laserStartPos).normalized;
-            var laserEndPos = laserStartPos + direction * (dist + 5f);
+            var laserEndPos = laserStartPos + direction * (dist + 10f);
 
             _lineRenderer.SetPosition(1, laserEndPos);
-            _lineRenderer.endColor = Color.red;
+            _lineRenderer.startWidth = .5f;
+            _lineRenderer.endWidth = .5f;
             var layerMask = LayerMask.GetMask("Player");
             
             if (Physics.Raycast(laserStartPos, direction, out var hit, 50f, layerMask))
