@@ -7,11 +7,13 @@ using System.Collections;
 public class LockOnController : MonoBehaviour
 {
     [SerializeField] private float lockOnRadius;
-    [SerializeField] private float switchThreshold;
     [SerializeField] private float maxDistance;
+    [SerializeField] private float autoLockDistance;
+    [SerializeField] private float switchThreshold;
 
     public Transform lockedTarget;
     public bool isAutoSwitchEnabled;
+    public bool isAutoLockOnEnabled;
     private Vector2 _switchDirection;
     private Vector3 _originalLocalScale;
     private CharacterMovement _characterMovement;
@@ -24,6 +26,11 @@ public class LockOnController : MonoBehaviour
 
     public void ToggleLockOn(InputAction.CallbackContext context)
     {
+        LockOn(false);
+    }
+
+    private void LockOn(bool isAuto)
+    {
         if (lockedTarget == null)
         {
             lockedTarget = FindNearestTarget();
@@ -35,7 +42,7 @@ public class LockOnController : MonoBehaviour
             _characterMovement.lockedOn = true;
             UpdateDir();
         }
-        else
+        else if (!isAuto)
         {
             UpdateTargetImg(lockedTarget.gameObject, false);
             lockedTarget = null;
@@ -85,35 +92,28 @@ public class LockOnController : MonoBehaviour
     // updates the X that shows up to signify which enemy is locked on to
     private void UpdateTargetImg(GameObject target, bool setActive)
     {
-        if (!target.activeSelf) return;
-        
-        foreach (var i in target.GetComponentsInChildren<Animator>(true))
-        {
-            if (i.name == "Indicator")
-            {
-                i.gameObject.SetActive(setActive);
-            }
-        }
+        target.GetComponent<Animator>().enabled = setActive;
+        target.GetComponentInChildren<SpriteRenderer>(true).gameObject.SetActive(setActive);
     }
     
     // if the player is not locked on this finds the closest enemy to the player and locks onto them
     private Transform FindNearestTarget()
     {
-        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        var points = GameObject.FindGameObjectsWithTag("LockOnPoint");
         var minDistance = Mathf.Infinity;
         Transform nearestTarget = null;
 
-        foreach (var enemy in enemies)
+        foreach (var point in points)
         {
-            var dmg = enemy.GetComponent<IDamageable>();
+            var dmg = point.GetComponentInParent<IDamageable>();
             if (dmg == null || dmg.isDead) continue;
 
-            var distance = Vector3.Distance(transform.position, enemy.transform.position);
+            var distance = Vector3.Distance(transform.position, point.transform.position);
 
             if (distance < minDistance && distance <= lockOnRadius)
             {
                 minDistance = distance;
-                nearestTarget = enemy.transform;
+                nearestTarget = point.transform;
             }
         }
 
@@ -124,15 +124,15 @@ public class LockOnController : MonoBehaviour
     private Transform FindTargetInDirection(Vector2 direction)
     {
         var origin = lockedTarget != null ? lockedTarget.position : transform.position;
-        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        var points   = GameObject.FindGameObjectsWithTag("LockOnPoint");
         
-        var validTargets = enemies.Select(e => e.transform)
+        var validTargets = points.Select(e => e.transform)
             .Where(t => t != null 
                         && t != lockedTarget
                         && Vector3.Distance(transform.position, t.position) <= maxDistance
                         && Vector3.Distance(origin, t.position) <= lockOnRadius
-                        && t.GetComponent<IDamageable>() != null 
-                        && !t.GetComponent<IDamageable>().isDead)
+                        && t.GetComponentInParent<IDamageable>() != null 
+                        && !t.GetComponentInParent<IDamageable>().isDead)
             .ToList();
 
         if (validTargets.Count == 0) return null;
@@ -140,20 +140,20 @@ public class LockOnController : MonoBehaviour
         Transform closestTarget = null;
         var closestDistance = Mathf.Infinity;
 
-        foreach (var target in validTargets)
+        foreach (var point in validTargets)
         {
-            var toTarget = (target.position - origin).normalized;
+            var toTarget = (point.position - origin).normalized;
             var projected = new Vector2(toTarget.x, toTarget.y);
             var angle = Vector2.Angle(projected, direction);
             
             if (angle > 45f) continue;
 
-            var horizontalDistance = Vector2.Distance(new Vector2(origin.x, origin.y), new Vector2(target.position.x, target.position.y));
+            var horizontalDistance = Vector2.Distance(new Vector2(origin.x, origin.y), new Vector2(point.position.x, point.position.y));
 
             if (!(horizontalDistance < closestDistance)) continue;
             
             closestDistance = horizontalDistance;
-            closestTarget = target;
+            closestTarget = point.transform;
         }
 
         return closestTarget;
@@ -161,9 +161,16 @@ public class LockOnController : MonoBehaviour
 
     private void Update()
     {
-        if (lockedTarget == null) return;
+        if (lockedTarget == null)
+        {
+            if (isAutoLockOnEnabled)
+            {
+                LockOn(true);
+            }
+            return;
+        }
 
-        var damageable = lockedTarget.GetComponent<IDamageable>();
+        var damageable = lockedTarget.GetComponentInParent<IDamageable>();
         
         if (damageable == null)
         {
@@ -184,7 +191,7 @@ public class LockOnController : MonoBehaviour
                 _characterMovement.lockedOn = true;
                 UpdateDir();
                 
-                damageable = lockedTarget.GetComponent<IDamageable>();
+                damageable = lockedTarget.GetComponentInParent<IDamageable>();
             }
             else
             {
