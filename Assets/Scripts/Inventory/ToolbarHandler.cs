@@ -39,6 +39,7 @@ public class ToolbarHandler : MonoBehaviour
     private EventInstance _cycleInstance;
     private HorseFacts _horseFacts;
     private int[] _lastEquippedItems;
+    public bool canPlayCycleSound;
 
     private void Start()
     {
@@ -51,6 +52,7 @@ public class ToolbarHandler : MonoBehaviour
         _playerStatus = GetComponent<PlayerStatus>();
         _activeAtkBuffs = new List<int>();
         _horseFacts = GetComponent<HorseFacts>();
+        _cycleInstance = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.CycleItem);
         //UpdateActiveConsumables();
         //UpdateSlots();
         UpdateToolbar();
@@ -276,7 +278,7 @@ public class ToolbarHandler : MonoBehaviour
         var count = dataHolder.equippedConsumables.Length;
         if (count == 0 || dataHolder.equippedConsumables.All(id => id <= 0)) return;
 
-        _cycleInstance = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.CycleItem);
+        int prevConsumable = 0;
 
         var startIndex = _activeConsumable;
 
@@ -285,9 +287,13 @@ public class ToolbarHandler : MonoBehaviour
 
         AudioManager.Instance.SetEventParameter(_cycleInstance, "Cycle Direction", direction > 0 ? 0 : 1);
 
-        _cycleInstance.start();
-        _cycleInstance.release();
+        _cycleInstance.getPlaybackState(out var state);
+        if (state is PLAYBACK_STATE.STOPPED or PLAYBACK_STATE.STOPPING && prevConsumable != _activeConsumable)
+        {
+            _cycleInstance.start();
+        }
 
+        prevConsumable = _activeConsumable;
         UpdateCurrentTool();
     }
 

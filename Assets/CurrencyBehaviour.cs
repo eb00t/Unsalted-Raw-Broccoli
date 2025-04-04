@@ -118,6 +118,8 @@ public class CurrencyBehaviour : MonoBehaviour
             _light.enabled = false;
             _rigidbody.velocity = Vector3.zero;
             _moveToPlayer = false;
+            StopCoroutine(GoToPlayer());
+            StopCoroutine(TeleportToPlayer());
             StartCoroutine(WaitToDestroy());
         }
     }
