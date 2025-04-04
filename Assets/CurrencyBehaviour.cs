@@ -65,7 +65,7 @@ public class CurrencyBehaviour : MonoBehaviour
         _player = GameObject.FindWithTag("Player");
         _light = gameObject.GetComponentInChildren<Light>();
         _boxCollider = GetComponent<BoxCollider>();
-        _boxCollider.enabled = false;
+        _boxCollider.enabled = true;
         _rigidbody.AddForce(launchPower, ForceMode.Impulse);
         StartCoroutine(GoToPlayer());
     }
@@ -75,6 +75,7 @@ public class CurrencyBehaviour : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         _moveToPlayer = true;
         _boxCollider.enabled = true;
+        _rigidbody.velocity = Vector3.zero;
         _rigidbody.useGravity = false;
         StartCoroutine(TeleportToPlayer());
     }
