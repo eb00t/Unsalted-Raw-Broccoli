@@ -218,9 +218,9 @@ public class ToolbarHandler : MonoBehaviour
                 consumable.statusText = _characterAttack.isInvincible.ToString();
                 _playerStatus.AddNewStatus(consumable);
                 break;
-            case ConsumableEffect.RouletteHeal: // Has a chance to either heal or harm the player (cannot kill them)
+            case ConsumableEffect.RouletteHeal: // gives healing over time but decreases attack temporarily
                 AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemActivate, transform.position);
-                Debug.LogWarning("Roulette heal has no effect.");
+                StartCoroutine(RouletteHeal(consumable));
                 break;
             case ConsumableEffect.HorseFact: // shows a fact about a horse
                 _inventoryStore.TriggerNotification(consumable.uiIcon, _horseFacts.HorseFact(), true);
@@ -230,10 +230,29 @@ public class ToolbarHandler : MonoBehaviour
         }
     }
 
+    private IEnumerator RouletteHeal(Consumable consumable)
+    {
+        _playerStatus.AddNewStatus(consumable);
+        var atkDecrease = -5;
+        
+        _activeAtkBuffs.Add(atkDecrease);
+        _characterAttack.charAtk = _characterAttack.baseAtk + _activeAtkBuffs.Sum();
+
+        var healInterval = consumable.effectDuration / 5f;
+
+        for (var i = 0; i < 5; i++)
+        {
+            _characterAttack.TakeDamagePlayer((int)-consumable.effectAmount, 0);
+            yield return new WaitForSecondsRealtime(healInterval);
+        }
+
+        _activeAtkBuffs.Remove(atkDecrease);
+        _characterAttack.charAtk = _activeAtkBuffs.Sum() + _characterAttack.baseAtk;
+    }
+    
     private IEnumerator ActivateAtkBuff(Consumable consumable)
     {
-        var atkIncrease =
-            (int)((float)_characterAttack.baseAtk / 100 * consumable.effectAmount); // converts percentage to value
+        var atkIncrease = (int)((float)_characterAttack.baseAtk / 100 * consumable.effectAmount); // converts percentage to value
 
         if (_activeAtkBuffs.Count > 0)
         {

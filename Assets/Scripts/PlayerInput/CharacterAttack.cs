@@ -38,7 +38,7 @@ public class CharacterAttack : MonoBehaviour
     public int baseAtk;
     [SerializeField] private float mediumAtkMultiplier;
     [SerializeField] private float heavyAtkMultiplier;
-    [NonSerialized] public int charAtk;
+    public int charAtk;
     [SerializeField] private int poise;
     public int poiseDamageLight, poiseDamageHeavy, poiseDamageMedium;
     public int isInvincible;
