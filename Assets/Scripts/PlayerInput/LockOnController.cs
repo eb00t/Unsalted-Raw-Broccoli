@@ -6,73 +6,42 @@ using System.Collections;
 
 public class LockOnController : MonoBehaviour
 {
+    [SerializeField] private float lockOnRadius;
     [SerializeField] private float switchThreshold;
+    [SerializeField] private float maxDistance;
+
     public Transform lockedTarget;
     public bool isAutoSwitchEnabled;
-    public bool isAutoLockOnEnabled;
     private Vector2 _switchDirection;
-    private CharacterMovement _characterMovement;
     private Vector3 _originalLocalScale;
+    private CharacterMovement _characterMovement;
     private bool _isSwitchingInProgress;
-    private RoomScripting _roomScripting;
-    private bool _canLock = true;
     
     private void Awake()
     {
         _characterMovement = GetComponent<CharacterMovement>();
-        _originalLocalScale = transform.localScale;
-    }
-
-    private void Start()
-    {
-        FindCurrentRoom();
-    }
-
-    private void FindCurrentRoom()
-    {
-        foreach (var rs in FindObjectsOfType<RoomScripting>())
-        {
-            if (rs != null && rs.playerIsInRoom && _roomScripting != rs)
-            {
-                ClearLockOn();
-                _roomScripting = rs;
-                return;
-            }
-        }
     }
 
     public void ToggleLockOn(InputAction.CallbackContext context)
     {
-        LockOn(false);
-    }
-
-    private void LockOn(bool isAuto)
-    {
-        _canLock = false;
-
-        if (lockedTarget == null || isAuto)
+        if (lockedTarget == null)
         {
-            var nearest = FindNearestTarget();
+            lockedTarget = FindNearestTarget();
 
-            if (nearest == null)
-            {
-                ClearLockOn();
-                _canLock = true;
-                return;
-            }
+            if (lockedTarget == null) return;
 
-            ClearIndicators();
-            lockedTarget = nearest;
             UpdateTargetImg(lockedTarget.gameObject, true);
+            _originalLocalScale = transform.localScale;
             _characterMovement.lockedOn = true;
             UpdateDir();
         }
         else
         {
-            ClearLockOn();
+            UpdateTargetImg(lockedTarget.gameObject, false);
+            lockedTarget = null;
+            _characterMovement.lockedOn = false;
+            transform.localScale = _originalLocalScale;
         }
-
-        _canLock = true;
     }
 
     public void SwitchTarget(InputAction.CallbackContext context)
@@ -87,12 +56,12 @@ public class LockOnController : MonoBehaviour
             if (_isSwitchingInProgress) return;
 
             _isSwitchingInProgress = true;
-            
+
             var newTarget = FindTargetInDirection(_switchDirection);
 
             if (newTarget == lockedTarget || newTarget == null) return;
 
-            ClearIndicators();
+            UpdateTargetImg(lockedTarget.gameObject, false);
             lockedTarget = newTarget;
             UpdateTargetImg(lockedTarget.gameObject, true);
 
@@ -101,32 +70,6 @@ public class LockOnController : MonoBehaviour
         else if (context.canceled)
         {
             _isSwitchingInProgress = false;
-        }
-    }
-    
-    private void ClearLockOn()
-    {
-        if (lockedTarget != null)
-        {
-            UpdateTargetImg(lockedTarget.gameObject, false);
-        }
-
-        lockedTarget = null;
-        _characterMovement.lockedOn = false;
-    }
-    
-    private void ClearIndicators()
-    {
-        foreach (var target in GameObject.FindGameObjectsWithTag("LockOnPoint"))
-        {
-            var dmg = target.GetComponentInParent<IDamageable>();
-            if (dmg == null || dmg.isDead) continue;
-
-            var sprite = target.GetComponentInChildren<SpriteRenderer>(true);
-            if (sprite != null) sprite.gameObject.SetActive(false);
-
-            var animator = target.GetComponent<Animator>();
-            if (animator != null) animator.enabled = false;
         }
     }
     
@@ -144,26 +87,30 @@ public class LockOnController : MonoBehaviour
     {
         if (!target.activeSelf) return;
         
-        target.GetComponent<Animator>().enabled = setActive;
-        target.GetComponentInChildren<SpriteRenderer>(true).gameObject.SetActive(setActive);
+        foreach (var i in target.GetComponentsInChildren<Animator>(true))
+        {
+            if (i.name == "Indicator")
+            {
+                i.gameObject.SetActive(setActive);
+            }
+        }
     }
     
     // if the player is not locked on this finds the closest enemy to the player and locks onto them
     private Transform FindNearestTarget()
     {
-        var enemies = GameObject.FindGameObjectsWithTag("LockOnPoint");
+        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
         var minDistance = Mathf.Infinity;
         Transform nearestTarget = null;
 
         foreach (var enemy in enemies)
         {
-            var dmg = enemy.GetComponentInParent<IDamageable>();
+            var dmg = enemy.GetComponent<IDamageable>();
             if (dmg == null || dmg.isDead) continue;
 
             var distance = Vector3.Distance(transform.position, enemy.transform.position);
-            FindCurrentRoom();
 
-            if (distance < minDistance && enemy.transform.root.GetComponent<RoomScripting>() == _roomScripting)
+            if (distance < minDistance && distance <= lockOnRadius)
             {
                 minDistance = distance;
                 nearestTarget = enemy.transform;
@@ -177,15 +124,15 @@ public class LockOnController : MonoBehaviour
     private Transform FindTargetInDirection(Vector2 direction)
     {
         var origin = lockedTarget != null ? lockedTarget.position : transform.position;
-        var enemies = GameObject.FindGameObjectsWithTag("LockOnPoint");
-        FindCurrentRoom();
+        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
         
         var validTargets = enemies.Select(e => e.transform)
             .Where(t => t != null 
                         && t != lockedTarget
-                        && t.gameObject.transform.root.GetComponent<RoomScripting>() == _roomScripting
-                        && t.GetComponentInParent<IDamageable>() != null 
-                        && !t.GetComponentInParent<IDamageable>().isDead)
+                        && Vector3.Distance(transform.position, t.position) <= maxDistance
+                        && Vector3.Distance(origin, t.position) <= lockOnRadius
+                        && t.GetComponent<IDamageable>() != null 
+                        && !t.GetComponent<IDamageable>().isDead)
             .ToList();
 
         if (validTargets.Count == 0) return null;
@@ -214,31 +161,14 @@ public class LockOnController : MonoBehaviour
 
     private void Update()
     {
-        if (isAutoLockOnEnabled && _canLock)
-        {
-            FindCurrentRoom();
-            
-            if (_roomScripting != null)
-            {
-               LockOn(true); 
-            }
-        }
+        if (lockedTarget == null) return;
 
-        if (lockedTarget == null)
-        {
-            if (_characterMovement.lockedOn)
-            {
-                ClearLockOn();
-            }
-
-            return;
-        }
-
-        var damageable = lockedTarget.GetComponentInParent<IDamageable>();
+        var damageable = lockedTarget.GetComponent<IDamageable>();
         
         if (damageable == null)
         {
-            ClearLockOn();
+            lockedTarget = null;
+            _characterMovement.lockedOn = false;
             return;
         }
 
@@ -254,23 +184,30 @@ public class LockOnController : MonoBehaviour
                 _characterMovement.lockedOn = true;
                 UpdateDir();
                 
-                damageable = lockedTarget.GetComponentInParent<IDamageable>();
+                damageable = lockedTarget.GetComponent<IDamageable>();
             }
             else
             {
-                ClearLockOn();
+                lockedTarget = null;
+                _characterMovement.lockedOn = false;
                 return;
             }
         }
-        
-        FindCurrentRoom();
-        
-        if (lockedTarget.transform.root.GetComponent<RoomScripting>() != _roomScripting || damageable.isDead)
+
+        if (Vector3.Distance(transform.position, lockedTarget.position) > maxDistance || damageable.isDead)
         {
-            ClearLockOn();
+            UpdateTargetImg(lockedTarget.gameObject, false);
+            lockedTarget = null;
+            _characterMovement.lockedOn = false;
             return;
         }
 
         UpdateDir();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(transform.position, lockOnRadius);
+        Gizmos.DrawWireSphere(transform.position, maxDistance);
     }
 }
