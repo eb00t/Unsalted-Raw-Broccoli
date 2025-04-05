@@ -41,6 +41,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
     [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
     [SerializeField] private float bombTimeVariability;
+    [SerializeField] private float lungeCooldown;
     private float _timeSinceLastMove;
     private float _targetTime;
 
@@ -50,12 +51,14 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool doesEnemyPatrol;
     [SerializeField] private bool isPassive;
+    [SerializeField] private float lungeForce;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
     private bool _isStuck;
     private int _poisonBuildup;
     private int _poiseBuildup;
+    private bool _canLunge = true;
 
     [Header("References")] 
     [SerializeField] private Transform passiveTarget;
@@ -73,7 +76,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [Header("Sound")]
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
-    
+
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
     int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
@@ -290,8 +293,35 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
         _agent.isStopped = false;
         _healthSlider.gameObject.SetActive(true);
-        
+
+        if (isBomb && _canLunge)
+        {
+            StartCoroutine(BeginLunge());
+        }
+
         _agent.SetDestination(_target.position);
+    }
+
+    private IEnumerator BeginLunge()
+    {
+        _canLunge = false;
+        var chance = Random.Range(0f, 1f);
+        if (chance > 0.8f)
+        {
+            Lunge();
+        }
+
+        yield return new WaitForSecondsRealtime(lungeCooldown);
+        _canLunge = true;
+    }
+
+    private void Lunge()
+    {
+        _agent.isStopped = false;
+        _healthSlider.gameObject.SetActive(true);
+        
+        _agent.velocity = Vector3.zero;
+        _agent.velocity = new Vector3(_playerDir.x * lungeForce, 0f, 0f);
     }
 
     private void Passive()
@@ -409,7 +439,14 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         {
             _health = 0;
             _healthSlider.value = 0;
-            Die();
+            if (isBomb)
+            {
+                StartCoroutine(BeginExplode());
+            }
+            else
+            {
+                Die();
+            }
         }
 
         if (_health <= maxHealth / 3 && _lowHealth == false)
@@ -452,12 +489,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Die()
     {
         isDead = true;
-        //_characterMovement.lockedOn = false;
-        //_lockOnController.lockedTarget = null;
         StopAllCoroutines();
 
-        if (!SceneManager.GetActiveScene().name.Contains("Tutorial") &&
-            !SceneManager.GetActiveScene().name.Contains("Intermission"))
+        if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
         {
             EnemySpawner.spawnedEnemy = null;
             EnemySpawner.SpawnEnemies();
