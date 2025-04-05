@@ -56,6 +56,17 @@ public class MenuHandler : MonoBehaviour
 			{
 				SwitchSelected(interactable);
 			}
+
+			if (!Cursor.visible || Cursor.lockState == CursorLockMode.Locked)
+			{
+				Cursor.visible = true;
+				Cursor.lockState = CursorLockMode.None;
+			}
+		}
+		else if (dataHolder.isGamepad && Cursor.visible || Cursor.lockState == CursorLockMode.None)
+		{
+			Cursor.visible = false;
+			Cursor.lockState = CursorLockMode.Locked;
 		}
 		
 		if (eventSystem.currentSelectedGameObject != _lastSelected)
