@@ -127,23 +127,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 130
-  poise: 60
+  poise: 120
   defense: 0
   poisonResistance: 50
+  blockingDefense: 95
   attack: 15
   poiseDamage: 8
-  numberOfAttacks: 1
+  numberOfAttacks: 2
   attackRange: 4
   patrolRange: 10
   attackCooldown: 1.4
   freezeDuration: 1.5
   freezeCooldown: 4
   maxTimeToReachTarget: 5
+  bombTimeVariability: 0
+  lungeCooldown: 0
+  blockDuration: 4
   isBomb: 0
-  canBeFrozen: 0
+  isStalker: 1
+  canBeFrozen: 1
   canBeStunned: 1
   doesEnemyPatrol: 1
   isPassive: 0
+  lungeForce: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 3665861034403590735}
   healthFillImage: {fileID: 953913091542431065}
@@ -369,6 +375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canDamage: 1
+  doesSelfDestruct: 0
 --- !u!114 &2673932411865042494
 MonoBehaviour:
   m_ObjectHideFlags: 0

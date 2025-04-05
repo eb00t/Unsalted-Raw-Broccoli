@@ -18,6 +18,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int poise;
     [SerializeField] private int defense;
     [SerializeField] private int poisonResistance;
+    [SerializeField] private int blockingDefense;
 
     [Header("Offensive Stats")] 
     [SerializeField] private int attack;
@@ -42,11 +43,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
     [SerializeField] private float bombTimeVariability;
     [SerializeField] private float lungeCooldown;
+    [SerializeField] private float blockDuration;
     private float _timeSinceLastMove;
     private float _targetTime;
 
     [Header("Enemy Properties")] 
     public bool isBomb;
+    [SerializeField] private bool isStalker;
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool doesEnemyPatrol;
@@ -59,6 +62,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private int _poisonBuildup;
     private int _poiseBuildup;
     private bool _canLunge = true;
+    private bool _isBlocking;
 
     [Header("References")] 
     [SerializeField] private Transform passiveTarget;
@@ -107,7 +111,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
         
-        if (gameObject.name.Contains("Stalker"))
+        if (isStalker)
         {
             gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
         }
@@ -124,19 +128,20 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
 
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
+
+        if (isPassive)
+        {
+            defense = 100;
+        }
     }
 
     private void Update()
     {
-        if (isPassive)
-        {
-            _health = maxHealth;
-            _healthSlider.value = maxHealth;
-        }
         var velocity = _agent.velocity;
-        var distance = Vector3.Distance(transform.position, _target.position);
+        _target = isPassive ? passiveTarget : _target;
         _playerDir = _target.position - transform.position;
-        
+        var distance = Vector3.Distance(transform.position, _target.position);
+
         if (_isFrozen)
         {
             _state = States.Frozen;
@@ -144,59 +149,28 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         else if (isPassive)
         {
             _state = States.Passive;
-            _playerDir = passiveTarget.position - transform.position;
-            
-            UpdateSpriteDirection(_playerDir.x < 0);
-            
-            if (velocity.x > 0.1f)
-            {
-                UpdateSpriteDirection(false);
-            }
-            else if (velocity.x < -0.1f)
-            {
-                UpdateSpriteDirection(true);
-            }
-            
-            _target = passiveTarget;
+        }
+        else if (IsPlayerInRoom())
+        {
+            _state = distance < attackRange ? States.Attack : States.Chase;
         }
         else
         {
-            if (distance < attackRange && IsPlayerInRoom())
+            _state = doesEnemyPatrol ? States.Patrol : States.Idle;
+        }
+
+        if (_state is States.Passive or States.Chase or States.Patrol)
+        {
+            if (Mathf.Abs(velocity.x) > 0.1f)
             {
-                _state = States.Attack;
-            }
-            else if (IsPlayerInRoom())
-            {
-                _state = States.Chase;
-            
-                if (velocity.x > 0.1f)
-                {
-                    UpdateSpriteDirection(false);
-                }
-                else if (velocity.x < -0.1f)
-                {
-                    UpdateSpriteDirection(true);
-                }
-            }
-            else if (doesEnemyPatrol)
-            {
-                _state = States.Patrol;
-            
-                if (velocity.x > 0.1f)
-                {
-                    UpdateSpriteDirection(false);
-                }
-                else if (velocity.x < -0.1f)
-                {
-                    UpdateSpriteDirection(true);
-                }
+                UpdateSpriteDirection(velocity.x < 0);
             }
             else
             {
-                _state = States.Idle;
+                UpdateSpriteDirection(_playerDir.x < 0);
             }
         }
-        
+
         switch (_state)
         {
             case States.Idle:
@@ -222,7 +196,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
+
         _animator.SetFloat("vel", Mathf.Abs(velocity.x));
     }
     
@@ -291,15 +265,22 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private void Chase()
     {
-        _agent.isStopped = false;
-        _healthSlider.gameObject.SetActive(true);
-
-        if (isBomb && _canLunge)
+        if ((isStalker && _isBlocking) || isBomb && _animator.GetBool("isExplode"))
         {
-            StartCoroutine(BeginLunge());
+            _agent.isStopped = true;
         }
+        else
+        {
+            _agent.isStopped = false;
+            _healthSlider.gameObject.SetActive(true);
 
-        _agent.SetDestination(_target.position);
+            if (isBomb && _canLunge)
+            {
+                StartCoroutine(BeginLunge());
+            }
+
+            _agent.SetDestination(_target.position);
+        }
     }
 
     private IEnumerator BeginLunge()
@@ -338,7 +319,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _healthSlider.gameObject.SetActive(true);
         _targetTime -= Time.deltaTime;
 
-        if (!(_targetTime <= 0.0f)) return;
+        if (!(_targetTime <= 0.0f) || _isBlocking) return;
         
         UpdateSpriteDirection(_playerDir.x < 0);
         
@@ -356,7 +337,14 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                     _animator.SetTrigger("Attack");
                     break;
                 case 1:
-                    _animator.SetTrigger("Attack2");
+                    if (isStalker)
+                    {
+                        StartCoroutine(Block());
+                    }
+                    else
+                    {
+                        _animator.SetTrigger("Attack2");
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -364,6 +352,15 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
         
         _targetTime = attackCooldown;
+    }
+
+    private IEnumerator Block()
+    {
+        _isBlocking = true;
+        _animator.SetBool("isBlocking", true);
+        yield return new WaitForSecondsRealtime(blockDuration);
+        _animator.SetBool("isBlocking", false);
+        _isBlocking = false;
     }
 
     private IEnumerator BeginExplode()
@@ -423,11 +420,21 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
+        if (isStalker)
+        {
+            if (_playerDir.x < 0)
+            {
+                defense = 0;
+            }
+            else if (_playerDir.x > 0 && _isBlocking)
+            {
+                defense = blockingDefense;
+            }
+        }
+
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
-        
-        Debug.Log(damage);
         
         if (_health - damage > 0)
         {
@@ -520,6 +527,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     }
 
+    private void SetDefense(int value)
+    {
+        defense = value;
+    }
+
     public void PlayAlarmSound()
     {
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
@@ -554,24 +566,27 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
         StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .2f));
-        StartCoroutine(StunTimer(.1f));
+
+        if (_playerDir.x > 0 && !_isBlocking)
+        {
+            StartCoroutine(StunTimer(.1f));
+        }
+
+        if (_poiseBuildup < poise) return;
         
-        /*
-        if (!isBomb) // layered hitstun
+        if (isStalker)
         {
-            _animator.SetTrigger("lightStagger");
+            defense = 0;
+            _isBlocking = false;
+            _animator.SetBool("isBlocking", false);
         }
-        */
-
-        if (_poiseBuildup >= poise)
+            
+        if (!isBomb)
         {
-            if (!isBomb)
-            {
-                StartCoroutine(StunTimer(1f));
-            }
-
-            _poiseBuildup = 0;
+            StartCoroutine(StunTimer(1f));
         }
+
+        _poiseBuildup = 0;
     }
     
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
