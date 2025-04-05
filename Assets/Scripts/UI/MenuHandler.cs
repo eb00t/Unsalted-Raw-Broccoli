@@ -14,6 +14,7 @@ public class MenuHandler : MonoBehaviour
 	private InventoryStore _inventoryStore;
 	private ToolbarHandler _toolbarHandler;
 	private GameObject _player;
+	private BlackoutManager _blackoutManager;
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
@@ -37,6 +38,7 @@ public class MenuHandler : MonoBehaviour
 		_toolbarHandler = GetComponent<ToolbarHandler>();
 		_player = GameObject.FindGameObjectWithTag("Player");
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+		_blackoutManager = GameObject.Find("Game Manager").GetComponentInChildren<BlackoutManager>();
 	}
 
 	private void Update()
@@ -57,10 +59,15 @@ public class MenuHandler : MonoBehaviour
 				SwitchSelected(interactable);
 			}
 
-			if (!Cursor.visible || Cursor.lockState == CursorLockMode.Locked)
+			if ((!Cursor.visible || Cursor.lockState == CursorLockMode.Locked) && characterMovement.uiOpen)
 			{
 				Cursor.visible = true;
 				Cursor.lockState = CursorLockMode.None;
+			}
+			else if ((Cursor.visible || Cursor.lockState == CursorLockMode.None) && !characterMovement.uiOpen)
+			{
+				Cursor.visible = false;
+				Cursor.lockState = CursorLockMode.Locked;
 			}
 		}
 		else if (dataHolder.isGamepad && Cursor.visible || Cursor.lockState == CursorLockMode.None)
@@ -260,6 +267,7 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (!context.performed) return;
 		if (characterMovement.uiOpen && !menuGui.activeSelf) return;
+		if (!_blackoutManager.blackoutComplete) return;
 		
 		menuGui.SetActive(!menuGui.activeSelf);
 		
