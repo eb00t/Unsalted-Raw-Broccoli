@@ -4,7 +4,6 @@ using UnityEngine;
 public class HitboxHandler : MonoBehaviour
 {
     [SerializeField] private bool _canDamage = true;
-    private bool _canDamageEnemies = true;
     public IDamageable damageable;
     [SerializeField] private bool doesSelfDestruct;
 
@@ -22,43 +21,31 @@ public class HitboxHandler : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            if (!_canDamage) return;
+            if (_canDamage)
+            {
+                var characterAttack = other.GetComponentInChildren<CharacterAttack>();
 
-            var characterAttack = other.GetComponentInChildren<CharacterAttack>();
+                characterAttack.TakeDamagePlayer(damageable.Attack, damageable.PoiseDamage);
+                if (doesSelfDestruct)
+                {
+                    Destroy(gameObject);
+                }
 
-            characterAttack.TakeDamagePlayer(damageable.Attack, damageable.PoiseDamage);
-            if (doesSelfDestruct) { Destroy(gameObject); }
-            StartCoroutine(AtkCooldown());
+                StartCoroutine(AtkCooldown());
+            }
         }
 
         if (!other.GetComponent<SemiSolidPlatform>() && !other.GetComponent<SemiSolidPlatformTrigger>() && !other.CompareTag("Player") && !other.CompareTag("Enemy") && !other.isTrigger)
         {
-            Debug.Log(other.name);
             if (doesSelfDestruct) { Destroy(gameObject); }
-        }
-
-        if (other.CompareTag("Enemy"))
-        {
-            var enemyHandler = GetComponentInParent<EnemyHandler>();
-            
-            if (enemyHandler != null && enemyHandler.isBomb)
-            {
-                var otherDamageable = other.GetComponent<IDamageable>();
-
-                if (otherDamageable == null) return;
-                
-                otherDamageable.TakeDamage(damageable.Attack, damageable.PoiseDamage, null);
-            }
         }
     }
 
     private IEnumerator AtkCooldown()
     {
         _canDamage = false;
-        _canDamageEnemies = false;
         yield return new WaitForSecondsRealtime(0.25f);
         _canDamage = true;
-        _canDamageEnemies = true;
     }
 
     private IEnumerator SelfDestructAfterSeconds(float seconds)
@@ -70,6 +57,5 @@ public class HitboxHandler : MonoBehaviour
     private void OnEnable()
     {
         _canDamage = true;
-        _canDamageEnemies = true;
     }
 }

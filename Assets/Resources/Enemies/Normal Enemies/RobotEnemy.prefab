@@ -157,6 +157,7 @@ MonoBehaviour:
   poise: 40
   defense: 0
   poisonResistance: 50
+  blockingDefense: 0
   attack: 6
   poiseDamage: 8
   numberOfAttacks: 2
@@ -168,6 +169,7 @@ MonoBehaviour:
   maxTimeToReachTarget: 5
   bombTimeVariability: 0
   lungeCooldown: 0
+  blockDuration: 0
   isBomb: 0
   isStalker: 0
   canBeFrozen: 1
@@ -822,6 +824,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5614036221781517610}
   - component: {fileID: 6473434246436826002}
+  - component: {fileID: 4132606939619415808}
   m_Layer: 11
   m_Name: Hitbox
   m_TagString: Enemy
@@ -865,6 +868,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.6143484, y: 2.8490694, z: 1}
   m_Center: {x: 0.12012892, y: -0.34959793, z: 0}
+--- !u!54 &4132606939619415808
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6183976097649540587}
+  serializedVersion: 4
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 0
+  m_ImplicitTensor: 0
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &8087257085755011137
 GameObject:
   m_ObjectHideFlags: 0

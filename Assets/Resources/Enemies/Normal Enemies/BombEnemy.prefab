@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 1007004536666698315}
   - component: {fileID: 5953635621372594130}
   - component: {fileID: 8325045093059894457}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: BombEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -282,6 +282,7 @@ MonoBehaviour:
   poise: 20
   defense: 0
   poisonResistance: 20
+  blockingDefense: 0
   attack: 50
   poiseDamage: 5
   numberOfAttacks: 1
@@ -293,6 +294,7 @@ MonoBehaviour:
   maxTimeToReachTarget: 5
   bombTimeVariability: 1.5
   lungeCooldown: 3
+  blockDuration: 0
   isBomb: 1
   isStalker: 0
   canBeFrozen: 1
@@ -512,7 +514,8 @@ GameObject:
   - component: {fileID: 1973299437338840528}
   - component: {fileID: 3665861034403590735}
   - component: {fileID: 2374557395422652253}
-  m_Layer: 5
+  - component: {fileID: 4799208790475966836}
+  m_Layer: 11
   m_Name: AtkHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -569,6 +572,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canDamage: 1
   doesSelfDestruct: 0
+--- !u!114 &4799208790475966836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4567322726946766161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b38a09ddfa1e8454da708017e72db32d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4973278753106217272
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,7 +594,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4382428416641600022}
   - component: {fileID: 7165738288154503518}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Sprite
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -819,7 +834,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5614036221781517610}
   - component: {fileID: 6473434246436826002}
-  m_Layer: 5
+  - component: {fileID: 2440346704872095963}
+  m_Layer: 11
   m_Name: Hitbox
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -862,6 +878,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.4107448, y: 1.8854879, z: 1}
   m_Center: {x: 0.0027215958, y: -0.3052846, z: 0}
+--- !u!54 &2440346704872095963
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6183976097649540587}
+  serializedVersion: 4
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 0
+  m_ImplicitTensor: 0
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &6357202204456969062
 GameObject:
   m_ObjectHideFlags: 0

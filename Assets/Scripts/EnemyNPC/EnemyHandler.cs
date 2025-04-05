@@ -151,6 +151,22 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _playerDir = _target.position - transform.position;
         var distance = Vector3.Distance(transform.position, _target.position);
 
+        if (isStalker && !isPassive)
+        {
+            if (_isBlocking && _playerDir.x < 0)
+            {
+                defense = 0;
+            }
+            else if (_isBlocking && _playerDir.x > 0)
+            {
+                defense = blockingDefense;
+            }
+            else if (!_isBlocking && _state != States.Attack)
+            {
+                defense = 0;
+            }
+        }
+
         if (_isFrozen)
         {
             _state = States.Frozen;
@@ -344,6 +360,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 case 0:
                     UpdateSpriteDirection(_playerDir.x < 0);
                     _wasLastAttackBlock = false;
+                    defense = 0;
                     _animator.SetTrigger(Attack1);
                     break;
                 case 1:
@@ -437,18 +454,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
-        if (isStalker)
-        {
-            if (_playerDir.x < 0)
-            {
-                defense = 0;
-            }
-            else if (_playerDir.x > 0 && _isBlocking)
-            {
-                defense = blockingDefense;
-            }
-        }
-
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
@@ -544,11 +549,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     }
 
-    private void SetDefense(int value)
-    {
-        defense = value;
-    }
-
     public void PlayAlarmSound()
     {
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
@@ -561,7 +561,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _alarmEvent.stop(STOP_MODE.IMMEDIATE);
         _alarmEvent.release();
     }
-    
+
+    private void SetDefense(int amount)
+    {
+        defense = amount;
+    }
+
     private void OnDisable()
     {
         if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
@@ -586,7 +591,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         if (_playerDir.x > 0 && !_isBlocking)
         {
-            defense = 0;
             StartCoroutine(StunTimer(.1f));
         }
 
@@ -595,7 +599,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (isStalker)
         {
             _isBlocking = false;
-            defense = 0;
             _animator.SetBool(IsBlocking, false);
         }
             
