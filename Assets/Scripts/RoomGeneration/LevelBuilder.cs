@@ -24,6 +24,7 @@ public class LevelBuilder : MonoBehaviour
     }
 
     [field: Header("Configuration")] 
+    public bool manuallySetRoomAmount;
     public int howManyRoomsToSpawn;
     public int roomsDiscarded;
     public LevelMode currentFloor;
@@ -104,6 +105,22 @@ public class LevelBuilder : MonoBehaviour
         if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission")
         {
             currentFloor = dataHolder.currentLevel;
+        }
+
+        if (manuallySetRoomAmount == false)
+        {
+            switch (currentFloor)
+            {
+                case LevelMode.Floor1:
+                    howManyRoomsToSpawn = 5;
+                    break;
+                case LevelMode.Floor2:
+                    howManyRoomsToSpawn = 7;
+                    break;
+                case LevelMode.Floor3:
+                    howManyRoomsToSpawn = 9;
+                    break;
+            }
         }
     }
 
