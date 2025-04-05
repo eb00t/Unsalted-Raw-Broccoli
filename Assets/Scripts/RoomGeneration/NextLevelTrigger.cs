@@ -63,19 +63,32 @@ public class NextLevelTrigger : MonoBehaviour
         {
             case SceneToLoad.Intermission:
                 scene = "Intermission";
+                if (dataHolder.highestFloorCleared < 0)
+                {
+                    dataHolder.highestFloorCleared = 0;
+                }
                 break;
             case SceneToLoad.NextFloor:
                 if (SceneManager.GetActiveScene().name != "Tutorial")
                 {
+                    
                     if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor1)
                     {
                         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor2;
                         scene = "MainScene";
+                        if (dataHolder.highestFloorCleared < 1)
+                        {
+                            dataHolder.highestFloorCleared = 1;
+                        }
                     }
                     else if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor2)
                     {
                         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor3;
-                        scene = "MainScene";
+                        scene = "MainScene"; 
+                        if (dataHolder.highestFloorCleared < 2)
+                        {
+                            dataHolder.highestFloorCleared = 2;
+                        }
                     }
                 }
                 else
@@ -89,6 +102,10 @@ public class NextLevelTrigger : MonoBehaviour
                 break;
             case SceneToLoad.Credits:
                 scene = "creditsScene";
+                if (dataHolder.highestFloorCleared < 3)
+                {
+                    dataHolder.highestFloorCleared = 3;
+                }
                 break;
             case SceneToLoad.EndScreen:
                 scene = "EndScreen";

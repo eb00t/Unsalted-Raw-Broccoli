@@ -24,13 +24,13 @@ public class InitialDialogue : MonoBehaviour
       switch (currentFloor)
       {
         case LevelBuilder.LevelMode.Floor1:
-          _dialogueController.dialogueToLoad = AllDialogue.Floor1Intro;
+          _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor1Intro;
           break;
         case LevelBuilder.LevelMode.Floor2:
-          _dialogueController.dialogueToLoad = AllDialogue.Floor2Intro;
+          _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor2Intro;
           break;
         case LevelBuilder.LevelMode.Floor3:
-          _dialogueController.dialogueToLoad = AllDialogue.Floor3Intro;
+          _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor3Intro;
           break;
       }
     }

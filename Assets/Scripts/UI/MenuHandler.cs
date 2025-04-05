@@ -246,7 +246,7 @@ public class MenuHandler : MonoBehaviour
 		if (_itemPickupHandler.isPlrNearDialogue)
 		{
 			dialogueGUI.SetActive(true);
-			dialogueController.LoadDialogue();
+			dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
 		}
 	}
 

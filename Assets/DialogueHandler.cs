@@ -16,7 +16,6 @@ public class DialogueHandler : MonoBehaviour
    public List<LoreItemHandler> allLoreItems;
    public List<LoreItemHandler> allViewedLoreItems;
    
-   private AllDialogue _allDialogue;
    public bool eraseViewedLore; // Bool to allow all lore to respawn
    public int index; // The currently displayed message + speaker combo
    public DialogueObjectHandler currentDialogueObject; // The scriptable object that has been loaded
@@ -29,6 +28,7 @@ public class DialogueHandler : MonoBehaviour
    private GameObject _player, _dialogueCanvas, _uiManager;
    private MenuHandler _menuHandler;
    public GameObject trigger;
+   public NPCHandler currentNPC;
 
    [field: Header("Objects to Load")] public string loadedTitleText; // The title (only used in lore)
    public List<string> loadedBodyText; // All the messages that need to displayed
@@ -109,6 +109,12 @@ public class DialogueHandler : MonoBehaviour
             _speakerText.text = "";
             _dialogueText.text = "";
             _dialogueCanvas.SetActive(false);
+            if (currentNPC != null)
+            {
+               currentNPC.spokenToAlready = true;
+               currentNPC.SwitchOutDialogue();
+            }
+
             if (trigger != null)
             {
                trigger.SetActive(false);
@@ -142,7 +148,7 @@ public class DialogueHandler : MonoBehaviour
       }
    }
 
-   public void LoadDialogueScriptableObject(int scriptableObjectID)
+   public void LoadDialogueScriptableObject(DialogueObjectHandler dialogueObject)
    {
       if (currentLoreItem != null)
       {
@@ -150,7 +156,7 @@ public class DialogueHandler : MonoBehaviour
          loadedBodyText.Clear();
          currentLoreItem = null;
       }
-      currentDialogueObject = allDialogueObjects[scriptableObjectID];
+      currentDialogueObject = dialogueObject;
       loadedSpeakerText = new List<string>(currentDialogueObject.whoIsSpeaking);
       loadedBodyText = new List<string>(currentDialogueObject.dialogueBodyText);
       if (currentDialogueObject.isAnyoneSpeaking == false)
@@ -177,6 +183,8 @@ public class DialogueHandler : MonoBehaviour
       {
          loadedBodyText.Insert(0, loadedTitleText);
          loadedSpeakerText.Insert(0, loadedSpeakerText[0]);
+         loadedBodyText = new List<string>(loadedBodyText);
+         loadedSpeakerText = new List<string>(loadedSpeakerText);
       }
       if (currentLoreItem.didAnyoneWriteThis == false)
       {

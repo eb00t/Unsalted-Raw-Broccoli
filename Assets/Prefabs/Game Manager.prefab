@@ -713,6 +713,7 @@ GameObject:
   - component: {fileID: 543560988434361953}
   - component: {fileID: 5404688144565359110}
   - component: {fileID: 6735366493873326907}
+  - component: {fileID: 5950445449513212928}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -748,6 +749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43346f61d2c523c44b7e61d57a618b08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manuallySetRoomAmount: 0
   howManyRoomsToSpawn: 5
   roomsDiscarded: 0
   currentFloor: 1
@@ -771,6 +773,7 @@ MonoBehaviour:
   secondBossRoomSpawnPoints: []
   thirdBossRoomSpawnPoints: []
   spawnPoints: []
+  lootRoomSpawnPoints: []
   spawningRoomInfo: {fileID: 0}
   otherConnectorSideRoomInfo: {fileID: 0}
   spawnedConnectorInfo: {fileID: 0}
@@ -835,6 +838,10 @@ MonoBehaviour:
   allDialogueObjects:
   - {fileID: 11400000, guid: 517e07d4c49464d4ca1201fe51f24e85, type: 2}
   - {fileID: 11400000, guid: f996e90537e2f794e8b3a9a6baa25de0, type: 2}
+  - {fileID: 11400000, guid: 3cf43c431da55b542bfb934b5a2c0381, type: 2}
+  - {fileID: 11400000, guid: 385ad4809c5f163489227c47d92e56bf, type: 2}
+  - {fileID: 11400000, guid: 51804b6c28c2d304ba5c60d5b3c54466, type: 2}
+  - {fileID: 11400000, guid: 6e1b6a430a6110a4ba113e1d522881e9, type: 2}
   allLoreItems:
   - {fileID: 11400000, guid: 1bdb5b68699e3c24294f392baa34c23b, type: 2}
   - {fileID: 11400000, guid: 7b01c42a7df8cc44f8afb6723373deb2, type: 2}
@@ -848,9 +855,48 @@ MonoBehaviour:
   currentLoreItem: {fileID: 0}
   dialogueSpeed: 0
   trigger: {fileID: 0}
+  currentNPC: {fileID: 0}
   loadedTitleText: 
   loadedBodyText: []
   loadedSpeakerText: []
+--- !u!114 &5950445449513212928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5617660318742304912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77d55a62ddb1bf74ab5f17e3d536e550, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Floor1Intro>k__BackingField: {fileID: 11400000, guid: 517e07d4c49464d4ca1201fe51f24e85,
+    type: 2}
+  <Floor1Boss>k__BackingField: {fileID: 11400000, guid: f996e90537e2f794e8b3a9a6baa25de0,
+    type: 2}
+  <Floor2Intro>k__BackingField: {fileID: 11400000, guid: 3cf43c431da55b542bfb934b5a2c0381,
+    type: 2}
+  <Floor2Boss>k__BackingField: {fileID: 11400000, guid: 385ad4809c5f163489227c47d92e56bf,
+    type: 2}
+  <Floor3Intro>k__BackingField: {fileID: 11400000, guid: 51804b6c28c2d304ba5c60d5b3c54466,
+    type: 2}
+  <Floor3Boss>k__BackingField: {fileID: 11400000, guid: 6e1b6a430a6110a4ba113e1d522881e9,
+    type: 2}
+  <TutorialIntro>k__BackingField: {fileID: 11400000, guid: 0f944b2d7dce44b48ac4948d209f1bc3,
+    type: 2}
+  <TutorialFloor1>k__BackingField: {fileID: 11400000, guid: 70064c5bd70e7c14eb4b7cb89263233b,
+    type: 2}
+  <TutorialFloor2>k__BackingField: {fileID: 11400000, guid: e3649f655aed05848a2df2219bb38136,
+    type: 2}
+  <TutorialFloor3>k__BackingField: {fileID: 11400000, guid: c12e92eb5ac7dae4c9053f8dc763d0da,
+    type: 2}
+  <TutorialIntroRepeat>k__BackingField: {fileID: 11400000, guid: 48f59ceb4b13dec469c8b33a49b60428,
+    type: 2}
+  <TutorialFloor1Repeat>k__BackingField: {fileID: 11400000, guid: a9de9be7aafa8624d90707621c9b3774,
+    type: 2}
+  <TutorialFloor2Repeat>k__BackingField: {fileID: 0}
+  <TutorialFloor3Repeat>k__BackingField: {fileID: 0}
 --- !u!1 &6937896342876284815
 GameObject:
   m_ObjectHideFlags: 0

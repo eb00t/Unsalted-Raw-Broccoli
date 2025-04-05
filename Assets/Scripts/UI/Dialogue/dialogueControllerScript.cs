@@ -10,11 +10,10 @@ public class dialogueControllerScript : MonoBehaviour
 {
     public bool isLore;
     public bool replayable;
-    public AllDialogue dialogueToLoad;
-    private AllLore _loreToLoad;
+    public DialogueObjectHandler dialogueToLoad;
     private ItemPickupHandler _itemPickupHandler;
     [SerializeField] private float range;
-    [SerializeField] private int _dialogueID;
+    [SerializeField] public int dialogueID;
     private GameObject _player, _dialogueCanvas, _uiManager;
     private MenuHandler _menuHandler;
 
@@ -60,11 +59,8 @@ public class dialogueControllerScript : MonoBehaviour
 
        switch (isLore)
        {
-           case false:
-               _dialogueID = (int)dialogueToLoad;
-               break;
            case true:
-               _dialogueID = Random.Range(0, DialogueHandler.Instance.allLoreItems.Count);
+               dialogueID = Random.Range(0, DialogueHandler.Instance.allLoreItems.Count);
                break;
        }
        //Start writing sentences
@@ -135,20 +131,22 @@ public class dialogueControllerScript : MonoBehaviour
         //    Debug.Log("NO");
     }
 
-   public void LoadDialogue()
+   public void LoadDialogue(DialogueObjectHandler dialogueHandler)
     {
         switch (isLore)
         {
             case false:
-                DialogueHandler.Instance.LoadDialogueScriptableObject(_dialogueID);
+                dialogueToLoad = dialogueHandler;
+                DialogueHandler.Instance.LoadDialogueScriptableObject(dialogueHandler);
                 DialogueHandler.Instance.StartSentence();
                 if (replayable == false)
                 {
                     DialogueHandler.Instance.trigger = transform.gameObject;
                 }
+                DialogueHandler.Instance.currentNPC = gameObject.GetComponent<NPCHandler>();
                 break;
             case true:
-                DialogueHandler.Instance.LoadLoreScriptableObject(_dialogueID);
+                DialogueHandler.Instance.LoadLoreScriptableObject(dialogueID);
                 DialogueHandler.Instance.StartSentence();
                 if (replayable == false)
                 {

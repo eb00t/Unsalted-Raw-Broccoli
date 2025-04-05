@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/DataHolder", order = 1)]
 public class DataHolder : ScriptableObject
 {
     public int currencyHeld;
     public LevelBuilder.LevelMode currentLevel;
+    public int highestFloorCleared;
     
     [Header("Settings")]
     public ControlsManager.ControlScheme currentControl;
