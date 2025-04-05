@@ -75,7 +75,7 @@ public class CurrencyBehaviour : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         _moveToPlayer = true;
         _boxCollider.enabled = true;
-        _rigidbody.velocity = Vector3.zero;
+        //_rigidbody.velocity = Vector3.zero;
         _rigidbody.useGravity = false;
         StartCoroutine(TeleportToPlayer());
     }
@@ -99,11 +99,6 @@ public class CurrencyBehaviour : MonoBehaviour
         {
             transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, 20f * Time.deltaTime);
         }
-
-        if (_collected)
-        {
-            _rigidbody.isKinematic = true;
-        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -112,11 +107,12 @@ public class CurrencyBehaviour : MonoBehaviour
         {
             _currencyManager.UpdateCurrency(_currencyAmount);
             AudioManager.Instance.PlayOneShot(FMODEvents.Instance.CurrencyPickup, _player.transform.position);
+            //_rigidbody.velocity = Vector3.zero;
+            _rigidbody.isKinematic = true;
             _collected = true;
             _spriteRenderer.enabled = false;
             _boxCollider.enabled = false;
             _light.enabled = false;
-            _rigidbody.velocity = Vector3.zero;
             _moveToPlayer = false;
             StopCoroutine(GoToPlayer());
             StopCoroutine(TeleportToPlayer());
