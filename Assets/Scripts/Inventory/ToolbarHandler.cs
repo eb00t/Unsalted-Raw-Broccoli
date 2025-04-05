@@ -16,7 +16,7 @@ public class ToolbarHandler : MonoBehaviour
     private int _activeConsumable;
 
     [Header("Item Tracking")] [SerializeField]
-    private List<GameObject> slots;
+    public List<GameObject> slots;
 
     [SerializeField] private DataHolder dataHolder;
 
@@ -24,7 +24,7 @@ public class ToolbarHandler : MonoBehaviour
     private GameObject grid;
 
     [SerializeField] private Image toolbarImg;
-    [SerializeField] private TextMeshProUGUI toolbarTxt, infoTxt, numHeldTxt, infoTitle;
+    [SerializeField] private TextMeshProUGUI toolbarTxt, toolbarTitle, infoTxt, numHeldTxt, infoTitle;
 
     private InventoryStore _inventoryStore;
     private GameObject _player;
@@ -297,7 +297,7 @@ public class ToolbarHandler : MonoBehaviour
         var count = dataHolder.equippedConsumables.Length;
         if (count == 0 || dataHolder.equippedConsumables.All(id => id <= 0)) return;
 
-        int prevConsumable = 0;
+        var prevConsumable = 0;
 
         var startIndex = _activeConsumable;
 
@@ -323,6 +323,7 @@ public class ToolbarHandler : MonoBehaviour
         {
             toolbarImg.enabled = false;
             toolbarTxt.text = "-";
+            toolbarTitle.text = "";
             return;
         }
 
@@ -332,6 +333,7 @@ public class ToolbarHandler : MonoBehaviour
         {
             toolbarImg.enabled = false;
             toolbarTxt.text = "-";
+            toolbarTitle.text = "";
             return;
         }
 
@@ -340,11 +342,13 @@ public class ToolbarHandler : MonoBehaviour
         {
             toolbarImg.enabled = false;
             toolbarTxt.text = "-";
+            toolbarTitle.text = "";
             return;
         }
 
         toolbarImg.enabled = true;
         toolbarImg.sprite = consumable.uiIcon;
+        toolbarTitle.text = consumable.title;
 
         var count = 0;
         if (dataHolder.savedItems.Contains(itemID))
@@ -354,7 +358,6 @@ public class ToolbarHandler : MonoBehaviour
 
         toolbarTxt.text = count.ToString();
     }
-
 
     // removes all items from EquippedConsumables list and adds items from indexholders in slots if not null
     public void UpdateToolbar()

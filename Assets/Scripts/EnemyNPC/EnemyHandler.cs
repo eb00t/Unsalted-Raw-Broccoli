@@ -63,6 +63,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private int _poiseBuildup;
     private bool _canLunge = true;
     private bool _isBlocking;
+    private bool _wasLastAttackBlock;
 
     [Header("References")] 
     [SerializeField] private Transform passiveTarget;
@@ -75,11 +76,19 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private CharacterAttack _characterAttack;
     private SpriteRenderer _spriteRenderer;
     private MaterialPropertyBlock _propertyBlock;
-    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
+    
+    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+    private static readonly int IsExplode = Animator.StringToHash("isExplode");
+    private static readonly int Vel = Animator.StringToHash("vel");
+    private static readonly int Attack1 = Animator.StringToHash("Attack");
+    private static readonly int Attack2 = Animator.StringToHash("Attack2");
+    private static readonly int IsBlocking = Animator.StringToHash("isBlocking");
+    private static readonly int Detonate = Animator.StringToHash("Detonate");
+    private static readonly int IsStaggered = Animator.StringToHash("isStaggered");
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -197,7 +206,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 throw new ArgumentOutOfRangeException();
         }
 
-        _animator.SetFloat("vel", Mathf.Abs(velocity.x));
+        _animator.SetFloat(Vel, Mathf.Abs(velocity.x));
     }
     
     private bool IsPlayerInRoom()
@@ -265,7 +274,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private void Chase()
     {
-        if ((isStalker && _isBlocking) || isBomb && _animator.GetBool("isExplode"))
+        if ((isStalker && _isBlocking) || isBomb && _animator.GetBool(IsExplode))
         {
             _agent.isStopped = true;
         }
@@ -321,10 +330,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         if (!(_targetTime <= 0.0f) || _isBlocking) return;
         
-        UpdateSpriteDirection(_playerDir.x < 0);
-        
         if (isBomb)
         {
+            UpdateSpriteDirection(_playerDir.x < 0);
             StartCoroutine(BeginExplode());
         }
         else
@@ -334,16 +342,25 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             switch (i)
             {
                 case 0:
-                    _animator.SetTrigger("Attack");
+                    UpdateSpriteDirection(_playerDir.x < 0);
+                    _wasLastAttackBlock = false;
+                    _animator.SetTrigger(Attack1);
                     break;
                 case 1:
                     if (isStalker)
                     {
+                        if (!_wasLastAttackBlock)
+                        {
+                            UpdateSpriteDirection(_playerDir.x < 0);
+                        }
+
                         StartCoroutine(Block());
+                        _wasLastAttackBlock = true;
                     }
                     else
                     {
-                        _animator.SetTrigger("Attack2");
+                        UpdateSpriteDirection(_playerDir.x < 0);
+                        _animator.SetTrigger(Attack2);
                     }
                     break;
                 default:
@@ -357,21 +374,21 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private IEnumerator Block()
     {
         _isBlocking = true;
-        _animator.SetBool("isBlocking", true);
+        _animator.SetBool(IsBlocking, true);
         yield return new WaitForSecondsRealtime(blockDuration);
-        _animator.SetBool("isBlocking", false);
+        _animator.SetBool(IsBlocking, false);
         _isBlocking = false;
     }
 
     private IEnumerator BeginExplode()
     {
         StopAlarmSound();
-        _animator.SetBool("isExplode", true);
+        _animator.SetBool(IsExplode, true);
         var newCooldown = attackCooldown + Random.Range(-bombTimeVariability, bombTimeVariability);
         newCooldown = Mathf.Clamp(newCooldown, 0.1f, attackCooldown + bombTimeVariability);
         yield return new WaitForSecondsRealtime(newCooldown);
-        _animator.SetBool("isExplode", false);
-        _animator.SetTrigger("Detonate");
+        _animator.SetBool(IsExplode, false);
+        _animator.SetTrigger(Detonate);
     }
 
     private void Frozen()
@@ -569,6 +586,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         if (_playerDir.x > 0 && !_isBlocking)
         {
+            defense = 0;
             StartCoroutine(StunTimer(.1f));
         }
 
@@ -576,9 +594,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         if (isStalker)
         {
-            defense = 0;
             _isBlocking = false;
-            _animator.SetBool("isBlocking", false);
+            defense = 0;
+            _animator.SetBool(IsBlocking, false);
         }
             
         if (!isBomb)
@@ -621,10 +639,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private IEnumerator StunTimer(float stunTime)
     {
-        _animator.SetBool("isStaggered", true);
+        _animator.SetBool(IsStaggered, true);
        yield return new WaitForSecondsRealtime(stunTime);
        _agent.velocity = Vector3.zero;
-       _animator.SetBool("isStaggered", false);
+       _animator.SetBool(IsStaggered, false);
     }
     
     private IEnumerator HitFlash(Color flashColor, float duration)

@@ -105,7 +105,7 @@ public class MenuHandler : MonoBehaviour
 		infoGui.SetActive(false);
 		_toolbarHandler.isInfoOpen = false;
 		menuGui.SetActive(false);
-		SwitchSelected(selectedEquip);
+		SwitchSelected(_toolbarHandler.slots[_toolbarHandler.slotNo]);
 	}
 
 	public void ToggleShop(InputAction.CallbackContext context)
@@ -141,7 +141,7 @@ public class MenuHandler : MonoBehaviour
 		if (!context.performed) return;
 		if (!characterMovement.uiOpen) return;
 
-		if (invGui.activeSelf)
+		if (invGui.activeSelf && !_toolbarHandler.isInfoOpen)
 		{
 			ButtonHandler.Instance.PlayBackSound();
 			foreach (var b in grid.GetComponentsInChildren<Button>())
@@ -155,10 +155,25 @@ public class MenuHandler : MonoBehaviour
 			}
 			
 			invGui.SetActive(false);
-			infoGui.SetActive(false);
-			_toolbarHandler.isInfoOpen = false;
 			menuGui.SetActive(true);
 			SwitchSelected(selectedMenu);
+		}
+		else if (invGui.activeSelf && _toolbarHandler.isInfoOpen)
+		{
+			ButtonHandler.Instance.PlayBackSound();
+			foreach (var b in grid.GetComponentsInChildren<Button>())
+			{
+				b.interactable = false;
+			}
+			
+			foreach (var s in slots.GetComponentsInChildren<Button>())
+			{
+				s.interactable = true;
+			}
+			
+			SwitchSelected(_toolbarHandler.slots[_toolbarHandler.slotNo]);
+			infoGui.SetActive(false);
+			_toolbarHandler.isInfoOpen = false;
 		}
 		else if (menuGui.activeSelf)
 		{
