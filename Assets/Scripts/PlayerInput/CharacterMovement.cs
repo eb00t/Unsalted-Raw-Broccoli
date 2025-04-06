@@ -18,8 +18,8 @@ public class CharacterMovement : MonoBehaviour
     public float maxSpeed = 10f;
     public float jumpForce = 1f;
     public float dashSpeed = 1f;
-    public float slideSpeed = 1f;
-    public float slideHoldTime = 1f;
+    //public float slideSpeed = 1f;
+    //public float slideHoldTime = 1f;
 
     [SerializeField] private bool grounded;
     private float groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time. 
@@ -35,17 +35,17 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float dashBreak;
 
     private float input;
-    [SerializeField] private bool startSlide;
-    [SerializeField] private bool startSlideTimer;
-    [SerializeField] private bool sliding;
-    public bool slideAllowed;
-    [SerializeField] private float slideTimer;
+    //[SerializeField] private bool startSlide;
+    //[SerializeField] private bool startSlideTimer;
+    //[SerializeField] private bool sliding;
+    //public bool slideAllowed;
+    //[SerializeField] private float slideTimer;
 
-    [SerializeField] bool isWallJumping;
-    [SerializeField] private float wallJumpingCounter;
-    [SerializeField] private float wallJumpingTime;
-    [SerializeField] private Vector2 wallJumpForce;
-    [SerializeField] private float wallJumpingDuration;
+    //[SerializeField] bool isWallJumping;
+    //[SerializeField] private float wallJumpingCounter;
+    //[SerializeField] private float wallJumpingTime;
+    //[SerializeField] private Vector2 wallJumpForce;
+    //[SerializeField] private float wallJumpingDuration;
 
     [NonSerialized] public bool uiOpen; // makes sure player doesnt move when ui is open
     [NonSerialized] public bool lockedOn = false;
@@ -86,7 +86,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (uiOpen || !allowMovement|| !ctx.performed) return;
         groundTimer = 0;
-        if (grounded && !doubleJumpPerformed && !startSlideTimer && !sliding)
+        if (grounded && !doubleJumpPerformed /*&& !startSlideTimer && !sliding*/)
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpForce, 0f);
             PlayerAnimator.SetBool("Jump", true);
@@ -112,7 +112,7 @@ public class CharacterMovement : MonoBehaviour
 
             Invoke(nameof(stopWallJump), wallJumpingDuration);
         }*/
-        else if (!grounded && !startSlideTimer && !sliding && !doubleJumpPerformed && !PlayerAnimator.GetBool("WallCling"))
+        else if (!grounded /*&& !startSlideTimer && !sliding*/ && !doubleJumpPerformed && !PlayerAnimator.GetBool("WallCling"))
         {
             doubleJumpPerformed = true;
             rb.velocity = new Vector3(rb.velocity.x, jumpForce, 0f);
@@ -120,7 +120,7 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    private void wallJump()
+    /*private void wallJump()
     {
         if (uiOpen) return;
         if (slideAllowed || startSlideTimer || grounded)
@@ -139,7 +139,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (uiOpen) return;
         isWallJumping = false;
-    }
+    }*/
 
     public void Dash(InputAction.CallbackContext ctx)
     {
@@ -195,7 +195,7 @@ public class CharacterMovement : MonoBehaviour
             PlayerAnimator.SetBool("isWalkingBackwards", false);
         }
         
-        if (startSlideTimer)
+        /*if (startSlideTimer)
         {
             slideTimer += 10f * Time.deltaTime;
             //Debug.Log(slideTimer);
@@ -205,7 +205,7 @@ public class CharacterMovement : MonoBehaviour
                 slideTimer = 0f;
                 startSlideTimer = false;
             }
-        }
+        }*/
 
         if (startDashTimer)
         {
@@ -237,7 +237,7 @@ public class CharacterMovement : MonoBehaviour
     public void FixedUpdate()
     {
         if (uiOpen) return;
-        if (walkAllowed && !isWallJumping && allowMovement)
+        if (walkAllowed && /*!isWallJumping &&*/ allowMovement)
         {
             if ((rb.velocity.x <= maxSpeed && Mathf.Sign(rb.velocity.x) == 1) || (rb.velocity.x >= -maxSpeed && Mathf.Sign(rb.velocity.x) == -1) || (Mathf.Sign(rb.velocity.x) != input))
             {
@@ -246,14 +246,14 @@ public class CharacterMovement : MonoBehaviour
             }
         }
 
-        if (slideAllowed && !grounded)
+        /*if (slideAllowed && !grounded)
         {
             Vector3 wallSlide = new Vector3(rb.velocity.x, -slideSpeed, 0f);
             rb.velocity = wallSlide;
             sliding = true;
             Debug.Log("StartSlide");
         }
-        else sliding = false;
+        else sliding = false;*/
     }
 
     private void OnTriggerStay(Collider other)
@@ -265,9 +265,9 @@ public class CharacterMovement : MonoBehaviour
             if (Velocity.y <= 0f)
             {
                 grounded = true;
-                startSlide = false;
+                //startSlide = false;
                 doubleJumpPerformed = false;
-                slideAllowed = false;
+                //slideAllowed = false;
                 PlayerAnimator.SetBool("Grounded", true);
             }
         }
@@ -308,7 +308,7 @@ public class CharacterMovement : MonoBehaviour
         }
     }
     
-    private void OnCollisionEnter(Collision collision)
+    /*private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag("Right Wall") || collision.collider.CompareTag("Left Wall"))
         {
@@ -352,5 +352,5 @@ public class CharacterMovement : MonoBehaviour
             slideTimer = 0f;
             PlayerAnimator.SetBool("WallCling", false);
         }
-    }
+    }*/
 }
