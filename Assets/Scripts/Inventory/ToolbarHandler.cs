@@ -25,6 +25,8 @@ public class ToolbarHandler : MonoBehaviour
 
     [SerializeField] private Image toolbarImg;
     [SerializeField] private TextMeshProUGUI toolbarTxt, toolbarTitle, infoTxt, numHeldTxt, infoTitle;
+    [SerializeField] private GameObject highlightImg;
+    [SerializeField] private GameObject resetFlash;
 
     private InventoryStore _inventoryStore;
     private GameObject _player;
@@ -40,6 +42,10 @@ public class ToolbarHandler : MonoBehaviour
     private HorseFacts _horseFacts;
     private int[] _lastEquippedItems;
     public bool canPlayCycleSound;
+    
+    private Coroutine _toolbarReset;
+    private Vector2 _dpadHoldDir;
+    private bool _isDpadHeld;
 
     private void Start()
     {
@@ -123,11 +129,43 @@ public class ToolbarHandler : MonoBehaviour
     // triggers when a direction on the dpad is pressed
     public void SlotItemActivated(InputAction.CallbackContext context)
     {
-        if (!context.performed) return;
         // prevents player from using items when navigating the ui as dpad can be used aswell as thumbstick
         if (_characterMovement.uiOpen) return;
-
+        
         var dir = context.ReadValue<Vector2>();
+        
+        if (context.started) // if button is held and not lifted start count to reset to slot 0
+        {
+            _isDpadHeld = true;
+            _dpadHoldDir = dir;
+
+            if (Mathf.Approximately(dir.x, 1) || Mathf.Approximately(dir.x, -1))
+            {
+                if (_toolbarReset != null)
+                {
+                    StopCoroutine(_toolbarReset);
+                }
+
+                _toolbarReset = StartCoroutine(ToolbarReset());
+            }
+        }
+        
+        if (context.canceled) // if input is stopped dont reset
+        {
+            _isDpadHeld = false;
+            _dpadHoldDir = Vector2.zero;
+
+            if (_toolbarReset != null)
+            {
+                StopCoroutine(_toolbarReset);
+                _toolbarReset = null;
+            }
+
+            highlightImg.SetActive(false);
+            resetFlash.SetActive(false);
+        }
+        
+        if (!context.performed) return; // if quick press then cycle
 
         // do something based on which direction is pressed
         switch (dir.x, dir.y)
@@ -147,6 +185,27 @@ public class ToolbarHandler : MonoBehaviour
                 CycleToolbar(-1);
                 break;
         }
+    }
+    
+    private IEnumerator ToolbarReset() // if dpad button is held for .5 seconds then reset to first slot 
+    {
+        highlightImg.SetActive(true);
+
+        yield return new WaitForSecondsRealtime(0.5f);
+        
+        if (_isDpadHeld && (Mathf.Approximately(_dpadHoldDir.x, 1) || Mathf.Approximately(_dpadHoldDir.x, -1)))
+        {
+            _activeConsumable = 0;
+            UpdateCurrentTool();
+            
+            resetFlash.SetActive(true);
+            yield return new WaitForSecondsRealtime(0.2f);
+            resetFlash.SetActive(false);
+            
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.CycleItem, transform.position);
+        }
+        
+        highlightImg.SetActive(false);
     }
 
     // checks a consumables effect and triggers it based on which consumable is active (num = slot active)
