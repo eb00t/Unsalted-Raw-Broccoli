@@ -413,23 +413,11 @@ MonoBehaviour:
   maxSpeed: 12
   jumpForce: 35
   dashSpeed: 25
-  slideSpeed: 10
-  slideHoldTime: 1
   grounded: 0
   doubleJumpPerformed: 0
   isCrouching: 0
   Velocity: {x: 0, y: 0, z: 0}
   dashBreak: 1
-  startSlide: 0
-  startSlideTimer: 0
-  sliding: 0
-  slideAllowed: 0
-  slideTimer: 0
-  isWallJumping: 0
-  wallJumpingCounter: 0.2
-  wallJumpingTime: 0.2
-  wallJumpForce: {x: 20, y: 35}
-  wallJumpingDuration: 0.2
 --- !u!65 &7947488834224069209
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -458,7 +446,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7748169234227478159}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 3b6b107ad0d0c394dbeb0816ac11393b, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
