@@ -164,25 +164,52 @@ public class InventoryStore : MonoBehaviour
 
     public void TriggerNotification(Sprite icon, string text, bool isPositive)
     {
-        var newNotif = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation, notifHolder.transform);
-        newNotif.GetComponentInChildren<TextMeshProUGUI>().text = text;
-        newNotif.GetComponentInChildren<TextMeshProUGUI>().color = isPositive ? notifPositiveColor : notifNegativeColor;
+        GameObject notification = null;
 
-        foreach (var img in newNotif.GetComponentsInChildren<Image>())
+        foreach (var existing in notifHolder.GetComponentsInChildren<Transform>())
         {
-            if (img.name == "Image")
+            var txtMatch = existing.GetComponentsInChildren<TextMeshProUGUI>().Any(txt => txt.name == "Message" && txt.text == text);
+            var iconMatch = existing.GetComponentsInChildren<Image>().Any(img => img.name == "IconImg");
+
+            if (!txtMatch || !iconMatch) continue;
+            notification = existing.gameObject;
+            break;
+        }
+
+        if (notification != null)
+        {
+            foreach (var txt in notification.GetComponentsInChildren<TextMeshProUGUI>())
             {
-                img.color = isPositive ? notifPositiveColor : notifNegativeColor;
+                if (txt.name != "NotifCount") continue;
+                var parsed = int.TryParse(txt.text, out var num) ? num : 0;
+                txt.text = (++parsed).ToString();
+            }
+        }
+        else
+        {
+            notification = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation, notifHolder.transform);
+
+            foreach (var txt in notification.GetComponentsInChildren<TextMeshProUGUI>())
+            {
+                if (txt.name == "Message") txt.text = text;
+                txt.color = isPositive ? notifPositiveColor : notifNegativeColor;
             }
 
-            if (img.name == "GameObject")
+            foreach (var img in notification.GetComponentsInChildren<Image>())
             {
-                img.color = isPositive ? iconPositiveColor : iconNegativeColor;
-            }
-
-            if (img.name == "IconImg")
-            {
-                img.sprite = icon;
+                switch (img.name)
+                {
+                    case "Image":
+                        img.color = isPositive ? notifPositiveColor : notifNegativeColor;
+                        break;
+                    case "GameObject":
+                        img.color = isPositive ? iconPositiveColor : iconNegativeColor;
+                        break;
+                    case "IconImg":
+                        img.enabled = icon != null;
+                        if (icon != null) img.sprite = icon;
+                        break;
+                }
             }
         }
     }

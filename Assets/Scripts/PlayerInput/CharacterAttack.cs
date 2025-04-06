@@ -63,6 +63,8 @@ public class CharacterAttack : MonoBehaviour
     public Vector2 knockbackPowerHeavy = new Vector2(20f, 3f);
     private CinemachineCollisionImpulseSource _impulseSource;
 
+    private InventoryStore _inventoryStore;
+
     private void Start()
     {
         _characterMovement = transform.root.GetComponent<CharacterMovement>();
@@ -72,6 +74,7 @@ public class CharacterAttack : MonoBehaviour
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
         _playerStatus = _uiManager.GetComponent<PlayerStatus>();
+        _inventoryStore = _menuHandler.GetComponent<InventoryStore>();
         healthSlider.maxValue = maxHealth;
         energySlider.maxValue = maxEnergy;
         energySlider.value = currentEnergy;
@@ -163,6 +166,10 @@ public class CharacterAttack : MonoBehaviour
                     _playerAnimator.SetBool("HeavyAttack", true);
                     //UseEnergy(heavyEnergyCost1);
                 }
+                else
+                {
+                    _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
+                }
             }
 
             if (heavyCombo[0])
@@ -176,6 +183,10 @@ public class CharacterAttack : MonoBehaviour
                         //UseEnergy(heavyEnergyCost2);
 
                         heavyCombo[1] = true;
+                    }
+                    else
+                    {
+                        _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
                     }
                 }
             }
@@ -195,6 +206,10 @@ public class CharacterAttack : MonoBehaviour
                             heavyCombo[2] = true;
                             
                         }
+                    }
+                    else
+                    {
+                        _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
                     }
                 }
             }
