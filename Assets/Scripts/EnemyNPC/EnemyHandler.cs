@@ -151,17 +151,16 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _playerDir = _target.position - transform.position;
         var distance = Vector3.Distance(transform.position, _target.position);
 
-        if (isStalker && !isPassive)
+        if (isStalker)
         {
-            if (_isBlocking && _playerDir.x < 0)
+            if (_isBlocking)
             {
-                defense = 0;
+                var facingRight = _spriteRenderer.transform.localScale.x > 0;
+                var playerInFront = (facingRight && _playerDir.x > 0) || (!facingRight && _playerDir.x < 0);
+
+                defense = playerInFront ? blockingDefense : 0;
             }
-            else if (_isBlocking && _playerDir.x > 0)
-            {
-                defense = blockingDefense;
-            }
-            else if (!_isBlocking && _state != States.Attack)
+            else if (_state != States.Attack)
             {
                 defense = 0;
             }
@@ -186,6 +185,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         if (_state is States.Passive or States.Chase or States.Patrol)
         {
+            if (isStalker && _isBlocking) return;
+
             if (Mathf.Abs(velocity.x) > 0.1f)
             {
                 UpdateSpriteDirection(velocity.x < 0);
@@ -344,7 +345,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _healthSlider.gameObject.SetActive(true);
         _targetTime -= Time.deltaTime;
 
-        if (!(_targetTime <= 0.0f) || _isBlocking) return;
+        if (!(_targetTime <= 0.0f)) return;
+        if (_isBlocking) return;
         
         if (isBomb)
         {
@@ -358,8 +360,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             switch (i)
             {
                 case 0:
-                    UpdateSpriteDirection(_playerDir.x < 0);
                     _wasLastAttackBlock = false;
+                    UpdateSpriteDirection(_playerDir.x < 0);
                     defense = 0;
                     _animator.SetTrigger(Attack1);
                     break;
@@ -537,13 +539,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             _deathEvent.release();
         }
 
-        int currencyToDrop = Random.Range(0, 6);
-        for (int i = 0; i < currencyToDrop; i++)
+        var currencyToDrop = Random.Range(0, 6);
+        for (var i = 0; i < currencyToDrop; i++)
         {
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Currency Prefab"), transform.position, Quaternion.identity);
         }
         
-
         StopAlarmSound();
         gameObject.SetActive(false);
 
@@ -588,8 +589,19 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
         StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .2f));
+        
+        var facingRight = _spriteRenderer.transform.localScale.x > 0;
+        var playerInFront = (facingRight && _playerDir.x > 0) || (!facingRight && _playerDir.x < 0);
 
-        if (_playerDir.x > 0 && !_isBlocking)
+        if (isStalker)
+        {
+            if (!_isBlocking || !playerInFront)
+            {
+                defense = 0;
+                StartCoroutine(StunTimer(.1f));
+            }
+        }
+        else
         {
             StartCoroutine(StunTimer(.1f));
         }
