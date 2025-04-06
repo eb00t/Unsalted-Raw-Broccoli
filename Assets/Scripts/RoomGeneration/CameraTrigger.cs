@@ -72,7 +72,11 @@ public class CameraTrigger : MonoBehaviour
                         cam.Priority = 0;
                     }
                     _camera.Priority = 10;
-                    _resizeBoxCollider.doorsCanClose = false;
+                    if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial)
+                    {
+                        _resizeBoxCollider.doorsCanClose = false;
+                    }
+
                     break;
                 case RoomOrConnector.Connector:
                     foreach (var cam in CameraManager.Instance.virtualCameras)
@@ -115,7 +119,10 @@ public class CameraTrigger : MonoBehaviour
                     cam.Priority = 0;
                 }
                 _camera.Priority = 10;
-                _resizeBoxCollider.doorsCanClose = true;
+                if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial)
+                {
+                    _resizeBoxCollider.doorsCanClose = true;
+                }
             }
         }
     }

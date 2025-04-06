@@ -1250,6 +1250,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -5584443085902809798, guid: 941a9af0699c05344ba70ed8898ac7c5,
+        type: 3}
+      propertyPath: intersectionCheck
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 196542715880807202, guid: 941a9af0699c05344ba70ed8898ac7c5,
         type: 3}
       propertyPath: m_Priority
@@ -1337,6 +1342,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8971922321872896140, guid: 941a9af0699c05344ba70ed8898ac7c5, type: 3}
+    - {fileID: 3710111660546247646, guid: 941a9af0699c05344ba70ed8898ac7c5, type: 3}
+    - {fileID: 7005754275908445315, guid: 941a9af0699c05344ba70ed8898ac7c5, type: 3}
+    - {fileID: 9176868600192144386, guid: 941a9af0699c05344ba70ed8898ac7c5, type: 3}
+    - {fileID: -5584443085902809798, guid: 941a9af0699c05344ba70ed8898ac7c5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1575,11 +1584,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4309984013583806159, guid: 82d96a92435624859a85308310350400,
-        type: 3}
-      propertyPath: nextLevelTrigger
-      value: 
-      objectReference: {fileID: 1538484220}
     - target: {fileID: 4309984013583806159, guid: 82d96a92435624859a85308310350400,
         type: 3}
       propertyPath: characterMovement
@@ -2014,11 +2018,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
-      propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[3].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
-        type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
       objectReference: {fileID: 0}
@@ -2235,11 +2234,6 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[2].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
-        type: 3}
-      propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[3].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
@@ -2480,11 +2474,6 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: MenuHandler, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
-        type: 3}
-      propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
       value: MenuHandler, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
@@ -5092,6 +5081,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 91322733913089097, guid: 8dc06597007a2264999f6f726cd48824,
+        type: 3}
+      propertyPath: intersectionCheck
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2347222051282140544, guid: 8dc06597007a2264999f6f726cd48824,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5152,6 +5146,11 @@ PrefabInstance:
       propertyPath: sceneToLoad
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7763415793943334342, guid: 8dc06597007a2264999f6f726cd48824,
+        type: 3}
+      propertyPath: m_Lens.OrthographicSize
+      value: 12.6
+      objectReference: {fileID: 0}
     - target: {fileID: 91322733913089097, guid: cd455cde6b9f7eb4981f3b19a10eafeb,
         type: 3}
       propertyPath: intersectionCheck
@@ -5172,10 +5171,27 @@ PrefabInstance:
     - {fileID: 6295029239680877341, guid: cd455cde6b9f7eb4981f3b19a10eafeb, type: 3}
     - {fileID: 91322733913089097, guid: cd455cde6b9f7eb4981f3b19a10eafeb, type: 3}
     - {fileID: 1225484906624395684, guid: cd455cde6b9f7eb4981f3b19a10eafeb, type: 3}
+    - {fileID: 6295029239680877341, guid: 8dc06597007a2264999f6f726cd48824, type: 3}
+    - {fileID: 1225484906624395684, guid: 8dc06597007a2264999f6f726cd48824, type: 3}
+    - {fileID: 7564641656213552662, guid: 8dc06597007a2264999f6f726cd48824, type: 3}
+    - {fileID: 1721880650798842935, guid: 8dc06597007a2264999f6f726cd48824, type: 3}
+    - {fileID: 91322733913089097, guid: 8dc06597007a2264999f6f726cd48824, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8dc06597007a2264999f6f726cd48824, type: 3}
+--- !u!114 &1475784669 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7763415793943334342, guid: 8dc06597007a2264999f6f726cd48824,
+    type: 3}
+  m_PrefabInstance: {fileID: 1475784668}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1485938590 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4581393331116056886, guid: 82d96a92435624859a85308310350400,
@@ -5339,12 +5355,6 @@ PrefabInstance:
       addedObject: {fileID: 410837085}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 392dc1b9462582349bfa1452fb926c26, type: 3}
---- !u!1 &1538484220 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4127694318184230780, guid: 8dc06597007a2264999f6f726cd48824,
-    type: 3}
-  m_PrefabInstance: {fileID: 1475784668}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1555690065
 GameObject:
   m_ObjectHideFlags: 0
@@ -6125,7 +6135,7 @@ PrefabInstance:
         type: 3}
       propertyPath: virtualCameras.Array.data[1]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1475784669}
     - target: {fileID: 543560988434361953, guid: 41c9b278c89fdfd47ba444dc5d0dea08,
         type: 3}
       propertyPath: virtualCameras.Array.data[2]
