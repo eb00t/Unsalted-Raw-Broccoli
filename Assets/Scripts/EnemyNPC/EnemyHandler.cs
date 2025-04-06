@@ -30,7 +30,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float patrolRange;
     private int _knockbackDir;
     private Vector3 _lastPosition;
-    private Collider _roomBounds;
+    [SerializeField] private Collider _roomBounds;
     private Vector3 _playerDir;
     private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
     private enum States { Idle, Patrol, Chase, Attack, Frozen, Passive }
@@ -100,9 +100,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
-        RoomScripting.enemies.Add(gameObject);
-        _roomBounds = RoomScripting.GetComponent<Collider>();
+        if (!SceneManager.GetActiveScene().name.Contains("Tutorial"))
+        {
+            RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+            RoomScripting.enemies.Add(gameObject);
+            _roomBounds = RoomScripting.GetComponent<Collider>();
+        }
 
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;

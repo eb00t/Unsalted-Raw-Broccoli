@@ -24,7 +24,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private bool grounded;
     private float groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time. 
     private bool fallingThrough; // Bool to fix player not entering the fall state if they drop through platforms
-    [SerializeField] private bool doubleJumpPerformed;
+    public bool doubleJumpPerformed;
     public bool isCrouching;
     public Vector3 Velocity;
     private GameObject _playerGroundPosition;

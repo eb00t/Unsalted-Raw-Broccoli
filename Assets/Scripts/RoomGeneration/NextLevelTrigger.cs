@@ -71,7 +71,6 @@ public class NextLevelTrigger : MonoBehaviour
             case SceneToLoad.NextFloor:
                 if (SceneManager.GetActiveScene().name != "Tutorial")
                 {
-                    
                     if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor1)
                     {
                         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor2;
@@ -93,8 +92,8 @@ public class NextLevelTrigger : MonoBehaviour
                 }
                 else
                 {
-                    dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
-                    scene = "StartScreen";
+                    //WipeData();
+                    scene = "MainScene";
                 }
                 break;
             case SceneToLoad.TitleScreen:
@@ -134,4 +133,13 @@ public class NextLevelTrigger : MonoBehaviour
         Application.Quit();
     }
     
+    public void WipeData()
+    {
+        dataHolder.savedItems.Clear();
+        dataHolder.savedItemCounts.Clear();
+        dataHolder.equippedConsumables = new int[5];
+        dataHolder.currencyHeld = 0;
+        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
+        dataHolder.highestFloorCleared = 0;
+    }
 }

@@ -10,14 +10,14 @@ public class TutorialController : MonoBehaviour
 {
     private GameObject _player;
     private ItemPickupHandler _itemPickupHandler;
-    private int _doubleJumpCount;
 
-    [SerializeField] private GameObject doorItem1, doorItem2, doorUp, doorToEnemy, doorToEnd;
+    [SerializeField] private DoorInfo doorItemDown1, doorItemDown2, doorItemRight1, doorItemRight2, doorUp1, doorUp2, doorUpRight, doorUpRight1, doorToEnd1, doorToEnd2;
     [SerializeField] private GameObject arrowItem1, arrowItem1Back, arrowItem2, arrowItem2Back, arrowUp, arrowToEnemy, arrowToEnd1, arrowToEnd2;
     [SerializeField] private GameObject highLight1, hightLight2, hightLight3, hightLight4;
 
     [SerializeField] private GameObject enemy;
     [SerializeField] private float rangeToEnemy;
+    [SerializeField] private DataHolder dataHolder;
 
     public enum TutorialStep
     {
@@ -49,6 +49,8 @@ public class TutorialController : MonoBehaviour
             enabled = false;
             return;
         }
+        
+        WipeData();
 
         _player = gameObject;
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
@@ -63,6 +65,18 @@ public class TutorialController : MonoBehaviour
             if (dist <= rangeToEnemy)
             {
                 AdvanceStep();
+            }
+        }
+
+        if (_currentStep == TutorialStep.DoubleJump)
+        {
+            if (_player.GetComponent<CharacterMovement>().doubleJumpPerformed)
+            {
+                AdvanceStep();
+                highLight1.SetActive(true);
+                hightLight2.SetActive(true);
+                hightLight3.SetActive(true);
+                hightLight4.SetActive(true);
             }
         }
     }
@@ -85,7 +99,8 @@ public class TutorialController : MonoBehaviour
         
         arrowToEnd1.SetActive(true);
         arrowToEnd2.SetActive(true);
-        doorToEnd.transform.position = new Vector3(doorToEnd.transform.position.x, doorToEnd.transform.position.y, doorToEnd.transform.position.z + 3);
+        doorToEnd1.OpenDoor();
+        doorToEnd2.OpenDoor();
         AdvanceStep();
     }
 
@@ -161,7 +176,8 @@ public class TutorialController : MonoBehaviour
         {
             arrowItem1.SetActive(false);
             arrowItem1Back.SetActive(true);
-            doorItem2.transform.position = new Vector3(doorItem2.transform.position.x, doorItem2.transform.position.y, doorItem2.transform.position.z + 3);
+            doorItemRight1.OpenDoor();
+            doorItemRight2.OpenDoor();
             arrowItem2.SetActive(true);
         }
 
@@ -188,18 +204,6 @@ public class TutorialController : MonoBehaviour
         {
             AdvanceStep();
         }
-        else if (_currentStep == TutorialStep.DoubleJump)
-        {
-            _doubleJumpCount++;
-            if (_doubleJumpCount >= 2)
-            {
-                AdvanceStep();
-                highLight1.SetActive(true);
-                hightLight2.SetActive(true);
-                hightLight3.SetActive(true);
-                hightLight4.SetActive(true);
-            }
-        }
     }
 
     public void PlayerCrouched(InputAction.CallbackContext context)
@@ -215,7 +219,8 @@ public class TutorialController : MonoBehaviour
             AdvanceStep();
             if (_itemsFound == 0)
             {
-                doorItem1.transform.position = new Vector3(doorItem1.transform.position.x, doorItem1.transform.position.y, doorItem1.transform.position.z + 3);
+                doorItemDown1.OpenDoor();
+                doorItemDown2.OpenDoor();
                 arrowItem1.SetActive(true);
             }
         }
@@ -273,7 +278,6 @@ public class TutorialController : MonoBehaviour
     public void GoBack(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        Debug.Log("goback called");
         if (_currentStep == TutorialStep.ExitUI)
         {
             AdvanceStep();
@@ -300,8 +304,10 @@ public class TutorialController : MonoBehaviour
             arrowItem2Back.SetActive(true);
             arrowUp.SetActive(true);
             arrowToEnemy.SetActive(true);
-            doorToEnemy.transform.position = new Vector3(doorToEnemy.transform.position.x, doorToEnemy.transform.position.y, doorToEnemy.transform.position.z + 3);
-            doorUp.transform.position = new Vector3(doorUp.transform.position.x, doorUp.transform.position.y, doorUp.transform.position.z + 3);
+            doorUp1.OpenDoor();
+            doorUp2.OpenDoor();
+            doorUpRight.OpenDoor();
+            doorUpRight1.OpenDoor();
         }
     }
 
@@ -338,5 +344,14 @@ public class TutorialController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, rangeToEnemy);
+    }
+    
+    private void WipeData()
+    {
+        dataHolder.savedItems.Clear();
+        dataHolder.savedItemCounts.Clear();
+        dataHolder.equippedConsumables = new int[5];
+        dataHolder.currencyHeld = 0;
+        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
     }
 }

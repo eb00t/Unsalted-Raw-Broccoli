@@ -116,7 +116,6 @@ public class CameraTrigger : MonoBehaviour
                 }
                 _camera.Priority = 10;
                 _resizeBoxCollider.doorsCanClose = true;
-                
             }
         }
     }
