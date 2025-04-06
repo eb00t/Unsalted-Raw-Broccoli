@@ -239,8 +239,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
                     attackCooldown = 5f;
                     break;
                 case >= 5:
-                    ProjectileAttack();
-                    //_animator.SetTrigger("Attack");
+                    //ProjectileAttack();
+                    _animator.SetTrigger("Projectile");
                     attackCooldown = 5f;
                     break;
             }
