@@ -144,6 +144,7 @@ public class DialogueHandler : MonoBehaviour
       foreach (char Character in loadedBodyText[index].ToCharArray())
       {
          _dialogueText.text += Character;
+         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DialogueScroll, transform.position);
          yield return new WaitForSeconds(dialogueSpeed);
       }
    }
