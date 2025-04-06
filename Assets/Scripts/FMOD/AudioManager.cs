@@ -173,7 +173,7 @@ public class AudioManager : MonoBehaviour
         }
         else if (LevelBuilder.Instance == null && SceneManager.GetActiveScene().name == "StartScreen")
         {
-            SetGlobalEventParameter("Music Track", 0);
+            SetGlobalEventParameter("Music Track", 8);
         }
         else
         {
