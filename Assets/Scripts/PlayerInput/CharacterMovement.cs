@@ -66,11 +66,13 @@ public class CharacterMovement : MonoBehaviour
         {
             fallingThrough = true;
             isCrouching = true;
+            PlayerAnimator.SetBool("isCrouching", true);
         }
         else
         {
             fallingThrough = true;
             isCrouching = false;
+            PlayerAnimator.SetBool("isCrouching", false);
         }
     }
 
