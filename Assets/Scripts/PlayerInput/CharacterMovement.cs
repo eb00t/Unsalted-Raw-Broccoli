@@ -61,18 +61,20 @@ public class CharacterMovement : MonoBehaviour
     public void Crouch(InputAction.CallbackContext ctx)
     {
         if (uiOpen) return;
-        if (!allowMovement) return;
+        
         if (ctx.ReadValue<float>() > 0)
         {
+            PlayerAnimator.SetBool("isCrouching", true);
+            if (!allowMovement) return;
             fallingThrough = true;
             isCrouching = true;
-            PlayerAnimator.SetBool("isCrouching", true);
         }
         else
         {
+            PlayerAnimator.SetBool("isCrouching", false);
+            if (!allowMovement) return;
             fallingThrough = true;
             isCrouching = false;
-            PlayerAnimator.SetBool("isCrouching", false);
         }
     }
 
