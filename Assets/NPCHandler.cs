@@ -88,7 +88,6 @@ public class NPCHandler : MonoBehaviour
                 break;
                 
         }
-
         if (whoToSpawn != WhoToSpawn.Nobody)
         {
             LoadSpecificNPCDialogue();
@@ -105,6 +104,11 @@ public class NPCHandler : MonoBehaviour
                 dialogue3 = dialogue3Repeat;
                 dialogue4 = dialogue4Repeat;
                 break;
+        } 
+        
+        if (whoToSpawn != WhoToSpawn.Nobody)
+        {
+            LoadSpecificNPCDialogue();
         }
     }
     

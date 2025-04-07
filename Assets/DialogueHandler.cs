@@ -133,8 +133,8 @@ public class DialogueHandler : MonoBehaviour
    public void StartSentence()
    {
       index = 0;
-      //_speakerText.text = loadedSpeakerText[index];
-      //_dialogueText.text = loadedBodyText[index];
+      _speakerText.text = "";
+      _dialogueText.text = "";
       StartCoroutine(TypeSentence());
    }
 
