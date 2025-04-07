@@ -49,6 +49,8 @@ public class CharacterMovement : MonoBehaviour
 
     [NonSerialized] public bool uiOpen; // makes sure player doesnt move when ui is open
     [NonSerialized] public bool lockedOn = false;
+    private bool _isDashing;
+    private Coroutine _dashCoroutine;
 
     public void Awake()
     {
@@ -153,14 +155,26 @@ public class CharacterMovement : MonoBehaviour
         {
             var direction = input != 0 ? Mathf.Sign(input) : Mathf.Sign(transform.localScale.x);
             var dashForce = new Vector3(direction * dashSpeed, rb.velocity.y, 0f);
-
-            rb.velocity = dashForce;
+            
+            rb.velocity = Vector3.zero;
+            rb.AddForce(dashForce, ForceMode.Impulse);
 
             PlayerAnimator.SetBool("Dash", true);
             dashAllowed = false;
             startDashTimer = true;
             dashTimer = 0f;
+
+            _isDashing = true;
+            if (_dashCoroutine != null) StopCoroutine(_dashCoroutine);
+            _dashCoroutine = StartCoroutine(DashRoutine());
         }
+    }
+    
+    private IEnumerator DashRoutine()
+    {
+        yield return new WaitForSeconds(0.2f);
+        _isDashing = false;
+        PlayerAnimator.SetBool("Dash", false);
     }
 
     public void Update()
@@ -246,7 +260,7 @@ public class CharacterMovement : MonoBehaviour
     public void FixedUpdate()
     {
         if (uiOpen) return;
-        if (walkAllowed && /*!isWallJumping &&*/ allowMovement)
+        if (walkAllowed && /*!isWallJumping &&*/ allowMovement && !_isDashing)
         {
             if ((rb.velocity.x <= maxSpeed && Mathf.Sign(rb.velocity.x) == 1) || (rb.velocity.x >= -maxSpeed && Mathf.Sign(rb.velocity.x) == -1) || (Mathf.Sign(rb.velocity.x) != input))
             {
