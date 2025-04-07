@@ -21,7 +21,7 @@ public class CharacterMovement : MonoBehaviour
     //public float slideSpeed = 1f;
     //public float slideHoldTime = 1f;
 
-    [SerializeField] private bool grounded;
+    public bool grounded;
     private float groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time. 
     private bool fallingThrough; // Bool to fix player not entering the fall state if they drop through platforms
     public bool doubleJumpPerformed;
@@ -163,13 +163,12 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-
     public void Update()
     {
-        if (uiOpen || allowMovement == false)
+        if (uiOpen)
         {
             input = 0;
-            rb.velocity = Vector3.zero;
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
             PlayerAnimator.SetFloat("Input", 0);
         }
         groundTimer -= Time.deltaTime;

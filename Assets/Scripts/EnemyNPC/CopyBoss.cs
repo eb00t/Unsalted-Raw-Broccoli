@@ -76,6 +76,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private MaterialPropertyBlock _propertyBlock;
     private bool _tookDamage;
     private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+    private GameObject dialogueGui;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -98,6 +99,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         _propertyBlock = new MaterialPropertyBlock();
+        dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
 
         _health = maxHealth;
         healthSlider.maxValue = maxHealth;
@@ -212,7 +214,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     
     private bool IsPlayerInRoom()
     {
-        return _roomBounds != null && _roomBounds.bounds.Contains(_player.position);
+        return _roomBounds != null && _roomBounds.bounds.Contains(_player.position) && !dialogueGui.activeSelf;
     }
     
     private bool IsGrounded()

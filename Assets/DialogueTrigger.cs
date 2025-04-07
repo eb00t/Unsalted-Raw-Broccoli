@@ -2,13 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class DialogueTrigger : MonoBehaviour
 {
     public dialogueControllerScript dialogueControllerScript;
     public MenuHandler menuHandler;
     public bool triggered, reusable;
-    
+    private GameObject _player;
+    public bool hasDialogueOpened;
 
     private void Start()
     {
@@ -19,25 +21,37 @@ public class DialogueTrigger : MonoBehaviour
         //}
     }
 
-    void OnTriggerStay(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player") && BlackoutManager.Instance.blackoutComplete)
+        if (other.CompareTag("Player") && BlackoutManager.Instance.blackoutComplete && !triggered)
         {
-            menuHandler.dialogueController = dialogueControllerScript;
-            menuHandler.TriggerDialogue();
+            _player = other.gameObject;
             triggered = true;
-            if (reusable == false && triggered)
-            {
-                gameObject.SetActive(false);
-            }
         }
     }
 
     private void Update()
     {
-        //if (dialogueControllerScript.transform.GetComponent<NPCHandler>() != null && dialogueControllerScript.transform.GetComponent<NPCHandler>().spokenToAlready)
-        //{
-        //    gameObject.SetActive(false);
-        //}
+        if (!triggered || _player == null) return;
+        
+        if (_player.GetComponent<CharacterMovement>().grounded && !hasDialogueOpened)
+        {
+            menuHandler.dialogueController = dialogueControllerScript;
+            menuHandler.TriggerDialogue(false, dialogueControllerScript);
+            
+            foreach (var dt in gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>())
+            {
+                if (dt == this) continue;
+                dt.hasDialogueOpened = true;
+                dt.triggered = true;
+            }
+            
+            hasDialogueOpened = true;
+        }
+
+        if (reusable == false && hasDialogueOpened)
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

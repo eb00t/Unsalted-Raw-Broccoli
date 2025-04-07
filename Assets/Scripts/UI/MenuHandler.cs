@@ -251,24 +251,22 @@ public class MenuHandler : MonoBehaviour
 	public void EnableDialogueBox(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
-		_distanceBasedDialogue = true;
-		TriggerDialogue();
+		TriggerDialogue(true, dialogueController);
 	}
 
-	public void TriggerDialogue()
+	public void TriggerDialogue(bool isDistanceBased, dialogueControllerScript controller)
 	{
 		if (characterMovement.uiOpen) return;
 
-		if (_itemPickupHandler.isPlrNearDialogue && _distanceBasedDialogue)
+		if (_itemPickupHandler.isPlrNearDialogue && isDistanceBased)
 		{
 			dialogueGUI.SetActive(true);
-			dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
-			_distanceBasedDialogue = false;
+			controller.LoadDialogue(controller.dialogueToLoad);
 		}
-		else if(_itemPickupHandler.isPlrNearDialogue == false && _distanceBasedDialogue == false)
+		else if (!isDistanceBased)
 		{
 			dialogueGUI.SetActive(true);
-			dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
+			controller.LoadDialogue(controller.dialogueToLoad);
 		}
 	}
 

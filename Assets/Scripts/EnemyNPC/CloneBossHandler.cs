@@ -76,6 +76,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private SpriteRenderer _spriteRenderer;
     private MaterialPropertyBlock _propertyBlock;
     private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+    private GameObject dialogueGui;
 
     [Header("Sound")] private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
@@ -103,6 +104,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _agent.updateUpAxis = false;
         _agent.updatePosition = true;
         _propertyBlock = new MaterialPropertyBlock();
+        dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
 
         gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
 
@@ -205,7 +207,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     
     private bool IsPlayerInRoom()
     {
-        return _roomBounds != null && _roomBounds.bounds.Contains(_target.position);
+        return _roomBounds != null && _roomBounds.bounds.Contains(_target.position) && !dialogueGui.activeSelf;
     }
 
     private void Retreat()

@@ -163,7 +163,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
                 defense = playerInFront ? blockingDefense : 0;
             }
-            else if (_state != States.Attack)
+            else if (_state != States.Attack && !isPassive)
             {
                 defense = 0;
             }
@@ -600,7 +600,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         {
             if (!_isBlocking || !playerInFront)
             {
-                defense = 0;
+                if (!isPassive)
+                {
+                    defense = 0;
+                }
+
                 StartCoroutine(StunTimer(.1f));
             }
         }

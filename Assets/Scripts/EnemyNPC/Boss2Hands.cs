@@ -72,6 +72,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private TextMeshProUGUI bossTitle;
     private SettingManager _settingManager;
     private LockOnController _lockOnController;
+    private GameObject dialogueGui;
     
     [Header("Sound")]
     private EventInstance _armMovementL, _armMovementR;
@@ -103,10 +104,13 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         bossTitle.text = bossName;
         _lineRenderer = GetComponentInChildren<LineRenderer>();
         _lockOnController = _target.GetComponent<LockOnController>();
+        dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
     }
 
     private void Update()
     {
+        if (dialogueGui.activeSelf) return;
+        
         _attackCdCounter -= Time.deltaTime;
 
         if (_isPlayerInRange)
