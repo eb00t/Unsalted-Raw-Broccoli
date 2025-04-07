@@ -8,6 +8,8 @@ public class DataHolder : ScriptableObject
     public int currencyHeld;
     public LevelBuilder.LevelMode currentLevel;
     public int highestFloorCleared;
+    public bool demoMode; // Essentially a playtest mode, if this is true, it should erase all data when reset is called
+    public bool eraseViewedLore; // Bool to allow all lore to respawn
     
     [Header("Settings")]
     public ControlsManager.ControlScheme currentControl;

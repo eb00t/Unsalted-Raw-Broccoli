@@ -16,7 +16,7 @@ public class DialogueHandler : MonoBehaviour
    public List<LoreItemHandler> allLoreItems;
    public List<LoreItemHandler> allViewedLoreItems;
    
-   public bool eraseViewedLore; // Bool to allow all lore to respawn
+   
    public int index; // The currently displayed message + speaker combo
    public DialogueObjectHandler currentDialogueObject; // The scriptable object that has been loaded
    public LoreItemHandler currentLoreItem; // The lore that has been loaded
@@ -29,6 +29,7 @@ public class DialogueHandler : MonoBehaviour
    private MenuHandler _menuHandler;
    public GameObject trigger;
    public NPCHandler currentNPC;
+   public DataHolder dataHolder;
 
    [field: Header("Objects to Load")] public string loadedTitleText; // The title (only used in lore)
    public List<string> loadedBodyText; // All the messages that need to displayed
@@ -55,13 +56,12 @@ public class DialogueHandler : MonoBehaviour
       _uiManager = GameObject.FindGameObjectWithTag("UIManager");
       _menuHandler = _uiManager.GetComponent<MenuHandler>();
       
-      if (eraseViewedLore)
+      if (dataHolder.eraseViewedLore)
       {
          foreach (var lore in allLoreItems)
          {
             lore.discoveredByPlayer = false;
          }
-         eraseViewedLore = false;
       }
       
       foreach (var lore in allLoreItems.ToList())

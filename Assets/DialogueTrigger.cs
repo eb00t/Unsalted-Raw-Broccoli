@@ -9,6 +9,19 @@ public class DialogueTrigger : MonoBehaviour
     public MenuHandler menuHandler;
     public bool reusable;
 
+    private void Awake()
+    {
+        if (dialogueControllerScript == null || menuHandler == null)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void Start()
+    {
+        menuHandler = GameObject.FindWithTag("UIManager").GetComponent<MenuHandler>();
+    }
+
     void OnTriggerEnter(Collider other)
     {
         menuHandler.dialogueController = dialogueControllerScript;

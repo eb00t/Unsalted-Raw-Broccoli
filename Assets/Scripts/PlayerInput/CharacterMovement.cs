@@ -166,6 +166,12 @@ public class CharacterMovement : MonoBehaviour
 
     public void Update()
     {
+        if (uiOpen || allowMovement == false)
+        {
+            input = 0;
+            rb.velocity = Vector3.zero;
+            PlayerAnimator.SetFloat("Input", 0);
+        }
         groundTimer -= Time.deltaTime;
         groundTimer = Mathf.Clamp(groundTimer, 0, 1f);
         //PlayerAnimator.SetBool("WallJump", isWallJumping);

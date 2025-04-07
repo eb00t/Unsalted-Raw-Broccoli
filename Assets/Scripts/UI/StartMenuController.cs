@@ -18,6 +18,12 @@ public class StartMenuController : MonoBehaviour
 	{
 		SwitchSelected(playBtn);
 		_controlsManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<ControlsManager>();
+
+		if (dataHolder.isGamepad == false)
+		{
+			Cursor.visible = true;
+			Cursor.lockState = CursorLockMode.None;
+		}
 	}
 
 	private void FixedUpdate()

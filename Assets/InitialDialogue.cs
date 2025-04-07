@@ -10,11 +10,21 @@ public class InitialDialogue : MonoBehaviour
 
   [SerializeField] private DataHolder dataHolder;
   private dialogueControllerScript _dialogueController;
+  public enum BossOrIntro
+  {
+    Intro,
+    Boss,
+  }
+  public BossOrIntro bossOrIntro;
   
     private void Awake()
     {
       currentFloor = dataHolder.currentLevel;
       _dialogueController = GetComponent<dialogueControllerScript>();
+      if (dataHolder.demoMode && bossOrIntro == BossOrIntro.Intro)
+      {
+        gameObject.SetActive(false);
+      }
     }
 
     private void Update()
@@ -24,13 +34,38 @@ public class InitialDialogue : MonoBehaviour
       switch (currentFloor)
       {
         case LevelBuilder.LevelMode.Floor1:
-          _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor1Intro;
+          switch (bossOrIntro)
+          {
+            case BossOrIntro.Intro:
+              _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor1Intro;
+              break;
+            case BossOrIntro.Boss:
+              _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor1Boss;
+              break;
+          }
           break;
         case LevelBuilder.LevelMode.Floor2:
-          _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor2Intro;
+          switch (bossOrIntro)
+          {
+            case BossOrIntro.Intro:
+              _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor2Intro;
+              dataHolder.demoMode = false;
+              break;
+            case BossOrIntro.Boss:
+              _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor2Boss;
+              break;
+          }
           break;
         case LevelBuilder.LevelMode.Floor3:
-          _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor3Intro;
+          if (bossOrIntro == BossOrIntro.Intro)
+          {
+            _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor3Intro;
+            dataHolder.demoMode = false;
+          }
+          else if (bossOrIntro == BossOrIntro.Boss)
+          {
+            _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor3Boss;
+          }
           break;
       }
     }
