@@ -7,36 +7,37 @@ public class DialogueTrigger : MonoBehaviour
 {
     public dialogueControllerScript dialogueControllerScript;
     public MenuHandler menuHandler;
-    public bool reusable;
-
-    private void Awake()
-    {
-        if (dialogueControllerScript == null || menuHandler == null)
-        {
-            gameObject.SetActive(false);
-        }
-    }
+    public bool triggered, reusable;
+    
 
     private void Start()
     {
         menuHandler = GameObject.FindWithTag("UIManager").GetComponent<MenuHandler>();
+        //if (dialogueControllerScript == null || menuHandler == null)
+        //{
+        //    gameObject.SetActive(false);
+        //}
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerStay(Collider other)
     {
-        menuHandler.dialogueController = dialogueControllerScript;
-        menuHandler.TriggerDialogue();
-        if (reusable == false)
+        if (other.CompareTag("Player") && BlackoutManager.Instance.blackoutComplete)
         {
-            gameObject.SetActive(false);
+            menuHandler.dialogueController = dialogueControllerScript;
+            menuHandler.TriggerDialogue();
+            triggered = true;
+            if (reusable == false && triggered)
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 
     private void Update()
     {
-        if (dialogueControllerScript.transform.GetComponent<NPCHandler>().spokenToAlready)
-        {
-            gameObject.SetActive(false);
-        }
+        //if (dialogueControllerScript.transform.GetComponent<NPCHandler>() != null && dialogueControllerScript.transform.GetComponent<NPCHandler>().spokenToAlready)
+        //{
+        //    gameObject.SetActive(false);
+        //}
     }
 }

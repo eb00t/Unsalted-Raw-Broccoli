@@ -33,6 +33,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private DataHolder dataHolder;
 	[NonSerialized] public ReadLore nearestLore;
 	[NonSerialized] public dialogueControllerScript dialogueController;
+	private bool _distanceBasedDialogue;
 
 	private void Start()
 	{
@@ -250,6 +251,7 @@ public class MenuHandler : MonoBehaviour
 	public void EnableDialogueBox(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
+		_distanceBasedDialogue = true;
 		TriggerDialogue();
 	}
 
@@ -257,7 +259,13 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (characterMovement.uiOpen) return;
 
-		if (_itemPickupHandler.isPlrNearDialogue)
+		if (_itemPickupHandler.isPlrNearDialogue && _distanceBasedDialogue)
+		{
+			dialogueGUI.SetActive(true);
+			dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
+			_distanceBasedDialogue = false;
+		}
+		else if(_itemPickupHandler.isPlrNearDialogue == false && _distanceBasedDialogue == false)
 		{
 			dialogueGUI.SetActive(true);
 			dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
