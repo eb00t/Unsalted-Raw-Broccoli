@@ -47,14 +47,4 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         charAttack.animEnd = true;
     }
-
-    public void setIFrameOn()
-    {
-        charAttack.isInvulnerable = true;
-    }
-    
-    public void setIFrameOff()
-    {
-        charAttack.isInvulnerable = false;
-    }
 }

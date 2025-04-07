@@ -51,6 +51,7 @@ public class CharacterMovement : MonoBehaviour
     [NonSerialized] public bool lockedOn = false;
     private bool _isDashing;
     private Coroutine _dashCoroutine;
+    private CharacterAttack _characterAttack;
 
     public void Awake()
     {
@@ -58,6 +59,7 @@ public class CharacterMovement : MonoBehaviour
         _playerGroundPosition = transform.Find("GroundPos").gameObject;
         groundCheck = GetComponent<BoxCollider>();
         PlayerAnimator = GetComponentInChildren<Animator>();
+        _characterAttack = GetComponentInChildren<CharacterAttack>();
     }
 
     public void Crouch(InputAction.CallbackContext ctx)
@@ -149,7 +151,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void Dash(InputAction.CallbackContext ctx)
     {
-        if (uiOpen || !allowMovement || !dashAllowed) return;
+        if (uiOpen || !allowMovement || !dashAllowed || _isDashing) return;
 
         if (ctx.performed && grounded) 
         {
@@ -172,7 +174,9 @@ public class CharacterMovement : MonoBehaviour
     
     private IEnumerator DashRoutine()
     {
+        _characterAttack.isInvulnerable = true;
         yield return new WaitForSeconds(0.2f);
+        _characterAttack.isInvulnerable = false;
         _isDashing = false;
         PlayerAnimator.SetBool("Dash", false);
     }
