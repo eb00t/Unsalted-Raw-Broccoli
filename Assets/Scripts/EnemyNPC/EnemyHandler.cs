@@ -100,7 +100,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial || LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
+        if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial && LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
         {
             RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
             RoomScripting.enemies.Add(gameObject);

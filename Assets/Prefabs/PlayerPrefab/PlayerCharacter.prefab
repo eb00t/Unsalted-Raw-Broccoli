@@ -74,6 +74,7 @@ MonoBehaviour:
   isPoison: 0
   isIce: 0
   isInvulnerable: 0
+  isDead: 0
   stunDuration: 0.5
   healthSlider: {fileID: 0}
   energySlider: {fileID: 0}
@@ -327,6 +328,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 532112a78e751aa4fa8bc1ea7d01eb64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blackoutCircle: {fileID: 0}
+  deathScreen: {fileID: 0}
 --- !u!1 &7748169234227478159
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,9 +526,12 @@ MonoBehaviour:
   doorItemDown2: {fileID: 0}
   doorItemRight1: {fileID: 0}
   doorItemRight2: {fileID: 0}
-  doorUp: {fileID: 0}
-  doorToEnemy: {fileID: 0}
-  doorToEnd: {fileID: 0}
+  doorUp1: {fileID: 0}
+  doorUp2: {fileID: 0}
+  doorUpRight: {fileID: 0}
+  doorUpRight1: {fileID: 0}
+  doorToEnd1: {fileID: 0}
+  doorToEnd2: {fileID: 0}
   arrowItem1: {fileID: 0}
   arrowItem1Back: {fileID: 0}
   arrowItem2: {fileID: 0}
