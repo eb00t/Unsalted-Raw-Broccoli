@@ -250,6 +250,11 @@ public class MenuHandler : MonoBehaviour
 	public void EnableDialogueBox(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
+		TriggerDialogue();
+	}
+
+	public void TriggerDialogue()
+	{
 		if (characterMovement.uiOpen) return;
 
 		if (_itemPickupHandler.isPlrNearDialogue)
