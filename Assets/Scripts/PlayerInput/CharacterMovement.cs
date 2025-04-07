@@ -178,11 +178,11 @@ public class CharacterMovement : MonoBehaviour
         
         //wallJump();
 
-        if (!lockedOn && Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(Velocity.x)) // this has a check if the player is locked on to prevent them flipping
+        if (!uiOpen && !lockedOn && Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(Velocity.x)) // this has a check if the player is locked on to prevent them flipping
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
-        if (!lockedOn && PlayerAnimator.GetBool("WallCling") && Mathf.Sign(transform.localScale.x) != Mathf.Sign(input)) // if wallcling is true and player isn't facing direction of input, flip the player
+        if (!uiOpen && !lockedOn && PlayerAnimator.GetBool("WallCling") && Mathf.Sign(transform.localScale.x) != Mathf.Sign(input)) // if wallcling is true and player isn't facing direction of input, flip the player
         { 
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -10,6 +11,7 @@ public class MenuHandler : MonoBehaviour
 {
 	[Header("Code References")]
 	[SerializeField] private CharacterMovement characterMovement;
+	CharacterAttack _characterAttack;
 	private ItemPickupHandler _itemPickupHandler;
 	private InventoryStore _inventoryStore;
 	private ToolbarHandler _toolbarHandler;
@@ -38,6 +40,7 @@ public class MenuHandler : MonoBehaviour
 		_toolbarHandler = GetComponent<ToolbarHandler>();
 		_player = GameObject.FindGameObjectWithTag("Player");
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+		_characterAttack = _player.GetComponentInChildren<CharacterAttack>();
 		_blackoutManager = GameObject.Find("Game Manager").GetComponentInChildren<BlackoutManager>();
 	}
 
@@ -46,10 +49,16 @@ public class MenuHandler : MonoBehaviour
 		// update if ui is open or not in player movement script
 		var pauseGuisOpen = invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf || settingGui.activeSelf || controlGui.activeSelf || diedScreen.activeSelf;
 		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) || (dialogueGUI != null && dialogueGUI.activeSelf);
-		
-		characterMovement.uiOpen = pauseGuisOpen || noPauseGuisOpen;
-		
-		Time.timeScale = pauseGuisOpen ? 0 : 1;
+
+		if (!_characterAttack.isDead)
+		{
+			characterMovement.uiOpen = pauseGuisOpen || noPauseGuisOpen;
+			Time.timeScale = pauseGuisOpen ? 0 : 1;
+		}
+		else
+		{
+			characterMovement.uiOpen = true;
+		}
 
 		if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard)
 		{

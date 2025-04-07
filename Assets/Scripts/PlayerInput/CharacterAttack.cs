@@ -46,6 +46,7 @@ public class CharacterAttack : MonoBehaviour
     public bool isPoison;
     public bool isIce;
     public bool isInvulnerable;
+    public bool isDead;
     [SerializeField] private float stunDuration;
     
     [SerializeField] private Slider healthSlider, energySlider;
@@ -87,6 +88,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void LightAttack(InputAction.CallbackContext ctx)
     {
+        if (isDead) return;
         if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
             _playerAnimator.SetBool("HeavyAttack", false);
@@ -147,6 +149,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
     {
+        if (isDead) return;
         if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
             _playerAnimator.SetBool("LightAttack1", false);
@@ -239,6 +242,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void TakeDamagePlayer(int damage, int poiseDmg)
     {
+        if (isDead) return;
         if (isInvulnerable) return;
         
         if (isInvincible > 0)
@@ -312,11 +316,19 @@ public class CharacterAttack : MonoBehaviour
     
     private void Die()
     {
-        diedScreen.SetActive(true);
+        if (isDead) return;
+        isDead = true;
+        _playerAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        _playerAnimator.SetTrigger("isDead");
+        if (!diedScreen.activeSelf)
+        {
+            Time.timeScale = 0.2f;
+        }
     }
 
     private void OnTriggerEnter(Collider other) // gets takedamage and trigger status methods from all enemy types
     {
+        if (isDead) return;
         if (!other.CompareTag("Enemy")) return;
 
         var damageable = other.GetComponentInParent<IDamageable>();
@@ -391,6 +403,7 @@ public class CharacterAttack : MonoBehaviour
 
     private void Update()
     {
+        if (isDead) return;
         if (currentEnergy < maxEnergy)
         {
             _rechargeTime -= Time.deltaTime * rechargeSpeed;

@@ -19,6 +19,8 @@ public class AnimationEvents : MonoBehaviour
         _jumpEvent;
     private CharacterAttack _characterAttack;
     private SettingManager _settingManager;
+    [SerializeField] private Animator blackoutCircle;
+    [SerializeField] private GameObject deathScreen;
 
     private void Start()
     {
@@ -133,5 +135,12 @@ public class AnimationEvents : MonoBehaviour
         _jumpEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
         _jumpEvent.start();
         _jumpEvent.release();
+    }
+    
+    // UI
+    public void FadeToBlack()
+    {
+        deathScreen.SetActive(true);
+        blackoutCircle.enabled = true;
     }
 }
