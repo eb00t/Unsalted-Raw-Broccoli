@@ -72,7 +72,7 @@ public class CameraTrigger : MonoBehaviour
                         cam.Priority = 0;
                     }
                     _camera.Priority = 10;
-                    if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial)
+                    if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial || LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
                     {
                         _resizeBoxCollider.doorsCanClose = false;
                     }
@@ -119,7 +119,7 @@ public class CameraTrigger : MonoBehaviour
                     cam.Priority = 0;
                 }
                 _camera.Priority = 10;
-                if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial)
+                if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial || LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
                 {
                     _resizeBoxCollider.doorsCanClose = true;
                 }

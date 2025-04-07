@@ -20,6 +20,7 @@ public class NextLevelTrigger : MonoBehaviour
         TitleScreen,
         Credits,
         EndScreen,
+        SecretScreen,
     }
 
     public SceneToLoad sceneToLoad;

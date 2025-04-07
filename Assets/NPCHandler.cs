@@ -18,6 +18,7 @@ public class NPCHandler : MonoBehaviour
     {
         Nobody,
         Specto,
+        DoctorStats,
     }
 
     public WhoToSpawn whoToSpawn;
@@ -32,7 +33,12 @@ public class NPCHandler : MonoBehaviour
         dialogue3,
         dialogue4; // 1 = first time, 2 = upon first floor clear, 3 = upon second floor clear, 4 = upon blank's death
 
-    public DialogueObjectHandler dialogue1Repeat, dialogue2Repeat, dialogue3Repeat, dialogue4Repeat;
+    public DialogueObjectHandler 
+        dialogue1Repeat, 
+        dialogue2Repeat, 
+        dialogue3Repeat, 
+        dialogue4Repeat;
+    
     public DataHolder dataHolder;
 
     void Start() //TODO: Get random spawn working
@@ -78,9 +84,15 @@ public class NPCHandler : MonoBehaviour
                 dialogue4 = DialogueReference.Instance.TutorialFloor3;
                 dialogue4Repeat = DialogueReference.Instance.TutorialFloor3Repeat;
                 break;
+            case WhoToSpawn.DoctorStats:
+                break;
+                
         }
 
-        LoadSpecificNPCDialogue();
+        if (whoToSpawn != WhoToSpawn.Nobody)
+        {
+            LoadSpecificNPCDialogue();
+        }
     }
 
     public void SwitchOutDialogue()
@@ -88,10 +100,10 @@ public class NPCHandler : MonoBehaviour
         switch (whoToSpawn)
         {
             case WhoToSpawn.Specto:
-                dialogue1 = DialogueReference.Instance.TutorialIntroRepeat;
-                dialogue2 = DialogueReference.Instance.TutorialFloor1Repeat;
-                dialogue3 = DialogueReference.Instance.TutorialFloor2Repeat;
-                dialogue4 = DialogueReference.Instance.TutorialFloor3Repeat;
+                dialogue1 = dialogue1Repeat;
+                dialogue2 = dialogue2Repeat;
+                dialogue3 = dialogue3Repeat;
+                dialogue4 = dialogue4Repeat;
                 break;
         }
     }
