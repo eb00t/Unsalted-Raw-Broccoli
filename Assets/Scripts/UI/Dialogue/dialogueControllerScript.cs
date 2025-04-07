@@ -8,14 +8,21 @@ using Random = UnityEngine.Random;
 
 public class dialogueControllerScript : MonoBehaviour
 {
-    public bool isLore;
     public bool replayable;
     public DialogueObjectHandler dialogueToLoad;
+    public LoreItemHandler loreToLoad;
     private ItemPickupHandler _itemPickupHandler;
     [SerializeField] private float range;
     [SerializeField] public int dialogueID;
     private GameObject _player, _dialogueCanvas, _uiManager;
     private MenuHandler _menuHandler;
+    
+    public enum DialogueOrLore
+    {
+        Dialogue,
+        Lore
+    }
+    public DialogueOrLore dialogueOrLore;
 
     //DIALOGUE CODE
     private TextMeshProUGUI dialogueText;
@@ -44,6 +51,7 @@ public class dialogueControllerScript : MonoBehaviour
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
         _dialogueCanvas = _menuHandler.dialogueGUI;
+        int loreChoice = Random.Range(0, LoreReference.Instance.allLoreItems.Count);
       /* foreach (var text in _dialogueCanvas.GetComponentsInChildren<TextMeshProUGUI>())
        {
            switch (text.name)
@@ -57,10 +65,10 @@ public class dialogueControllerScript : MonoBehaviour
            }
        }*/
 
-       switch (isLore)
+       switch (dialogueOrLore)
        {
-           case true:
-               dialogueID = Random.Range(0, DialogueHandler.Instance.allLoreItems.Count);
+           case DialogueOrLore.Lore:
+               loreToLoad = LoreReference.Instance.allLoreItems[loreChoice];
                break;
        }
        //Start writing sentences
@@ -73,7 +81,15 @@ public class dialogueControllerScript : MonoBehaviour
 
         if (dist <= range)
         {
-            _itemPickupHandler.isPlrNearDialogue = true;
+            switch (dialogueOrLore)
+            {
+                case DialogueOrLore.Dialogue:
+                    _itemPickupHandler.isPlrNearDialogue = true;
+                    break;
+                case DialogueOrLore.Lore:
+                    _itemPickupHandler.isPlrNearLore = true;
+                    break;
+            }
             
             if (_dialogueCanvas.activeSelf)
             {
@@ -88,7 +104,15 @@ public class dialogueControllerScript : MonoBehaviour
         else if (dist > range)
         {
             if (_menuHandler.dialogueController != this) return;
-            _itemPickupHandler.isPlrNearDialogue = false;
+            switch (dialogueOrLore)
+            {
+                case DialogueOrLore.Dialogue:
+                    _itemPickupHandler.isPlrNearDialogue = false;
+                    break;
+                case DialogueOrLore.Lore:
+                    _itemPickupHandler.isPlrNearLore = false;
+                    break;
+            }
         }
         
         /*
@@ -132,30 +156,29 @@ public class dialogueControllerScript : MonoBehaviour
     }
 
    public void LoadDialogue(DialogueObjectHandler dialogueHandler)
+   {
+       dialogueToLoad = dialogueHandler;
+       DialogueHandler.Instance.LoadDialogueScriptableObject(dialogueHandler);
+       DialogueHandler.Instance.StartSentence();
+       if (replayable == false)
+       {
+           DialogueHandler.Instance.trigger = transform.gameObject;
+       }
+       DialogueHandler.Instance.currentNPC = gameObject.GetComponent<NPCHandler>();
+
+   }
+
+    public void LoadLore(LoreItemHandler loreItem)
     {
-        switch (isLore)
+        DialogueHandler.Instance.LoadLoreScriptableObject(loreItem);
+        DialogueHandler.Instance.StartSentence();
+        if (replayable == false)
         {
-            case false:
-                dialogueToLoad = dialogueHandler;
-                DialogueHandler.Instance.LoadDialogueScriptableObject(dialogueHandler);
-                DialogueHandler.Instance.StartSentence();
-                if (replayable == false)
-                {
-                    DialogueHandler.Instance.trigger = transform.gameObject;
-                }
-                DialogueHandler.Instance.currentNPC = gameObject.GetComponent<NPCHandler>();
-                break;
-            case true:
-                DialogueHandler.Instance.LoadLoreScriptableObject(dialogueID);
-                DialogueHandler.Instance.StartSentence();
-                if (replayable == false)
-                {
-                    DialogueHandler.Instance.trigger = transform.parent.gameObject;
-                }
-                break;
+            DialogueHandler.Instance.trigger = transform.parent.gameObject;
         }
     }
-}
+    }
+
 
 
 

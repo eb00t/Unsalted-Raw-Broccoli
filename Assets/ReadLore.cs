@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ReadLore : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class ReadLore : MonoBehaviour
     private GameObject _uiManager;
     [SerializeField] private float pickupRange;
     private GameObject _player;
+    public LoreItemHandler whatLore;
     public enum LoreType
     {
         Book,
@@ -49,6 +51,9 @@ public class ReadLore : MonoBehaviour
         _language = "English"; //TODO: Fix this to make it work with whatever language the game is.
         _fullLorePath = _lorePath + "/" + _language + "/" + _loreObject;
         Debug.Log(_fullLorePath);
+
+        int whatLoreToLoad = Random.Range(0, LoreReference.Instance.allLoreItems.Count);
+        whatLore = LoreReference.Instance.allLoreItems[whatLoreToLoad];
     }
 
     private void Update()

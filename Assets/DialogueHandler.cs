@@ -11,12 +11,7 @@ public class DialogueHandler : MonoBehaviour
 {
    public static DialogueHandler Instance { get; private set; }
 
-   [field: Header("Lists")]
-   public List<DialogueObjectHandler> allDialogueObjects;
-   public List<LoreItemHandler> allLoreItems;
    public List<LoreItemHandler> allViewedLoreItems;
-   
-   
    public int index; // The currently displayed message + speaker combo
    public DialogueObjectHandler currentDialogueObject; // The scriptable object that has been loaded
    public LoreItemHandler currentLoreItem; // The lore that has been loaded
@@ -58,18 +53,18 @@ public class DialogueHandler : MonoBehaviour
       
       if (dataHolder.eraseViewedLore)
       {
-         foreach (var lore in allLoreItems)
+         foreach (var lore in LoreReference.Instance.allLoreItems)
          {
             lore.discoveredByPlayer = false;
          }
       }
       
-      foreach (var lore in allLoreItems.ToList())
+      foreach (var lore in LoreReference.Instance.allLoreItems.ToList())
       {
          if (lore.discoveredByPlayer)
          {
             allViewedLoreItems.Add(lore);
-            allLoreItems.Remove(lore);
+            LoreReference.Instance.allLoreItems.Remove(lore);
          }
       }
       
@@ -167,7 +162,7 @@ public class DialogueHandler : MonoBehaviour
       }
    }
    
-   public void LoadLoreScriptableObject(int scriptableObjectID)
+   public void LoadLoreScriptableObject(LoreItemHandler loreItem)
    {
       if (currentDialogueObject != null)
       {
@@ -175,8 +170,8 @@ public class DialogueHandler : MonoBehaviour
          loadedBodyText.Clear();
          currentDialogueObject = null;
       }
-      allLoreItems[scriptableObjectID].discoveredByPlayer = true;
-      currentLoreItem = allLoreItems[scriptableObjectID];
+      currentLoreItem = loreItem;
+      loreItem.discoveredByPlayer = true;
       loadedTitleText = currentLoreItem.loreTitle;
       loadedSpeakerText = new List<string>(currentLoreItem.whoWroteThis);
       loadedBodyText = new List<string>(currentLoreItem.loreBodyText);

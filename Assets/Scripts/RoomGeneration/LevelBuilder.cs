@@ -134,15 +134,19 @@ public class LevelBuilder : MonoBehaviour
         _spawnMode = SpawnMode.Normal;
         _numberOfRoomsToSpawn = howManyRoomsToSpawn;
         int spawnLoreRoom = RandomiseNumber(2);
-        switch (spawnLoreRoom)
+        if (loreRoomChance == false)
         {
-            case 0:
-                loreRoomChance = false;
-                break;
-            case 1:
-                loreRoomChance = true;
-                break;
+            switch (spawnLoreRoom)
+            {
+                case 0:
+                    loreRoomChance = false;
+                    break;
+                case 1:
+                    loreRoomChance = true;
+                    break;
+            }
         }
+
         lootRoomsToSpawn = (int)Mathf.Floor((_numberOfRoomsToSpawn / 10));
         Debug.Log(lootRoomsToSpawn);
         if (lootRoomsToSpawn < 2)

@@ -276,8 +276,8 @@ public class MenuHandler : MonoBehaviour
 		
 		if (_itemPickupHandler.isPlrNearLore)
 		{
-			// when lore is interacted with do something here
-			// you can check anything in the nearest ReadLore script from nearestLore variable
+			dialogueGUI.SetActive(true);
+			dialogueController.LoadLore(nearestLore.whatLore);
 			Debug.Log(nearestLore.loreType);
 		}
 	}
