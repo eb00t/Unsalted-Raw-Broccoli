@@ -85,6 +85,14 @@ public class NPCHandler : MonoBehaviour
                 dialogue4Repeat = DialogueReference.Instance.TutorialFloor3Repeat;
                 break;
             case WhoToSpawn.DoctorStats:
+                dialogue1 = DialogueReference.Instance.Stats;
+                dialogue1Repeat = DialogueReference.Instance.StatsRepeat;
+                dialogue2 = DialogueReference.Instance.Stats;
+                dialogue2Repeat = DialogueReference.Instance.StatsRepeat;
+                dialogue3 = DialogueReference.Instance.Stats;
+                dialogue3Repeat = DialogueReference.Instance.StatsRepeat;
+                dialogue4 = DialogueReference.Instance.Stats;
+                dialogue4Repeat = DialogueReference.Instance.StatsRepeat;
                 break;
                 
         }
@@ -102,6 +110,12 @@ public class NPCHandler : MonoBehaviour
                 dialogue1 = dialogue1Repeat;
                 dialogue2 = dialogue2Repeat;
                 dialogue3 = dialogue3Repeat;
+                dialogue4 = dialogue4Repeat;
+                break;
+            case WhoToSpawn.DoctorStats:
+                dialogue1 = dialogue1Repeat;
+                dialogue2 = dialogue1Repeat;
+                dialogue3 = dialogue1Repeat;
                 dialogue4 = dialogue4Repeat;
                 break;
         } 

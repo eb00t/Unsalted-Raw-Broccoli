@@ -9,13 +9,14 @@ using Random = UnityEngine.Random;
 public class EnemySpawner : MonoBehaviour
 {
     [field: Header("Configuration")]
+    private int _waves, _waveCount = 1;
     public enum HowToSpawn
     {
         Random,
         Specific_NOT_IMPLEMENTED
     }
     public HowToSpawn howToSpawn = HowToSpawn.Random;
-    private int _waves, _waveCount = 1;
+    
     private int _rng;
     public GameObject spawnedEnemy;
     public RoomScripting roomScripting;

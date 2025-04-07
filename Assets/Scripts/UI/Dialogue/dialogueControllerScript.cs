@@ -136,7 +136,6 @@ public class dialogueControllerScript : MonoBehaviour
         switch (isLore)
         {
             case false:
-                
                 dialogueToLoad = dialogueHandler;
                 DialogueHandler.Instance.LoadDialogueScriptableObject(dialogueHandler);
                 DialogueHandler.Instance.StartSentence();
