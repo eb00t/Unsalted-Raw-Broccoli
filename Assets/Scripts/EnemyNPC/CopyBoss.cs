@@ -521,6 +521,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         isDead = true; 
         LevelBuilder.Instance.bossDead = true;
+        _animator.SetTrigger("isDead");
         int currencyToDrop = 0;
         switch (_tookDamage)
         {
@@ -544,6 +545,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
         //_characterMovement.lockedOn = false;
         //_lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);
+        StartCoroutine(WaitToDisable());
+    }
+
+    private IEnumerator WaitToDisable()
+    {
+        yield return new WaitForSecondsRealtime(1.5f);
         gameObject.SetActive(false);
     }
 
