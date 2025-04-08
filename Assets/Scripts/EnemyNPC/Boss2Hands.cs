@@ -109,7 +109,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        if (dialogueGui.activeSelf) return;
+        if (dialogueGui.activeSelf)
+        {
+            StopAllCoroutines();
+            return;
+        }
         
         _attackCdCounter -= Time.deltaTime;
 
