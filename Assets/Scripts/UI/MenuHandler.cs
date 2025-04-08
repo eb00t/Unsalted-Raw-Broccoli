@@ -32,6 +32,7 @@ public class MenuHandler : MonoBehaviour
 	public GameObject shopGUI, nextLevelTrigger;
 	[SerializeField] private DataHolder dataHolder;
 	public ReadLore nearestLore;
+	public NextLevelTrigger nearestLevelTrigger;
 	[NonSerialized] public dialogueControllerScript dialogueController;
 	private bool _distanceBasedDialogue;
 
@@ -159,8 +160,9 @@ public class MenuHandler : MonoBehaviour
 		if (!context.performed) return;
 		if (characterMovement.uiOpen) return;
 		if (!_player.gameObject.GetComponent<ItemPickupHandler>().isPlrNearEnd) return;
+		if (nearestLevelTrigger == null) return;
 		
-		nextLevelTrigger.GetComponent<NextLevelTrigger>().LoadNextLevel();
+		nearestLevelTrigger.GetComponent<NextLevelTrigger>().LoadNextLevel();
 	}
 
 	// when Button East/Esc is pressed close current menu and open previous menus

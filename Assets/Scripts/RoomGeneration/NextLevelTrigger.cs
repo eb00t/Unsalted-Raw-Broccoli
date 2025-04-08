@@ -8,9 +8,11 @@ public class NextLevelTrigger : MonoBehaviour
 {
     private CharacterMovement _characterMovement;
     private ItemPickupHandler _itemPickupHandler;
+    private MenuHandler _menuHandler;
     private GameObject _player;
     private GameObject _uiManager;
     public float range = 5f;
+    [SerializeField] private bool doesUseTrigger;
     [SerializeField] private DataHolder dataHolder;
 
     public enum SceneToLoad
@@ -31,12 +33,13 @@ public class NextLevelTrigger : MonoBehaviour
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
-        _uiManager.GetComponent<MenuHandler>().nextLevelTrigger = gameObject;
+        _menuHandler = _uiManager.GetComponent<MenuHandler>();
+        _menuHandler.nextLevelTrigger = gameObject;
     }
 
     private void Update()
     {
-        if (SceneManager.GetActiveScene().name != "creditsScene")
+        if (SceneManager.GetActiveScene().name != "creditsScene" && !doesUseTrigger)
         {
             if (!_characterMovement.uiOpen)
             {
@@ -46,6 +49,7 @@ public class NextLevelTrigger : MonoBehaviour
                 {
                     _itemPickupHandler.isPlrNearEnd = true;
                     _itemPickupHandler.TogglePrompt("Continue ahead?", true, ControlsManager.ButtonType.ButtonEast);
+                    _menuHandler.nearestLevelTrigger = this;
                 }
                 else if (dist > range)
                 {
@@ -55,6 +59,12 @@ public class NextLevelTrigger : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!doesUseTrigger) return;
+        LoadNextLevel();
     }
 
     public void LoadNextLevel()
