@@ -1,5 +1,72 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &705655260868815896
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1004143894846187434}
+  - component: {fileID: 6814702561156471221}
+  - component: {fileID: 1656769346956012613}
+  m_Layer: 0
+  m_Name: AtkCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1004143894846187434
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705655260868815896}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 839352504095650904}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6814702561156471221
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705655260868815896}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.6437006, y: 2.6443875, z: 1}
+  m_Center: {x: 0.8344615, y: -0.41915223, z: 3.6646427e-15}
+--- !u!114 &1656769346956012613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705655260868815896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fdf4e93a860904ab8e2eddc05a9e7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterAttack: {fileID: 3077880211322091115}
 --- !u!1 &2372449923896005456
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,7 +77,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6010639566045349199}
   - component: {fileID: 3077880211322091115}
-  - component: {fileID: 3621395720539083714}
+  - component: {fileID: 1452148484142589420}
   - component: {fileID: 4292942453058374287}
   m_Layer: 0
   m_Name: PlayerAttack
@@ -58,7 +125,7 @@ MonoBehaviour:
   heavyEnergyCost2: 5
   heavyEnergyCost3: 5
   rechargeSpeed: 1
-  currentHealth: 100
+  currentHealth: 250
   maxHealth: 250
   maxEnergy: 40
   currentEnergy: 40
@@ -83,7 +150,7 @@ MonoBehaviour:
   knockbackPowerLight: {x: 0.5, y: 0.1}
   knockbackPowerMedium: {x: 1.5, y: 0.5}
   knockbackPowerHeavy: {x: 3, y: 1}
---- !u!64 &3621395720539083714
+--- !u!64 &1452148484142589420
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,7 +167,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
@@ -228,7 +295,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 1.8}
   m_LocalScale: {x: 3.87, y: 3.87, z: 3.87}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1004143894846187434}
   m_Father: {fileID: 5293791565655745629}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!95 &1212935739198518781
@@ -547,4 +615,5 @@ MonoBehaviour:
   enemy: {fileID: 0}
   rangeToEnemy: 12
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
+  pauseMenu: {fileID: 0}
   _currentStep: 0

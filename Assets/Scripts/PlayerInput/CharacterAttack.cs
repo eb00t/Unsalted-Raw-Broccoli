@@ -326,10 +326,9 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other) // gets takedamage and trigger status methods from all enemy types
+    public void AttackHit(Collider other) // gets takedamage and trigger status methods from all enemy types
     {
         if (isDead) return;
-        if (!other.CompareTag("Enemy")) return;
 
         var damageable = other.GetComponentInParent<IDamageable>();
         if (damageable == null) return;
