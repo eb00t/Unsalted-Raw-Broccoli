@@ -98,6 +98,7 @@ public class NPCHandler : MonoBehaviour
                     _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/HURTNPC_IDLE");
                     _animator.SetInteger(WhoAmI, 1);
                 }
+
                 dialogue1 = DialogueReference.Instance.TutorialIntro;
                 dialogue1Repeat = DialogueReference.Instance.TutorialIntroRepeat;
                 dialogue2 = DialogueReference.Instance.TutorialFloor1;
@@ -128,8 +129,15 @@ public class NPCHandler : MonoBehaviour
                     _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/OLDNPC_IDLE");
                     _animator.SetInteger(WhoAmI, 0);
                 }
+
                 dialogue1 = DialogueReference.Instance.RichIntro;
                 dialogue1Repeat = DialogueReference.Instance.RichIntroRepeat;
+                dialogue2 = DialogueReference.Instance.RichFloor1;
+                dialogue2Repeat = DialogueReference.Instance.RichFloor1Repeat;
+                dialogue3 = DialogueReference.Instance.RichFloor2;
+                dialogue3Repeat = DialogueReference.Instance.RichFloor2Repeat;
+                dialogue4 = DialogueReference.Instance.RichFloor3;
+                dialogue4Repeat = DialogueReference.Instance.RichFloor3Repeat;
                 break;
             case WhoToSpawn.Kid:
                 if (noted)
@@ -142,6 +150,7 @@ public class NPCHandler : MonoBehaviour
                     _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/KIDNPC_IDLE");
                     _animator.SetInteger(WhoAmI, 2);
                 }
+
                 break;
             case WhoToSpawn.Punk:
                 if (noted)
@@ -154,10 +163,27 @@ public class NPCHandler : MonoBehaviour
                     _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/PUNKNPC_IDLE");
                     _animator.SetInteger(WhoAmI, 3);
                 }
+
                 break;
             case WhoToSpawn.Shopkeep:
-                _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/SHOPKEEP_IDLE");
-                _animator.SetInteger(WhoAmI, 4);
+                if (noted)
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/NPCTUT");
+                    _animator.enabled = false;
+                }
+                else
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/NPCTUT_idle");
+                    _animator.SetInteger(WhoAmI, 4);
+                }
+                dialogue1 = DialogueReference.Instance.ShopkeepIntro;
+                dialogue1Repeat = DialogueReference.Instance.ShopkeepIntroRepeat;
+                dialogue2 = DialogueReference.Instance.ShopkeepFloor1;
+                dialogue2Repeat = DialogueReference.Instance.ShopkeepFloor1Repeat;
+                dialogue3 = DialogueReference.Instance.ShopkeepFloor2;
+                dialogue3Repeat = DialogueReference.Instance.ShopkeepFloor2Repeat;
+                dialogue4 = DialogueReference.Instance.ShopkeepFloor3;
+                dialogue4Repeat = DialogueReference.Instance.ShopkeepFloor3Repeat;
                 break;
         }
         if (whoToSpawn != WhoToSpawn.Nobody)
@@ -170,7 +196,7 @@ public class NPCHandler : MonoBehaviour
     {
         switch (whoToSpawn)
         {
-            case WhoToSpawn.Specto or WhoToSpawn.RichardBullionIII or WhoToSpawn.Kid or WhoToSpawn.Punk:
+            case WhoToSpawn.Specto or WhoToSpawn.RichardBullionIII or WhoToSpawn.Kid or WhoToSpawn.Punk or WhoToSpawn.Shopkeep:
                 dialogue1 = dialogue1Repeat;
                 dialogue2 = dialogue2Repeat;
                 dialogue3 = dialogue3Repeat;

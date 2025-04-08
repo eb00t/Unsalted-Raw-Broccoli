@@ -37,6 +37,12 @@ public class DialogueReference : MonoBehaviour
     [field: SerializeField] public DialogueObjectHandler RichFloor1 { get; private set; }
     [field: SerializeField] public DialogueObjectHandler RichFloor2 { get; private set; }
     [field: SerializeField] public DialogueObjectHandler RichFloor3 { get; private set; }
+    
+    [field: Header("Shopkeep NPC")]
+    [field: SerializeField] public DialogueObjectHandler ShopkeepIntro { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler ShopkeepFloor1 { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler ShopkeepFloor2 { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler ShopkeepFloor3 { get; private set; }
 
     [field: Header("Repeat Dialogue")]
     [field: Header("Tutorial NPC")]
@@ -52,5 +58,11 @@ public class DialogueReference : MonoBehaviour
     [field: SerializeField] public DialogueObjectHandler RichFloor1Repeat { get; private set; }
     [field: SerializeField] public DialogueObjectHandler RichFloor2Repeat { get; private set; }
     [field: SerializeField] public DialogueObjectHandler RichFloor3Repeat { get; private set; }
+    
+    [field: Header("Shopkeep NPC")]
+    [field: SerializeField] public DialogueObjectHandler ShopkeepIntroRepeat { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler ShopkeepFloor1Repeat { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler ShopkeepFloor2Repeat { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler ShopkeepFloor3Repeat { get; private set; }
    
 }

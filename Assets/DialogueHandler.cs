@@ -136,10 +136,20 @@ public class DialogueHandler : MonoBehaviour
    IEnumerator TypeSentence()
    {
       _speakerText.text = loadedSpeakerText[index];
+      int letterCount = 2;
       foreach (char Character in loadedBodyText[index].ToCharArray())
       {
          _dialogueText.text += Character;
-         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DialogueScroll, transform.position);
+         if (_dialogueText.gameObject.activeSelf)
+         {
+            if (letterCount >= 2)
+            {
+               AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DialogueScroll, transform.position);
+               letterCount = 0;
+            }
+            letterCount++;
+         }
+
          yield return new WaitForSeconds(dialogueSpeed);
       }
    }
