@@ -6,6 +6,8 @@ using UnityEngine.Serialization;
 
 public class NPCHandler : MonoBehaviour
 {
+    private static readonly int WhoAmI = Animator.StringToHash("whoAmI"); //0 = Old Guy, 1 = Hurt Guy, 2 = Kid, 3 = Punk, 4 = Shopkeep
+
     public enum SpawnPointLogic
     {
         SetSpawn,
@@ -14,18 +16,24 @@ public class NPCHandler : MonoBehaviour
 
     public SpawnPointLogic spawnPointLogic;
 
-    public enum WhoToSpawn // IDK how many of these we're going to have...
+    public enum WhoToSpawn // TODO: GIVE THESE PEOPLE NAMES!
     {
         Nobody,
         Specto,
         DoctorStats,
+        RichardBullionIII,
+        Kid,
+        Punk,
+        Shopkeep,
     }
 
     public WhoToSpawn whoToSpawn;
     public bool spokenToAlready;
 
     private SpriteRenderer _spriteRenderer;
+    private Animator _animator;
     private dialogueControllerScript _dialogueController;
+    public bool noted;
 
     public DialogueObjectHandler
         dialogue1,
@@ -43,7 +51,12 @@ public class NPCHandler : MonoBehaviour
 
     void Start() //TODO: Get random spawn working
     {
+        if (dataHolder.highestFloorCleared == 3)
+        {
+            noted = true;
+        }
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        _animator = GetComponentInChildren<Animator>();
         _dialogueController = GetComponent<dialogueControllerScript>();
         SpawnNPC();
     }
@@ -75,6 +88,16 @@ public class NPCHandler : MonoBehaviour
                 gameObject.SetActive(false);
                 break;
             case WhoToSpawn.Specto:
+                if (noted)
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/HURTNPC_");
+                    _animator.enabled = false;
+                }
+                else
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/HURTNPC_IDLE");
+                    _animator.SetInteger(WhoAmI, 1);
+                }
                 dialogue1 = DialogueReference.Instance.TutorialIntro;
                 dialogue1Repeat = DialogueReference.Instance.TutorialIntroRepeat;
                 dialogue2 = DialogueReference.Instance.TutorialFloor1;
@@ -94,7 +117,48 @@ public class NPCHandler : MonoBehaviour
                 dialogue4 = DialogueReference.Instance.Stats;
                 dialogue4Repeat = DialogueReference.Instance.StatsRepeat;
                 break;
-                
+            case WhoToSpawn.RichardBullionIII:
+                if (noted)
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/OLDNPC_");
+                    _animator.enabled = false;
+                }
+                else
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/OLDNPC_IDLE");
+                    _animator.SetInteger(WhoAmI, 0);
+                }
+                dialogue1 = DialogueReference.Instance.RichIntro;
+                dialogue1Repeat = DialogueReference.Instance.RichIntroRepeat;
+                break;
+            case WhoToSpawn.Kid:
+                if (noted)
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/KIDNPC_");
+                    _animator.enabled = false;
+                }
+                else
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/KIDNPC_IDLE");
+                    _animator.SetInteger(WhoAmI, 2);
+                }
+                break;
+            case WhoToSpawn.Punk:
+                if (noted)
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/PUNKNPC_");
+                    _animator.enabled = false;
+                }
+                else
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/PUNKNPC_IDLE");
+                    _animator.SetInteger(WhoAmI, 3);
+                }
+                break;
+            case WhoToSpawn.Shopkeep:
+                _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/SHOPKEEP_IDLE");
+                _animator.SetInteger(WhoAmI, 4);
+                break;
         }
         if (whoToSpawn != WhoToSpawn.Nobody)
         {
@@ -106,7 +170,7 @@ public class NPCHandler : MonoBehaviour
     {
         switch (whoToSpawn)
         {
-            case WhoToSpawn.Specto:
+            case WhoToSpawn.Specto or WhoToSpawn.RichardBullionIII or WhoToSpawn.Kid or WhoToSpawn.Punk:
                 dialogue1 = dialogue1Repeat;
                 dialogue2 = dialogue2Repeat;
                 dialogue3 = dialogue3Repeat;

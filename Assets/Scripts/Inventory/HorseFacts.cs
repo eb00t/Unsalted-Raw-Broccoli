@@ -9,7 +9,7 @@ public class HorseFacts : MonoBehaviour
 
      private List<String> _horseFacts = new List<string>()
      {
-          "This is a test string. So, if you see it, something isn't working properly.",
+          //"This is a test string. So, if you see it, something isn't working properly.",
           "When the horse loses his patience...The devil shivers.",
           "When a horse wants something, he must pursue it with all he has.",
           //"There is one rule, above all others, for being a horse. Whatever happens, face it on your hooves.",

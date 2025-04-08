@@ -21,6 +21,7 @@ public class LevelBuilder : MonoBehaviour
         Floor3,
         Intermission,
         Tutorial,
+        FinalBoss,
     }
 
     [field: Header("Configuration")] 

@@ -32,6 +32,11 @@ public class DialogueReference : MonoBehaviour
     [field: SerializeField] public DialogueObjectHandler Stats { get; private set; }
     //[field: SerializeField] public DialogueObjectHandler Floor1Intro {get; private set;}
     //[field: SerializeField] public DialogueObjectHandler Floor1Intro {get; private set;}
+    [field: Header("Rich NPC")]
+    [field: SerializeField] public DialogueObjectHandler RichIntro { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler RichFloor1 { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler RichFloor2 { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler RichFloor3 { get; private set; }
 
     [field: Header("Repeat Dialogue")]
     [field: Header("Tutorial NPC")]
@@ -41,5 +46,11 @@ public class DialogueReference : MonoBehaviour
     [field: SerializeField] public DialogueObjectHandler TutorialFloor3Repeat { get; private set; }
     [field: Header("Stats NPC")]
     [field: SerializeField] public DialogueObjectHandler StatsRepeat { get; private set; }
+    
+    [field: Header("Rich NPC")]
+    [field: SerializeField] public DialogueObjectHandler RichIntroRepeat { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler RichFloor1Repeat { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler RichFloor2Repeat { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler RichFloor3Repeat { get; private set; }
    
 }

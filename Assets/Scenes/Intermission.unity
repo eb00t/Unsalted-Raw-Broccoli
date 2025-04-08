@@ -249,6 +249,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: -3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.12
       objectReference: {fileID: 0}
@@ -260,7 +265,7 @@ PrefabInstance:
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
@@ -315,6 +320,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Spawn Point (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4393853654112135132, guid: 4ae362e51e18a58449b3cd4899338f5a,
+        type: 3}
+      propertyPath: whoToSpawn
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -328,7 +338,7 @@ PrefabInstance:
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
@@ -2111,7 +2121,7 @@ PrefabInstance:
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
@@ -2252,11 +2262,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27e233e3a5da7c9489c36e49a91e3be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLore: 0
   replayable: 0
   dialogueToLoad: {fileID: 0}
+  loreToLoad: {fileID: 0}
   range: 0
   dialogueID: 0
+  dialogueOrLore: 0
   _index: 0
   dialogueSpeed: 0
   yesText: {fileID: 0}
@@ -4019,7 +4030,7 @@ PrefabInstance:
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
@@ -5562,10 +5573,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Spawn Point (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 4393853654112135132, guid: 4ae362e51e18a58449b3cd4899338f5a,
+        type: 3}
+      propertyPath: whoToSpawn
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: -3.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.53
+      value: -8.95
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
@@ -5575,7 +5596,7 @@ PrefabInstance:
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
@@ -6137,6 +6158,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlayerCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8798094483815997758, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7574,6 +7600,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC Spawn Point (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 4393853654112135132, guid: 4ae362e51e18a58449b3cd4899338f5a,
+        type: 3}
+      propertyPath: whoToSpawn
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: -3.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7587,7 +7623,7 @@ PrefabInstance:
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
@@ -8387,7 +8423,7 @@ PrefabInstance:
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
@@ -8727,7 +8763,7 @@ PrefabInstance:
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
@@ -17018,7 +17054,7 @@ PrefabInstance:
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4488074388534331324, guid: 4ae362e51e18a58449b3cd4899338f5a,
         type: 3}
@@ -17054,6 +17090,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7629218153183295817, guid: 4ae362e51e18a58449b3cd4899338f5a,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
