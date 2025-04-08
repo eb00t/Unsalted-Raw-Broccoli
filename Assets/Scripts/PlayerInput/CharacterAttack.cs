@@ -57,7 +57,8 @@ public class CharacterAttack : MonoBehaviour
     public GameObject hitFlash;
     private EventInstance _enemyDamageEvent;
     private SettingManager _settingManager;
-
+    private int _jumpAttackCount;
+    
     [Header("Knockback Types")]
     public Vector2 knockbackPowerLight = new Vector2(10f, 1f);
     public Vector2 knockbackPowerMedium = new Vector2(0f, 0f);
@@ -89,7 +90,11 @@ public class CharacterAttack : MonoBehaviour
     public void LightAttack(InputAction.CallbackContext ctx)
     {
         if (isDead) return;
-        if (ctx.performed && _playerAnimator.GetBool("Grounded"))
+        if (!ctx.performed) return;
+
+        var grounded = _characterMovement.grounded;
+            
+        if (grounded)
         {
             _playerAnimator.SetBool("HeavyAttack", false);
             _playerAnimator.SetBool("HeavyAttack1", false);
@@ -107,13 +112,10 @@ public class CharacterAttack : MonoBehaviour
 
             if (lightCombo[0])
             {
-                
-
                 if (timer <= maxInputDelay && timer > 0f)
                 {
                     Debug.Log("LightPunch");
                     _playerAnimator.SetBool("LightPunch", true);
-                    
                     lightCombo[1] = true;
                 }
             }
@@ -135,17 +137,18 @@ public class CharacterAttack : MonoBehaviour
             lightCombo[0] = true;
             if (lightCombo[2])
             {
-
-                
                 timer1 = 0f; lightCombo[1] = false;
                 timer = 0f; lightCombo[0] = false;
-
-                
                 lightCombo[2] = false;
             }
         }
+        else if (_jumpAttackCount == 0)
+        {
+            gameObject.layer = 15;
+            _playerAnimator.SetTrigger("jumpAttack");
+            _jumpAttackCount++;
+        }
     }
-
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
     {
@@ -403,6 +406,15 @@ public class CharacterAttack : MonoBehaviour
     private void Update()
     {
         if (isDead) return;
+
+        if (_jumpAttackCount > 0)
+        {
+            if (_characterMovement.grounded)
+            {
+                _jumpAttackCount = 0;
+            }
+        }
+
         if (currentEnergy < maxEnergy)
         {
             _rechargeTime -= Time.deltaTime * rechargeSpeed;
