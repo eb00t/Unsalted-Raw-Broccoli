@@ -93,7 +93,7 @@ public class NextLevelTrigger : MonoBehaviour
                 }
                 else
                 {
-                    //WipeData();
+                    WipeData();
                     scene = "MainScene";
                 }
                 break;

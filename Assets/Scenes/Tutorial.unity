@@ -1133,11 +1133,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27e233e3a5da7c9489c36e49a91e3be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLore: 0
   replayable: 0
   dialogueToLoad: {fileID: 0}
+  loreToLoad: {fileID: 0}
   range: 0
   dialogueID: 0
+  dialogueOrLore: 0
   _index: 0
   dialogueSpeed: 0
   yesText: {fileID: 0}
@@ -1584,6 +1585,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4309984013583806159, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: nextLevelTrigger
+      value: 
+      objectReference: {fileID: 1585847870}
     - target: {fileID: 4309984013583806159, guid: 82d96a92435624859a85308310350400,
         type: 3}
       propertyPath: characterMovement
@@ -5567,6 +5573,12 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1585847870 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4127694318184230780, guid: 8dc06597007a2264999f6f726cd48824,
+    type: 3}
+  m_PrefabInstance: {fileID: 1475784668}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1622216222 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8159540483748931070, guid: 0e60639cc3f11644b8bcdf57bf321cca,
@@ -5845,7 +5857,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1690348357
 Transform:
   m_ObjectHideFlags: 0
@@ -6938,7 +6950,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1947770260}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6496928459d4ed49bbba6bb5647b4a3, type: 3}
   m_Name: 
