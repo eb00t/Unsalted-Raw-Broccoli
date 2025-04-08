@@ -177,6 +177,7 @@ public class CharacterMovement : MonoBehaviour
         _characterAttack.isInvulnerable = true;
         yield return new WaitForSeconds(0.2f);
         _characterAttack.isInvulnerable = false;
+        rb.velocity = Vector3.zero;
         _isDashing = false;
         PlayerAnimator.SetBool("Dash", false);
     }
