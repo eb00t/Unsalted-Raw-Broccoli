@@ -129,7 +129,6 @@ public class NPCHandler : MonoBehaviour
                     _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/OLDNPC_IDLE");
                     _animator.SetInteger(WhoAmI, 0);
                 }
-
                 dialogue1 = DialogueReference.Instance.RichIntro;
                 dialogue1Repeat = DialogueReference.Instance.RichIntroRepeat;
                 dialogue2 = DialogueReference.Instance.RichFloor1;
@@ -150,7 +149,15 @@ public class NPCHandler : MonoBehaviour
                     _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/KIDNPC_IDLE");
                     _animator.SetInteger(WhoAmI, 2);
                 }
-
+                dialogue1 = DialogueReference.Instance.KidIntro;
+                dialogue1Repeat = DialogueReference.Instance.KidIntroRepeat;
+                dialogue2 = DialogueReference.Instance.KidFloor1;
+                dialogue2Repeat = DialogueReference.Instance.KidFloor1Repeat;
+                dialogue3 = DialogueReference.Instance.KidFloor2;
+                dialogue3Repeat = DialogueReference.Instance.KidFloor2Repeat;
+                dialogue4 = DialogueReference.Instance.KidFloor3;
+                dialogue4Repeat = DialogueReference.Instance.KidFloor3Repeat;
+                
                 break;
             case WhoToSpawn.Punk:
                 if (noted)
@@ -163,7 +170,14 @@ public class NPCHandler : MonoBehaviour
                     _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/PUNKNPC_IDLE");
                     _animator.SetInteger(WhoAmI, 3);
                 }
-
+                dialogue1 = DialogueReference.Instance.PunkIntro;
+                dialogue1Repeat = DialogueReference.Instance.PunkIntroRepeat;
+                dialogue2 = DialogueReference.Instance.PunkFloor1;
+                dialogue2Repeat = DialogueReference.Instance.PunkFloor1Repeat;
+                dialogue3 = DialogueReference.Instance.PunkFloor2;
+                dialogue3Repeat = DialogueReference.Instance.PunkFloor2Repeat;
+                dialogue4 = DialogueReference.Instance.PunkFloor3;
+                dialogue4Repeat = DialogueReference.Instance.PunkFloor3Repeat;
                 break;
             case WhoToSpawn.Shopkeep:
                 if (noted)

@@ -38,6 +38,18 @@ public class DialogueReference : MonoBehaviour
     [field: SerializeField] public DialogueObjectHandler RichFloor2 { get; private set; }
     [field: SerializeField] public DialogueObjectHandler RichFloor3 { get; private set; }
     
+    [field: Header("Kid NPC")]
+    [field: SerializeField] public DialogueObjectHandler KidIntro { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler KidFloor1  { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler KidFloor2  { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler KidFloor3  { get; private set; }
+    
+    [field: Header("Punk NPC")]
+    [field: SerializeField] public DialogueObjectHandler PunkIntro { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler PunkFloor1 { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler PunkFloor2 { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler PunkFloor3 { get; private set; }
+    
     [field: Header("Shopkeep NPC")]
     [field: SerializeField] public DialogueObjectHandler ShopkeepIntro { get; private set; }
     [field: SerializeField] public DialogueObjectHandler ShopkeepFloor1 { get; private set; }
@@ -58,6 +70,18 @@ public class DialogueReference : MonoBehaviour
     [field: SerializeField] public DialogueObjectHandler RichFloor1Repeat { get; private set; }
     [field: SerializeField] public DialogueObjectHandler RichFloor2Repeat { get; private set; }
     [field: SerializeField] public DialogueObjectHandler RichFloor3Repeat { get; private set; }
+    
+    [field: Header("Kid NPC")]
+    [field: SerializeField] public DialogueObjectHandler KidIntroRepeat  { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler KidFloor1Repeat  { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler KidFloor2Repeat  { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler KidFloor3Repeat  { get; private set; }
+    
+    [field: Header("Punk NPC")]
+    [field: SerializeField] public DialogueObjectHandler PunkIntroRepeat { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler PunkFloor1Repeat { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler PunkFloor2Repeat { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler PunkFloor3Repeat { get; private set; }
     
     [field: Header("Shopkeep NPC")]
     [field: SerializeField] public DialogueObjectHandler ShopkeepIntroRepeat { get; private set; }
