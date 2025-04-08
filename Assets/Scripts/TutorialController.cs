@@ -18,6 +18,7 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private GameObject enemy;
     [SerializeField] private float rangeToEnemy;
     [SerializeField] private DataHolder dataHolder;
+    [SerializeField] private GameObject pauseMenu;
 
     public enum TutorialStep
     {
@@ -30,9 +31,7 @@ public class TutorialController : MonoBehaviour
         UseItem,
         PauseGame,
         ExitUI,
-        OpenInventory,
         FindEnemy,
-        LockOn,
         LightAttack,
         HeavyAttack,
         DefeatEnemy,
@@ -94,13 +93,11 @@ public class TutorialController : MonoBehaviour
 
     public void EnemyDefeated()
     {
-        if (_currentStep != TutorialStep.DefeatEnemy && _currentStep != TutorialStep.LightAttack &&
-            _currentStep != TutorialStep.HeavyAttack && _currentStep != TutorialStep.LockOn) return;
-        
         arrowToEnd1.SetActive(true);
         arrowToEnd2.SetActive(true);
         doorToEnd1.OpenDoor();
         doorToEnd2.OpenDoor();
+        _currentStep = TutorialStep.DefeatEnemy;
         AdvanceStep();
     }
 
@@ -136,14 +133,8 @@ public class TutorialController : MonoBehaviour
             case TutorialStep.ExitUI:
                 ShowMessage("Exit the pause menu by pressing", ControlsManager.ButtonType.ButtonEast);
                 break;
-            case TutorialStep.OpenInventory:
-                ShowMessage("Quickly open the inventory by pressing", ControlsManager.ButtonType.DpadSouth);
-                break;
             case TutorialStep.FindEnemy:
                 ShowMessage("Find an enemy by exploring the rooms", ControlsManager.ButtonType.LThumbstick);
-                break;
-            case TutorialStep.LockOn:
-                ShowMessage("Lock onto an enemy by pressing", ControlsManager.ButtonType.RThumbstickDown);
                 break;
             case TutorialStep.LightAttack:
                 ShowMessage("Perform a light attack", ControlsManager.ButtonType.ButtonWest);
@@ -278,29 +269,8 @@ public class TutorialController : MonoBehaviour
     public void GoBack(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        if (_currentStep == TutorialStep.ExitUI)
+        if (_currentStep == TutorialStep.ExitUI && !pauseMenu.activeSelf)
         {
-            AdvanceStep();
-        }
-    }
-
-    public void InventoryOpened(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        var dir = context.ReadValue<Vector2>();
-        
-        if (_currentStep == TutorialStep.OpenInventory)
-        {
-            switch (dir.x, dir.y)
-            {
-                case (0, -1): // down
-                    break;
-                default:
-                    return;
-            }
-            
-            AdvanceStep();
-            
             arrowItem2Back.SetActive(true);
             arrowUp.SetActive(true);
             arrowToEnemy.SetActive(true);
@@ -308,15 +278,6 @@ public class TutorialController : MonoBehaviour
             doorUp2.OpenDoor();
             doorUpRight.OpenDoor();
             doorUpRight1.OpenDoor();
-        }
-    }
-
-    public void TryLockOn(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        
-        if (_currentStep == TutorialStep.LockOn)
-        {
             AdvanceStep();
         }
     }
