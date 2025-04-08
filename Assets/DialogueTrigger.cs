@@ -11,6 +11,7 @@ public class DialogueTrigger : MonoBehaviour
     public bool triggered, reusable;
     private GameObject _player;
     public bool hasDialogueOpened;
+    public DataHolder dataHolder;
 
     private void Start()
     {
@@ -19,6 +20,10 @@ public class DialogueTrigger : MonoBehaviour
         //{
         //    gameObject.SetActive(false);
         //}
+        if (dataHolder.highestFloorCleared > 0 && LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.Intermission)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -53,5 +58,14 @@ public class DialogueTrigger : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+
+        if (menuHandler.dialogueController.GetComponent<NPCHandler>())
+        {
+            if (menuHandler.dialogueController.GetComponent<NPCHandler>().spokenToAlready)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+        
     }
 }

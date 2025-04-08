@@ -725,7 +725,7 @@ public class LevelBuilder : MonoBehaviour
               spawnPoints.Remove(room.transform);
           }
           roomRandomNumber = -1;
-          firstBossRoomSpawnPoints = new List<Transform>(spawnPoints);
+          firstBossRoomSpawnPoints = new List<Transform>(lootRoomSpawnPoints);
           secondBossRoomSpawnPoints = new List<Transform>();
           thirdBossRoomSpawnPoints = new List<Transform>();
           _numberOfRoomsToSpawn = possibleBossRooms.Count;

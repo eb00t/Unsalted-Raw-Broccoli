@@ -177,7 +177,7 @@ public class RoomInfo : MonoBehaviour
             switch (LevelBuilder.Instance.roomRandomNumber)
             {
                 case -1:
-                    LevelBuilder.Instance.firstBossRoomSpawnPoints = new List<Transform>(LevelBuilder.Instance.spawnPoints);
+                    LevelBuilder.Instance.firstBossRoomSpawnPoints = new List<Transform>(LevelBuilder.Instance.lootRoomSpawnPoints);
                     LevelBuilder.Instance.secondBossRoomSpawnPoints.Clear();
                     break;
                 case 0:
@@ -204,6 +204,7 @@ public class RoomInfo : MonoBehaviour
         foreach (var door in doorSpawnPoints)
         {
             LevelBuilder.Instance.spawnPoints.Remove(door.transform); 
+            LevelBuilder.Instance.lootRoomSpawnPoints.Remove(door.transform);
         }
         doorSpawnPoints.Clear();
         CameraManager.Instance.virtualCameras.Remove(roomCam.GetComponent<CinemachineVirtualCamera>());
