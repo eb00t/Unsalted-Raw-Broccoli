@@ -31,7 +31,7 @@ public class MenuHandler : MonoBehaviour
 
 	public GameObject shopGUI, nextLevelTrigger;
 	[SerializeField] private DataHolder dataHolder;
-	[NonSerialized] public ReadLore nearestLore;
+	public ReadLore nearestLore;
 	[NonSerialized] public dialogueControllerScript dialogueController;
 	private bool _distanceBasedDialogue;
 
@@ -274,7 +274,7 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (!context.performed) return;
 		
-		if (_itemPickupHandler.isPlrNearLore)
+		if (_itemPickupHandler.isPlrNearLore && nearestLore.gameObject.activeSelf)
 		{
 			dialogueGUI.SetActive(true);
 			dialogueController.LoadLore(nearestLore.whatLore);
