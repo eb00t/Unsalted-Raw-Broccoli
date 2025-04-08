@@ -48,7 +48,7 @@ public class NextLevelTrigger : MonoBehaviour
                 if (dist <= range)
                 {
                     _itemPickupHandler.isPlrNearEnd = true;
-                    _itemPickupHandler.TogglePrompt("Continue ahead?", true, ControlsManager.ButtonType.ButtonEast);
+                    _itemPickupHandler.TogglePrompt("Continue ahead?", true, ControlsManager.ButtonType.ButtonEast, null);
                     _menuHandler.nearestLevelTrigger = this;
                 }
                 else if (dist > range)

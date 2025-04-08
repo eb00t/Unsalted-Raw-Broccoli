@@ -93,11 +93,11 @@ public class dialogueControllerScript : MonoBehaviour
             
             if (_dialogueCanvas.activeSelf)
             {
-                _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ButtonSouth);
+                _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ButtonSouth, null);
             }
             else
             {
-                _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.ButtonEast);
+                _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.ButtonEast, null);
                 _menuHandler.dialogueController = this;
             }
         }

@@ -13,7 +13,7 @@ public class ItemPickupHandler : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private RectTransform rectTransform;
     [SerializeField] private TextMeshProUGUI text;
-    [SerializeField] private UpdateButton updateButton;
+    [SerializeField] private UpdateButton updateButton1, updateButton2;
 
     [Header("Item Handling")] 
     public int itemCount;
@@ -48,13 +48,13 @@ public class ItemPickupHandler : MonoBehaviour
         switch (itemCount)
         {
             case 0:
-                TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
+                TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast, null);
                 break;
             case 1:
-                TogglePrompt("Pick up item", true, ControlsManager.ButtonType.ButtonEast);
+                TogglePrompt("Pick up item", true, ControlsManager.ButtonType.ButtonEast, null);
                 break;
             default:
-                TogglePrompt("Pick up items", true, ControlsManager.ButtonType.ButtonEast);
+                TogglePrompt("Pick up items", true, ControlsManager.ButtonType.ButtonEast, null);
                 break;
         }
     }
@@ -72,13 +72,23 @@ public class ItemPickupHandler : MonoBehaviour
         }
     }
 
-    public void TogglePrompt(string promptText, bool toggle, ControlsManager.ButtonType button)
+    public void TogglePrompt(string promptText, bool toggle, ControlsManager.ButtonType button, ControlsManager.ButtonType? button2)
     {
         if (toggle)
         {
             rectTransform.anchoredPosition = new Vector3(0, 100, 0);
             text.text = promptText;
-            updateButton.button = button;
+            updateButton1.button = button;
+
+            if (button2.HasValue)
+            {
+                updateButton2.button = button2.Value;
+                updateButton2.gameObject.SetActive(true);
+            }
+            else
+            {
+                updateButton2.gameObject.SetActive(false);
+            }
         }
         else
         {

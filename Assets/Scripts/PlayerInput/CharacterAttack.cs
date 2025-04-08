@@ -57,7 +57,7 @@ public class CharacterAttack : MonoBehaviour
     public GameObject hitFlash;
     private EventInstance _enemyDamageEvent;
     private SettingManager _settingManager;
-    private int _jumpAttackCount;
+    public int _jumpAttackCount;
     
     [Header("Knockback Types")]
     public Vector2 knockbackPowerLight = new Vector2(10f, 1f);

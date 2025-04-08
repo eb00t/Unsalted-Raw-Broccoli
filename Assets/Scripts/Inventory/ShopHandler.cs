@@ -46,7 +46,7 @@ public class ShopHandler : MonoBehaviour
 			if (dist <= range)
 			{
 				_itemPickupHandler.isPlrNearShop = true;
-				_itemPickupHandler.TogglePrompt("Toggle shop", true, ControlsManager.ButtonType.ButtonEast);
+				_itemPickupHandler.TogglePrompt("Toggle shop", true, ControlsManager.ButtonType.ButtonEast, null);
 			}
 			else if (dist > range)
 			{

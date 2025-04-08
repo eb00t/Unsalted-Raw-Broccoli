@@ -34,12 +34,15 @@ public class TutorialController : MonoBehaviour
         FindEnemy,
         LightAttack,
         HeavyAttack,
+        JumpAttack,
         DefeatEnemy,
         Complete
     }
 
     [SerializeField] private TutorialStep _currentStep = TutorialStep.Move;
     private int _itemsFound;
+    private CharacterMovement _characterMovement;
+    private CharacterAttack _characterAttack;
 
     private void Start()
     {
@@ -53,6 +56,8 @@ public class TutorialController : MonoBehaviour
 
         _player = gameObject;
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+        _characterMovement = _player.GetComponent<CharacterMovement>();
+        _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
         ShowPrompt();
     }
     
@@ -69,13 +74,21 @@ public class TutorialController : MonoBehaviour
 
         if (_currentStep == TutorialStep.DoubleJump)
         {
-            if (_player.GetComponent<CharacterMovement>().doubleJumpPerformed)
+            if (_characterMovement.doubleJumpPerformed)
             {
                 AdvanceStep();
                 highLight1.SetActive(true);
                 hightLight2.SetActive(true);
                 hightLight3.SetActive(true);
                 hightLight4.SetActive(true);
+            }
+        }
+
+        if (_currentStep == TutorialStep.JumpAttack)
+        {
+            if (_characterAttack._jumpAttackCount > 0)
+            {
+                AdvanceStep();
             }
         }
     }
@@ -107,55 +120,58 @@ public class TutorialController : MonoBehaviour
         switch (_currentStep)
         {
             case TutorialStep.Move:
-                ShowMessage("Move left and right with", ControlsManager.ButtonType.LThumbstick);
+                ShowMessage("Move left and right with", ControlsManager.ButtonType.LThumbstick, null);
                 break;
             case TutorialStep.Jump:
-                ShowMessage("Jump by pressing", ControlsManager.ButtonType.ButtonSouth);
+                ShowMessage("Jump by pressing", ControlsManager.ButtonType.ButtonSouth, null);
                 break;
             case TutorialStep.DoubleJump:
-                ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.ButtonSouth);
+                ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.ButtonSouth, ControlsManager.ButtonType.ButtonSouth);
                 break;
             case TutorialStep.Crouch:
-                ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.LThumbstickDown);
+                ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.LThumbstickDown, null);
                 break;
             case TutorialStep.FindItems:
-                ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.ButtonEast);
+                ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.ButtonEast, null);
                 break;
             case TutorialStep.SwitchItem:
-                ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.DpadEast);
+                ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.DpadEast, null);
                 break;
             case TutorialStep.UseItem:
-                ShowMessage("Use an item by pressing", ControlsManager.ButtonType.DpadNorth);
+                ShowMessage("Use an item by pressing", ControlsManager.ButtonType.DpadNorth, null);
                 break;
             case TutorialStep.PauseGame:
-                ShowMessage("Pause the game by pressing", ControlsManager.ButtonType.Start);
+                ShowMessage("Pause the game by pressing", ControlsManager.ButtonType.Start, null);
                 break;
             case TutorialStep.ExitUI:
-                ShowMessage("Exit the pause menu by pressing", ControlsManager.ButtonType.ButtonEast);
+                ShowMessage("Exit the pause menu by pressing", ControlsManager.ButtonType.ButtonEast, null);
                 break;
             case TutorialStep.FindEnemy:
-                ShowMessage("Find an enemy by exploring the rooms", ControlsManager.ButtonType.LThumbstick);
+                ShowMessage("Find an enemy by exploring the rooms", ControlsManager.ButtonType.LThumbstick, null);
                 break;
             case TutorialStep.LightAttack:
-                ShowMessage("Perform a light attack", ControlsManager.ButtonType.ButtonWest);
+                ShowMessage("Perform a light attack", ControlsManager.ButtonType.ButtonWest, null);
                 break;
             case TutorialStep.HeavyAttack:
-                ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.ButtonNorth);
+                ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.ButtonNorth, null);
+                break;
+            case TutorialStep.JumpAttack:
+                ShowMessage("To perform a jump attack, jump and perform a light attack", ControlsManager.ButtonType.ButtonSouth, ControlsManager.ButtonType.ButtonWest);
                 break;
             case TutorialStep.DefeatEnemy:
-                ShowMessage("Defeat the enemy", ControlsManager.ButtonType.ButtonWest);
+                ShowMessage("Defeat the enemy", ControlsManager.ButtonType.ButtonWest, null);
                 break;
             case TutorialStep.Complete:
-                ShowMessage("Tutorial complete! You may now continue to the game", ControlsManager.ButtonType.LThumbstick);
+                ShowMessage("Tutorial complete! You may now continue to the game", ControlsManager.ButtonType.LThumbstick, null);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    private void ShowMessage(string message, ControlsManager.ButtonType button)
+    private void ShowMessage(string message, ControlsManager.ButtonType button, ControlsManager.ButtonType? button2)
     {
-        _itemPickupHandler.TogglePrompt(message, true, button);
+        _itemPickupHandler.TogglePrompt(message, true, button, button2);
     }
 
     public void OnItemPickedUp()
