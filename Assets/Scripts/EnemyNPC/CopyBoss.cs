@@ -114,7 +114,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         var distance = Vector3.Distance(transform.position, _player.position);
         var heightDiffAbove = _player.position.y - transform.position.y;
         var heightDiffBelow = transform.position.y - _player.position.y;
-        var playerDir =  Mathf.Abs(_player.position.x - transform.position.x);
+        _playerDir = _player.position - transform.position;
         
         if (IsGrounded())
         {
@@ -137,7 +137,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             _currentState = States.Frozen;
         }
-        else if (distance < attackRange && playerDir > 0)
+        else if (distance < attackRange && _playerDir.x > 0)
         {
             _currentState = States.Attack;
         }
@@ -154,6 +154,14 @@ public class CopyBoss : MonoBehaviour, IDamageable
             else
             {
                 _currentState = States.Chase;
+                if (Mathf.Abs(_rigidbody.velocity.x) > 0.1f)
+                {
+                    UpdateSpriteDirection(_rigidbody.velocity.x < 0);
+                }
+                else
+                {
+                    UpdateSpriteDirection(_playerDir.x < 0);
+                }
             }
         }
         else
@@ -171,6 +179,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
             case States.Attack:
                 if (!_isAttacking)
                 {
+                    UpdateSpriteDirection(_playerDir.x < 0);
                     StartCoroutine(Attack());
                 }
                 break;
@@ -189,27 +198,28 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         if (!_isKnockedBack)
         {
-            var velocity = _rigidbody.velocity;
-
-            _animator.SetFloat("XVelocity", Mathf.Abs(velocity.x));
-
-            var localScale = _spriteRenderer.transform.localScale;
-            var localScale2 = atkHitbox.localScale;
-
-            if (velocity.x > 0.1f)
-            {
-                localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
-                localScale2 = new Vector3(Mathf.Abs(localScale2.x), localScale2.y, localScale2.z);
-            }
-            else if (velocity.x < -0.1f)
-            {
-                localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
-                localScale2 = new Vector3(-Mathf.Abs(localScale2.x), localScale2.y, localScale2.z);
-            }
-
-            _spriteRenderer.transform.localScale = localScale;
-            atkHitbox.localScale = localScale2;
+            _animator.SetFloat("XVelocity", Mathf.Abs(_rigidbody.velocity.x));
         }
+    }
+    
+    private void UpdateSpriteDirection(bool isLeft)
+    {
+        var localScale = _spriteRenderer.transform.localScale;
+        var localScale2 = atkHitbox.localScale;
+        
+        if (!isLeft)
+        {
+            localScale = new Vector3(Mathf.Abs(localScale.x), localScale.y, localScale.z);
+            localScale2 = new Vector3(Mathf.Abs(localScale2.x), localScale2.y, localScale2.z);
+        }
+        else
+        {
+            localScale = new Vector3(-Mathf.Abs(localScale.x), localScale.y, localScale.z);
+            localScale2 = new Vector3(-Mathf.Abs(localScale2.x), localScale2.y, localScale2.z);
+        }
+        
+        _spriteRenderer.transform.localScale = localScale;
+        atkHitbox.localScale = localScale2;
     }
     
     private bool IsPlayerInRoom()
@@ -472,14 +482,14 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         _knockbackDir = transform.position.x > _player.position.x ? 1 : -1;
         
-        var knockbackMultiplier = (_poiseBuildup >= poise) ? 10f : 5f; 
+        var knockbackMultiplier = (_poiseBuildup >= poise) ? 3 : 1.5f; 
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
-        StartCoroutine(TriggerKnockback(knockbackForce, 0.5f));
+        //StartCoroutine(TriggerKnockback(knockbackForce, 0.5f));
 
         if (_poiseBuildup >= poise)
         {
-            StartCoroutine(StunTimer(1.5f));
+            StartCoroutine(StunTimer(.5f));
             _poiseBuildup = 0;
         }
     }
