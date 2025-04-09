@@ -377,6 +377,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         }
 
         defense = 0;
+        yield return new WaitForSeconds(attackCooldown);
         _isAttacking = false;
     }
 
@@ -434,16 +435,18 @@ public class CopyBoss : MonoBehaviour, IDamageable
         
         _health -= damage;
         healthSlider.value = _health;
+        
+        if (_health <= 0)
+        {
+            Die();
+            return;
+        }
+        
         //StartCoroutine(HitFlash(Color.cyan, 0.1f));
         
         if (_health <= maxHealth / 2)
         {
             AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
-        }
-        
-        if (_health <= 0)
-        {
-            Die();
         }
         
         if (poiseDmg.HasValue)
@@ -483,13 +486,13 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         _knockbackDir = transform.position.x > _player.position.x ? 1 : -1;
         
-        var knockbackMultiplier = (_poiseBuildup >= poise) ? 2 : 1; 
+        var knockbackMultiplier = (_poiseBuildup >= poise) ? 4 : 2; 
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
         if (!_isAttacking)
         {
             StartCoroutine(TriggerKnockback(knockbackForce, 0.1f));
-            StartCoroutine(StunTimer(0.1f));
+            StartCoroutine(StunTimer(0.02f));
         }
 
         if (_poiseBuildup >= poise)
@@ -526,7 +529,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         isDead = true; 
         LevelBuilder.Instance.bossDead = true;
-        _animator.SetTrigger("isDead");
+        _animator.SetBool("isDead", true);
         StopAllCoroutines();
         int currencyToDrop = 0;
         switch (_tookDamage)

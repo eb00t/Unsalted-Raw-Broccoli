@@ -550,7 +550,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         StopAlarmSound();
         gameObject.SetActive(false);
-
     }
 
     public void PlayAlarmSound()
@@ -605,12 +604,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                     defense = 0;
                 }
 
-                StartCoroutine(StunTimer(.1f));
+                StartCoroutine(StunTimer(.05f));
             }
         }
         else
         {
-            StartCoroutine(StunTimer(.1f));
+            StartCoroutine(StunTimer(.05f));
         }
 
         if (_poiseBuildup < poise) return;

@@ -102,7 +102,7 @@ public class CharacterAttack : MonoBehaviour
         {
             _playerAnimator.SetBool("HeavyAttack", false);
             _playerAnimator.SetBool("HeavyAttack1", false);
-            _playerAnimator.SetBool("HeavyAttack2", false);
+            _playerAnimator.SetBool("MediumAttack", false);
             gameObject.layer = 13;
 
             animEnd = false;
@@ -201,7 +201,7 @@ public class CharacterAttack : MonoBehaviour
             animEnd = false;
 
             // Start of chain
-            if (!heavyCombo[0] && !_playerAnimator.GetBool("HeavyAttack2"))
+            if (!heavyCombo[0] && !_playerAnimator.GetBool("HeavyAttack1"))
             {
                 if (currentEnergy >= mediumEnergyCost1)
                 {

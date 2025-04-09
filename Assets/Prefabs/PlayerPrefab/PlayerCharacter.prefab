@@ -121,10 +121,10 @@ MonoBehaviour:
   heavyCombo: 00000000
   maxInputDelay: 0.75
   animEnd: 0
-  heavyEnergyCost1: 5
-  heavyEnergyCost2: 5
-  heavyEnergyCost3: 5
-  rechargeSpeed: 1
+  mediumEnergyCost1: 7
+  mediumEnergyCost2: 11
+  heavyEnergyCost: 15
+  rechargeSpeed: 3
   currentHealth: 250
   maxHealth: 250
   maxEnergy: 40
@@ -147,9 +147,11 @@ MonoBehaviour:
   energySlider: {fileID: 0}
   diedScreen: {fileID: 0}
   hitFlash: {fileID: 0}
+  _jumpAttackCount: 0
   knockbackPowerLight: {x: 0.5, y: 0.1}
   knockbackPowerMedium: {x: 1.5, y: 0.5}
   knockbackPowerHeavy: {x: 3, y: 1}
+  jumpAttackDrag: 15
 --- !u!64 &1452148484142589420
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -489,6 +491,7 @@ MonoBehaviour:
   isCrouching: 0
   Velocity: {x: 0, y: 0, z: 0}
   dashBreak: 1
+  isJumpAttacking: 0
 --- !u!65 &7947488834224069209
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -547,7 +550,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 0}
   text: {fileID: 0}
-  updateButton: {fileID: 0}
+  updateButton1: {fileID: 0}
+  updateButton2: {fileID: 0}
   itemCount: 0
   isPlrNearShop: 0
   isPlrNearEnd: 0
