@@ -1,6 +1,8 @@
+using System;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class InventoryStore : MonoBehaviour
@@ -8,12 +10,14 @@ public class InventoryStore : MonoBehaviour
     [SerializeField] private Transform block;
     [SerializeField] private GameObject notifPrefab;
     [SerializeField] private GameObject notifHolder;
+    [SerializeField] private TextMeshProUGUI infoTxt, numHeldTxt, infoTitle;
     public Transform grid;
     private ToolbarHandler _toolbarHandler;
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private ItemDatabase itemDatabase;
     private MenuHandler _menuHandler;
     [SerializeField] private Color notifPositiveColor, notifNegativeColor, iconPositiveColor, iconNegativeColor;
+    private GameObject _lastSelected;
 
     private void Start()
     {
@@ -21,6 +25,27 @@ public class InventoryStore : MonoBehaviour
         _menuHandler = GetComponent<MenuHandler>();
         LoadItems();
         RefreshList();
+    }
+
+    private void Update()
+    {
+        if (EventSystem.current.currentSelectedGameObject == _lastSelected) return;
+        _lastSelected = EventSystem.current.currentSelectedGameObject;
+        UpdateInfo();
+    }
+
+    private void UpdateInfo()
+    {
+        if (EventSystem.current.currentSelectedGameObject == null) return;
+        
+        var indexHolder = EventSystem.current.currentSelectedGameObject.GetComponentInChildren<IndexHolder>();
+
+        if (indexHolder == null || indexHolder.consumable == null) return;
+        
+        infoTxt.text = indexHolder.consumable.description;
+        infoTitle.text = indexHolder.consumable.title;
+        numHeldTxt.text = indexHolder.numHeld.ToString();
+        //infoImg.sprite = indexHolder.consumable.uiIcon;
     }
 
     private void LoadItems()
