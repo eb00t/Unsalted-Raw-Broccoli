@@ -13,6 +13,7 @@ public class ConnectorRoomInfo : MonoBehaviour
     public string spawnedOnSide;
     public float connectorLength;
     public float connectorHeight; // The smaller side (should typically be the same for each connector)
+    public List<Light> allLights = new List<Light>();
     public bool markedForDiscard;
 
     private void Awake()
@@ -30,6 +31,11 @@ public class ConnectorRoomInfo : MonoBehaviour
                 spawnWalls.Add(wallT.transform);
                 break;
         }
+
+        foreach (var lit in GetComponentsInChildren<Light>())
+        {
+            allLights.Add(lit.GetComponent<Light>());
+        }
     }
 
     void Start()
@@ -41,5 +47,34 @@ public class ConnectorRoomInfo : MonoBehaviour
     {
         LevelBuilder.Instance.spawnedConnectors.Remove(gameObject);
     }
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        foreach (var lit in LevelBuilder.Instance.spawnedConnectors)
+        {
+            foreach (var lit2 in lit.GetComponent<ConnectorRoomInfo>().allLights)
+            {
+                lit2.GetComponent<Light>().enabled = false;
+            }
+        }
+        foreach (var lit in allLights)
+        {
+            lit.GetComponent<Light>().enabled = true;
+        }
+        foreach (var lit in LevelBuilder.Instance.spawnedRooms)
+        {
+            foreach (var lit2 in lit.GetComponent<RoomInfo>().allLights)
+            {
+                lit2.GetComponent<Light>().enabled = false;
+            }
+        }
+        foreach (var lit in attachedRooms)
+        {
+            foreach (var lit2 in lit.GetComponent<RoomInfo>().allLights)
+            {
+                lit2.GetComponent<Light>().enabled = true;
+            }
+        }
+        
+    }
 }

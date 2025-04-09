@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -44,6 +45,7 @@ public class RoomInfo : MonoBehaviour
     public bool canBeDiscarded = true;
     public string roomPath;
     private GameObject _playerRenderer;
+    public List<Light> allLights;
     void Awake()
     {
         if (doorT == null)
@@ -90,6 +92,10 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
+        foreach (var lit in gameObject.GetComponentsInChildren<Light>())
+        {
+            allLights.Add(lit.GetComponent<Light>());
+        }
         _playerRenderer = GameObject.FindGameObjectWithTag("Player").transform.Find("Renderer").gameObject;
         if (bigRoom)
         {
@@ -234,5 +240,4 @@ public class RoomInfo : MonoBehaviour
         }
         
     }
-
 }
