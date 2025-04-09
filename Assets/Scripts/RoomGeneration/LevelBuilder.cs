@@ -22,6 +22,7 @@ public class LevelBuilder : MonoBehaviour
         Intermission,
         Tutorial,
         FinalBoss,
+        TitleScreen,
     }
 
     [field: Header("Configuration")] 
@@ -103,7 +104,7 @@ public class LevelBuilder : MonoBehaviour
         }
 
         Instance = this;
-        if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission")
+        if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission" && SceneManager.GetActiveScene().name != "StartScreen")
         {
             currentFloor = dataHolder.currentLevel;
         }
@@ -161,7 +162,7 @@ public class LevelBuilder : MonoBehaviour
 
     IEnumerator DelayStart()
     {
-        if (currentFloor is not (LevelMode.Intermission or LevelMode.Tutorial))
+        if (currentFloor is not (LevelMode.Intermission or LevelMode.Tutorial or LevelMode.TitleScreen))
         {
             yield return new WaitForSecondsRealtime(.5f);
             roomsRemaining = _numberOfRoomsToSpawn;

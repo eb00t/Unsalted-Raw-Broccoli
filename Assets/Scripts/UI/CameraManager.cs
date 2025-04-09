@@ -32,9 +32,13 @@ public class CameraManager : MonoBehaviour
 
     void Start()
     {
-        playerCam = GameObject.FindWithTag("PlayerCam").GetComponent<CinemachineVirtualCamera>();
+        if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.TitleScreen)
+        {
+            playerCam = GameObject.FindWithTag("PlayerCam").GetComponent<CinemachineVirtualCamera>();
+        }
+       
         if (LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission
-            or LevelBuilder.LevelMode.Tutorial)) // Set these up manually in the aforementioned scenes
+            or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen)) // Set these up manually in the aforementioned scenes
         {
             virtualCameras = new List<CinemachineVirtualCamera> { playerCam };
         }

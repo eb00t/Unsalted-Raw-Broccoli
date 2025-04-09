@@ -25,7 +25,7 @@ public class BlackoutManager : MonoBehaviour
     
     private void Start()
     {
-        _failSafeTimer = LevelBuilder.Instance.howManyRoomsToSpawn + 6;
+        _failSafeTimer = LevelBuilder.Instance.howManyRoomsToSpawn + 3;
     }
 
     private enum LerpDirection
@@ -81,12 +81,12 @@ public class BlackoutManager : MonoBehaviour
 
     private void Update()
     {
-        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial))
+        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen))
         {
             _fadedOut = true;
             LowerOpacity();
         } 
-        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial) && _fadedOut == false)
+        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen) && _fadedOut == false)
         {
             _timer -= Time.deltaTime;
             if (_timer <= 0)

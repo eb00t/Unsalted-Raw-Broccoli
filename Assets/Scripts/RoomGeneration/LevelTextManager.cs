@@ -60,6 +60,9 @@ public class LevelTextManager : MonoBehaviour
             case LevelBuilder.LevelMode.Tutorial:
                 titleText.text = ("TUTORIAL");
                 break;
+            case LevelBuilder.LevelMode.TitleScreen:
+                titleText.text = ("");
+                break;
         }
 
         if (subtitleText == null)
@@ -87,13 +90,16 @@ public class LevelTextManager : MonoBehaviour
             case LevelBuilder.LevelMode.Tutorial:
                 subtitleText.text = ("");
                 break;
+            case LevelBuilder.LevelMode.TitleScreen:
+                subtitleText.text = ("");
+                break;
         }
     }
 
     IEnumerator WaitToLowerTextOpacity()
     {
         if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Tutorial
-            or LevelBuilder.LevelMode.Intermission))
+            or LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.TitleScreen))
         {
             yield return new WaitForSecondsRealtime(3f);
         }
@@ -123,7 +129,7 @@ public class LevelTextManager : MonoBehaviour
             _fadedOut = true;
             StartCoroutine(WaitToLowerTextOpacity());
         }
-        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial) && _fadedOut == false)
+        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen) && _fadedOut == false)
         {
             _fadedOut = true;
             StartCoroutine(WaitToLowerTextOpacity());
