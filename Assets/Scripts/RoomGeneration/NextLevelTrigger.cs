@@ -84,7 +84,7 @@ public class NextLevelTrigger : MonoBehaviour
                 }
                 break;
             case SceneToLoad.NextFloor:
-                if (SceneManager.GetActiveScene().name != "Tutorial")
+                if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission")
                 {
                     if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor1)
                     {
