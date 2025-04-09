@@ -24,6 +24,11 @@ public class DialogueTrigger : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+
+        if (dataHolder.currentLevel is not (LevelBuilder.LevelMode.Floor1 or LevelBuilder.LevelMode.Intermission))
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void OnTriggerStay(Collider other)
