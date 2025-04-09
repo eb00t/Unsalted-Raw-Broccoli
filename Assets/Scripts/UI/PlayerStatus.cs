@@ -38,19 +38,23 @@ public class PlayerStatus : MonoBehaviour
 
         foreach (var i in newStatus.GetComponentsInChildren<Image>())
         {
-            switch (i.name)
+            if (i.gameObject.GetComponent<StatusTimer>())
             {
-                case "Fill":
-                    i.sprite = consumable.statusIcon;
-                    i.color = new Color(consumable.statusColor.r, consumable.statusColor.g, consumable.statusColor.b, 1f);
-                    break;
-                case "Background":
-                    i.sprite = consumable.statusIcon;
-                
-                    Color.RGBToHSV(consumable.statusColor, out var h, out var s, out var v);
-                    v = Mathf.Clamp01(v - 0.65f);
-                    i.color = Color.HSVToRGB(h, s, v);
-                    break;
+                i.color = new Color(consumable.statusColor.r, consumable.statusColor.g, consumable.statusColor.b, 1f);
+            }
+
+            if (i.name == "Fill")
+            {
+                i.sprite = consumable.statusIcon;
+                i.color = new Color(consumable.statusColor.r, consumable.statusColor.g, consumable.statusColor.b, 1f);
+            }
+            
+            if (i.name == "Background")
+            {
+                i.sprite = consumable.statusIcon;
+                Color.RGBToHSV(consumable.statusColor, out var h, out var s, out var v);
+                v = Mathf.Clamp01(v - 0.65f);
+                i.color = Color.HSVToRGB(h, s, v);
             }
         }
         statusTimer.isTimerStarted = true;
