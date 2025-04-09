@@ -137,7 +137,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             _currentState = States.Frozen;
         }
-        else if (distance < attackRange && _playerDir.x > 0)
+        else if (distance < attackRange)
         {
             _currentState = States.Attack;
         }
@@ -522,6 +522,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         isDead = true; 
         LevelBuilder.Instance.bossDead = true;
         _animator.SetTrigger("isDead");
+        StopAllCoroutines();
         int currencyToDrop = 0;
         switch (_tookDamage)
         {
