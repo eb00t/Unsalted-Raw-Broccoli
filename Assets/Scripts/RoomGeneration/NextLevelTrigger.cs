@@ -23,6 +23,7 @@ public class NextLevelTrigger : MonoBehaviour
         Credits,
         EndScreen,
         SecretScreen,
+        Tutorial
     }
 
     public SceneToLoad sceneToLoad;
@@ -119,6 +120,9 @@ public class NextLevelTrigger : MonoBehaviour
                 break;
             case SceneToLoad.EndScreen:
                 scene = "EndScreen";
+                break;
+            case SceneToLoad.Tutorial:
+                scene = "Tutorial";
                 break;
         }
             BlackoutManager.Instance.RaiseOpacity();
