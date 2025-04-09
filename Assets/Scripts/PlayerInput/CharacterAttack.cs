@@ -66,6 +66,8 @@ public class CharacterAttack : MonoBehaviour
     private CinemachineCollisionImpulseSource _impulseSource;
     private InventoryStore _inventoryStore;
     private Coroutine _coyoteRoutine;
+    private Rigidbody _rigidbody;
+    [SerializeField] private float jumpAttackDrag;
 
     private void Start()
     {
@@ -77,6 +79,7 @@ public class CharacterAttack : MonoBehaviour
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
         _playerStatus = _uiManager.GetComponent<PlayerStatus>();
         _inventoryStore = _menuHandler.GetComponent<InventoryStore>();
+        _rigidbody = GetComponentInParent<Rigidbody>();
         healthSlider.maxValue = maxHealth;
         energySlider.maxValue = maxEnergy;
         energySlider.value = currentEnergy;
@@ -146,8 +149,6 @@ public class CharacterAttack : MonoBehaviour
         else if (_jumpAttackCount == 0)
         {
             gameObject.layer = 15;
-            _playerAnimator.SetTrigger("jumpAttack");
-            _characterMovement.jumpAttackVelY = 0f;
             if (_coyoteRoutine != null) StopCoroutine(_coyoteRoutine);
             _coyoteRoutine = StartCoroutine(CoyoteTimer());
             _jumpAttackCount++;
@@ -157,8 +158,12 @@ public class CharacterAttack : MonoBehaviour
     private IEnumerator CoyoteTimer()
     {
         _characterMovement.isJumpAttacking = true;
-        yield return new WaitForSeconds(.5f);
+        _playerAnimator.SetBool("isJumpAttacking", true);
+        _rigidbody.drag = jumpAttackDrag;
+        yield return new WaitForSeconds(.25f);
         _characterMovement.isJumpAttacking = false;
+        _playerAnimator.SetBool("isJumpAttacking", false);
+        _rigidbody.drag = 0f;
     }
 
     public void MediumAttack(InputAction.CallbackContext ctx)

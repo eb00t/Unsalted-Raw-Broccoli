@@ -53,7 +53,6 @@ public class CharacterMovement : MonoBehaviour
     private Coroutine _dashCoroutine;
     private CharacterAttack _characterAttack;
     public bool isJumpAttacking;
-    public float jumpAttackVelY;
 
     public void Awake()
     {
@@ -267,15 +266,6 @@ public class CharacterMovement : MonoBehaviour
     public void FixedUpdate()
     {
         if (uiOpen) return;
-        
-        if (isJumpAttacking)
-        {
-            rb.useGravity = false;
-        }
-        else
-        {
-            rb.useGravity = true;
-        }
 
         if (walkAllowed && /*!isWallJumping &&*/ allowMovement && !_isDashing && !isJumpAttacking)
         {
