@@ -64,8 +64,8 @@ public class CharacterAttack : MonoBehaviour
     public Vector2 knockbackPowerMedium = new Vector2(0f, 0f);
     public Vector2 knockbackPowerHeavy = new Vector2(20f, 3f);
     private CinemachineCollisionImpulseSource _impulseSource;
-
     private InventoryStore _inventoryStore;
+    private Coroutine _coyoteRoutine;
 
     private void Start()
     {
@@ -147,8 +147,18 @@ public class CharacterAttack : MonoBehaviour
         {
             gameObject.layer = 15;
             _playerAnimator.SetTrigger("jumpAttack");
+            _characterMovement.jumpAttackVelY = 0f;
+            if (_coyoteRoutine != null) StopCoroutine(_coyoteRoutine);
+            _coyoteRoutine = StartCoroutine(CoyoteTimer());
             _jumpAttackCount++;
         }
+    }
+
+    private IEnumerator CoyoteTimer()
+    {
+        _characterMovement.isJumpAttacking = true;
+        yield return new WaitForSeconds(.5f);
+        _characterMovement.isJumpAttacking = false;
     }
 
     public void MediumAttack(InputAction.CallbackContext ctx)

@@ -52,6 +52,8 @@ public class CharacterMovement : MonoBehaviour
     private bool _isDashing;
     private Coroutine _dashCoroutine;
     private CharacterAttack _characterAttack;
+    public bool isJumpAttacking;
+    public float jumpAttackVelY;
 
     public void Awake()
     {
@@ -265,7 +267,17 @@ public class CharacterMovement : MonoBehaviour
     public void FixedUpdate()
     {
         if (uiOpen) return;
-        if (walkAllowed && /*!isWallJumping &&*/ allowMovement && !_isDashing)
+        
+        if (isJumpAttacking)
+        {
+            rb.useGravity = false;
+        }
+        else
+        {
+            rb.useGravity = true;
+        }
+
+        if (walkAllowed && /*!isWallJumping &&*/ allowMovement && !_isDashing && !isJumpAttacking)
         {
             if ((rb.velocity.x <= maxSpeed && Mathf.Sign(rb.velocity.x) == 1) || (rb.velocity.x >= -maxSpeed && Mathf.Sign(rb.velocity.x) == -1) || (Mathf.Sign(rb.velocity.x) != input))
             {
