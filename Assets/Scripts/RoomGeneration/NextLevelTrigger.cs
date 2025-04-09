@@ -14,6 +14,7 @@ public class NextLevelTrigger : MonoBehaviour
     public float range = 5f;
     [SerializeField] private bool doesUseTrigger;
     [SerializeField] private DataHolder dataHolder;
+    [SerializeField] private string promptText;
 
     public enum SceneToLoad
     {
@@ -49,13 +50,15 @@ public class NextLevelTrigger : MonoBehaviour
                 if (dist <= range)
                 {
                     _itemPickupHandler.isPlrNearEnd = true;
-                    _itemPickupHandler.TogglePrompt("Continue ahead?", true, ControlsManager.ButtonType.ButtonEast, null);
+                    _itemPickupHandler.TogglePrompt(promptText, true, ControlsManager.ButtonType.ButtonEast, null);
                     _menuHandler.nearestLevelTrigger = this;
                 }
                 else if (dist > range)
                 {
                     if (_itemPickupHandler.itemCount > 0) return;
+                    if (_menuHandler.nearestLevelTrigger != this) return;
                     _itemPickupHandler.isPlrNearEnd = false;
+                    _menuHandler.nearestLevelTrigger = null;
                     //_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
                 }
             }
