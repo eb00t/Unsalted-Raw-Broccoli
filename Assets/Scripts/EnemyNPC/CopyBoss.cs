@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -482,10 +483,14 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         _knockbackDir = transform.position.x > _player.position.x ? 1 : -1;
         
-        var knockbackMultiplier = (_poiseBuildup >= poise) ? 3 : 1.5f; 
+        var knockbackMultiplier = (_poiseBuildup >= poise) ? 2 : 1; 
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
-        //StartCoroutine(TriggerKnockback(knockbackForce, 0.5f));
+        if (!_isAttacking)
+        {
+            StartCoroutine(TriggerKnockback(knockbackForce, 0.1f));
+            StartCoroutine(StunTimer(0.1f));
+        }
 
         if (_poiseBuildup >= poise)
         {
