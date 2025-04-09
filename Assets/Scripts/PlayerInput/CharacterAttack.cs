@@ -26,7 +26,7 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private bool[] heavyCombo = new bool[4];
     [SerializeField] private float maxInputDelay = 10f;
     [HideInInspector] public bool animEnd;
-    [SerializeField] public int heavyEnergyCost1, heavyEnergyCost2, heavyEnergyCost3;
+    [SerializeField] public int mediumEnergyCost1, mediumEnergyCost2, heavyEnergyCost;
     [SerializeField] private float rechargeSpeed;
     private float _rechargeTime;
     
@@ -151,6 +151,27 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
+    public void MediumAttack(InputAction.CallbackContext ctx)
+    {
+        if (isDead) return;
+        if (ctx.performed && _playerAnimator.GetBool("Grounded"))
+        {
+            gameObject.layer = 15;
+
+            _playerAnimator.SetBool("LightAttack1", false);
+            _playerAnimator.SetBool("LightPunch", false);
+            _playerAnimator.SetBool("LightAttack2", false);
+            _playerAnimator.SetBool("HeavyAttack", false);
+            _playerAnimator.SetBool("HeavyAttack1", false);
+
+            if (currentEnergy >= heavyEnergyCost)
+            {
+                _playerAnimator.SetBool("MediumAttack", true);
+            }
+            else { _inventoryStore.TriggerNotification(null, "Not enough energy.", false); }
+        }
+    }
+
     public void HeavyAttack(InputAction.CallbackContext ctx)
     {
         if (isDead) return;
@@ -167,7 +188,7 @@ public class CharacterAttack : MonoBehaviour
             // Start of chain
             if (!heavyCombo[0] && !_playerAnimator.GetBool("HeavyAttack2"))
             {
-                if (currentEnergy >= heavyEnergyCost1)
+                if (currentEnergy >= mediumEnergyCost1)
                 {
                     Debug.Log("HeavyAttack");
                     _playerAnimator.SetBool("HeavyAttack", true);
@@ -183,7 +204,7 @@ public class CharacterAttack : MonoBehaviour
             {
                 if (heavyTimer <= maxInputDelay && heavyTimer > 0f)
                 {
-                    if (currentEnergy >= heavyEnergyCost2)
+                    if (currentEnergy >= mediumEnergyCost2)
                     {
                         Debug.Log("HeavyAttack1");
                         _playerAnimator.SetBool("HeavyAttack1", true);
@@ -198,7 +219,7 @@ public class CharacterAttack : MonoBehaviour
                 }
             }
 
-            if (heavyCombo[1])
+           /* if (heavyCombo[1])
             {
                 if (heavyTimer1 <= maxInputDelay && heavyTimer1 > 0f)
                 {
@@ -207,11 +228,11 @@ public class CharacterAttack : MonoBehaviour
                         Debug.Log("HeavyAttack2");
                         _playerAnimator.SetBool("HeavyAttack2", true);
                         //UseEnergy(heavyEnergyCost2);
-                        
+
                         if (animEnd)
                         {
                             heavyCombo[2] = true;
-                            
+
                         }
                     }
                     else
@@ -219,16 +240,16 @@ public class CharacterAttack : MonoBehaviour
                         _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
                     }
                 }
-            }
+            }*/
 
             heavyCombo[0] = true;
-            if (heavyCombo[2])
+            if (heavyCombo[1])
             {
                 heavyTimer1 = 0f; heavyCombo[1] = false;
                 heavyTimer = 0f; heavyCombo[0] = false;
 
 
-                heavyCombo[2] = false;
+                heavyCombo[1] = false;
             }
         }
     }
