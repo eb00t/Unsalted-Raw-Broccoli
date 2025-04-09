@@ -85,6 +85,7 @@ public class CharacterAttack : MonoBehaviour
         charAtk = baseAtk;
         hitFlash = GameObject.FindWithTag("Hit Flash");
         hitFlash.SetActive(false);
+        _impulseSource = GetComponent<CinemachineCollisionImpulseSource>();
     }
 
     public void LightAttack(InputAction.CallbackContext ctx)
