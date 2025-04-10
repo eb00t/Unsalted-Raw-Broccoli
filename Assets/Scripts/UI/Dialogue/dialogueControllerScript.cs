@@ -97,7 +97,7 @@ public class dialogueControllerScript : MonoBehaviour
             }
             else
             {
-                _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.ButtonEast, null);
+                _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.RTrigger, null);
                 _menuHandler.dialogueController = this;
             }
         }

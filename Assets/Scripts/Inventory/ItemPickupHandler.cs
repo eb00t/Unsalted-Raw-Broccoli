@@ -48,13 +48,13 @@ public class ItemPickupHandler : MonoBehaviour
         switch (itemCount)
         {
             case 0:
-                TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast, null);
+                TogglePrompt("", false, ControlsManager.ButtonType.RTrigger, null);
                 break;
             case 1:
-                TogglePrompt("Pick up item", true, ControlsManager.ButtonType.ButtonEast, null);
+                TogglePrompt("Pick up item", true, ControlsManager.ButtonType.RTrigger, null);
                 break;
             default:
-                TogglePrompt("Pick up items", true, ControlsManager.ButtonType.ButtonEast, null);
+                TogglePrompt("Pick up items", true, ControlsManager.ButtonType.RTrigger, null);
                 break;
         }
     }

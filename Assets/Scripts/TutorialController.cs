@@ -33,6 +33,7 @@ public class TutorialController : MonoBehaviour
         ExitUI,
         FindEnemy,
         LightAttack,
+        MediumAttack,
         HeavyAttack,
         JumpAttack,
         DefeatEnemy,
@@ -132,7 +133,7 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.LThumbstickDown, null);
                 break;
             case TutorialStep.FindItems:
-                ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.ButtonEast, null);
+                ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.RTrigger, null);
                 break;
             case TutorialStep.SwitchItem:
                 ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.DpadEast, null);
@@ -151,6 +152,9 @@ public class TutorialController : MonoBehaviour
                 break;
             case TutorialStep.LightAttack:
                 ShowMessage("Perform a light attack", ControlsManager.ButtonType.ButtonWest, null);
+                break;
+            case TutorialStep.MediumAttack:
+                ShowMessage("Perform a medium attack", ControlsManager.ButtonType.ButtonEast, null);
                 break;
             case TutorialStep.HeavyAttack:
                 ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.ButtonNorth, null);
@@ -303,6 +307,16 @@ public class TutorialController : MonoBehaviour
         if (!context.performed) return;
         
         if (_currentStep == TutorialStep.LightAttack)
+        {
+            AdvanceStep();
+        }
+    }
+    
+    public void TryMediumAttack(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        
+        if (_currentStep == TutorialStep.MediumAttack)
         {
             AdvanceStep();
         }

@@ -65,7 +65,7 @@ public class ReadLore : MonoBehaviour
             if (dist <= pickupRange)
             {
                 _itemPickupHandler.isPlrNearLore = true;
-                _itemPickupHandler.TogglePrompt("Read " + _loreObject, true, ControlsManager.ButtonType.ButtonEast, null);
+                _itemPickupHandler.TogglePrompt("Read " + _loreObject, true, ControlsManager.ButtonType.RTrigger, null);
                 _menuHandler.nearestLore = this;
             }
             else if (dist > pickupRange)

@@ -168,7 +168,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void MediumAttack(InputAction.CallbackContext ctx)
     {
-        if (isDead) return;
+        if (isDead || _characterMovement.uiOpen) return;
         if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
             gameObject.layer = 15;
@@ -189,7 +189,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
     {
-        if (isDead) return;
+        if (isDead || _characterMovement.uiOpen) return;
         if (ctx.performed && _playerAnimator.GetBool("Grounded"))
         {
             _playerAnimator.SetBool("LightAttack1", false);
@@ -282,7 +282,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void TakeDamagePlayer(int damage, int poiseDmg)
     {
-        if (isDead) return;
+        if (isDead || _characterMovement.uiOpen) return;
         if (isInvulnerable) return;
         
         if (isInvincible > 0)
@@ -442,7 +442,7 @@ public class CharacterAttack : MonoBehaviour
 
     private void Update()
     {
-        if (isDead) return;
+        if (isDead || _characterMovement.uiOpen) return;
 
         if (_jumpAttackCount > 0)
         {

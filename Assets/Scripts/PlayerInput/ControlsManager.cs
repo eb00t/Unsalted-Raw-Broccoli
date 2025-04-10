@@ -173,20 +173,20 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.ButtonEast, "Esc" },
             { ButtonType.ButtonSouth, "Space" },
             { ButtonType.ButtonWest, "E" },
-            { ButtonType.LShoulder, "-" },
+            { ButtonType.LShoulder, "T" },
             { ButtonType.RShoulder, "Shift" },
             { ButtonType.LTrigger, "-" },
-            { ButtonType.RTrigger, "-" },
+            { ButtonType.RTrigger, "F" },
             { ButtonType.DpadNorth, "W" },
             { ButtonType.DpadEast, "S" },
-            { ButtonType.DpadSouth, "I" },
+            { ButtonType.DpadSouth, "-" },
             { ButtonType.DpadWest, "I" },
             { ButtonType.Start, "Esc" },
-            { ButtonType.Select, "-" },
+            { ButtonType.Select, "I" },
             { ButtonType.LThumbstick, "A/D"},
             { ButtonType.RThumbstick, "1/2"},
             { ButtonType.LThumbstickDown, "CTRL"},
-            { ButtonType.RThumbstickDown, "R"}
+            { ButtonType.RThumbstickDown, "CTRL"}
         };
     }
     
