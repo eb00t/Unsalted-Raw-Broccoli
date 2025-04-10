@@ -12,52 +12,62 @@ public class PlayerStatus : MonoBehaviour
 
     public void AddNewStatus(Consumable consumable)
     {
-        if (statuses.Count > 0)
+        // avoids multiple of same status
+        for (var i = statuses.Count - 1; i >= 0; i--)
         {
-            // avoids multiple of same status
-            foreach (var status in statuses)
-            {
-                if (status == null) continue;
-                var sT = status.GetComponent<Consumable>();
+            if (statuses[i] == null) continue;
 
-                if (sT.consumableEffect != consumable.consumableEffect) continue;
-                
-                if (Mathf.Approximately(sT.effectAmount, consumable.effectAmount))
-                {
-                    Destroy(status);
-                }
-            }
+            var existing = statuses[i].GetComponent<Consumable>();
+
+            if (existing == null) continue;
+            if (existing.consumableEffect != consumable.consumableEffect) continue;
+            if (!Mathf.Approximately(existing.effectAmount, consumable.effectAmount)) continue;
+            
+            Destroy(statuses[i]);
+            statuses.RemoveAt(i);
         }
         
+        AddStatus(consumable, consumable.statusIcon, consumable.statusText);
+        
+        if (consumable.statusIcon2 != null)
+        {
+            AddStatus(consumable, consumable.statusIcon2, consumable.statusText2);
+        }
+    }
+    
+    private void AddStatus(Consumable consumable, Sprite icon, string statusText)
+    {
         var newStatus = Instantiate(statusPrefab, statusPrefab.position, statusPrefab.rotation, statusHolder);
         CopyComponent(newStatus.gameObject, consumable);
         statuses.Add(newStatus.gameObject);
-        var statusTimer = newStatus.GetComponent<StatusTimer>(); 
+
+        var statusTimer = newStatus.GetComponent<StatusTimer>();
         statusTimer.targetTime = consumable.effectDuration;
-        newStatus.GetComponentInChildren<TextMeshProUGUI>().text = consumable.statusText;
+        statusTimer.isTimerStarted = true;
 
-        foreach (var i in newStatus.GetComponentsInChildren<Image>())
+        statusTimer.GetComponentInChildren<TextMeshProUGUI>().text = statusText;
+
+        foreach (var image in newStatus.GetComponentsInChildren<Image>())
         {
-            if (i.gameObject.GetComponent<StatusTimer>())
+            if (image.GetComponent<StatusTimer>())
             {
-                i.color = new Color(consumable.statusColor.r, consumable.statusColor.g, consumable.statusColor.b, 1f);
-            }
-
-            if (i.name == "Fill")
-            {
-                i.sprite = consumable.statusIcon;
-                i.color = new Color(consumable.statusColor.r, consumable.statusColor.g, consumable.statusColor.b, 1f);
+                image.color = new Color(consumable.statusColor.r, consumable.statusColor.g, consumable.statusColor.b, 1f);
             }
             
-            if (i.name == "Background")
+            if (image.name == "Fill")
             {
-                i.sprite = consumable.statusIcon;
+                image.sprite = icon;
+                image.color = new Color(consumable.statusColor.r, consumable.statusColor.g, consumable.statusColor.b, 1f);
+            }
+            
+            if (image.name == "Background")
+            {
+                image.sprite = icon;
                 Color.RGBToHSV(consumable.statusColor, out var h, out var s, out var v);
-                v = Mathf.Clamp01(v - 0.65f);
-                i.color = Color.HSVToRGB(h, s, v);
+                v = Mathf.Clamp01(v - 0.25f);
+                image.color = Color.HSVToRGB(h, s, v);
             }
         }
-        statusTimer.isTimerStarted = true;
     }
 
     // copies a consumable component to the specified gameobject

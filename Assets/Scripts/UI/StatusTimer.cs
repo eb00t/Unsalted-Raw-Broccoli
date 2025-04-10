@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,8 +18,7 @@ public class StatusTimer : MonoBehaviour
         _slider = GetComponentInChildren<Slider>();
         _playerStatus = GameObject.FindGameObjectWithTag("UIManager").GetComponent<PlayerStatus>();
         _slider.maxValue = targetTime;
-        _text = GetComponentInChildren<TextMeshProUGUI>();
-        _text.text = _consumable.statusText;
+        _slider.value = _slider.maxValue;
     }
 
     private void Update()
