@@ -402,6 +402,21 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             var direction = (targetPos - laserStartPos).normalized;
             var laserEndPos = laserStartPos + direction * (dist + 10f);
 
+            var hits = Physics.RaycastAll(laserStartPos, direction, 100f);
+            foreach (var allHit in hits)
+            {
+                if (allHit.collider.isTrigger) continue;
+                if (allHit.collider.GetComponent<SemiSolidPlatform>()) continue;
+                if (allHit.collider.CompareTag("Bottom Wall") ||
+                    allHit.collider.CompareTag("Top Wall") ||
+                    allHit.collider.CompareTag("Left Wall") ||
+                    allHit.collider.CompareTag("Right Wall") ||
+                    allHit.collider.name.Contains("Door"))
+                {
+                    laserEndPos = allHit.point;
+                }
+            }
+
             _lineRenderer.SetPosition(1, laserEndPos);
             _lineRenderer.startWidth = .5f;
             _lineRenderer.endWidth = .5f;
