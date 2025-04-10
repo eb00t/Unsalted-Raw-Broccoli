@@ -181,10 +181,11 @@ public class InventoryStore : MonoBehaviour
             if (s.name == "Image")
             {
                 s.sprite = indexHolder.consumable.uiIcon;
-                s.GetComponentInChildren<TextMeshProUGUI>().text =
-                    indexHolder.numHeld + "/" + indexHolder.consumable.maximumHold;
+                s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld + "/" + indexHolder.consumable.maximumHold;
             }
         }
+        
+        _toolbarHandler.CheckEquipStatus();
     }
 
     public void TriggerNotification(Sprite icon, string text, bool isPositive)

@@ -104,7 +104,7 @@ public class ToolbarHandler : MonoBehaviour
         {
             dataHolder.equippedConsumables[index] = consumable.itemID;
         }
-
+        
         UpdateToolbar();
     }
 
@@ -445,6 +445,7 @@ public class ToolbarHandler : MonoBehaviour
         }
 
         UpdateCurrentTool();
+        CheckEquipStatus();
     }
 
     // if the player inputs button west then remove the item from a slot if a slot is currently selected
@@ -464,6 +465,7 @@ public class ToolbarHandler : MonoBehaviour
         }
 
         UpdateCurrentTool();
+        CheckEquipStatus();
     }
 
     // checks if a new inventory item is selected while the information panel is open, if so it updates
@@ -507,4 +509,22 @@ public class ToolbarHandler : MonoBehaviour
         numHeldTxt.text = count.ToString();
     }
 
+    public void CheckEquipStatus()
+    {
+        var equippedIds = new HashSet<int>(dataHolder.equippedConsumables);
+
+        foreach (var indexHolder in grid.GetComponentsInChildren<IndexHolder>())
+        {
+            if (indexHolder.consumable == null) continue;
+            var isEquipped = equippedIds.Contains(indexHolder.consumable.itemID);
+
+            foreach (var img in indexHolder.GetComponentsInChildren<Image>(true))
+            {
+                if (img != null && img.name == "EquippedIcon")
+                {
+                    img.gameObject.SetActive(isEquipped);
+                }
+            }
+        }
+    }
 }
