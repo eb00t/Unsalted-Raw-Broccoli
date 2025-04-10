@@ -26,7 +26,7 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private bool[] heavyCombo = new bool[4];
     [SerializeField] private float maxInputDelay = 10f;
     [HideInInspector] public bool animEnd;
-    [SerializeField] public int mediumEnergyCost1, mediumEnergyCost2, heavyEnergyCost;
+    public int lightEnergyCost, mediumEnergyCost, heavyEnergyCost;
     [SerializeField] private float rechargeSpeed;
     private float _rechargeTime;
     
@@ -40,7 +40,7 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private float heavyAtkMultiplier;
     public int charAtk;
     [SerializeField] private int poise;
-    public int poiseDamageLight, poiseDamageHeavy, poiseDamageMedium;
+    public int poiseDamageLight, poiseDamageMedium, poiseDamageHeavy;
     public int isInvincible;
     private int _poiseBuildup;
     public bool isPoison;
@@ -60,9 +60,9 @@ public class CharacterAttack : MonoBehaviour
     public int _jumpAttackCount;
     
     [Header("Knockback Types")]
-    public Vector2 knockbackPowerLight = new Vector2(10f, 1f);
-    public Vector2 knockbackPowerMedium = new Vector2(0f, 0f);
-    public Vector2 knockbackPowerHeavy = new Vector2(20f, 3f);
+    public Vector2 knockbackPowerLight;
+    public Vector2 knockbackPowerMedium;
+    public Vector2 knockbackPowerHeavy;
     private CinemachineCollisionImpulseSource _impulseSource;
     private InventoryStore _inventoryStore;
     private Coroutine _coyoteRoutine;
@@ -160,7 +160,19 @@ public class CharacterAttack : MonoBehaviour
         _characterMovement.isJumpAttacking = true;
         _playerAnimator.SetBool("isJumpAttacking", true);
         _rigidbody.drag = jumpAttackDrag;
-        yield return new WaitForSeconds(.25f);
+
+        var elapsed = 0f;
+        while (elapsed < 0.25f)
+        {
+            if (!_playerAnimator.GetBool("isJumpAttacking") || _characterMovement.grounded)
+            {
+                break;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
         _characterMovement.isJumpAttacking = false;
         _playerAnimator.SetBool("isJumpAttacking", false);
         _rigidbody.drag = 0f;
@@ -179,7 +191,7 @@ public class CharacterAttack : MonoBehaviour
             _playerAnimator.SetBool("HeavyAttack", false);
             _playerAnimator.SetBool("HeavyAttack1", false);
 
-            if (currentEnergy >= heavyEnergyCost)
+            if (currentEnergy >= mediumEnergyCost)
             {
                 _playerAnimator.SetBool("MediumAttack", true);
             }
@@ -203,7 +215,7 @@ public class CharacterAttack : MonoBehaviour
             // Start of chain
             if (!heavyCombo[0] && !_playerAnimator.GetBool("HeavyAttack1"))
             {
-                if (currentEnergy >= mediumEnergyCost1)
+                if (currentEnergy >= heavyEnergyCost)
                 {
                     Debug.Log("HeavyAttack");
                     _playerAnimator.SetBool("HeavyAttack", true);
@@ -219,7 +231,7 @@ public class CharacterAttack : MonoBehaviour
             {
                 if (heavyTimer <= maxInputDelay && heavyTimer > 0f)
                 {
-                    if (currentEnergy >= mediumEnergyCost2)
+                    if (currentEnergy >= heavyEnergyCost)
                     {
                         Debug.Log("HeavyAttack1");
                         _playerAnimator.SetBool("HeavyAttack1", true);

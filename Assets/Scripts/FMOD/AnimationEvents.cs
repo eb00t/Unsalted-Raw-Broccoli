@@ -72,10 +72,10 @@ public class AnimationEvents : MonoBehaviour
         switch (LMH)
         {
             case 0:
-                energyUsed = _characterAttack.mediumEnergyCost1;
+                energyUsed = _characterAttack.lightEnergyCost;
                 break;
             case 1:
-                energyUsed = _characterAttack.mediumEnergyCost2;
+                energyUsed = _characterAttack.mediumEnergyCost;
                 break;
             case 2:
                 energyUsed = _characterAttack.heavyEnergyCost;
