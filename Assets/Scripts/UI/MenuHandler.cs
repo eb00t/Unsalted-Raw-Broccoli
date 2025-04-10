@@ -23,6 +23,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui, controlGui, diedScreen;
 	public GameObject dialogueGUI;
 	[SerializeField] private GameObject settingsBtn, controlsBtn, quitBtn;
+	[SerializeField] private GameObject slotsTooltip, inventoryTooltip;
 	
 	[Header("Navigation")]
 	[SerializeField] private EventSystem eventSystem;
@@ -130,6 +131,8 @@ public class MenuHandler : MonoBehaviour
 			b.interactable = false;
 		}
 		
+		slotsTooltip.SetActive(true);
+		inventoryTooltip.SetActive(false);
 		invGui.SetActive(true);
 		infoGui.SetActive(false);
 		_toolbarHandler.isInfoOpen = false;
@@ -201,6 +204,8 @@ public class MenuHandler : MonoBehaviour
 				s.interactable = true;
 			}
 			
+			slotsTooltip.SetActive(true);
+			inventoryTooltip.SetActive(false);
 			SwitchSelected(_toolbarHandler.slots[_toolbarHandler.slotNo]);
 			infoGui.SetActive(false);
 			_toolbarHandler.isInfoOpen = false;
@@ -340,6 +345,8 @@ public class MenuHandler : MonoBehaviour
 				s.interactable = false;
 			}
 			
+			slotsTooltip.SetActive(false);
+			inventoryTooltip.SetActive(true);
 			infoGui.SetActive(true);
 			_toolbarHandler.isInfoOpen = true;
 		}

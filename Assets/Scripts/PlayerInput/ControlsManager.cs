@@ -37,6 +37,7 @@ public class ControlsManager : MonoBehaviour
     [SerializeField] private Sprite lThumbstickDown, rThumbstickDown;
 
     private string keyboardInteractBack = "F";
+    private string keyboardInteractSelect = "Space";
     
     private void Awake()
     {
@@ -76,7 +77,7 @@ public class ControlsManager : MonoBehaviour
             }
             else if (diedScreen.activeSelf)
             {
-                
+                keyboardInteractBack = "F";
             }
             else if (!_characterMovement.uiOpen)
             {
@@ -89,13 +90,15 @@ public class ControlsManager : MonoBehaviour
         }
         else if (SceneManager.GetActiveScene().name != "StartScreen")
         {
-            if (_characterMovement.uiOpen && !diedScreen.activeSelf)
+            if (_characterMovement.uiOpen && !diedScreen.activeSelf && Time.timeScale == 0)
             {
                 keyboardInteractBack = "Esc";
+                keyboardInteractSelect = "Enter/LMB";
             }
             else
             {
                 keyboardInteractBack = "F";
+                keyboardInteractSelect = "Space";
             }
         }
         else
@@ -106,6 +109,7 @@ public class ControlsManager : MonoBehaviour
         if (KeyboardStrings.ContainsKey(ButtonType.ButtonEast))
         {
             KeyboardStrings[ButtonType.ButtonEast] = keyboardInteractBack;
+            KeyboardStrings[ButtonType.ButtonSouth] = keyboardInteractSelect;
         }
 
         CheckControl();
