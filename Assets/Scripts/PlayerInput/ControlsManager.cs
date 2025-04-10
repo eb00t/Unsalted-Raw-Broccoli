@@ -68,7 +68,26 @@ public class ControlsManager : MonoBehaviour
             dataHolder.isGamepad = false;
         }
 
-        if (SceneManager.GetActiveScene().name != "StartScreen")
+        if (SceneManager.GetActiveScene().name == "Tutorial")
+        {
+            if (_characterMovement.uiOpen && !diedScreen.activeSelf)
+            {
+                keyboardInteractBack = "Esc";
+            }
+            else if (diedScreen.activeSelf)
+            {
+                
+            }
+            else if (!_characterMovement.uiOpen)
+            {
+                keyboardInteractBack = "R";
+            }
+            else
+            {
+                keyboardInteractBack = "F";
+            }
+        }
+        else if (SceneManager.GetActiveScene().name != "StartScreen")
         {
             if (_characterMovement.uiOpen && !diedScreen.activeSelf)
             {

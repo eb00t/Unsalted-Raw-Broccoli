@@ -5,20 +5,25 @@ using UnityEngine;
 
 public class Upthrust : MonoBehaviour
 {
+   private GameObject _player;
+   private CharacterMovement _characterMovement;
    private Rigidbody _playerRb;
    public float forceMultiplier;
 
    private void Start()
    {
-      _playerRb = GameObject.FindWithTag("Player").GetComponent<Rigidbody>();
+      _player = GameObject.FindWithTag("Player");
+      _playerRb = _player.GetComponent<Rigidbody>();
+      _characterMovement = _player.GetComponent<CharacterMovement>();
    }
 
    private void OnTriggerEnter(Collider other)
    {
       if (other.CompareTag("Player"))
       {
-         if (_playerRb.velocity.y > 0.1f)
+         if (_playerRb.velocity.y >= 0f)
          {
+            _characterMovement.doubleJumpPerformed = true;
             _playerRb.AddForce(Vector3.up * forceMultiplier, ForceMode.Impulse);
          }
       }
