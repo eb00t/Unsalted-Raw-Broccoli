@@ -12,6 +12,7 @@ using Random = UnityEngine.Random;
 public class CharacterAttack : MonoBehaviour
 {
     private static readonly int IsStaggered = Animator.StringToHash("isStaggered");
+    private static readonly int IsJumpAttacking = Animator.StringToHash("isJumpAttacking");
     private MeshCollider _attackCollider;
     private Animator _playerAnimator;
     private CharacterMovement _characterMovement;
@@ -150,6 +151,7 @@ public class CharacterAttack : MonoBehaviour
         {
             gameObject.layer = 15;
             if (_coyoteRoutine != null) StopCoroutine(_coyoteRoutine);
+            _playerAnimator.SetBool(IsJumpAttacking, true);
             _coyoteRoutine = StartCoroutine(CoyoteTimer());
             _jumpAttackCount++;
         }
@@ -158,13 +160,16 @@ public class CharacterAttack : MonoBehaviour
     private IEnumerator CoyoteTimer()
     {
         _characterMovement.isJumpAttacking = true;
-        _playerAnimator.SetBool("isJumpAttacking", true);
         _rigidbody.drag = jumpAttackDrag;
+
+        yield return null;
 
         var elapsed = 0f;
         while (elapsed < 0.25f)
         {
-            if (!_playerAnimator.GetBool("isJumpAttacking") || _characterMovement.grounded)
+            var stateInfo = _playerAnimator.GetCurrentAnimatorStateInfo(0);
+            
+            if (!stateInfo.IsName("Player_JumpAttack") || !_playerAnimator.GetBool(IsJumpAttacking) || _characterMovement.grounded)
             {
                 break;
             }
@@ -174,7 +179,7 @@ public class CharacterAttack : MonoBehaviour
         }
 
         _characterMovement.isJumpAttacking = false;
-        _playerAnimator.SetBool("isJumpAttacking", false);
+        _playerAnimator.SetBool(IsJumpAttacking, false);
         _rigidbody.drag = 0f;
     }
 

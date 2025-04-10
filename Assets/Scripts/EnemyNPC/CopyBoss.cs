@@ -83,7 +83,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     int IDamageable.Poise { get => poise; set => poise = value; }
     int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
     public bool isPlayerInRange { get; set; }
-    public bool isDead { get; set; }
+    public bool isDead { get => _isDead; set => _isDead = value; }
     public RoomScripting RoomScripting { get; set; }
     public EnemySpawner EnemySpawner { get; set; }
 
@@ -492,7 +492,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         if (!_isAttacking)
         {
             StartCoroutine(TriggerKnockback(knockbackForce, 0.1f));
-            StartCoroutine(StunTimer(0.02f));
+            StartCoroutine(StunTimer(0.005f));
         }
 
         if (_poiseBuildup >= poise)
