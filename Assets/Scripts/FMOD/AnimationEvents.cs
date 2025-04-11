@@ -18,6 +18,7 @@ public class AnimationEvents : MonoBehaviour
         _heavyAttackEvent,
         _jumpEvent;
     private CharacterAttack _characterAttack;
+    private CharacterMovement _characterMovement;
     private SettingManager _settingManager;
     [SerializeField] private Animator blackoutCircle;
     [SerializeField] private GameObject deathScreen;
@@ -25,6 +26,8 @@ public class AnimationEvents : MonoBehaviour
     private void Start()
     {
         _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
+        _characterAttack = GameObject.FindGameObjectWithTag("PlayerAttackBox").GetComponent<CharacterAttack>();
+        _characterMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterMovement>();
     }
 
     //PLAYER
@@ -67,7 +70,7 @@ public class AnimationEvents : MonoBehaviour
 
     public void ReduceEnergy(int LMH) //Light = 0, Medium = 1, Heavy = 0
     {
-        _characterAttack = transform.root.transform.Find("PlayerAttack").GetComponent<CharacterAttack>();
+        //_characterAttack = transform.root.transform.Find("PlayerAttack").GetComponent<CharacterAttack>();
         int energyUsed = 0;
         switch (LMH)
         {
@@ -79,6 +82,9 @@ public class AnimationEvents : MonoBehaviour
                 break;
             case 2:
                 energyUsed = _characterAttack.heavyEnergyCost;
+                break;
+            case 3:
+                energyUsed = _characterMovement.dashEnergyCost;
                 break;
         }
         _characterAttack.UseEnergy(energyUsed);

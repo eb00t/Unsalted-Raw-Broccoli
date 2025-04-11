@@ -17,7 +17,8 @@ public class CharacterMovement : MonoBehaviour
     public float acceleration = 1f;
     public float maxSpeed = 10f;
     public float jumpForce = 1f;
-    public float dashSpeed = 1f;
+    public float dashSpeed;
+    public int dashEnergyCost;
     //public float slideSpeed = 1f;
     //public float slideHoldTime = 1f;
 
@@ -29,10 +30,10 @@ public class CharacterMovement : MonoBehaviour
     public Vector3 Velocity;
     private GameObject _playerGroundPosition;
 
-    private bool dashAllowed = true;
+    //private bool dashAllowed = true;
     private bool startDashTimer;
-    private float dashTimer;
-    [SerializeField] private float dashBreak;
+    //private float dashTimer;
+    //[SerializeField] private float dashBreak;
 
     private float input;
     //[SerializeField] private bool startSlide;
@@ -88,7 +89,7 @@ public class CharacterMovement : MonoBehaviour
         if (uiOpen) return;
         //if (!allowMovement) return;
         input = ctx.ReadValue<float>();
-        PlayerAnimator.SetFloat("Input", input);
+        PlayerAnimator.SetFloat("Input", Mathf.Abs(input));
     }
 
     public void Jump(InputAction.CallbackContext ctx)
@@ -152,9 +153,9 @@ public class CharacterMovement : MonoBehaviour
 
     public void Dash(InputAction.CallbackContext ctx)
     {
-        if (uiOpen || !allowMovement || !dashAllowed || _isDashing) return;
+        if (uiOpen || !allowMovement || _isDashing) return;
 
-        if (ctx.performed && grounded) 
+        if (ctx.performed) 
         {
             var direction = input != 0 ? Mathf.Sign(input) : Mathf.Sign(transform.localScale.x);
             var dashForce = new Vector3(direction * dashSpeed, rb.velocity.y, 0f);
@@ -163,9 +164,9 @@ public class CharacterMovement : MonoBehaviour
             rb.AddForce(dashForce, ForceMode.Impulse);
 
             PlayerAnimator.SetBool("Dash", true);
-            dashAllowed = false;
+            //dashAllowed = false;
             startDashTimer = true;
-            dashTimer = 0f;
+            //dashTimer = 0f;
 
             _isDashing = true;
             if (_dashCoroutine != null) StopCoroutine(_dashCoroutine);
@@ -235,7 +236,8 @@ public class CharacterMovement : MonoBehaviour
                 startSlideTimer = false;
             }
         }*/
-
+        
+        /*
         if (startDashTimer)
         {
             dashTimer += Time.deltaTime;
@@ -246,6 +248,7 @@ public class CharacterMovement : MonoBehaviour
                 startDashTimer = false;
             }
         }
+        */
 
         if (BlackoutManager.Instance != null)
         {

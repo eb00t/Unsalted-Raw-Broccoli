@@ -13,27 +13,35 @@ public class CharacterAttack : MonoBehaviour
 {
     private static readonly int IsStaggered = Animator.StringToHash("isStaggered");
     private static readonly int IsJumpAttacking = Animator.StringToHash("isJumpAttacking");
-    private MeshCollider _attackCollider;
+    private static readonly int MediumAttack0 = Animator.StringToHash("mediumAttack");
+    private static readonly int HeavyAttack0 = Animator.StringToHash("heavyAttack0");
+    private static readonly int LightAttack0 = Animator.StringToHash("lightAttack0");
+    private static readonly int IsAttacking = Animator.StringToHash("isAttacking");
+    private static readonly int HeavyAttack1 = Animator.StringToHash("heavyAttack1");
+    private static readonly int IsDead = Animator.StringToHash("isDead");
+    private static readonly int LightAttack1 = Animator.StringToHash("lightAttack1");
+    private static readonly int LightAttack2 = Animator.StringToHash("lightAttack2");
     private Animator _playerAnimator;
     private CharacterMovement _characterMovement;
 
     // Combo variables
     [Header("Combo Variables")]
-    [SerializeField] private float timer = 0f;
-    [SerializeField] private float timer1 = 0f;
-    [SerializeField] private float heavyTimer = 0f;
-    [SerializeField] private float heavyTimer1 = 0f;
-    [SerializeField] private bool[] lightCombo = new bool[4];
-    [SerializeField] private bool[] heavyCombo = new bool[4];
-    [SerializeField] private float maxInputDelay = 10f;
-    [HideInInspector] public bool animEnd;
     public int lightEnergyCost, mediumEnergyCost, heavyEnergyCost;
     [SerializeField] private float rechargeSpeed;
     private float _rechargeTime;
+    private enum LightComboStep { None, Step1, Step2, Step3 }
+    private enum MediumComboStep { None, Step1 }
+    private enum HeavyComboStep { None, Step1, Step2 }
+    private LightComboStep _lightComboStep = LightComboStep.None;
+    private MediumComboStep _mediumComboStep = MediumComboStep.None;
+    private HeavyComboStep _heavyComboStep = HeavyComboStep.None;
+    private bool _inputBuffer;
+    private float _comboTimer;
+    [SerializeField] private float comboResetTime = 1f;
     
     [Header("Stats")]
-    public int currentHealth = 100;
-    public int maxHealth = 100;
+    public int currentHealth;
+    public int maxHealth;
     public int maxEnergy;
     public int currentEnergy;
     public int baseAtk;
@@ -73,7 +81,6 @@ public class CharacterAttack : MonoBehaviour
     private void Start()
     {
         _characterMovement = transform.root.GetComponent<CharacterMovement>();
-        _attackCollider = GetComponent<MeshCollider>();
         _playerAnimator = GameObject.FindGameObjectWithTag("PlayerRenderer").GetComponent<Animator>();
         _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
@@ -91,75 +98,45 @@ public class CharacterAttack : MonoBehaviour
         hitFlash.SetActive(false);
         _impulseSource = GetComponent<CinemachineCollisionImpulseSource>();
     }
-
+    
     public void LightAttack(InputAction.CallbackContext ctx)
     {
         if (isDead) return;
-        if (!ctx.performed) return;
-
-        var grounded = _characterMovement.grounded;
             
-        if (grounded)
+        if (ctx.performed && _characterMovement.grounded)
         {
-            _playerAnimator.SetBool("HeavyAttack", false);
-            _playerAnimator.SetBool("HeavyAttack1", false);
-            _playerAnimator.SetBool("MediumAttack", false);
-            gameObject.layer = 13;
-
-            animEnd = false;
+            if (currentEnergy < lightEnergyCost)
+            {
+                 _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
+                 return;
+            }
 
             // Start of chain
-            if (!lightCombo[0] && !_playerAnimator.GetBool("LightAttack2"))
+            if (_lightComboStep == LightComboStep.None)
             {
-                Debug.Log("LightAttack");
-                _playerAnimator.SetBool("LightAttack1", true);
+                _lightComboStep = LightComboStep.Step1;
+                _comboTimer = comboResetTime;
+                _playerAnimator.SetTrigger(LightAttack0);
             }
-
-            if (lightCombo[0])
+            else
             {
-                if (timer <= maxInputDelay && timer > 0f)
-                {
-                    Debug.Log("LightPunch");
-                    _playerAnimator.SetBool("LightPunch", true);
-                    lightCombo[1] = true;
-                }
-            }
-
-            if (lightCombo[1])
-            {
-                if (timer1 <= maxInputDelay && timer1 > 0f)
-                {
-                    Debug.Log("LightAttack2");
-                    gameObject.layer = 15;
-                    _playerAnimator.SetBool("LightAttack2", true);
-                    if (animEnd)
-                    {
-                        lightCombo[2] = true;
-                    }
-                }
-            }
-            
-            lightCombo[0] = true;
-            if (lightCombo[2])
-            {
-                timer1 = 0f; lightCombo[1] = false;
-                timer = 0f; lightCombo[0] = false;
-                lightCombo[2] = false;
+                _inputBuffer = true;
             }
         }
-        else if (_jumpAttackCount == 0)
+        else if (!_characterMovement.grounded && _jumpAttackCount == 0)
         {
             gameObject.layer = 15;
             if (_coyoteRoutine != null) StopCoroutine(_coyoteRoutine);
-            _playerAnimator.SetBool(IsJumpAttacking, true);
             _coyoteRoutine = StartCoroutine(CoyoteTimer());
             _jumpAttackCount++;
         }
     }
 
+    // holds player in air briefly while triggering a jump attack, cancelled if player hits ground
     private IEnumerator CoyoteTimer()
     {
         _characterMovement.isJumpAttacking = true;
+        _playerAnimator.SetBool(IsJumpAttacking, true);
         _rigidbody.drag = jumpAttackDrag;
 
         yield return null;
@@ -167,9 +144,7 @@ public class CharacterAttack : MonoBehaviour
         var elapsed = 0f;
         while (elapsed < 0.25f)
         {
-            var stateInfo = _playerAnimator.GetCurrentAnimatorStateInfo(0);
-            
-            if (!stateInfo.IsName("Player_JumpAttack") || !_playerAnimator.GetBool(IsJumpAttacking) || _characterMovement.grounded)
+            if (!_playerAnimator.GetBool(IsJumpAttacking) || _characterMovement.grounded)
             {
                 break;
             }
@@ -186,115 +161,107 @@ public class CharacterAttack : MonoBehaviour
     public void MediumAttack(InputAction.CallbackContext ctx)
     {
         if (isDead || _characterMovement.uiOpen) return;
-        if (ctx.performed && _playerAnimator.GetBool("Grounded"))
+        if (!ctx.performed || !_characterMovement.grounded) return;
+        if (_mediumComboStep != MediumComboStep.None) return;
+        
+        if (currentEnergy < mediumEnergyCost)
         {
-            gameObject.layer = 15;
-
-            _playerAnimator.SetBool("LightAttack1", false);
-            _playerAnimator.SetBool("LightPunch", false);
-            _playerAnimator.SetBool("LightAttack2", false);
-            _playerAnimator.SetBool("HeavyAttack", false);
-            _playerAnimator.SetBool("HeavyAttack1", false);
-
-            if (currentEnergy >= mediumEnergyCost)
-            {
-                _playerAnimator.SetBool("MediumAttack", true);
-            }
-            else { _inventoryStore.TriggerNotification(null, "Not enough energy.", false); }
+            _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
+            return;
         }
+        
+        _mediumComboStep = MediumComboStep.Step1;
+        _comboTimer = comboResetTime;
+        _playerAnimator.SetTrigger(MediumAttack0);
     }
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
     {
         if (isDead || _characterMovement.uiOpen) return;
-        if (ctx.performed && _playerAnimator.GetBool("Grounded"))
+        if (!ctx.performed || _characterMovement.isJumpAttacking) return;
+        
+        if (currentEnergy < heavyEnergyCost)
         {
-            _playerAnimator.SetBool("LightAttack1", false);
-            _playerAnimator.SetBool("LightPunch", false);
-            _playerAnimator.SetBool("LightAttack2", false);
-            gameObject.layer = 14;
+            _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
+            return;
+        }
+        
+        // Start of chain
+        if (_heavyComboStep == HeavyComboStep.None)
+        {
+            _heavyComboStep = HeavyComboStep.Step1;
+            _comboTimer = comboResetTime;
+            _playerAnimator.SetTrigger(HeavyAttack0);
+        }
+        else
+        {
+            _inputBuffer = true;
+        }
+    }
+    
+    // for animation events (light attacks): if another input is made during an existing attack animation it is added to the input buffer and played next
+    public void AdvanceLightCombo()
+    {
+        if (!_inputBuffer)
+        {
+            ResetCombo();
+            return;
+        }
+        
+        _playerAnimator.SetBool(IsAttacking, true);
+        _inputBuffer = false;
+        _comboTimer = comboResetTime;
 
-            //InitiateAttack();
-            animEnd = false;
+        switch (_lightComboStep)
+        {
+            case LightComboStep.Step1:
+                _lightComboStep = LightComboStep.Step2;
+                _playerAnimator.SetTrigger(LightAttack1);
+                break;
+            case LightComboStep.Step2:
+                _lightComboStep = LightComboStep.Step3;
+                _playerAnimator.SetTrigger(LightAttack2);
+                break;
+            case LightComboStep.Step3:
+                ResetCombo();
+                break;
+        }
+    }
+    
+    // for animation events (heavy attacks): if another input is made during an existing attack animation it is added to the input buffer and played next
+    public void AdvanceHeavyCombo()
+    {
+        if (!_inputBuffer)
+        {
+            ResetCombo();
+            return;
+        }
 
-            // Start of chain
-            if (!heavyCombo[0] && !_playerAnimator.GetBool("HeavyAttack1"))
-            {
-                if (currentEnergy >= heavyEnergyCost)
-                {
-                    Debug.Log("HeavyAttack");
-                    _playerAnimator.SetBool("HeavyAttack", true);
-                    //UseEnergy(heavyEnergyCost1);
-                }
-                else
-                {
-                    _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
-                }
-            }
+        _playerAnimator.SetBool(IsAttacking, true);
+        _inputBuffer = false;
+        _comboTimer = comboResetTime;
 
-            if (heavyCombo[0])
-            {
-                if (heavyTimer <= maxInputDelay && heavyTimer > 0f)
-                {
-                    if (currentEnergy >= heavyEnergyCost)
-                    {
-                        Debug.Log("HeavyAttack1");
-                        _playerAnimator.SetBool("HeavyAttack1", true);
-                        //UseEnergy(heavyEnergyCost2);
-
-                        heavyCombo[1] = true;
-                    }
-                    else
-                    {
-                        _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
-                    }
-                }
-            }
-
-           /* if (heavyCombo[1])
-            {
-                if (heavyTimer1 <= maxInputDelay && heavyTimer1 > 0f)
-                {
-                    if (currentEnergy >= heavyEnergyCost3)
-                    {
-                        Debug.Log("HeavyAttack2");
-                        _playerAnimator.SetBool("HeavyAttack2", true);
-                        //UseEnergy(heavyEnergyCost2);
-
-                        if (animEnd)
-                        {
-                            heavyCombo[2] = true;
-
-                        }
-                    }
-                    else
-                    {
-                        _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
-                    }
-                }
-            }*/
-
-            heavyCombo[0] = true;
-            if (heavyCombo[1])
-            {
-                heavyTimer1 = 0f; heavyCombo[1] = false;
-                heavyTimer = 0f; heavyCombo[0] = false;
-
-
-                heavyCombo[1] = false;
-            }
+        switch (_heavyComboStep)
+        {
+            case HeavyComboStep.Step1:
+                _heavyComboStep = HeavyComboStep.Step2;
+                _playerAnimator.SetTrigger(HeavyAttack1);
+                break;
+            case HeavyComboStep.Step2:
+                ResetCombo();
+                break;
         }
     }
 
-    public void DisableCollider()
+    // if a combo is completed or cancelled then
+    private void ResetCombo()
     {
-        _attackCollider.enabled = false;
-    }
-
-    public void EnableCollider()
-    {
-        _attackCollider.enabled = true;
-        Debug.Log("Enable collider");
+        _lightComboStep = LightComboStep.None;
+        _mediumComboStep = MediumComboStep.None;
+        _heavyComboStep = HeavyComboStep.None;
+        _playerAnimator.SetBool(IsAttacking, false);
+        _comboTimer = 0f;
+        _inputBuffer = false;
     }
 
     public void TakeDamagePlayer(int damage, int poiseDmg)
@@ -376,7 +343,7 @@ public class CharacterAttack : MonoBehaviour
         if (isDead) return;
         isDead = true;
         _playerAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
-        _playerAnimator.SetTrigger("isDead");
+        _playerAnimator.SetTrigger(IsDead);
         if (!diedScreen.activeSelf)
         {
             Time.timeScale = 0.2f;
@@ -409,24 +376,6 @@ public class CharacterAttack : MonoBehaviour
             }
         }
         
-        //Layer = Heavy
-        if (gameObject.layer == 14)
-        {
-            float randomTinyX = Random.Range(1.5f, 2f);
-            float randomTinyY = Random.Range(-1f, 1f);
-            var calcAtk = (charAtk - baseAtk) + (baseAtk * heavyAtkMultiplier);
-            damageable.TakeDamage((int)calcAtk, poiseDamageHeavy, knockbackPowerHeavy);
-            _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
-            _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
-            _enemyDamageEvent.start();
-            _enemyDamageEvent.release();
-            if (_impulseSource != null)
-            {
-                _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;
-                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0) * _settingManager.screenShakeMultiplier);
-            }
-        }
-        
         // Layer = Medium (final hit of light combo)
         if (gameObject.layer == 15)
         {
@@ -447,6 +396,24 @@ public class CharacterAttack : MonoBehaviour
             }
         }
         
+        //Layer = Heavy
+        if (gameObject.layer == 14)
+        {
+            float randomTinyX = Random.Range(1.5f, 2f);
+            float randomTinyY = Random.Range(-1f, 1f);
+            var calcAtk = (charAtk - baseAtk) + (baseAtk * heavyAtkMultiplier);
+            damageable.TakeDamage((int)calcAtk, poiseDamageHeavy, knockbackPowerHeavy);
+            _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
+            _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+            _enemyDamageEvent.start();
+            _enemyDamageEvent.release();
+            if (_impulseSource != null)
+            {
+                _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;
+                _impulseSource.GenerateImpulseWithVelocity(new Vector3(randomTinyX, randomTinyY, 0) * _settingManager.screenShakeMultiplier);
+            }
+        }
+        
         if (isPoison)
         {
             damageable.TriggerStatusEffect(ConsumableEffect.Poison);
@@ -460,6 +427,17 @@ public class CharacterAttack : MonoBehaviour
     private void Update()
     {
         if (isDead || _characterMovement.uiOpen) return;
+        
+        // if this timer reaches 0 then reset combo so it starts from attack step 1
+        if (_comboTimer > 0f)
+        {
+            _comboTimer -= Time.deltaTime;
+
+            if (_comboTimer <= 0f)
+            {
+                ResetCombo();
+            }
+        }
 
         if (_jumpAttackCount > 0)
         {
@@ -479,7 +457,8 @@ public class CharacterAttack : MonoBehaviour
                 _rechargeTime = 1f;
             }
         }
-
+        
+        /*
         if (lightCombo[0])
         {
             if (!lightCombo[1])
@@ -527,6 +506,7 @@ public class CharacterAttack : MonoBehaviour
                 heavyTimer = 0f;
             }
         }
+        */
     }
 }
 

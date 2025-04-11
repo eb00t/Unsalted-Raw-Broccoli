@@ -113,18 +113,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2770befe3bd5de741a53daf7afc04972, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timer: 0
-  timer1: 0
-  heavyTimer: 0
-  heavyTimer1: 0
-  lightCombo: 00000000
-  heavyCombo: 00000000
   maxInputDelay: 0.75
-  animEnd: 0
   lightEnergyCost: 0
   mediumEnergyCost: 5
-  heavyEnergyCost: 15
-  rechargeSpeed: 3
+  heavyEnergyCost: 10
+  rechargeSpeed: 2.5
+  comboResetTime: 5
   currentHealth: 250
   maxHealth: 250
   maxEnergy: 40
@@ -135,8 +129,8 @@ MonoBehaviour:
   charAtk: 0
   poise: 30
   poiseDamageLight: 10
-  poiseDamageHeavy: 50
   poiseDamageMedium: 20
+  poiseDamageHeavy: 50
   isInvincible: 0
   isPoison: 0
   isIce: 0
@@ -467,7 +461,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 120
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!114 &6931550250588402113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485,12 +479,12 @@ MonoBehaviour:
   acceleration: 17
   maxSpeed: 12
   jumpForce: 35
-  dashSpeed: 25
+  dashSpeed: 40
+  dashEnergyCost: 4
   grounded: 0
   doubleJumpPerformed: 0
   isCrouching: 0
   Velocity: {x: 0, y: 0, z: 0}
-  dashBreak: 1
   isJumpAttacking: 0
 --- !u!65 &7947488834224069209
 BoxCollider:

@@ -6,29 +6,26 @@ using UnityEngine;
 
 public class PlayerAnimationEvents : MonoBehaviour
 {
-    CharacterAttack charAttack;
-    CharacterMovement charMovement;
+    private CharacterAttack charAttack;
+    private CharacterMovement charMovement;
     private EventInstance _footstepEvent;
+    private GameObject _playerAtkHitbox;
+    
     void Start()
     {
         charAttack = GameObject.FindGameObjectWithTag("PlayerAttackBox").GetComponent<CharacterAttack>();
         charMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterMovement>();
+        _playerAtkHitbox = GetComponentInChildren<PlayerHitboxHandler>(true).gameObject;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void AdvanceLightCombo()
     {
-        
+        charAttack.AdvanceLightCombo();
     }
-
-    private void disableCollider()
+    
+    private void AdvanceHeavyCombo()
     {
-        charAttack.DisableCollider();
-    }
-
-    private void enableCollider()
-    {
-        charAttack.EnableCollider();
+        charAttack.AdvanceHeavyCombo();
     }
 
     private void disablePlayerMovement()
@@ -43,8 +40,13 @@ public class PlayerAnimationEvents : MonoBehaviour
         charMovement.walkAllowed = true;
     }
 
-    private void signalAnimationEnd()
+    private void EnablePlayerHitbox()
     {
-        charAttack.animEnd = true;
+        _playerAtkHitbox.SetActive(true);
+    }
+
+    private void DisablePlayerHitbox()
+    {
+        _playerAtkHitbox.SetActive(false);
     }
 }
