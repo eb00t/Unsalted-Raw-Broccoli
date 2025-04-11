@@ -30,7 +30,7 @@ public class LevelBuilder : MonoBehaviour
     public int howManyRoomsToSpawn;
     public int roomsDiscarded;
     public LevelMode currentFloor;
-    private GameObject _startingRoom;
+    public GameObject _startingRoom;
     public int randomSeed = 0; // The same seed will cause the same rooms and same layouts to spawn, except boss rooms.
     
     [field: Header("Debugging")] 

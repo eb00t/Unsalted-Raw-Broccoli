@@ -94,8 +94,18 @@ public class RoomInfo : MonoBehaviour
     {
         foreach (var lit in gameObject.GetComponentsInChildren<Light>())
         {
+            LightManager.Instance.allRoomLights.Add(lit);
             allLights.Add(lit.GetComponent<Light>());
         }
+
+        if (!gameObject.CompareTag("StartingRoom"))
+        {
+            foreach (var lit in allLights)
+            {
+                lit.enabled = false;
+            }
+        }
+
         _playerRenderer = GameObject.FindGameObjectWithTag("Player").transform.Find("Renderer").gameObject;
         if (bigRoom)
         {
@@ -150,12 +160,41 @@ public class RoomInfo : MonoBehaviour
         Debug.Log(gameObject + "Distance between top/bottom walls and centre: " + distToRoomCentre.y);*/
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            if (allLights.Count != 0)
+            {
+                foreach (var lit in allLights)
+                {
+                    lit.GetComponent<Light>().enabled = true;
+                    foreach (var lit2 in attachedConnectors)
+                    {
+                        lit2.GetComponentInChildren<Light>().enabled = true;
+                    }
+                    if (LightManager.Instance.roomLightQueue.Contains(lit.transform.root.gameObject))
+                    {
+                        LightManager.Instance.roomLightQueue.Remove(lit.transform.root.gameObject);
+                    }
+                    LightManager.Instance.roomLightQueue.Add(lit.transform.root.gameObject);
+                    LightManager.Instance.CheckQueues();
+                }
+            }
+        }
+    }
+
     public void MarkRoomForDiscard()
     {
         markedForDiscard = true;
         if (!LevelBuilder.Instance.discardedRooms.Contains(gameObject))
         {
             LevelBuilder.Instance.discardedRooms.Add(gameObject);
+        }
+
+        foreach (var lit in allLights)
+        { 
+            LightManager.Instance.allRoomLights.Remove(lit);
         }
 
         LevelBuilder.Instance.spawnedRooms.Remove(gameObject);

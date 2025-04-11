@@ -13,7 +13,7 @@ public class ConnectorRoomInfo : MonoBehaviour
     public string spawnedOnSide;
     public float connectorLength;
     public float connectorHeight; // The smaller side (should typically be the same for each connector)
-    public List<Light> allLights = new List<Light>();
+    public List<Light> allLights;
     public bool markedForDiscard;
 
     private void Awake()
@@ -31,50 +31,55 @@ public class ConnectorRoomInfo : MonoBehaviour
                 spawnWalls.Add(wallT.transform);
                 break;
         }
-
-        foreach (var lit in GetComponentsInChildren<Light>())
-        {
-            allLights.Add(lit.GetComponent<Light>());
-        }
+        
     }
 
     void Start()
     {
+        foreach (var lit in GetComponentsInChildren<Light>())
+        {
+            LightManager.Instance.allConnectorLights.Add(lit.GetComponent<Light>());
+            allLights.Add(lit.GetComponent<Light>());
+        }
+
+        foreach (var lit in allLights)
+        {
+            lit.enabled = false;
+        }
         LevelBuilder.Instance.spawnedConnectors.Add(gameObject);
     }
 
     void OnDestroy()
     {
         LevelBuilder.Instance.spawnedConnectors.Remove(gameObject);
+        foreach (var lit in allLights)
+        { 
+            LightManager.Instance.allConnectorLights.Remove(lit);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        foreach (var lit in LevelBuilder.Instance.spawnedConnectors)
+        if (other.CompareTag("Player"))
         {
-            foreach (var lit2 in lit.GetComponent<ConnectorRoomInfo>().allLights)
+            foreach (var lit in allLights)
             {
-                lit2.GetComponent<Light>().enabled = false;
+                if (allLights.Count != 0)
+                {
+                    lit.GetComponent<Light>().enabled = true;
+                    foreach (var lit2 in attachedRooms)
+                    {
+                        lit2.GetComponentInChildren<Light>().enabled = true;
+                    }
+                    if (LightManager.Instance.connectorLightQueue.Contains(lit.transform.root.gameObject))
+                    {
+                        LightManager.Instance.connectorLightQueue.Remove(lit.transform.root.gameObject);
+                    }
+                    LightManager.Instance.connectorLightQueue.Add(lit.transform.root.gameObject);
+                    LightManager.Instance.CheckQueues();
+                }
             }
         }
-        foreach (var lit in allLights)
-        {
-            lit.GetComponent<Light>().enabled = true;
-        }
-        foreach (var lit in LevelBuilder.Instance.spawnedRooms)
-        {
-            foreach (var lit2 in lit.GetComponent<RoomInfo>().allLights)
-            {
-                lit2.GetComponent<Light>().enabled = false;
-            }
-        }
-        foreach (var lit in attachedRooms)
-        {
-            foreach (var lit2 in lit.GetComponent<RoomInfo>().allLights)
-            {
-                lit2.GetComponent<Light>().enabled = true;
-            }
-        }
-        
     }
+
 }
