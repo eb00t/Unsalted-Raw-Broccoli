@@ -99,7 +99,16 @@ public class SettingManager : MonoBehaviour
     public void UpdateVolume(int volumeType)
     {
         // gets current selected gameobject (slider handle)
-        _currentSliderValue = EventSystem.current.currentSelectedGameObject.GetComponentInParent<Slider>().value;
+        
+        var selected = EventSystem.current.currentSelectedGameObject;
+
+        if (selected == null) return;
+
+        var slider = selected.GetComponent<Slider>();
+
+        if (slider == null) return;
+
+        _currentSliderValue = slider.value;
         
         switch (volumeType)
         {
