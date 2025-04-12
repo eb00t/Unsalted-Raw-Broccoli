@@ -153,6 +153,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _target = isPassive ? passiveTarget : _target;
         _playerDir = _target.position - transform.position;
         var distance = Vector3.Distance(transform.position, _target.position);
+        
+        var pos = _agent.nextPosition;
+        pos.z = _target.position.z;
+        transform.position = pos;
 
         if (isStalker)
         {

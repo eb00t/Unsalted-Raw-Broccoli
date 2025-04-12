@@ -105,6 +105,8 @@ public class CharacterAttack : MonoBehaviour
             
         if (ctx.performed && _characterMovement.grounded)
         {
+            gameObject.layer = 13;
+            
             if (currentEnergy < lightEnergyCost)
             {
                 _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
@@ -124,7 +126,7 @@ public class CharacterAttack : MonoBehaviour
                 _inputBuffer = true;
             }
         }
-        else if (!_characterMovement.grounded && _jumpAttackCount == 0)
+        else if (ctx.performed && !_characterMovement.grounded && _jumpAttackCount == 0)
         {
             gameObject.layer = 15;
             if (_coyoteRoutine != null) StopCoroutine(_coyoteRoutine);
@@ -165,6 +167,8 @@ public class CharacterAttack : MonoBehaviour
         if (!ctx.performed || _characterMovement.isJumpAttacking || !_characterMovement.grounded) return;
         if (_mediumComboStep != MediumComboStep.None) return;
         
+        gameObject.layer = 15;
+        
         if (currentEnergy < mediumEnergyCost)
         {
             _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
@@ -181,6 +185,8 @@ public class CharacterAttack : MonoBehaviour
     {
         if (isDead || _characterMovement.uiOpen) return;
         if (!ctx.performed || _characterMovement.isJumpAttacking || !_characterMovement.grounded) return;
+        
+        gameObject.layer = 14;
         
         if (currentEnergy < heavyEnergyCost)
         {
@@ -211,6 +217,7 @@ public class CharacterAttack : MonoBehaviour
             return;
         }
         
+        gameObject.layer = 15;
         _playerAnimator.SetBool(IsAttacking, true);
         _inputBuffer = false;
         _comboTimer = comboResetTime;
@@ -241,7 +248,8 @@ public class CharacterAttack : MonoBehaviour
             ResetCombo();
             return;
         }
-
+        
+        gameObject.layer = 14;
         _playerAnimator.SetBool(IsAttacking, true);
         _inputBuffer = false;
         _comboTimer = comboResetTime;

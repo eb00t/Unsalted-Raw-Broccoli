@@ -288,6 +288,7 @@ MonoBehaviour:
   numberOfAttacks: 1
   attackRange: 3
   patrolRange: 0
+  _roomBounds: {fileID: 0}
   attackCooldown: 0.5
   freezeDuration: 3
   freezeCooldown: 1
@@ -326,7 +327,7 @@ NavMeshAgent:
   m_Height: 1.9
   m_BaseOffset: 1.25
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 0
+  m_ObstacleAvoidanceType: 4
 --- !u!95 &1007004536666698315
 Animator:
   serializedVersion: 5
@@ -360,6 +361,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 532112a78e751aa4fa8bc1ea7d01eb64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blackoutCircle: {fileID: 0}
+  deathScreen: {fileID: 0}
 --- !u!114 &8325045093059894457
 MonoBehaviour:
   m_ObjectHideFlags: 0
