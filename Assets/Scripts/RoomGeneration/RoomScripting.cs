@@ -179,6 +179,14 @@ public class RoomScripting : MonoBehaviour
     {
         _enemyCount = enemies.Count;
         enabledSpawnerCount = spawners.Count;
+        if (playerIsInRoom)
+        {
+            playerHasEnteredRoom = true;
+        }
+        if (playerHasEnteredRoom)
+        {
+            _roomInfo.coveredUp = false;
+        }
         
         /*
         if (_roomCam.Priority > 9 && allDoorsClosed == false)

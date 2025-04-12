@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 public class LightManager : MonoBehaviour
@@ -21,8 +22,15 @@ public class LightManager : MonoBehaviour
         {
             Debug.LogError("More than one LightManager script in the scene.");    
         }
-        
+
         Instance = this;
+        
+        if (SceneManager.GetActiveScene().name is not "MainScene")
+        {
+            gameObject.SetActive(false);
+        }
+        
+       
     }
 
     void Start()

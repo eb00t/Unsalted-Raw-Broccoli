@@ -46,6 +46,7 @@ public class RoomInfo : MonoBehaviour
     public string roomPath;
     private GameObject _playerRenderer;
     public List<Light> allLights;
+    public bool coveredUp;
     void Awake()
     {
         if (doorT == null)
@@ -104,6 +105,8 @@ public class RoomInfo : MonoBehaviour
             {
                 lit.enabled = false;
             }
+
+            coveredUp = true;
         }
 
         _playerRenderer = GameObject.FindGameObjectWithTag("Player").transform.Find("Renderer").gameObject;
