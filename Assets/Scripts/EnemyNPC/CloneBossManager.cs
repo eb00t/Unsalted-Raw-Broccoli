@@ -50,6 +50,7 @@ public class CloneBossManager : MonoBehaviour
     {
         if (_dialogueGui.activeSelf)
         {
+            _targetTime = 0;
             return;
         }
 

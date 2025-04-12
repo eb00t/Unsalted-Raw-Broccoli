@@ -112,6 +112,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         if (_isDead) return;
 
+        if (dialogueGui.activeSelf)
+        {
+            return;
+        }
+
         var distance = Vector3.Distance(transform.position, _player.position);
         var heightDiffAbove = _player.position.y - transform.position.y;
         var heightDiffBelow = transform.position.y - _player.position.y;
