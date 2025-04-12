@@ -29,7 +29,7 @@ public class CharacterMovement : MonoBehaviour
     public bool doubleJumpPerformed;
     public bool isCrouching;
     public Vector3 Velocity;
-    private GameObject _playerGroundPosition;
+    [SerializeField] private Transform playerGround;
 
     //private bool dashAllowed = true;
     private bool startDashTimer;
@@ -55,11 +55,14 @@ public class CharacterMovement : MonoBehaviour
     private Coroutine _dashCoroutine;
     private CharacterAttack _characterAttack;
     public bool isJumpAttacking;
+    public bool isAttacking;
+    
+    [SerializeField] private float groundCheckDist;
+    [SerializeField] private float groundCheckSpacing;
 
     public void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        _playerGroundPosition = transform.Find("GroundPos").gameObject;
         groundCheck = GetComponent<BoxCollider>();
         PlayerAnimator = GetComponentInChildren<Animator>();
         _characterAttack = GetComponentInChildren<CharacterAttack>();
@@ -160,6 +163,8 @@ public class CharacterMovement : MonoBehaviour
         {
             var direction = input != 0 ? Mathf.Sign(input) : Mathf.Sign(transform.localScale.x);
             var dashForce = new Vector3(direction * dashSpeed, rb.velocity.y, 0f);
+
+            isAttacking = false;
             
             rb.velocity = Vector3.zero;
             rb.AddForce(dashForce, ForceMode.Impulse);
@@ -275,8 +280,23 @@ public class CharacterMovement : MonoBehaviour
     public void FixedUpdate()
     {
         if (uiOpen) return;
+        
+        var lRayStart = playerGround.position - new Vector3(groundCheckSpacing, 0, 0);
+        var rRayStart = playerGround.position + new Vector3(groundCheckSpacing, 0, 0);
 
-        if (walkAllowed && /*!isWallJumping &&*/ allowMovement && !_isDashing && !isJumpAttacking)
+        var leftGrounded = Physics.Raycast(lRayStart, Vector3.down, groundCheckDist, LayerMask.GetMask("Ground"));
+        var rightGrounded = Physics.Raycast(rRayStart, Vector3.down, groundCheckDist, LayerMask.GetMask("Ground"));
+
+        grounded = leftGrounded || rightGrounded;
+        PlayerAnimator.SetBool("Grounded", grounded);
+
+        if (grounded)
+        {
+            doubleJumpPerformed = false;
+            _midAirDashCount = 0;
+        }
+
+        if (walkAllowed && allowMovement && !_isDashing && !isJumpAttacking && !isAttacking)
         {
             if ((rb.velocity.x <= maxSpeed && Mathf.Sign(rb.velocity.x) == 1) || (rb.velocity.x >= -maxSpeed && Mathf.Sign(rb.velocity.x) == -1) || (Mathf.Sign(rb.velocity.x) != input))
             {
@@ -295,13 +315,14 @@ public class CharacterMovement : MonoBehaviour
         else sliding = false;*/
     }
 
+    /*
     private void OnTriggerStay(Collider other)
     {
         if (uiOpen) return;
 
         if (other.gameObject.layer == 10 && _playerGroundPosition.transform.position.y > other.gameObject.transform.position.y)
         {
-            if (Velocity.y <= 0f)
+            if (Velocity.y <= 0)
             {
                 grounded = true;
                 //startSlide = false;
@@ -334,6 +355,7 @@ public class CharacterMovement : MonoBehaviour
             StartCoroutine(CheckIfStillInAir());
         }
     }
+    
 
     IEnumerator CheckIfStillInAir()
     {
@@ -347,6 +369,7 @@ public class CharacterMovement : MonoBehaviour
             grounded = true;
         }
     }
+    */
     
     /*private void OnCollisionEnter(Collision collision)
     {
@@ -393,4 +416,15 @@ public class CharacterMovement : MonoBehaviour
             PlayerAnimator.SetBool("WallCling", false);
         }
     }*/
+    
+    private void OnDrawGizmosSelected()
+    {
+        var basePos = playerGround.transform.position;
+        var lRayStart = basePos - new Vector3(groundCheckSpacing, 0, 0);
+        var rRayStart = basePos + new Vector3(groundCheckSpacing, 0, 0);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(lRayStart, lRayStart + Vector3.down * groundCheckDist);
+        Gizmos.DrawLine(rRayStart, rRayStart + Vector3.down * groundCheckDist);
+    }
 }

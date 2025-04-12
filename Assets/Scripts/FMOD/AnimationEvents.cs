@@ -68,6 +68,11 @@ public class AnimationEvents : MonoBehaviour
         _jumpEvent.release();
     }
 
+    public void Push(int LMH)
+    {
+        _characterAttack.AttackForce(LMH);
+    }
+
     public void ReduceEnergy(int LMH) //Light = 0, Medium = 1, Heavy = 0
     {
         //_characterAttack = transform.root.transform.Find("PlayerAttack").GetComponent<CharacterAttack>();

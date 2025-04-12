@@ -38,6 +38,7 @@ public class CharacterAttack : MonoBehaviour
     private bool _inputBuffer;
     private float _comboTimer;
     [SerializeField] private float comboResetTime = 1f;
+    [SerializeField] private float lightAttackForce, mediumAttackForce, heavyAttackForce;
     
     [Header("Stats")]
     public int currentHealth;
@@ -119,6 +120,8 @@ public class CharacterAttack : MonoBehaviour
                 _lightComboStep = LightComboStep.Step1;
                 _comboTimer = comboResetTime;
                 _playerAnimator.SetTrigger(LightAttack0);
+                _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
+                _characterMovement.isAttacking = true;
             }
             else
             {
@@ -176,6 +179,8 @@ public class CharacterAttack : MonoBehaviour
         _mediumComboStep = MediumComboStep.Step1;
         _comboTimer = comboResetTime;
         _playerAnimator.SetTrigger(MediumAttack0);
+        _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
+        _characterMovement.isAttacking = true;
     }
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
@@ -197,6 +202,8 @@ public class CharacterAttack : MonoBehaviour
             _heavyComboStep = HeavyComboStep.Step1;
             _comboTimer = comboResetTime;
             _playerAnimator.SetTrigger(HeavyAttack0);
+            _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
+            _characterMovement.isAttacking = true;
         }
         else
         {
@@ -214,6 +221,8 @@ public class CharacterAttack : MonoBehaviour
         }
         
         gameObject.layer = 15;
+        _characterMovement.isAttacking = true;
+        _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
         _playerAnimator.SetBool(IsAttacking, true);
         _inputBuffer = false;
         _comboTimer = comboResetTime;
@@ -244,6 +253,8 @@ public class CharacterAttack : MonoBehaviour
         }
 
         gameObject.layer = 14;
+        _characterMovement.isAttacking = true;
+        _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
         _playerAnimator.SetBool(IsAttacking, true);
         _inputBuffer = false;
         _comboTimer = comboResetTime;
@@ -266,9 +277,37 @@ public class CharacterAttack : MonoBehaviour
         _lightComboStep = LightComboStep.None;
         _mediumComboStep = MediumComboStep.None;
         _heavyComboStep = HeavyComboStep.None;
+        _characterMovement.isAttacking = false;
         _playerAnimator.SetBool(IsAttacking, false);
         _comboTimer = 0f;
         _inputBuffer = false;
+    }
+    
+    public void AttackForce(int LMH)
+    {
+        var force = 0f;
+        switch (LMH)
+        {
+            case 0:
+                force = lightAttackForce;
+                break;
+            case 1:
+                force = mediumAttackForce;
+                break;
+            case 2:
+                force = heavyAttackForce;
+                break;
+        }
+
+        var dir = Mathf.Sign(transform.root.localScale.x);
+        _rigidbody.velocity = new Vector3(dir * force, _rigidbody.velocity.y, 0f);
+        StartCoroutine(StopAttackForce());
+    }
+    
+    private IEnumerator StopAttackForce()
+    {
+        yield return new WaitForSeconds(0.1f);
+        _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
     }
 
     public void TakeDamagePlayer(int damage, int poiseDmg)
