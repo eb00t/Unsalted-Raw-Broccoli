@@ -19,6 +19,7 @@ public class CharacterMovement : MonoBehaviour
     public float jumpForce = 1f;
     public float dashSpeed;
     public int dashEnergyCost;
+    private int _midAirDashCount;
     //public float slideSpeed = 1f;
     //public float slideHoldTime = 1f;
 
@@ -155,7 +156,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (uiOpen || !allowMovement || _isDashing) return;
 
-        if (ctx.performed) 
+        if (ctx.performed && _midAirDashCount == 0) 
         {
             var direction = input != 0 ? Mathf.Sign(input) : Mathf.Sign(transform.localScale.x);
             var dashForce = new Vector3(direction * dashSpeed, rb.velocity.y, 0f);
@@ -171,6 +172,11 @@ public class CharacterMovement : MonoBehaviour
             _isDashing = true;
             if (_dashCoroutine != null) StopCoroutine(_dashCoroutine);
             _dashCoroutine = StartCoroutine(DashRoutine());
+        }
+
+        if (ctx.performed && !grounded)
+        {
+            _midAirDashCount++;
         }
     }
     
@@ -300,6 +306,7 @@ public class CharacterMovement : MonoBehaviour
                 grounded = true;
                 //startSlide = false;
                 doubleJumpPerformed = false;
+                _midAirDashCount = 0;
                 //slideAllowed = false;
                 PlayerAnimator.SetBool("Grounded", true);
             }
