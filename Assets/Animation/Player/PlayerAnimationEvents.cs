@@ -3,20 +3,14 @@ using System.Collections.Generic;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerAnimationEvents : MonoBehaviour
 {
-    private CharacterAttack charAttack;
-    private CharacterMovement charMovement;
+    [SerializeField] private CharacterAttack charAttack;
+    [SerializeField] private CharacterMovement charMovement;
     private EventInstance _footstepEvent;
-    private GameObject _playerAtkHitbox;
-    
-    void Start()
-    {
-        charAttack = GameObject.FindGameObjectWithTag("PlayerAttackBox").GetComponent<CharacterAttack>();
-        charMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterMovement>();
-        _playerAtkHitbox = GetComponentInChildren<PlayerHitboxHandler>(true).gameObject;
-    }
+    [SerializeField] private GameObject playerAtkHitbox;
 
     private void AdvanceLightCombo()
     {
@@ -42,11 +36,11 @@ public class PlayerAnimationEvents : MonoBehaviour
 
     private void EnablePlayerHitbox()
     {
-        _playerAtkHitbox.SetActive(true);
+        playerAtkHitbox.SetActive(true);
     }
 
     private void DisablePlayerHitbox()
     {
-        _playerAtkHitbox.SetActive(false);
+        playerAtkHitbox.SetActive(false);
     }
 }

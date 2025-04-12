@@ -107,8 +107,8 @@ public class CharacterAttack : MonoBehaviour
         {
             if (currentEnergy < lightEnergyCost)
             {
-                 _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
-                 return;
+                _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
+                return;
             }
 
             // Start of chain
@@ -117,6 +117,7 @@ public class CharacterAttack : MonoBehaviour
                 _lightComboStep = LightComboStep.Step1;
                 _comboTimer = comboResetTime;
                 _playerAnimator.SetTrigger(LightAttack0);
+                UseEnergy(lightEnergyCost);
             }
             else
             {
@@ -161,7 +162,7 @@ public class CharacterAttack : MonoBehaviour
     public void MediumAttack(InputAction.CallbackContext ctx)
     {
         if (isDead || _characterMovement.uiOpen) return;
-        if (!ctx.performed || !_characterMovement.grounded) return;
+        if (!ctx.performed || _characterMovement.isJumpAttacking || !_characterMovement.grounded) return;
         if (_mediumComboStep != MediumComboStep.None) return;
         
         if (currentEnergy < mediumEnergyCost)
@@ -173,12 +174,13 @@ public class CharacterAttack : MonoBehaviour
         _mediumComboStep = MediumComboStep.Step1;
         _comboTimer = comboResetTime;
         _playerAnimator.SetTrigger(MediumAttack0);
+        UseEnergy(mediumEnergyCost);
     }
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
     {
         if (isDead || _characterMovement.uiOpen) return;
-        if (!ctx.performed || _characterMovement.isJumpAttacking) return;
+        if (!ctx.performed || _characterMovement.isJumpAttacking || !_characterMovement.grounded) return;
         
         if (currentEnergy < heavyEnergyCost)
         {
@@ -192,6 +194,7 @@ public class CharacterAttack : MonoBehaviour
             _heavyComboStep = HeavyComboStep.Step1;
             _comboTimer = comboResetTime;
             _playerAnimator.SetTrigger(HeavyAttack0);
+            UseEnergy(heavyEnergyCost);
         }
         else
         {
@@ -217,10 +220,12 @@ public class CharacterAttack : MonoBehaviour
             case LightComboStep.Step1:
                 _lightComboStep = LightComboStep.Step2;
                 _playerAnimator.SetTrigger(LightAttack1);
+                UseEnergy(lightEnergyCost);
                 break;
             case LightComboStep.Step2:
                 _lightComboStep = LightComboStep.Step3;
                 _playerAnimator.SetTrigger(LightAttack2);
+                UseEnergy(lightEnergyCost);
                 break;
             case LightComboStep.Step3:
                 ResetCombo();
@@ -246,6 +251,7 @@ public class CharacterAttack : MonoBehaviour
             case HeavyComboStep.Step1:
                 _heavyComboStep = HeavyComboStep.Step2;
                 _playerAnimator.SetTrigger(HeavyAttack1);
+                UseEnergy(heavyEnergyCost);
                 break;
             case HeavyComboStep.Step2:
                 ResetCombo();
