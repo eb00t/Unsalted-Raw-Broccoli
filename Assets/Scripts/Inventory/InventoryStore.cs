@@ -215,12 +215,6 @@ public class InventoryStore : MonoBehaviour
         {
             notification = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation, notifHolder.transform);
 
-            foreach (var txt in notification.GetComponentsInChildren<TextMeshProUGUI>())
-            {
-                if (txt.name == "Message") txt.text = text;
-                txt.color = isPositive ? notifPositiveColor : notifNegativeColor;
-            }
-
             foreach (var img in notification.GetComponentsInChildren<Image>())
             {
                 switch (img.name)
