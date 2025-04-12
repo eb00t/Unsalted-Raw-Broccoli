@@ -8,8 +8,9 @@ public class SettingManager : MonoBehaviour
 {
     private InventoryStore _inventoryStore;
     [SerializeField] private DataHolder dataHolder;
-    [SerializeField] private Slider masterSlider, musicSlider, sfxSlider;
+    [SerializeField] private Slider masterSlider, musicSlider, sfxSlider, screenShakeSlider;
     [SerializeField] private TMP_Dropdown controlSchemeDropdown;
+    [SerializeField] private Toggle autoEquipToggle, autoLockOnToggle, autoSwitchToggle;
     [Range(0, 1)]
     public float screenShakeMultiplier = 1;
     private float _currentSlider;
@@ -21,7 +22,7 @@ public class SettingManager : MonoBehaviour
     {
         _audioManager = GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioManager>();
         screenShakeMultiplier = dataHolder.screenShakeMultiplier;
-        LoadVolume();
+        LoadSettings();
     }
 
     private void Update()
@@ -52,25 +53,47 @@ public class SettingManager : MonoBehaviour
         ButtonHandler.Instance.PlayConfirmSound();
     }
 
-    private void LoadVolume()
+    private void LoadSettings()
     {
+        // sliders
         _audioManager.masterVolume = dataHolder.masterVolume;
         _audioManager.ambienceVolume = dataHolder.musicVolume;
         _audioManager.musicVolume = dataHolder.musicVolume;
         _audioManager.sfxVolume = dataHolder.sfxVolume;
         _audioManager.uiSfxVolume = dataHolder.sfxVolume;
-        
         masterSlider.value = dataHolder.masterVolume;
         musicSlider.value = dataHolder.musicVolume;
         sfxSlider.value = dataHolder.sfxVolume;
+        
+        screenShakeSlider.value = dataHolder.screenShakeMultiplier;
+        
+        // toggles
+        autoEquipToggle.isOn = dataHolder.isAutoEquipEnabled;
+        autoSwitchToggle.isOn = dataHolder.isAutoSwitchEnabled;
+        autoLockOnToggle.isOn = dataHolder.isAutoLockOnEnabled;
+        
+        // dropdowns
+        if (dataHolder.forceControlScheme)
+        {
+            switch (dataHolder.currentControl)
+            {
+                case ControlsManager.ControlScheme.Xbox:
+                    controlSchemeDropdown.value = 1;
+                    break;
+                case ControlsManager.ControlScheme.Playstation:
+                    controlSchemeDropdown.value = 2;
+                    break;
+                case ControlsManager.ControlScheme.Keyboard:
+                    controlSchemeDropdown.value = 3;
+                    break;
+            }
+        }
     }
 
     public void UpdateScreenShake()
     {
-        _currentSliderValue = EventSystem.current.currentSelectedGameObject.GetComponentInParent<Slider>().value;
-
-        screenShakeMultiplier = _currentSliderValue;
-        dataHolder.screenShakeMultiplier = _currentSliderValue;
+        screenShakeMultiplier = screenShakeSlider.value;
+        dataHolder.screenShakeMultiplier = screenShakeSlider.value;
     }
 
     public void UpdateVolume(int volumeType)
