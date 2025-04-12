@@ -4,34 +4,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class CloneBossManager : MonoBehaviour
 {
-    public List<CloneBossHandler> cloneBossHandlers = new List<CloneBossHandler>();
-    [SerializeField] private Transform spawnPoint;
-    [SerializeField] private Transform parent;
-    [SerializeField] private int individualHealth;
+    [Header("Stats")]
     private int _collectiveHealth;
     private int _maxHealth;
-    [SerializeField] private GameObject bossPrefab;
     [SerializeField] private int maxNumberOfBosses;
     [SerializeField] private int maxAttackingCount;
-    [SerializeField] private Slider healthSlider;
+    [SerializeField] private int individualHealth;
     [SerializeField] private float spawnCooldown;
     [SerializeField] private float individualRetreatDist;
-    private RoomScripting _roomScripting;
+    [SerializeField] private float atkCheckCooldown;
+    
+    [Header("Properties")]
+    public List<CloneBossHandler> cloneBossHandlers;
     private bool _lowHealth;
     private float _targetTime;
     private bool _isPlayerInRange;
-    [SerializeField] private Canvas canvas;
     private int _attackingCount;
-    [SerializeField] private float atkCheckCooldown;
     private bool _isChecking;
+    
+    [Header("References")]
+    [SerializeField] private Canvas canvas;
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Transform spawnPoint1, spawnPoint2, spawnPoint3;
+    [SerializeField] private Transform parent;
+    [SerializeField] private GameObject bossPrefab;
+    private RoomScripting _roomScripting;
+    private GameObject _dialogueGui;
 
     private void Start()
     {
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
+        _dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
+        InstantiateBoss(6);
         _maxHealth = maxNumberOfBosses * individualHealth;
         healthSlider.maxValue = _maxHealth;
         UpdateCollectiveHealth();
@@ -39,6 +48,11 @@ public class CloneBossManager : MonoBehaviour
 
     private void Update()
     {
+        if (_dialogueGui.activeSelf)
+        {
+            return;
+        }
+
         // implement spawning a new boss at a delay, the less bosses the faster it spawns them
         if (_isPlayerInRange && _collectiveHealth > 0)
         {
@@ -54,73 +68,49 @@ public class CloneBossManager : MonoBehaviour
             return;
         }
 
-        if (!_isChecking)
-        {
-            CheckAttacking();
-        }
-
         if (cloneBossHandlers.Count >= maxNumberOfBosses) return;
 
         _targetTime -= Time.deltaTime;
         if (!(_targetTime <= 0.0f)) return;
         
         InstantiateBoss(1);
-
-        _targetTime = spawnCooldown * (cloneBossHandlers.Count / 2);
-    }
-
-    public void CheckAttacking()
-    {
-        _isChecking = true;
-        foreach (var boss in cloneBossHandlers)
-        {
-            if (boss._state == CloneBossHandler.States.Chase || boss._state == CloneBossHandler.States.Attack)
-            {
-                _attackingCount++;
-            }
-        }
-
-        if (_attackingCount > maxAttackingCount)
-        {
-            var changedCount = 0;
-
-            foreach (var boss in cloneBossHandlers)
-            {
-                if (changedCount >= maxAttackingCount)
-                {
-                    boss.isRetreating = true;
-                }
-                else
-                {
-                    boss.isRetreating = false;
-                }
-            }
-        }
-
-        StartCoroutine(WaitToCheck());
-    }
-
-    private IEnumerator WaitToCheck()
-    {
-        yield return new WaitForSecondsRealtime(atkCheckCooldown);
-        _isChecking = false;
+        _targetTime = spawnCooldown;
     }
 
     private void InstantiateBoss(int numberToSpawn)
     {
         for (var i = 0; i < numberToSpawn; i++)
         {
-            var newBoss = Instantiate(bossPrefab, spawnPoint.position, Quaternion.identity, parent);
+            var ran = Random.Range(0, 3);
+            var spawn = Vector3.zero;
+        
+            switch (ran)
+            {
+                case 0:
+                    spawn = spawnPoint1.position;
+                    break;
+                case 1:
+                    spawn = spawnPoint2.position;
+                    break;
+                case 2:
+                    spawn = spawnPoint3.position;
+                    break;
+            }
+            
+            var newBoss = Instantiate(bossPrefab, spawn, Quaternion.identity, parent);
             var handler = newBoss.GetComponent<CloneBossHandler>();
             handler.maxHealth = individualHealth;
             handler.health = individualHealth;
             handler.retreatDistance = individualRetreatDist;
             handler.cloneBossManager = this;
+            handler.dialogue = _dialogueGui;
             newBoss.SetActive(true);
 
             cloneBossHandlers.Add(handler);
             UpdateCollectiveHealth();
         }
+
+        spawnCooldown += 0.2f;
     }
 
     public void UpdateCollectiveHealth()

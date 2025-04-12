@@ -30,6 +30,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private Vector3 _lastPosition;
     private Vector3 _playerDir;
     private Collider _roomBounds;
+    public GameObject dialogue;
 
     public enum States
     {
@@ -113,6 +114,12 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        if (dialogue.activeSelf)
+        {
+            attackCooldown = 0;
+            return;
+        }
+
         var vector3 = transform.position;
         vector3.z = 0;
         transform.position = vector3;

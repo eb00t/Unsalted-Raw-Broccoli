@@ -119,7 +119,6 @@ public class CharacterAttack : MonoBehaviour
                 _lightComboStep = LightComboStep.Step1;
                 _comboTimer = comboResetTime;
                 _playerAnimator.SetTrigger(LightAttack0);
-                UseEnergy(lightEnergyCost);
             }
             else
             {
@@ -165,7 +164,6 @@ public class CharacterAttack : MonoBehaviour
     {
         if (isDead || _characterMovement.uiOpen) return;
         if (!ctx.performed || _characterMovement.isJumpAttacking || !_characterMovement.grounded) return;
-        if (_mediumComboStep != MediumComboStep.None) return;
         
         gameObject.layer = 15;
         
@@ -178,7 +176,6 @@ public class CharacterAttack : MonoBehaviour
         _mediumComboStep = MediumComboStep.Step1;
         _comboTimer = comboResetTime;
         _playerAnimator.SetTrigger(MediumAttack0);
-        UseEnergy(mediumEnergyCost);
     }
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
@@ -200,7 +197,6 @@ public class CharacterAttack : MonoBehaviour
             _heavyComboStep = HeavyComboStep.Step1;
             _comboTimer = comboResetTime;
             _playerAnimator.SetTrigger(HeavyAttack0);
-            UseEnergy(heavyEnergyCost);
         }
         else
         {
@@ -227,12 +223,10 @@ public class CharacterAttack : MonoBehaviour
             case LightComboStep.Step1:
                 _lightComboStep = LightComboStep.Step2;
                 _playerAnimator.SetTrigger(LightAttack1);
-                UseEnergy(lightEnergyCost);
                 break;
             case LightComboStep.Step2:
                 _lightComboStep = LightComboStep.Step3;
                 _playerAnimator.SetTrigger(LightAttack2);
-                UseEnergy(lightEnergyCost);
                 break;
             case LightComboStep.Step3:
                 ResetCombo();
@@ -248,7 +242,7 @@ public class CharacterAttack : MonoBehaviour
             ResetCombo();
             return;
         }
-        
+
         gameObject.layer = 14;
         _playerAnimator.SetBool(IsAttacking, true);
         _inputBuffer = false;
@@ -259,7 +253,6 @@ public class CharacterAttack : MonoBehaviour
             case HeavyComboStep.Step1:
                 _heavyComboStep = HeavyComboStep.Step2;
                 _playerAnimator.SetTrigger(HeavyAttack1);
-                UseEnergy(heavyEnergyCost);
                 break;
             case HeavyComboStep.Step2:
                 ResetCombo();
@@ -377,7 +370,6 @@ public class CharacterAttack : MonoBehaviour
             float randomTinyX = Random.Range(0.15f, 0.25f);
             float randomTinyY = Random.Range(-0.25f, 0.25f);
             damageable.TakeDamage(charAtk, poiseDamageLight, knockbackPowerLight);
-            
             _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
@@ -397,7 +389,6 @@ public class CharacterAttack : MonoBehaviour
             float randomTinyY = Random.Range(-0.25f, 0.25f);
             var calcAtk = (charAtk - baseAtk) + (baseAtk * mediumAtkMultiplier);
             damageable.TakeDamage((int)calcAtk, poiseDamageMedium, knockbackPowerMedium);
-            
             _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();

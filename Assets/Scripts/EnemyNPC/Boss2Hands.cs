@@ -112,6 +112,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         if (dialogueGui.activeSelf)
         {
             StopAllCoroutines();
+            attackCooldown = 0;
             return;
         }
         
