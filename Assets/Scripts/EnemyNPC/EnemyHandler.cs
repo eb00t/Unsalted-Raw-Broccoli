@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using FMOD.Studio;
+using Pathfinding;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -76,6 +77,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private CharacterAttack _characterAttack;
     private SpriteRenderer _spriteRenderer;
     private MaterialPropertyBlock _propertyBlock;
+    private AIPath _aiPath;
+    private Rigidbody _rigidbody;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -114,10 +117,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _healthSlider.gameObject.SetActive(false);
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        _aiPath = GetComponent<AIPath>();
+        _rigidbody = GetComponent<Rigidbody>();
         
         _target = GameObject.FindGameObjectWithTag("Player").transform;
-        _agent = GetComponent<NavMeshAgent>();
-        _agent.updateRotation = false;
+        //_agent = GetComponent<NavMeshAgent>();
+        //_agent.updateRotation = false;
         _propertyBlock = new MaterialPropertyBlock();
         
         PickPatrolPoints();
@@ -149,14 +154,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        var velocity = _agent.velocity;
+        var velocity = _aiPath.velocity;
         _target = isPassive ? passiveTarget : _target;
         _playerDir = _target.position - transform.position;
         var distance = Vector3.Distance(transform.position, _target.position);
-        
-        var pos = _agent.nextPosition;
-        pos.z = _target.position.z;
-        transform.position = pos;
+        //_aiPath.destination = new Vector3(_aiPath.destination.x, Mathf.Min(_target.position.y, transform.position.y), _aiPath.destination.);
+
 
         if (isStalker)
         {
@@ -220,7 +223,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 Attack();
                 break;
             case States.Frozen:
-                _agent.isStopped = true;
+                //_agent.isStopped = true;
                 Frozen();
                 break;
             case States.Passive:
@@ -258,17 +261,17 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Patrol()
     {
         CheckIfStuck();
-        if (_agent.pathPending && !_isStuck) return;
-        if (!(_agent.remainingDistance <= _agent.stoppingDistance) && !_isStuck) return;
-        
-        var newTarget = (_patrolTarget == _patrolPoint1) ? _patrolPoint2 : _patrolPoint1;
-        
-        _patrolTarget = newTarget;
-        _agent.SetDestination(_patrolTarget);
-        
+        if (_isStuck) return;
+        if (_aiPath.reachedDestination)
+        {
+            _patrolTarget = _patrolTarget == _patrolPoint1 ? _patrolPoint2 : _patrolPoint1;
+            if (_patrolTarget.y > transform.position.y)
+            {
+                _aiPath.destination = new Vector3(_patrolTarget.x, transform.position.y, _patrolTarget.z);
+            }
+        }
+        _aiPath.canMove = true;
         _healthSlider.gameObject.SetActive(false);
-        _isStuck = false;
-        _timeSinceLastMove = 0f;
     }
     
    private void PickPatrolPoints()
@@ -298,21 +301,19 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private void Chase()
     {
-        if ((isStalker && _isBlocking) || isBomb && _animator.GetBool(IsExplode))
+        if ((isStalker && _isBlocking) || (isBomb && _animator.GetBool(IsExplode)))
         {
-            _agent.isStopped = true;
+            _aiPath.canMove = false;
         }
         else
         {
-            _agent.isStopped = false;
-            _healthSlider.gameObject.SetActive(true);
-
-            if (isBomb && _canLunge)
+            _aiPath.canMove = true;
+            if (_target.position.y > transform.position.y)
             {
-                StartCoroutine(BeginLunge());
+                _aiPath.destination = new Vector3(_target.position.x, transform.position.y, _target.position.z);
             }
-
-            _agent.SetDestination(_target.position);
+            _healthSlider.gameObject.SetActive(true);
+            if (isBomb && _canLunge) StartCoroutine(BeginLunge());
         }
     }
 
@@ -331,24 +332,25 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     private void Lunge()
     {
-        _agent.isStopped = false;
+        _aiPath.canMove = false;
         _healthSlider.gameObject.SetActive(true);
-        
-        _agent.velocity = Vector3.zero;
-        _agent.velocity = new Vector3(_playerDir.x * lungeForce, 0f, 0f);
+
+        _rigidbody.velocity = new Vector3(_playerDir.x * lungeForce, 0f, 0f);
     }
 
     private void Passive()
     {
-        _agent.isStopped = false;
+        _aiPath.canMove = true;
+        if (passiveTarget.position.y > transform.position.y)
+        {
+            _aiPath.destination = new Vector3(passiveTarget.position.x, transform.position.y, passiveTarget.position.z);
+        }
         _healthSlider.gameObject.SetActive(true);
-        _agent.SetDestination(passiveTarget.position);
     }
 
     private void Attack()
     {
-        _agent.ResetPath();
-        _agent.isStopped = true;
+        _aiPath.canMove = false;
         _healthSlider.gameObject.SetActive(true);
         _targetTime -= Time.deltaTime;
 
@@ -427,7 +429,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
         StartCoroutine(StartCooldown());
         healthFillImage.color = Color.cyan;
-        _agent.velocity = Vector3.zero;
+       //_agent.velocity = Vector3.zero;
         yield return new WaitForSecondsRealtime(freezeDuration);
         healthFillImage.color = new Color(1f, .48f, .48f, 1);
         _isFrozen = false;
@@ -650,23 +652,23 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private IEnumerator ApplyVerticalKnockback(float height, float dur)
     {
         var elapsedTime = 0f;
-        var startOffset = _agent.baseOffset;
+        //var startOffset = _agent.baseOffset;
 
         while (elapsedTime < dur)
         {
             elapsedTime += Time.deltaTime;
-            _agent.baseOffset = startOffset + Mathf.Sin(elapsedTime / dur * Mathf.PI) * height;
+            //_agent.baseOffset = startOffset + Mathf.Sin(elapsedTime / dur * Mathf.PI) * height;
             yield return null;
         }
 
-        _agent.baseOffset = startOffset;
+        //_agent.baseOffset = startOffset;
     }
 
     private IEnumerator StunTimer(float stunTime)
     {
         _animator.SetBool(IsStaggered, true);
        yield return new WaitForSecondsRealtime(stunTime);
-       _agent.velocity = Vector3.zero;
+       //_agent.velocity = Vector3.zero;
        _animator.SetBool(IsStaggered, false);
     }
     

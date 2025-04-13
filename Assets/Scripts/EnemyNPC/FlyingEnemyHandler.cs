@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using FMOD.Studio;
+using Pathfinding;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -81,6 +82,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private Rigidbody _rigidbody;
     private MaterialPropertyBlock _propertyBlock;
     private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+    private AIPath _aiPath;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -121,6 +123,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _animator = GetComponent<Animator>();
         _spriteTransform = GetComponentInChildren<SpriteRenderer>().transform;
         _propertyBlock = new MaterialPropertyBlock();
+        _aiPath = GetComponent<AIPath>();
+        _aiPath.maxSpeed = moveSpeed;
 
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _rigidbody = GetComponent<Rigidbody>();
@@ -206,9 +210,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         _healthSlider.gameObject.SetActive(true);
 
-        var targetPosition = _target.position;
-
-        MoveTowards(targetPosition);
+        if (_aiPath != null)
+        {
+            _aiPath.canMove = true;
+            _aiPath.destination = _target.position;
+        }
     }
 
     private void Attack()
@@ -227,7 +233,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private IEnumerator NewPosition() // picks a new position within the room and moves to it
     {
         _isRepositioning = true;
-        
+
         if (_roomBounds == null)
         {
             _isRepositioning = false;
@@ -237,24 +243,25 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         var bounds = _roomBounds.bounds;
         _reposPosition = new Vector3(Random.Range(bounds.min.x + 1f, bounds.max.x - 1f), Random.Range(bounds.min.y + 1f, bounds.max.y - 1f), transform.position.z);
 
+        _aiPath.canMove = true;
+        _aiPath.destination = _reposPosition;
+
         while (Vector3.Distance(transform.position, _reposPosition) > 0.5f)
         {
             _targetTime -= Time.deltaTime;
 
             if (_targetTime <= 0f && _canAttack)
             {
-                _rigidbody.velocity = Vector3.zero;
-
+                _aiPath.canMove = false;
                 yield return StartCoroutine(TriggerAttack());
-
+                _aiPath.canMove = true;
                 _targetTime = attackCooldown;
             }
 
-            MoveTowards(_reposPosition);
             yield return null;
         }
 
-        _rigidbody.velocity = Vector3.zero;
+        _aiPath.canMove = false;
         _isRepositioning = false;
     }
     
