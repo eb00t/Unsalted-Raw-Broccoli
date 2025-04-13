@@ -391,32 +391,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         attackHitbox.transform.localScale = hitboxLocalScale;
     }
 
-    private void MoveTowards(Vector3 target)
-    {
-        var direction = (target - transform.position).normalized;
-
-        if (!_isKnockedBack)
-        {
-            _rigidbody.velocity = direction * moveSpeed;
-            UpdateSpriteDirection(direction.x < 0f);
-        }
-        
-        ClampToRoom();
-    }
-    
-    private void ClampToRoom()
-    {
-        if (_roomBounds == null) return;
-
-        var bounds = _roomBounds.bounds;
-        var pos = transform.position;
-        
-        pos.x = Mathf.Clamp(pos.x, bounds.min.x + 0.5f, bounds.max.x - 0.5f);
-        pos.y = Mathf.Clamp(pos.y, bounds.min.y + 0.5f, bounds.max.y - 0.5f);
-
-        transform.position = pos;
-    }
-
     private void DisablePlatformCollisions()
     {
         var platforms = gameObject.transform.root.GetComponentsInChildren<SemiSolidPlatform>();

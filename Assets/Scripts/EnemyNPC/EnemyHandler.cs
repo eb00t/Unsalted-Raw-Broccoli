@@ -175,6 +175,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 defense = 0;
             }
         }
+        
+        Repulsion();
 
         if (_isFrozen)
         {
@@ -234,6 +236,17 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
 
         _animator.SetFloat(Vel, Mathf.Abs(velocity.x));
+    }
+    
+    private void Repulsion()
+    {
+        var nearby = Physics.OverlapSphere(transform.position, 1.5f, LayerMask.GetMask("Enemy"));
+        foreach (var col in nearby)
+        {
+            if (col.gameObject == gameObject) continue;
+            var dir = (transform.position - col.transform.position).normalized;
+            _rigidbody.AddForce(dir * 1f, ForceMode.VelocityChange);
+        }
     }
     
     private bool IsPlayerInRoom()
@@ -596,7 +609,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
-        StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .2f));
         
         var facingRight = _spriteRenderer.transform.localScale.x > 0;
         var playerInFront = (facingRight && _playerDir.x > 0) || (!facingRight && _playerDir.x < 0);
@@ -636,32 +648,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
     {
-        var elapsedTime = 0f;
-        var startPos = transform.position;
-        var targetPos = startPos + force;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.AddForce(force, ForceMode.Impulse);
 
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-            var t = elapsedTime / duration;
-            transform.position = Vector3.Lerp(startPos, targetPos, t);
-            yield return null;
-        }
-    }
-    
-    private IEnumerator ApplyVerticalKnockback(float height, float dur)
-    {
-        var elapsedTime = 0f;
-        //var startOffset = _agent.baseOffset;
+        yield return new WaitForSeconds(duration);
 
-        while (elapsedTime < dur)
-        {
-            elapsedTime += Time.deltaTime;
-            //_agent.baseOffset = startOffset + Mathf.Sin(elapsedTime / dur * Mathf.PI) * height;
-            yield return null;
-        }
-
-        //_agent.baseOffset = startOffset;
+        _rigidbody.velocity = Vector3.zero;
     }
 
     private IEnumerator StunTimer(float stunTime)

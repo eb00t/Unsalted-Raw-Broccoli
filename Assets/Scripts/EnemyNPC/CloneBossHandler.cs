@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using FMOD.Studio;
+using Pathfinding;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -38,8 +39,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         Chase,
         Attack,
         Frozen,
-        Passive,
-        Retreat
+        Passive
     }
 
     public States _state = States.Idle;
@@ -78,7 +78,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private MaterialPropertyBlock _propertyBlock;
     private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
     private GameObject dialogueGui;
-
+    private AIPath _aiPath;
+    private Rigidbody _rigidbody;
+    
     [Header("Sound")] private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
 
@@ -100,10 +102,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         _target = GameObject.FindGameObjectWithTag("Player").transform;
-        _agent = GetComponent<NavMeshAgent>();
-        _agent.updateRotation = false;
-        _agent.updateUpAxis = false;
-        _agent.updatePosition = true;
+        _aiPath = GetComponent<AIPath>();
+        _rigidbody = GetComponent<Rigidbody>();
         _propertyBlock = new MaterialPropertyBlock();
         dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
 
@@ -130,7 +130,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
             _healthSlider.value = maxHealth;
         }
 
-        var velocity = _agent.velocity;
+        var velocity = _rigidbody.velocity;
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;
 
@@ -156,12 +156,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
             _target = passiveTarget;
         }
-        else if (isRetreating)
-        {
-            _state = States.Retreat;
-        }
         else
         {
+            Repulsion();
             if (distance < attackRange)
             {
                 _state = States.Attack;
@@ -188,7 +185,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         switch (_state)
         {
             case States.Idle:
-                _agent.isStopped = true;
+                //_agent.isStopped = true;
+                _aiPath.canMove = false;
                 break;
             case States.Chase:
                 Chase();
@@ -202,9 +200,6 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
                 break;
             case States.Passive:
                 break;
-            case States.Retreat:
-                Retreat();
-                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -212,46 +207,20 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _animator.SetFloat("vel", Mathf.Abs(velocity.x));
     }
     
+    private void Repulsion()
+    {
+        var nearby = Physics.OverlapSphere(transform.position, 1.5f, LayerMask.GetMask("Enemy"));
+        foreach (var col in nearby)
+        {
+            if (col.gameObject == gameObject) continue;
+            var dir = (transform.position - col.transform.position).normalized;
+            _rigidbody.AddForce(dir * 1f, ForceMode.VelocityChange);
+        }
+    }
+    
     private bool IsPlayerInRoom()
     {
         return _roomBounds != null && _roomBounds.bounds.Contains(_target.position) && !dialogueGui.activeSelf;
-    }
-
-    private void Retreat()
-    {
-        CheckIfStuck();
-        if (_agent.pathPending && !_isStuck) return;
-        if (!(_agent.remainingDistance <= _agent.stoppingDistance)) return;
-        
-        var awayDir = -(_target.position - transform.position);
-        var newPos = new Vector3(transform.position.x + (retreatDistance * awayDir.x), transform.position.y, transform.position.z);
-
-        _agent.SetDestination(newPos);
-        _isStuck = false;
-        _timeSinceLastMove = 0;
-
-        //_agent.SetDestination(_patrolTarget);
-
-        // pick point in the opposite direction of the player
-        // go to that point 
-        // call check if stuck to prevent running into walls
-    }
-
-    private void CheckIfStuck()
-    {
-        if (Vector3.Distance(transform.position, _lastPosition) > 0.1f) 
-        {
-            _timeSinceLastMove = 0f;
-            _lastPosition = transform.position;
-            _isStuck = false;
-        }
-        else
-        {
-            _timeSinceLastMove += Time.deltaTime;
-        }
-        
-        if (!(_timeSinceLastMove > maxTimeToReachTarget)) return;
-        _isStuck = true;
     }
 
     private void UpdateSpriteDirection(bool isLeft)
@@ -273,7 +242,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
     private void Chase()
      {
-         _agent.isStopped = false;
+          _aiPath.canMove = true;
          _healthSlider.gameObject.SetActive(true);
          
          var offset = Vector3.zero;
@@ -290,16 +259,15 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
              }
          }
          
-         var destination = _target.position + new Vector3(offset.x, offset.y, 0);
-         destination.z = transform.position.z;
-     
-         _agent.SetDestination(destination);
+         if (_target.position.y > transform.position.y)
+         {
+             _aiPath.destination = new Vector3(_target.position.x, transform.position.y, _target.position.z);
+         }
      }
 
     private void Attack()
     {
-        _agent.ResetPath();
-        _agent.isStopped = true;
+        _aiPath.canMove = false;
         _healthSlider.gameObject.SetActive(true);
         _targetTime -= Time.deltaTime;
 
@@ -460,7 +428,6 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
-        StartCoroutine(ApplyVerticalKnockback(knockbackPower.y, .2f));
         StartCoroutine(StunTimer(.1f));
         
         //_animator.SetTrigger("lightStagger");
@@ -474,39 +441,19 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
     {
-        var elapsedTime = 0f;
-        var startPos = transform.position;
-        var targetPos = startPos + force;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.AddForce(force, ForceMode.Impulse);
 
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-            var t = elapsedTime / duration;
-            transform.position = Vector3.Lerp(startPos, targetPos, t);
-            yield return null;
-        }
-    }
-    
-    private IEnumerator ApplyVerticalKnockback(float height, float dur)
-    {
-        var elapsedTime = 0f;
-        var startOffset = _agent.baseOffset;
+        yield return new WaitForSeconds(duration);
 
-        while (elapsedTime < dur)
-        {
-            elapsedTime += Time.deltaTime;
-            _agent.baseOffset = startOffset + Mathf.Sin(elapsedTime / dur * Mathf.PI) * height;
-            yield return null;
-        }
-
-        _agent.baseOffset = startOffset;
+        _rigidbody.velocity = Vector3.zero;
     }
 
     private IEnumerator StunTimer(float stunTime)
     {
         _animator.SetBool("isStaggered", true);
        yield return new WaitForSecondsRealtime(stunTime);
-       _agent.velocity = Vector3.zero;
+       _rigidbody.velocity = Vector3.zero;
        _animator.SetBool("isStaggered", false);
     }
     

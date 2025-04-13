@@ -241,6 +241,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 9201836616417202832}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2342192492136776980
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4551300176138273133}
+  - component: {fileID: 1170646482866969777}
+  m_Layer: 17
+  m_Name: enemyCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &4551300176138273133
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2342192492136776980}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 4.74, z: 0}
+  m_LocalScale: {x: 5, y: 0.5, z: 3}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9201836616417202832}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1170646482866969777
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2342192492136776980}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2350447377630738733
 GameObject:
   m_ObjectHideFlags: 0
@@ -509,6 +562,7 @@ Transform:
   - {fileID: 3162864851989045438}
   - {fileID: 2918928643014284797}
   - {fileID: 148352356058963986}
+  - {fileID: 4551300176138273133}
   - {fileID: 8272931908325522178}
   - {fileID: 4520944286312069759}
   - {fileID: 5742692477146162545}
@@ -607,6 +661,7 @@ MonoBehaviour:
   spawnedOnSide: Top
   connectorLength: 5
   connectorHeight: 10
+  allLights: []
   markedForDiscard: 0
 --- !u!114 &7821264417860906526
 MonoBehaviour:
