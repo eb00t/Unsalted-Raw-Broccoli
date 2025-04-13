@@ -39,6 +39,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private Vector3 _lastPosition;
     private Vector3 _playerDir;
     private States _state = States.Idle;
+    private Vector3 _reposPosition;
     
     [Header("Timing")]
     [SerializeField] private float attackCooldown; // time between attacks
@@ -219,34 +220,60 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
         if (!_isRepositioning)
         {
-            var x = Random.Range(0, 10);
-
-            if (x >= 6)
-            {
-                Reposition();
-                attackCooldown = 2f;
-            }
+            StartCoroutine(NewPosition());
         }
-
-        if (_targetTime <= 0.0f && _canAttack)
+    }
+    
+    private IEnumerator NewPosition() // picks a new position within the room and moves to it
+    {
+        _isRepositioning = true;
+        
+        if (_roomBounds == null)
         {
-            var i = Random.Range(0, 10);
-
-            switch (i)
-            {
-                case < 5:
-                    StartCoroutine(LaserAttack());
-                    attackCooldown = 5f;
-                    break;
-                case >= 5:
-                    //ProjectileAttack();
-                    _animator.SetTrigger("Projectile");
-                    attackCooldown = 5f;
-                    break;
-            }
-            
-            _targetTime = attackCooldown;
+            _isRepositioning = false;
+            yield break;
         }
+
+        var bounds = _roomBounds.bounds;
+        _reposPosition = new Vector3(Random.Range(bounds.min.x + 1f, bounds.max.x - 1f), Random.Range(bounds.min.y + 1f, bounds.max.y - 1f), transform.position.z);
+
+        while (Vector3.Distance(transform.position, _reposPosition) > 0.5f)
+        {
+            _targetTime -= Time.deltaTime;
+
+            if (_targetTime <= 0f && _canAttack)
+            {
+                _rigidbody.velocity = Vector3.zero;
+
+                yield return StartCoroutine(TriggerAttack());
+
+                _targetTime = attackCooldown;
+            }
+
+            MoveTowards(_reposPosition);
+            yield return null;
+        }
+
+        _rigidbody.velocity = Vector3.zero;
+        _isRepositioning = false;
+    }
+    
+    private IEnumerator TriggerAttack()
+    {
+        _canAttack = false;
+        
+        var ran = Random.Range(0, 10);
+        if (ran < 5)
+        {
+            yield return StartCoroutine(LaserAttack());
+        }
+        else
+        {
+            _animator.SetTrigger("Projectile");
+            yield return new WaitForSeconds(0.25f);
+        }
+
+        _canAttack = true;
     }
 
     public void ProjectileAttack()
@@ -263,39 +290,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         rb.velocity = newVelocity * projectileSpeed;
         rb.rotation = Quaternion.Euler(0, 0, newRot);
         _canAttack = true;
-    }
-
-    private void Reposition() // makes enemy more difficult to track down
-    {
-        _isRepositioning = true;
-        StartCoroutine(NewPosition());
-    }
-    
-    private IEnumerator NewPosition() // picks a new position within the room and moves to it
-    {
-        if (_roomBounds == null)
-        {
-            _canAttack = true;
-            yield break;
-        }
-
-        var bounds = _roomBounds.bounds;
-        var newPos = new Vector3(Random.Range(bounds.min.x + 1f, bounds.max.x - 1f), Random.Range(bounds.min.y + 1f, bounds.max.y - 1f), transform.position.z);
-
-        var distance = Vector3.Distance(transform.position, newPos);
-        var travelTime = distance / moveSpeed;
-        var elapsed = 0f;
-
-        while (elapsed < travelTime)
-        {
-            MoveTowards(newPos);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        _rigidbody.velocity = Vector3.zero;
-        yield return new WaitForSecondsRealtime(4f);
-        _isRepositioning = false;
     }
 
     private IEnumerator LaserAttack() // aims laser at player that tracks, then it stops and starts doing damage

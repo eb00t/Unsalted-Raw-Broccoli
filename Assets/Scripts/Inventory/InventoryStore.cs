@@ -214,6 +214,11 @@ public class InventoryStore : MonoBehaviour
         else
         {
             notification = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation, notifHolder.transform);
+            
+            foreach (var txt in notification.GetComponentsInChildren<TextMeshProUGUI>())
+            {
+                if (txt.name == "Message") txt.text = text;
+            }
 
             foreach (var img in notification.GetComponentsInChildren<Image>())
             {

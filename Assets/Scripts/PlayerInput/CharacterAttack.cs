@@ -272,7 +272,7 @@ public class CharacterAttack : MonoBehaviour
     }
 
     // if a combo is completed or cancelled then
-    private void ResetCombo()
+    public void ResetCombo()
     {
         _lightComboStep = LightComboStep.None;
         _mediumComboStep = MediumComboStep.None;
