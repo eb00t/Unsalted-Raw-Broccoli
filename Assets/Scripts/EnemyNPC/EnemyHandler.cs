@@ -278,10 +278,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (_aiPath.reachedDestination)
         {
             _patrolTarget = _patrolTarget == _patrolPoint1 ? _patrolPoint2 : _patrolPoint1;
-            if (_patrolTarget.y > transform.position.y)
-            {
-                _aiPath.destination = new Vector3(_patrolTarget.x, transform.position.y, _patrolTarget.z);
-            }
+            _aiPath.destination = new Vector3(_target.position.x, transform.position.y, transform.position.z);
         }
         _aiPath.canMove = true;
         _healthSlider.gameObject.SetActive(false);
@@ -321,10 +318,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         else
         {
             _aiPath.canMove = true;
-            if (_target.position.y > transform.position.y)
-            {
-                _aiPath.destination = new Vector3(_target.position.x, transform.position.y, _target.position.z);
-            }
+            _aiPath.destination = new Vector3(_target.position.x, transform.position.y, transform.position.z);
             _healthSlider.gameObject.SetActive(true);
             if (isBomb && _canLunge) StartCoroutine(BeginLunge());
         }
@@ -354,10 +348,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Passive()
     {
         _aiPath.canMove = true;
-        if (passiveTarget.position.y > transform.position.y)
-        {
-            _aiPath.destination = new Vector3(passiveTarget.position.x, transform.position.y, passiveTarget.position.z);
-        }
+        _aiPath.destination = new Vector3(passiveTarget.position.x, transform.position.y, passiveTarget.position.z);
         _healthSlider.gameObject.SetActive(true);
     }
 

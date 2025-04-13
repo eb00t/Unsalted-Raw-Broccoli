@@ -143,15 +143,13 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
             _state = States.Passive;
             _playerDir = passiveTarget.position - transform.position;
 
-            UpdateSpriteDirection(_playerDir.x < 0);
-
-            if (velocity.x > 0.1f)
+            if (Mathf.Abs(velocity.x) > 0.1f)
             {
-                UpdateSpriteDirection(false);
+                UpdateSpriteDirection(velocity.x < 0);
             }
-            else if (velocity.x < -0.1f)
+            else
             {
-                UpdateSpriteDirection(true);
+                UpdateSpriteDirection(_playerDir.x < 0);
             }
 
             _target = passiveTarget;
@@ -167,13 +165,13 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
             {
                 _state = States.Chase;
 
-                if (velocity.x > 0.1f)
+                if (Mathf.Abs(velocity.x) > 0.1f)
                 {
-                    UpdateSpriteDirection(false);
+                    UpdateSpriteDirection(velocity.x < 0);
                 }
-                else if (velocity.x < -0.1f)
+                else
                 {
-                    UpdateSpriteDirection(true);
+                    UpdateSpriteDirection(_playerDir.x < 0);
                 }
             }
             else
@@ -204,7 +202,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
                 throw new ArgumentOutOfRangeException();
         }
 
-        _animator.SetFloat("vel", Mathf.Abs(velocity.x));
+        _animator.SetFloat("vel", Mathf.Abs(_rigidbody.velocity.x));
     }
     
     private void Repulsion()
@@ -302,7 +300,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     {
         StartCoroutine(StartCooldown());
         healthFillImage.color = Color.cyan;
-        _agent.velocity = Vector3.zero;
+        //_agent.velocity = Vector3.zero;
         yield return new WaitForSecondsRealtime(freezeDuration);
         healthFillImage.color = new Color(1f, .48f, .48f, 1);
         _isFrozen = false;
