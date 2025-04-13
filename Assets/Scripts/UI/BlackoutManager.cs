@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Pathfinding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -84,6 +85,8 @@ public class BlackoutManager : MonoBehaviour
         if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen))
         {
             _fadedOut = true;
+            ResizeGraph(FindRoomBounds());
+            AstarPath.active.Scan();
             LowerOpacity();
         } 
         else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen) && _fadedOut == false)
@@ -139,6 +142,48 @@ public class BlackoutManager : MonoBehaviour
         {
             blackoutComplete = true;
         }
+    }
+    
+    public void ResizeGraph(Bounds bounds)
+    {
+        var gg = AstarPath.active.data.gridGraph;
+        gg.center = bounds.center;
+        gg.SetDimensions(Mathf.CeilToInt(bounds.size.x / gg.nodeSize), Mathf.CeilToInt(bounds.size.y / gg.nodeSize), gg.nodeSize);
+        AstarPath.active.Scan();
+    }
+    
+    private Bounds FindRoomBounds()
+    {
+        var allRooms = FindObjectsOfType<GraphUpdateScene>();
+    
+        if (allRooms.Length == 0)
+        {
+            return new Bounds(Vector3.zero, Vector3.one);
+        }
+
+        var totalBounds = new Bounds(allRooms[0].transform.position, Vector3.zero);
+
+        foreach (var room in allRooms)
+        {
+            var colliders = room.GetComponentsInChildren<Collider>();
+            if (colliders.Length > 0)
+            {
+                foreach (var col in colliders)
+                {
+                    totalBounds.Encapsulate(col.bounds);
+                }
+            }
+            else
+            {
+                var renderers = room.GetComponentsInChildren<Renderer>();
+                foreach (var r in renderers)
+                {
+                    totalBounds.Encapsulate(r.bounds);
+                }
+            }
+        }
+
+        return totalBounds;
     }
 }
     
