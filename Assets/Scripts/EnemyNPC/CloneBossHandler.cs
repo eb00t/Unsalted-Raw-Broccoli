@@ -212,7 +212,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         {
             if (col.gameObject == gameObject) continue;
             var dir = (transform.position - col.transform.position).normalized;
-            _rigidbody.AddForce(dir * 1f, ForceMode.VelocityChange);
+            _rigidbody.AddForce(dir * .2f, ForceMode.VelocityChange);
         }
     }
     
