@@ -148,7 +148,7 @@ public class CharacterAttack : MonoBehaviour
         yield return null;
 
         var elapsed = 0f;
-        while (elapsed < 0.25f)
+        while (elapsed < 0.3f)
         {
             if (!_playerAnimator.GetBool(IsJumpAttacking) || _characterMovement.grounded)
             {
