@@ -559,8 +559,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: FLOOR X
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6f254133f10861249bfe5bf82aca9968, type: 2}
-  m_sharedMaterial: {fileID: -8826119498318675824, guid: 6f254133f10861249bfe5bf82aca9968,
+  m_fontAsset: {fileID: 11400000, guid: d0c1f21115285e049b41e6138d765a93, type: 2}
+  m_sharedMaterial: {fileID: -2424018178582840717, guid: d0c1f21115285e049b41e6138d765a93,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -585,8 +585,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -755,6 +755,7 @@ MonoBehaviour:
   howManyRoomsToSpawn: 5
   roomsDiscarded: 0
   currentFloor: 1
+  _startingRoom: {fileID: 0}
   randomSeed: 0
   lootRoomsToSpawn: 0
   possibleRooms: []
@@ -791,7 +792,7 @@ MonoBehaviour:
   bossRoomGeneratingFinished: 0
   spawnModeChangedByDestroy: 0
   bossDead: 0
-  loreRoomChance: 0
+  loreRoomChance: 1
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
   _spawnMode: 0
 --- !u!114 &543560988434361953
@@ -1037,6 +1038,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allConnectorLights: []
   allRoomLights: []
+  connectorLightQueue: []
+  roomLightQueue: []
 --- !u!1 &6937896342876284815
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,8 +1107,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Insert Subtitle Here
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6f254133f10861249bfe5bf82aca9968, type: 2}
-  m_sharedMaterial: {fileID: -8826119498318675824, guid: 6f254133f10861249bfe5bf82aca9968,
+  m_fontAsset: {fileID: 11400000, guid: d0c1f21115285e049b41e6138d765a93, type: 2}
+  m_sharedMaterial: {fileID: -2424018178582840717, guid: d0c1f21115285e049b41e6138d765a93,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1130,13 +1133,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 18
+  m_fontStyle: 16
   m_HorizontalAlignment: 32
   m_VerticalAlignment: 4096
   m_textAlignment: 65535

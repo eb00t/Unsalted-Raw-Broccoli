@@ -21,6 +21,7 @@ public class CharacterAttack : MonoBehaviour
     private static readonly int IsDead = Animator.StringToHash("isDead");
     private static readonly int LightAttack1 = Animator.StringToHash("lightAttack1");
     private static readonly int LightAttack2 = Animator.StringToHash("lightAttack2");
+    private static readonly int IsPlayerDead = Animator.StringToHash("isPlayerDead");
     private Animator _playerAnimator;
     private CharacterMovement _characterMovement;
 
@@ -389,6 +390,7 @@ public class CharacterAttack : MonoBehaviour
         if (isDead) return;
         isDead = true;
         _playerAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        _playerAnimator.SetBool(IsPlayerDead, true);
         _playerAnimator.SetTrigger(IsDead);
         if (!diedScreen.activeSelf)
         {
