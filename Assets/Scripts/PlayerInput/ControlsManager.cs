@@ -8,6 +8,8 @@ public class ControlsManager : MonoBehaviour
 {
     private GameObject _player;
     private CharacterMovement _characterMovement;
+    private GameObject _uiManager;
+    private MenuHandler _menuHandler;
     [SerializeField] private GameObject diedScreen;
     [SerializeField] private DataHolder dataHolder;
     
@@ -41,6 +43,8 @@ public class ControlsManager : MonoBehaviour
     
     private void Awake()
     {
+        _uiManager = GameObject.FindWithTag("UIManager");
+        _menuHandler = _uiManager.GetComponent<MenuHandler>();
         InitializeDictionaries();
     }
 
@@ -90,7 +94,7 @@ public class ControlsManager : MonoBehaviour
         }
         else if (SceneManager.GetActiveScene().name != "StartScreen")
         {
-            if (_characterMovement.uiOpen && !diedScreen.activeSelf && Time.timeScale == 0)
+            if (_characterMovement.uiOpen && !diedScreen.activeSelf && (Time.timeScale == 0 || (_menuHandler.shopGUI != null && _menuHandler.shopGUI.activeSelf)))
             {
                 keyboardInteractBack = "Esc";
                 keyboardInteractSelect = "Enter/LMB";

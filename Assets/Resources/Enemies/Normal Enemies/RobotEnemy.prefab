@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2308ab9f6866004ebf515788c23a5b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 110
+  maxHealth: 200
   poise: 40
   defense: 0
   poisonResistance: 50
@@ -175,6 +175,8 @@ MonoBehaviour:
   bombTimeVariability: 0
   lungeCooldown: 0
   blockDuration: 0
+  jumpCooldown: 3
+  jumpThroughTime: 0.6
   isBomb: 0
   isStalker: 0
   canBeFrozen: 1
@@ -182,6 +184,8 @@ MonoBehaviour:
   doesEnemyPatrol: 1
   isPassive: 0
   lungeForce: 0
+  jumpTriggerDistance: 1
+  maxJumpHeight: 6
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 3665861034403590735}
   healthFillImage: {fileID: 8120095298498673214}

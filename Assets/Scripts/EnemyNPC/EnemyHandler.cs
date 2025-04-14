@@ -34,7 +34,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private Collider _roomBounds;
     private Vector3 _playerDir;
     private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
-    private enum States { Idle, Patrol, Chase, Attack, Frozen, Passive }
+    private enum States { Idle, Patrol, Chase, Attack, Frozen, Passive, Jump }
     private States _state = States.Idle;
 
     [Header("Timing")]
@@ -45,9 +45,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float bombTimeVariability;
     [SerializeField] private float lungeCooldown;
     [SerializeField] private float blockDuration;
+    [SerializeField] private float jumpCooldown;
+    [SerializeField] private float jumpThroughTime;
     private float _timeSinceLastMove;
     private float _targetTime;
-
+    private float _jumpTimer;
+    
     [Header("Enemy Properties")] 
     public bool isBomb;
     [SerializeField] private bool isStalker;
@@ -56,6 +59,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private bool doesEnemyPatrol;
     [SerializeField] private bool isPassive;
     [SerializeField] private float lungeForce;
+    [SerializeField] private float jumpTriggerDistance;
+    [SerializeField] private float maxJumpHeight;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
@@ -65,6 +70,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private bool _canLunge = true;
     private bool _isBlocking;
     private bool _wasLastAttackBlock;
+    private bool _isJumpingThroughPlatform;
 
     [Header("References")] 
     [SerializeField] private Transform passiveTarget;
@@ -92,6 +98,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private static readonly int IsBlocking = Animator.StringToHash("isBlocking");
     private static readonly int Detonate = Animator.StringToHash("Detonate");
     private static readonly int IsStaggered = Animator.StringToHash("isStaggered");
+    private CapsuleCollider _enemyCollider;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -119,7 +126,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _aiPath = GetComponent<AIPath>();
         _rigidbody = GetComponent<Rigidbody>();
-        
+        _enemyCollider = GetComponent<CapsuleCollider>();
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         //_agent = GetComponent<NavMeshAgent>();
         //_agent.updateRotation = false;
@@ -127,6 +134,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
+        _jumpTimer = jumpCooldown;
         
         if (isStalker)
         {
@@ -158,8 +166,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _target = isPassive ? passiveTarget : _target;
         _playerDir = _target.position - transform.position;
         var distance = Vector3.Distance(transform.position, _target.position);
-        //_aiPath.destination = new Vector3(_aiPath.destination.x, Mathf.Min(_target.position.y, transform.position.y), _aiPath.destination.);
-
+        var heightDiffAbove = _target.position.y - transform.position.y;
 
         if (isStalker)
         {
@@ -188,7 +195,23 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
         else if (IsPlayerInRoom())
         {
-            _state = distance < attackRange ? States.Attack : States.Chase;
+            _jumpTimer -= Time.deltaTime;
+            if (distance < attackRange)
+            {
+                _state = States.Attack;
+            }
+            else
+            {
+                if (heightDiffAbove > jumpTriggerDistance && _jumpTimer <= 0f && IsGrounded())
+                {
+                    _jumpTimer = jumpCooldown;
+                    _state = States.Jump;
+                }
+                else
+                {
+                    _state = States.Chase;
+                }
+            }
         }
         else
         {
@@ -212,7 +235,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         switch (_state)
         {
             case States.Idle:
-                _agent.isStopped = true;
+                _aiPath.canMove = false;
                 _healthSlider.gameObject.SetActive(false);
                 break;
             case States.Patrol:
@@ -225,11 +248,14 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 Attack();
                 break;
             case States.Frozen:
-                //_agent.isStopped = true;
+                _aiPath.canMove = false;
                 Frozen();
                 break;
             case States.Passive:
                 Passive();
+                break;
+            case States.Jump:
+                Jump();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -237,7 +263,116 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         _animator.SetFloat(Vel, Mathf.Abs(velocity.x));
     }
+
+    private void Jump()
+    {
+        var targetPos = new Vector3(_target.position.x, _target.position.y, transform.position.z);
+        
+        var platform = FindPlatform();
+        if (platform != null)
+        {
+            var verticalDistance = Mathf.Abs(platform.transform.position.y - transform.position.y);
     
+            if (verticalDistance > maxJumpHeight)
+            {
+                _state = States.Chase;
+                return;
+            }
+
+            StartCoroutine(DisableCollision(platform));
+        }
+
+        TriggerJump(targetPos);
+        _state = States.Chase;
+    }
+    
+    private GameObject FindPlatform()
+    {
+        var layerMask = LayerMask.GetMask("Ground");
+        
+        if (!Physics.Raycast(transform.position, Vector3.up, out var hit, 10f, layerMask)) return null;
+        
+        var platform = hit.collider.GetComponentInParent<SemiSolidPlatform>();
+        
+        return platform != null ? platform.gameObject : null;
+    }
+    
+    private IEnumerator DisableCollision(GameObject platform)
+    {
+        if (_enemyCollider == null || platform == null) yield break;
+
+        var verticalDistance = Mathf.Abs(platform.transform.position.y - transform.position.y);
+        var est = verticalDistance * 0.125f; // estimate time to disable collision based on how far the platform is
+
+        foreach (var col in platform.GetComponentsInChildren<Collider>())
+        {
+            Physics.IgnoreCollision(_enemyCollider, col, true);
+        }
+
+        yield return new WaitForSeconds(est);
+
+        foreach (var col in platform.GetComponentsInChildren<Collider>())
+        {
+            Physics.IgnoreCollision(_enemyCollider, col, false);
+        }
+
+        _isJumpingThroughPlatform = false;
+    }
+    
+    private void TriggerJump(Vector3 target)
+    {
+        _aiPath.canMove = false;
+        _rigidbody.useGravity = true;
+
+        var force = CalculateForce(transform.position, target, 7f);
+
+        if (float.IsNaN(force.x) || float.IsNaN(force.y) || float.IsNaN(force.z)) return;
+
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.AddForce(force, ForceMode.VelocityChange);
+
+        StartCoroutine(PostJumpDelay(0.5f));
+    }
+    
+    private IEnumerator PostJumpDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _aiPath.canMove = true;
+        _aiPath.SearchPath();
+    }
+    
+    private bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, Vector3.down, 3f, LayerMask.GetMask("Ground"));
+    }
+    
+    private Vector3 CalculateForce(Vector3 start, Vector3 end, float jumpHeight)
+    {
+        var direction = end - start;
+        var gravity = Mathf.Abs(Physics.gravity.y);
+        var horizontalDir = new Vector3(direction.x, 0f, direction.z);
+        var yDiff = end.y - start.y;
+
+        if (jumpHeight < yDiff)
+        {
+            jumpHeight = Mathf.Clamp(jumpHeight, yDiff + 0.5f, 4f); 
+        }
+
+        var yVelocity = Mathf.Sqrt(2f * gravity * jumpHeight);
+        var maxHeightTime = yVelocity / gravity;
+
+        var fallHeight = jumpHeight - yDiff;
+        if (fallHeight < 0f) fallHeight = 0f;
+
+        var timeToDescend = Mathf.Sqrt(2f * fallHeight / gravity);
+        var totalTime = maxHeightTime + timeToDescend;
+
+        if (totalTime <= 0.01f) return Vector3.zero;
+
+        var horizontalVelocity = horizontalDir / totalTime;
+        return horizontalVelocity + Vector3.up * yVelocity;
+    }
+
     private void Repulsion()
     {
         var nearby = Physics.OverlapSphere(transform.position, 1.5f, LayerMask.GetMask("Enemy"));
