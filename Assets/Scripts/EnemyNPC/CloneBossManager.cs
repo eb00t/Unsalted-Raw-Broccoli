@@ -102,7 +102,6 @@ public class CloneBossManager : MonoBehaviour
             var handler = newBoss.GetComponent<CloneBossHandler>();
             handler.maxHealth = individualHealth;
             handler.health = individualHealth;
-            handler.retreatDistance = individualRetreatDist;
             handler.cloneBossManager = this;
             handler.dialogue = _dialogueGui;
             newBoss.SetActive(true);
@@ -128,7 +127,7 @@ public class CloneBossManager : MonoBehaviour
         _collectiveHealth = healthCount;
         healthSlider.value = healthCount;
 
-        if (_collectiveHealth <= 0)
+        if (_collectiveHealth <= 0 || cloneBossHandlers.Count == 0)
         {
             LevelBuilder.Instance.bossDead = true;
             _roomScripting.enemies.Remove(gameObject);

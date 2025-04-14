@@ -5,14 +5,16 @@ using Pathfinding;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+
+
+// Adapted from https://github.com/Chaker-Gamra/2.5D-Platformer-Game/blob/master/Assets/Scripts/Enemy/Enemy.cs
 
 public class CloneBossHandler : MonoBehaviour, IDamageable
 {
     [Header("Defensive Stats")] 
-    [NonSerialized] public int maxHealth;
+    public int maxHealth;
     public int health;
     [SerializeField] private int poise;
     [SerializeField] private int defense;
@@ -25,50 +27,40 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
-    [SerializeField] private float chaseRange;
-    public float retreatDistance;
     private int _knockbackDir;
     private Vector3 _lastPosition;
+    [SerializeField] private Collider _roomBounds;
     private Vector3 _playerDir;
-    private Collider _roomBounds;
-    public GameObject dialogue;
+    private enum States { Idle, Chase, Attack, Frozen, Jump }
+    private States _state = States.Idle;
 
-    public enum States
-    {
-        Idle,
-        Chase,
-        Attack,
-        Frozen,
-        Passive
-    }
-
-    public States _state = States.Idle;
-
-    [Header("Timing")] 
+    [Header("Timing")]
     [SerializeField] private float attackCooldown; // time between attacks
     [SerializeField] private float freezeDuration; // how long the enemy is frozen for
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
     [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
+    [SerializeField] private float jumpCooldown;
+    [SerializeField] private float jumpThroughTime;
     private float _timeSinceLastMove;
     private float _targetTime;
-
+    private float _jumpTimer;
+    
     [Header("Enemy Properties")] 
     [SerializeField] private bool canBeFrozen;
-    public bool isRetreating;
     [SerializeField] private bool canBeStunned;
-    [SerializeField] private bool isPassive;
+    [SerializeField] private float jumpTriggerDistance;
+    [SerializeField] private float maxJumpHeight;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
     private bool _isStuck;
     private int _poisonBuildup;
     private int _poiseBuildup;
+    private bool _isJumpingThroughPlatform;
 
     [Header("References")] 
-    [SerializeField] private Transform passiveTarget;
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
-    public CloneBossManager cloneBossManager;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
@@ -76,73 +68,97 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private CharacterAttack _characterAttack;
     private SpriteRenderer _spriteRenderer;
     private MaterialPropertyBlock _propertyBlock;
-    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
-    private GameObject dialogueGui;
     private AIPath _aiPath;
     private Rigidbody _rigidbody;
+    public CloneBossManager cloneBossManager;
+    public GameObject dialogue;
     
-    [Header("Sound")] private EventInstance _alarmEvent;
+    [Header("Sound")]
+    private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
+    
+    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+    private static readonly int Vel = Animator.StringToHash("vel");
+    private static readonly int Attack1 = Animator.StringToHash("Attack");
+    private static readonly int Attack2 = Animator.StringToHash("Attack2");
+    private static readonly int IsStaggered = Animator.StringToHash("isStaggered");
+    private CapsuleCollider _enemyCollider;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
     int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
-
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
     public EnemySpawner EnemySpawner { get; set; }
-
+    
     private void Start()
     {
-        RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
-        _roomBounds = RoomScripting.GetComponent<Collider>();
+        if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial && LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
+        {
+            RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
+            //RoomScripting.enemies.Add(gameObject);
+            _roomBounds = RoomScripting.GetComponent<Collider>();
+        }
+
         _healthSlider = GetComponentInChildren<Slider>();
+        _healthSlider.maxValue = maxHealth;
+        _healthSlider.value = maxHealth;
+        health = maxHealth;
+        _healthSlider.gameObject.SetActive(false);
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-
-        _target = GameObject.FindGameObjectWithTag("Player").transform;
         _aiPath = GetComponent<AIPath>();
         _rigidbody = GetComponent<Rigidbody>();
+        _enemyCollider = GetComponent<CapsuleCollider>();
+        _target = GameObject.FindGameObjectWithTag("Player").transform;
         _propertyBlock = new MaterialPropertyBlock();
-        dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
-
+        _jumpTimer = jumpCooldown;
+        
         gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
     }
 
     private void Update()
     {
-        if (dialogue.activeSelf)
-        {
-            attackCooldown = 0;
-            return;
-        }
-
-        var vector3 = transform.position;
-        vector3.z = 0;
-        transform.position = vector3;
-
-        if (isPassive)
-        {
-            health = maxHealth;
-            _healthSlider.value = maxHealth;
-        }
-
-        var velocity = _rigidbody.velocity;
-        var distance = Vector3.Distance(transform.position, _target.position);
+        var velocity = _aiPath.velocity;
         _playerDir = _target.position - transform.position;
+        var distance = Vector3.Distance(transform.position, _target.position);
+        var heightDiffAbove = _target.position.y - transform.position.y;
+        
+        Repulsion();
 
         if (_isFrozen)
         {
             _state = States.Frozen;
         }
-        else if (isPassive)
+        else if (IsPlayerInRoom())
         {
-            _state = States.Passive;
-            _playerDir = passiveTarget.position - transform.position;
+            _jumpTimer -= Time.deltaTime;
+            if (distance < attackRange)
+            {
+                _state = States.Attack;
+            }
+            else
+            {
+                if (heightDiffAbove > jumpTriggerDistance && _jumpTimer <= 0f && IsGrounded())
+                {
+                    _jumpTimer = jumpCooldown;
+                    _state = States.Jump;
+                }
+                else
+                {
+                    _state = States.Chase;
+                }
+            }
+        }
+        else
+        {
+            _state = States.Idle;
+        }
 
+        if (_state == States.Chase)
+        {
             if (Mathf.Abs(velocity.x) > 0.1f)
             {
                 UpdateSpriteDirection(velocity.x < 0);
@@ -151,40 +167,13 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
             {
                 UpdateSpriteDirection(_playerDir.x < 0);
             }
-
-            _target = passiveTarget;
-        }
-        else
-        {
-            Repulsion();
-            if (distance < attackRange)
-            {
-                _state = States.Attack;
-            }
-            else if (IsPlayerInRoom())
-            {
-                _state = States.Chase;
-
-                if (Mathf.Abs(velocity.x) > 0.1f)
-                {
-                    UpdateSpriteDirection(velocity.x < 0);
-                }
-                else
-                {
-                    UpdateSpriteDirection(_playerDir.x < 0);
-                }
-            }
-            else
-            {
-                _state = States.Idle;
-            }
         }
 
         switch (_state)
         {
             case States.Idle:
-                //_agent.isStopped = true;
                 _aiPath.canMove = false;
+                _healthSlider.gameObject.SetActive(false);
                 break;
             case States.Chase:
                 Chase();
@@ -193,18 +182,128 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
                 Attack();
                 break;
             case States.Frozen:
-                _agent.isStopped = true;
+                _aiPath.canMove = false;
                 Frozen();
                 break;
-            case States.Passive:
+            case States.Jump:
+                Jump();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
-        _animator.SetFloat("vel", Mathf.Abs(_rigidbody.velocity.x));
+        _animator.SetFloat(Vel, Mathf.Abs(velocity.x));
+    }
+
+    private void Jump()
+    {
+        var targetPos = new Vector3(_target.position.x, _target.position.y, transform.position.z);
+        
+        var platform = FindPlatform();
+        if (platform != null)
+        {
+            var verticalDistance = Mathf.Abs(platform.transform.position.y - transform.position.y);
+    
+            if (verticalDistance > maxJumpHeight)
+            {
+                _state = States.Chase;
+                return;
+            }
+
+            StartCoroutine(DisableCollision(platform));
+        }
+
+        TriggerJump(targetPos);
+        _state = States.Chase;
     }
     
+    private GameObject FindPlatform()
+    {
+        var layerMask = LayerMask.GetMask("Ground");
+        
+        if (!Physics.Raycast(transform.position, Vector3.up, out var hit, 10f, layerMask)) return null;
+        
+        var platform = hit.collider.GetComponentInParent<SemiSolidPlatform>();
+        
+        return platform != null ? platform.gameObject : null;
+    }
+    
+    private IEnumerator DisableCollision(GameObject platform)
+    {
+        if (_enemyCollider == null || platform == null) yield break;
+
+        var verticalDistance = Mathf.Abs(platform.transform.position.y - transform.position.y);
+        var est = verticalDistance * 0.125f; // estimate time to disable collision based on how far the platform is
+
+        foreach (var col in platform.GetComponentsInChildren<Collider>())
+        {
+            Physics.IgnoreCollision(_enemyCollider, col, true);
+        }
+
+        yield return new WaitForSeconds(est);
+
+        foreach (var col in platform.GetComponentsInChildren<Collider>())
+        {
+            Physics.IgnoreCollision(_enemyCollider, col, false);
+        }
+
+        _isJumpingThroughPlatform = false;
+    }
+    
+    private void TriggerJump(Vector3 target)
+    {
+        _aiPath.canMove = false;
+        _rigidbody.useGravity = true;
+
+        var force = CalculateForce(transform.position, target, 7f);
+
+        if (float.IsNaN(force.x) || float.IsNaN(force.y) || float.IsNaN(force.z)) return;
+
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.AddForce(force, ForceMode.VelocityChange);
+
+        StartCoroutine(PostJumpDelay(0.5f));
+    }
+    
+    private IEnumerator PostJumpDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _aiPath.canMove = true;
+        _aiPath.SearchPath();
+    }
+    
+    private bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, Vector3.down, 3f, LayerMask.GetMask("Ground"));
+    }
+    
+    private Vector3 CalculateForce(Vector3 start, Vector3 end, float jumpHeight)
+    {
+        var direction = end - start;
+        var gravity = Mathf.Abs(Physics.gravity.y);
+        var horizontalDir = new Vector3(direction.x, 0f, direction.z);
+        var yDiff = end.y - start.y;
+
+        if (jumpHeight < yDiff)
+        {
+            jumpHeight = Mathf.Clamp(jumpHeight, yDiff + 0.5f, 4f); 
+        }
+
+        var yVelocity = Mathf.Sqrt(2f * gravity * jumpHeight);
+        var maxHeightTime = yVelocity / gravity;
+
+        var fallHeight = jumpHeight - yDiff;
+        if (fallHeight < 0f) fallHeight = 0f;
+
+        var timeToDescend = Mathf.Sqrt(2f * fallHeight / gravity);
+        var totalTime = maxHeightTime + timeToDescend;
+
+        if (totalTime <= 0.01f) return Vector3.zero;
+
+        var horizontalVelocity = horizontalDir / totalTime;
+        return horizontalVelocity + Vector3.up * yVelocity;
+    }
+
     private void Repulsion()
     {
         var nearby = Physics.OverlapSphere(transform.position, 1.5f, LayerMask.GetMask("Enemy"));
@@ -218,7 +317,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     
     private bool IsPlayerInRoom()
     {
-        return _roomBounds != null && _roomBounds.bounds.Contains(_target.position) && !dialogueGui.activeSelf;
+        return _roomBounds != null && _roomBounds.bounds.Contains(_target.position);
     }
 
     private void UpdateSpriteDirection(bool isLeft)
@@ -237,31 +336,20 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _spriteRenderer.transform.localScale = localScale;
         attackHitbox.transform.localScale = localScale;
     }
-
+    
     private void Chase()
-     {
-          _aiPath.canMove = true;
-         _healthSlider.gameObject.SetActive(true);
-         
-         var offset = Vector3.zero;
-     
-         foreach (var other in cloneBossManager.cloneBossHandlers)
-         {
-             if (other == this || other.isDead) continue;
-
-             var dist = Vector3.Distance(transform.position, other.transform.position);
-
-             if (dist > 0.01f && dist < 4f)
-             {
-                 offset += (transform.position - other.transform.position).normalized / dist;
-             }
-         }
-         
-         if (_target.position.y > transform.position.y)
-         {
-             _aiPath.destination = new Vector3(_target.position.x, transform.position.y, _target.position.z);
-         }
-     }
+    {
+        _aiPath.canMove = true;
+        if (transform.position.y - _target.position.y > 0.1f)
+        {
+            _aiPath.destination = new Vector3(_target.position.x, _target.position.y, transform.position.z);
+        }
+        else
+        {
+            _aiPath.destination = new Vector3(_target.position.x, transform.position.y, transform.position.z);
+        }
+        _healthSlider.gameObject.SetActive(true);
+    }
 
     private void Attack()
     {
@@ -271,25 +359,25 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
         if (!(_targetTime <= 0.0f)) return;
         
-        UpdateSpriteDirection(_playerDir.x < 0);
-        
         var i = Random.Range(0, numberOfAttacks);
 
         switch (i)
         {
             case 0:
-                _animator.SetTrigger("Attack");
+                UpdateSpriteDirection(_playerDir.x < 0);
+                defense = 0;
+                _animator.SetTrigger(Attack1);
                 break;
             case 1:
-                _animator.SetTrigger("Attack2");
+                UpdateSpriteDirection(_playerDir.x < 0);
+                _animator.SetTrigger(Attack2);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
         _targetTime = attackCooldown;
     }
-
+    
     private void Frozen()
     {
         if (!canBeFrozen) return;
@@ -300,7 +388,6 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     {
         StartCoroutine(StartCooldown());
         healthFillImage.color = Color.cyan;
-        //_agent.velocity = Vector3.zero;
         yield return new WaitForSecondsRealtime(freezeDuration);
         healthFillImage.color = new Color(1f, .48f, .48f, 1);
         _isFrozen = false;
@@ -344,7 +431,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         {
             health -= damage;
             _healthSlider.value = health;
-            StartCoroutine(HitFlash(Color.red, 0.05f));
+            StartCoroutine(HitFlash(Color.red, 0.1f));
         }
         else
         {
@@ -391,18 +478,19 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
                 break;
         }
     }
-    
+
     public void Die()
     {
         isDead = true;
-        cloneBossManager.cloneBossHandlers.Remove(this);
-        
         StopAllCoroutines();
+
+        cloneBossManager.cloneBossHandlers.Remove(this);
+        cloneBossManager.UpdateCollectiveHealth();
         
-        gameObject.SetActive(false);
         StopAlarmSound();
+        gameObject.SetActive(false);
     }
-    
+
     public void PlayAlarmSound()
     {
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
@@ -416,7 +504,12 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _alarmEvent.release();
     }
 
-    public void ApplyKnockback(Vector2 knockbackPower)
+    private void SetDefense(int amount)
+    {
+        defense = amount;
+    }
+
+    public void ApplyKnockback(Vector2 knockbackPower) // TODO: make knockback in player facing direction
     {
         if (_isFrozen || isDead) return;
 
@@ -426,33 +519,27 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
-        StartCoroutine(StunTimer(.1f));
-        
-        //_animator.SetTrigger("lightStagger");
+        StartCoroutine(StunTimer(.05f));
 
-        if (_poiseBuildup >= poise)
-        {
-            StartCoroutine(StunTimer(1f));
-            _poiseBuildup = 0;
-        }
+        if (_poiseBuildup < poise) return;
+        StartCoroutine(StunTimer(1f));
+        _poiseBuildup = 0;
     }
     
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
     {
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.AddForce(force, ForceMode.Impulse);
-
         yield return new WaitForSeconds(duration);
-
         _rigidbody.velocity = Vector3.zero;
     }
 
     private IEnumerator StunTimer(float stunTime)
     {
-        _animator.SetBool("isStaggered", true);
+        _animator.SetBool(IsStaggered, true);
        yield return new WaitForSecondsRealtime(stunTime);
        _rigidbody.velocity = Vector3.zero;
-       _animator.SetBool("isStaggered", false);
+       _animator.SetBool(IsStaggered, false);
     }
     
     private IEnumerator HitFlash(Color flashColor, float duration)

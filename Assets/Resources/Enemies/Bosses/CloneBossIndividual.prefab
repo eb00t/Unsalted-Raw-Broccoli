@@ -36,7 +36,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.061000004, y: 1.845}
+  m_AnchoredPosition: {x: -0.07000001, y: 1.823}
   m_SizeDelta: {x: 3, y: 0.366}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &8382908356559270000
@@ -111,15 +111,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8810324875042115482}
-  - component: {fileID: 7104240659913372662}
+  - component: {fileID: 4381624610621005524}
   - component: {fileID: 1007004536666698315}
-  - component: {fileID: 4677009735341269827}
-  - component: {fileID: 6638087740812520651}
-  - component: {fileID: 7550491248688306204}
-  - component: {fileID: 8067652759053553432}
-  - component: {fileID: 3820095887984075387}
+  - component: {fileID: 6032831755371690072}
+  - component: {fileID: 5103893604087139893}
+  - component: {fileID: -5219529788770601323}
+  - component: {fileID: 8929137638255012453}
+  - component: {fileID: 4879577285064212887}
   m_Layer: 8
-  m_Name: CloneBoss
+  m_Name: CloneBossIndividual
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145,7 +145,7 @@ Transform:
   - {fileID: 1715227458440395653}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7104240659913372662
+--- !u!114 &4381624610621005524
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -157,30 +157,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc7db9d8e229b3249ad8a20a26dcaf17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 80
-  poise: 30
+  maxHealth: 0
+  health: 90
+  poise: 40
   defense: 0
   poisonResistance: 50
-  attack: 5
-  poiseDamage: 5
+  blockingDefense: 0
+  attack: 6
+  poiseDamage: 8
   numberOfAttacks: 2
-  attackRange: 3
-  chaseRange: 15
-  retreatDistance: 0
-  dialogue: {fileID: 0}
-  _state: 0
-  attackCooldown: 1
-  freezeDuration: 2
+  attackRange: 4
+  _roomBounds: {fileID: 0}
+  attackCooldown: 1.2
+  freezeDuration: 1.6
   freezeCooldown: 2
-  maxTimeToReachTarget: 3
+  maxTimeToReachTarget: 5
+  jumpCooldown: 5
+  jumpThroughTime: 0.6
+  isBomb: 0
   canBeFrozen: 1
-  isRetreating: 0
   canBeStunned: 1
-  isPassive: 0
-  passiveTarget: {fileID: 0}
+  jumpTriggerDistance: 1
+  maxJumpHeight: 6
   attackHitbox: {fileID: 3665861034403590735}
   healthFillImage: {fileID: 8120095298498673214}
   cloneBossManager: {fileID: 0}
+  dialogue: {fileID: 0}
 --- !u!95 &1007004536666698315
 Animator:
   serializedVersion: 5
@@ -202,7 +204,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4677009735341269827
+--- !u!114 &6032831755371690072
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -230,7 +232,7 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!114 &6638087740812520651
+--- !u!114 &5103893604087139893
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -272,7 +274,7 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
---- !u!114 &7550491248688306204
+--- !u!114 &-5219529788770601323
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -286,7 +288,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   target: {fileID: 0}
---- !u!54 &8067652759053553432
+--- !u!54 &8929137638255012453
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -313,7 +315,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 2
---- !u!136 &3820095887984075387
+--- !u!136 &4879577285064212887
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -362,7 +364,7 @@ Transform:
   m_GameObject: {fileID: 2211594585371208086}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.171, y: 0.445, z: 0}
+  m_LocalPosition: {x: -0.18, y: 0.42299998, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -592,7 +594,7 @@ Transform:
   m_GameObject: {fileID: 4567322726946766161}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.171, y: 0.37499997, z: 0}
+  m_LocalPosition: {x: -0.18, y: 0.353, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -794,7 +796,7 @@ Transform:
   m_GameObject: {fileID: 4973278753106217272}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.171, y: 0.37499997, z: 0}
+  m_LocalPosition: {x: -0.18, y: 0.353, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -937,6 +939,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5614036221781517610}
   - component: {fileID: 6473434246436826002}
+  - component: {fileID: 4132606939619415808}
   m_Layer: 11
   m_Name: Hitbox
   m_TagString: Enemy
@@ -953,8 +956,8 @@ Transform:
   m_GameObject: {fileID: 6183976097649540587}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.171, y: 0.37499997, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 4}
+  m_LocalPosition: {x: -0.18, y: 0.353, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8810324875042115482}
@@ -980,6 +983,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.6143484, y: 2.8490694, z: 1}
   m_Center: {x: 0.12012892, y: -0.34959793, z: 0}
+--- !u!54 &4132606939619415808
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6183976097649540587}
+  serializedVersion: 4
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 0
+  m_ImplicitTensor: 0
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &8087257085755011137
 GameObject:
   m_ObjectHideFlags: 0
