@@ -8,17 +8,19 @@ using Random = UnityEngine.Random;
 public class CurrencyBehaviour : MonoBehaviour
 {
     public Vector3 launchPower;
-    private Rigidbody _rigidbody;
-    private GameObject _player;
-    private bool _moveToPlayer;
-    private bool _collected;
-    private SpriteRenderer _spriteRenderer;
-    private int _currencyAmount;
-    private CurrencyManager _currencyManager;
-    private BoxCollider _boxCollider;
-    private Light _light;
+    public Rigidbody _rigidbody;
+    public GameObject _player;
+    public bool _moveToPlayer;
+    public bool _collected;
+    public SpriteRenderer _spriteRenderer;
+    public int _currencyAmount;
+    public CurrencyManager _currencyManager;
+    public BoxCollider _boxCollider;
+    public Light _light;
+    public TrailRenderer _trailRenderer;
     [Range(0, 3)]
-    private int _randomCurrencySize;
+    
+    public int _randomCurrencySize;
     public enum CurrencySize
     {
         Small,
@@ -31,18 +33,21 @@ public class CurrencyBehaviour : MonoBehaviour
     void Awake()
     {
         launchPower = new Vector3(Random.Range(-10f, 10f), Random.Range(0, 20f), 0);
-        _rigidbody = GetComponent<Rigidbody>();
         _randomCurrencySize = Random.Range(0, 100);
-        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>(); 
+        _light = gameObject.GetComponentInChildren<Light>();
+        _trailRenderer = GetComponent<TrailRenderer>();
         switch (_randomCurrencySize)
         {
             case <= 49:
                 currencySize = CurrencySize.Small;
+                _spriteRenderer.color = new Color(0.43137254902f, 0.30196078431f, 0.14509803921f);
                 _currencyAmount = 1;
                 //_spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE SMALL CURRENCY SPRITE HERE");
                 break;
             case >= 50 and <= 75:
                 currencySize = CurrencySize.Medium;
+                _spriteRenderer.color = new Color(0.64705882352f, 0.66274509803f, 0.70588235294f);
                 _currencyAmount = 2;
                 //_spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE MEDIUM CURRENCY SPRITE HERE");
                 break;
@@ -53,18 +58,23 @@ public class CurrencyBehaviour : MonoBehaviour
                 break;
             case 99:
                 currencySize = CurrencySize.VeryLarge;
+                _spriteRenderer.color = new Color(0.22352941176f, 0.50588235294f, 0.44705882352f);
                 _currencyAmount = 20;
                //_spriteRenderer.sprite = Resources.Load<Sprite>("PUT THE VERY LARGE CURRENCY SPRITE HERE");
                 break;
         }
+
+        _light.color = _spriteRenderer.color;
+        _trailRenderer.startColor = _spriteRenderer.color;
+        _trailRenderer.endColor = _spriteRenderer.color;
     }
 
     private void Start()
     {
         _currencyManager = GameObject.FindWithTag("UIManager").GetComponent<CurrencyManager>();
         _player = GameObject.FindWithTag("Player");
-        _light = gameObject.GetComponentInChildren<Light>();
         _boxCollider = GetComponent<BoxCollider>();
+        _rigidbody = GetComponent<Rigidbody>();
         _boxCollider.enabled = true;
         _rigidbody.AddForce(launchPower, ForceMode.Impulse);
         StartCoroutine(GoToPlayer());

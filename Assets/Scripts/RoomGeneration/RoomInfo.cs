@@ -255,11 +255,11 @@ public class RoomInfo : MonoBehaviour
             LevelBuilder.Instance.lootRoomSpawnPoints.Remove(door.transform);
         }
         doorSpawnPoints.Clear();
-        CameraManager.Instance.virtualCameras.Remove(roomCam.GetComponent<CinemachineVirtualCamera>());
         LevelBuilder.Instance.CleanUpBadRooms();
     }
     private void OnDestroy()
     {
+        CameraManager.Instance.virtualCameras.Remove(roomCam);
         switch (LevelBuilder.Instance._spawnMode)
         {
             case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms or LevelBuilder.SpawnMode.Shops or LevelBuilder.SpawnMode.LootRooms or LevelBuilder.SpawnMode.LoreRooms:
