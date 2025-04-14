@@ -315,11 +315,13 @@ public class CharacterMovement : MonoBehaviour
             _midAirDashCount = 0;
         }
 
-        if (walkAllowed && allowMovement && !_isDashing && !isJumpAttacking && !isAttacking)
+        if (walkAllowed && allowMovement && !_isDashing && !isJumpAttacking)
         {
+            var acc = acceleration;
+            if (isAttacking) acc = acceleration / 3;
             if ((rb.velocity.x <= maxSpeed && Mathf.Sign(rb.velocity.x) == 1) || (rb.velocity.x >= -maxSpeed && Mathf.Sign(rb.velocity.x) == -1) || (Mathf.Sign(rb.velocity.x) != input))
             {
-                Vector3 walk = new Vector3(input * acceleration, rb.velocity.y, rb.velocity.z);
+                Vector3 walk = new Vector3(input * acc, rb.velocity.y, rb.velocity.z);
                 rb.velocity = walk;
             }
         }
