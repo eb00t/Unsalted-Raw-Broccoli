@@ -515,7 +515,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
         _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
         
-        var knockbackMultiplier = (_poiseBuildup >= poise) ? 2f : 0.5f; 
+        var knockbackMultiplier = (_poiseBuildup >= poise) ? 15f : 10f; 
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
         StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
@@ -528,10 +528,13 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
     {
+        _aiPath.canMove = false;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.AddForce(force, ForceMode.Impulse);
         yield return new WaitForSeconds(duration);
         _rigidbody.velocity = Vector3.zero;
+        _aiPath.canMove = true;
+        _aiPath.SearchPath();
     }
 
     private IEnumerator StunTimer(float stunTime)

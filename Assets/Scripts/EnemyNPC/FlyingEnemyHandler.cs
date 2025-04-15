@@ -574,13 +574,13 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
     {
         _isKnockedBack = true;
-        
+        _aiPath.canMove = false;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.AddForce(force, ForceMode.Impulse);
-
         yield return new WaitForSeconds(duration);
-
         _rigidbody.velocity = Vector3.zero;
+        _aiPath.canMove = true;
+        _aiPath.SearchPath();
         _isKnockedBack = false;
     }
     

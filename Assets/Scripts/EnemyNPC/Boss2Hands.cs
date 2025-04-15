@@ -353,8 +353,9 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             UpdateColliders(false, false, false, false);
         }
 
-        defense = 50;
+        yield return new WaitForSecondsRealtime(2f);
 
+        defense = 50;
         _canAttack = true;
     }
     
