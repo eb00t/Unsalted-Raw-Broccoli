@@ -114,6 +114,11 @@ public class CharacterAttack : MonoBehaviour
                 _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
                 return;
             }
+            
+            if (_mediumComboStep != MediumComboStep.None || _heavyComboStep != HeavyComboStep.None)
+            {
+                ResetCombo();
+            }
 
             // Start of chain
             if (_lightComboStep == LightComboStep.None)
@@ -122,6 +127,7 @@ public class CharacterAttack : MonoBehaviour
                 _comboTimer = comboResetTime;
                 _playerAnimator.SetTrigger(LightAttack0);
                 _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
+                _playerAnimator.SetBool(IsAttacking, true);
                 _characterMovement.isAttacking = true;
             }
             else
@@ -177,11 +183,24 @@ public class CharacterAttack : MonoBehaviour
             return;
         }
         
-        _mediumComboStep = MediumComboStep.Step1;
-        _comboTimer = comboResetTime;
-        _playerAnimator.SetTrigger(MediumAttack0);
-        _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
-        _characterMovement.isAttacking = true;
+        if (_lightComboStep != LightComboStep.None || _heavyComboStep != HeavyComboStep.None)
+        {
+            ResetCombo();
+        }
+        
+        if (_mediumComboStep == MediumComboStep.None)
+        {
+            _mediumComboStep = MediumComboStep.Step1;
+            _comboTimer = comboResetTime;
+            _playerAnimator.SetTrigger(MediumAttack0);
+            _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
+            _playerAnimator.SetBool(IsAttacking, true);
+            _characterMovement.isAttacking = true;
+        }
+        else
+        {
+            _inputBuffer = true;
+        }
     }
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
@@ -197,6 +216,11 @@ public class CharacterAttack : MonoBehaviour
             return;
         }
         
+        if (_lightComboStep != LightComboStep.None || _mediumComboStep != MediumComboStep.None)
+        {
+            ResetCombo();
+        }
+        
         // Start of chain
         if (_heavyComboStep == HeavyComboStep.None)
         {
@@ -204,6 +228,7 @@ public class CharacterAttack : MonoBehaviour
             _comboTimer = comboResetTime;
             _playerAnimator.SetTrigger(HeavyAttack0);
             _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
+            _playerAnimator.SetBool(IsAttacking, true);
             _characterMovement.isAttacking = true;
         }
         else
@@ -215,6 +240,45 @@ public class CharacterAttack : MonoBehaviour
     // for animation events (light attacks): if another input is made during an existing attack animation it is added to the input buffer and played next
     public void AdvanceLightCombo()
     {
+        if (_mediumComboStep != MediumComboStep.None || _heavyComboStep != HeavyComboStep.None) return;
+
+        if (!_inputBuffer)
+        {
+            ResetCombo();
+            return;
+        }
+        
+        _characterMovement.isAttacking = true;
+        _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
+        _playerAnimator.SetBool(IsAttacking, true);
+        _inputBuffer = false;
+        _comboTimer = comboResetTime;
+
+        switch (_lightComboStep)
+        {
+            case LightComboStep.Step1:
+                gameObject.layer = 13;
+                _lightComboStep = LightComboStep.Step2;
+                _playerAnimator.SetTrigger(LightAttack1);
+                break;
+            case LightComboStep.Step2:
+                gameObject.layer = 15;
+                _lightComboStep = LightComboStep.Step3;
+                _playerAnimator.SetTrigger(LightAttack2);
+                break;
+            case LightComboStep.Step3:
+                gameObject.layer = 13;
+                _lightComboStep = LightComboStep.Step1;
+                _playerAnimator.SetTrigger(LightAttack0);
+                //ResetCombo();
+                break;
+        }
+    }
+    
+    public void AdvanceMediumCombo()
+    {
+        if (_lightComboStep != LightComboStep.None || _heavyComboStep != HeavyComboStep.None) return;
+        
         if (!_inputBuffer)
         {
             ResetCombo();
@@ -228,18 +292,10 @@ public class CharacterAttack : MonoBehaviour
         _inputBuffer = false;
         _comboTimer = comboResetTime;
 
-        switch (_lightComboStep)
+        switch (_mediumComboStep)
         {
-            case LightComboStep.Step1:
-                _lightComboStep = LightComboStep.Step2;
-                _playerAnimator.SetTrigger(LightAttack1);
-                break;
-            case LightComboStep.Step2:
-                _lightComboStep = LightComboStep.Step3;
-                _playerAnimator.SetTrigger(LightAttack2);
-                break;
-            case LightComboStep.Step3:
-                ResetCombo();
+            case MediumComboStep.Step1:
+                _playerAnimator.SetTrigger(MediumAttack0);
                 break;
         }
     }
@@ -247,6 +303,8 @@ public class CharacterAttack : MonoBehaviour
     // for animation events (heavy attacks): if another input is made during an existing attack animation it is added to the input buffer and played next
     public void AdvanceHeavyCombo()
     {
+        if (_lightComboStep != LightComboStep.None || _mediumComboStep != MediumComboStep.None) return;
+
         if (!_inputBuffer)
         {
             ResetCombo();
@@ -267,7 +325,9 @@ public class CharacterAttack : MonoBehaviour
                 _playerAnimator.SetTrigger(HeavyAttack1);
                 break;
             case HeavyComboStep.Step2:
-                ResetCombo();
+                _heavyComboStep = HeavyComboStep.Step1;
+                _playerAnimator.SetTrigger(HeavyAttack0);
+                //ResetCombo();
                 break;
         }
     }
@@ -278,6 +338,12 @@ public class CharacterAttack : MonoBehaviour
         _lightComboStep = LightComboStep.None;
         _mediumComboStep = MediumComboStep.None;
         _heavyComboStep = HeavyComboStep.None;
+        _playerAnimator.ResetTrigger(LightAttack0);
+        _playerAnimator.ResetTrigger(LightAttack1);
+        _playerAnimator.ResetTrigger(LightAttack2);
+        _playerAnimator.ResetTrigger(MediumAttack0);
+        _playerAnimator.ResetTrigger(HeavyAttack0);
+        _playerAnimator.ResetTrigger(HeavyAttack1);
         _characterMovement.isAttacking = false;
         _playerAnimator.SetBool(IsAttacking, false);
         _comboTimer = 0f;
@@ -473,17 +539,6 @@ public class CharacterAttack : MonoBehaviour
     private void Update()
     {
         if (isDead || _characterMovement.uiOpen) return;
-        
-        // if this timer reaches 0 then reset combo so it starts from attack step 1
-        if (_comboTimer > 0f)
-        {
-            _comboTimer -= Time.deltaTime;
-
-            if (_comboTimer <= 0f)
-            {
-                ResetCombo();
-            }
-        }
 
         if (_jumpAttackCount > 0)
         {

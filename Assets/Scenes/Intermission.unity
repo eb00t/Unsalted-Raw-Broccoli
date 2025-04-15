@@ -892,6 +892,8 @@ MonoBehaviour:
   bombTimeVariability: 0
   lungeCooldown: 0
   blockDuration: 0
+  jumpCooldown: 0
+  jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
   canBeFrozen: 0
@@ -899,6 +901,8 @@ MonoBehaviour:
   doesEnemyPatrol: 0
   isPassive: 0
   lungeForce: 0
+  jumpTriggerDistance: 0
+  maxJumpHeight: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 741127926}
@@ -4189,7 +4193,7 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.size
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
@@ -4223,6 +4227,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_ActionId
+      value: 0504164f-9ee2-4456-a0bc-3aec17e89615
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
       propertyPath: m_ActionEvents.Array.data[6].m_ActionName
       value: Controls/Pause[/Keyboard/escape]
       objectReference: {fileID: 0}
@@ -4250,6 +4259,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ActionEvents.Array.data[11].m_ActionName
       value: Controls/SwitchTarget[/XInputControllerWindows/rightStick,/Keyboard/1,/Keyboard/2]
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_ActionName
+      value: Controls/Medium Attack[/Keyboard/r,/XInputControllerWindows/buttonEast]
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
@@ -4284,6 +4298,11 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
@@ -4329,6 +4348,11 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
@@ -4438,6 +4462,11 @@ PrefabInstance:
       objectReference: {fileID: 1007035032}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1007035030}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -4494,6 +4523,11 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
@@ -4598,6 +4632,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: MediumAttack
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: CharacterAttack, Assembly-CSharp
       objectReference: {fileID: 0}
@@ -4668,6 +4707,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CharacterAttack, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
@@ -4724,6 +4768,11 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[11].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[12].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5329607678594116923, guid: 5a9b12290cab1464785c4858bd2bb3a4,
@@ -7313,6 +7362,8 @@ MonoBehaviour:
   bombTimeVariability: 0
   lungeCooldown: 0
   blockDuration: 0
+  jumpCooldown: 0
+  jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
   canBeFrozen: 0
@@ -7320,6 +7371,8 @@ MonoBehaviour:
   doesEnemyPatrol: 0
   isPassive: 0
   lungeForce: 0
+  jumpTriggerDistance: 0
+  maxJumpHeight: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 520673695}
@@ -14153,6 +14206,8 @@ MonoBehaviour:
   bombTimeVariability: 0
   lungeCooldown: 0
   blockDuration: 0
+  jumpCooldown: 0
+  jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
   canBeFrozen: 0
@@ -14160,6 +14215,8 @@ MonoBehaviour:
   doesEnemyPatrol: 0
   isPassive: 0
   lungeForce: 0
+  jumpTriggerDistance: 0
+  maxJumpHeight: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 0}
@@ -17147,6 +17204,8 @@ MonoBehaviour:
   bombTimeVariability: 0
   lungeCooldown: 0
   blockDuration: 0
+  jumpCooldown: 0
+  jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
   canBeFrozen: 0
@@ -17154,6 +17213,8 @@ MonoBehaviour:
   doesEnemyPatrol: 0
   isPassive: 0
   lungeForce: 0
+  jumpTriggerDistance: 0
+  maxJumpHeight: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 2327120454878590849}
@@ -22954,6 +23015,8 @@ MonoBehaviour:
   bombTimeVariability: 0
   lungeCooldown: 0
   blockDuration: 0
+  jumpCooldown: 0
+  jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
   canBeFrozen: 0
@@ -22961,6 +23024,8 @@ MonoBehaviour:
   doesEnemyPatrol: 0
   isPassive: 0
   lungeForce: 0
+  jumpTriggerDistance: 0
+  maxJumpHeight: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 5680754485878443918}
@@ -23472,6 +23537,8 @@ MonoBehaviour:
   bombTimeVariability: 0
   lungeCooldown: 0
   blockDuration: 0
+  jumpCooldown: 0
+  jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
   canBeFrozen: 0
@@ -23479,6 +23546,8 @@ MonoBehaviour:
   doesEnemyPatrol: 0
   isPassive: 0
   lungeForce: 0
+  jumpTriggerDistance: 0
+  maxJumpHeight: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 0}

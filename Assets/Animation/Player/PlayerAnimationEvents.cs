@@ -17,6 +17,11 @@ public class PlayerAnimationEvents : MonoBehaviour
         charAttack.AdvanceLightCombo();
     }
     
+    private void AdvanceMediumCombo()
+    {
+        charAttack.AdvanceMediumCombo();
+    }
+    
     private void AdvanceHeavyCombo()
     {
         charAttack.AdvanceHeavyCombo();

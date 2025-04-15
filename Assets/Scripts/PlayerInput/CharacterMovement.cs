@@ -7,20 +7,9 @@ using UnityEngine.Serialization;
 
 public class CharacterMovement : MonoBehaviour
 {
-    private static readonly int IsStaggered = Animator.StringToHash("isStaggered");
-    private static readonly int IsJumpAttacking = Animator.StringToHash("isJumpAttacking");
-    private static readonly int MediumAttack0 = Animator.StringToHash("mediumAttack");
-    private static readonly int HeavyAttack0 = Animator.StringToHash("heavyAttack0");
-    private static readonly int LightAttack0 = Animator.StringToHash("lightAttack0");
-    private static readonly int IsAttacking = Animator.StringToHash("isAttacking");
-    private static readonly int HeavyAttack1 = Animator.StringToHash("heavyAttack1");
-    private static readonly int IsDead = Animator.StringToHash("isDead");
-    private static readonly int LightAttack1 = Animator.StringToHash("lightAttack1");
-    private static readonly int LightAttack2 = Animator.StringToHash("lightAttack2");
-    
-    Rigidbody rb;
-    BoxCollider groundCheck;
-    Animator PlayerAnimator;
+    private Rigidbody rb;
+    private BoxCollider groundCheck;
+    private Animator PlayerAnimator;
     public bool walkAllowed = true;
 
     public bool allowMovement = true;
@@ -115,6 +104,7 @@ public class CharacterMovement : MonoBehaviour
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpForce, 0f);
             PlayerAnimator.SetBool("Jump", true);
+            _characterAttack.ResetCombo();
             grounded = false;
         }
         /*else if (!grounded && wallJumpingCounter > 0f && (startSlideTimer || sliding) && !isWallJumping)
@@ -178,12 +168,6 @@ public class CharacterMovement : MonoBehaviour
             isAttacking = false;
             isJumpAttacking = false;
             _characterAttack.ResetCombo();
-            PlayerAnimator.ResetTrigger(LightAttack0);
-            PlayerAnimator.ResetTrigger(LightAttack1);
-            PlayerAnimator.ResetTrigger(LightAttack2);
-            PlayerAnimator.ResetTrigger(MediumAttack0);
-            PlayerAnimator.ResetTrigger(HeavyAttack0);
-            PlayerAnimator.ResetTrigger(HeavyAttack1);
             
             //rb.velocity = Vector3.zero;
             rb.velocity = dashForce;
