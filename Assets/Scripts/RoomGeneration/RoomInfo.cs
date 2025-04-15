@@ -201,6 +201,7 @@ public class RoomInfo : MonoBehaviour
         }
 
         LevelBuilder.Instance.spawnedRooms.Remove(gameObject);
+        
         if (specialRoom)
         {
             LevelBuilder.Instance.possibleSpecialRooms.Add(Resources.Load<GameObject>(roomPath));
@@ -262,8 +263,11 @@ public class RoomInfo : MonoBehaviour
         CameraManager.Instance.virtualCameras.Remove(roomCam);
         switch (LevelBuilder.Instance._spawnMode)
         {
-            case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms or LevelBuilder.SpawnMode.Shops or LevelBuilder.SpawnMode.LootRooms or LevelBuilder.SpawnMode.LoreRooms:
+            case LevelBuilder.SpawnMode.Normal or LevelBuilder.SpawnMode.SpecialRooms or LevelBuilder.SpawnMode.Shops or LevelBuilder.SpawnMode.LoreRooms:
                 LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.spawnPoints.Count);
+                break;
+            case LevelBuilder.SpawnMode.LootRooms:
+                LevelBuilder.Instance.spawnRandomNumber = LevelBuilder.Instance.RandomiseNumber(LevelBuilder.Instance.lootRoomSpawnPoints.Count);
                 break;
             case LevelBuilder.SpawnMode.BossRooms:
                 switch (LevelBuilder.Instance.roomRandomNumber)
