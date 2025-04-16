@@ -241,7 +241,6 @@ public class RoomInfo : MonoBehaviour
         if (loreRoom)
         {
             LevelBuilder.Instance.spawnedLoreRooms.Remove(gameObject);
-            LevelBuilder.Instance.spawnModeChangedByDestroy = true;
         }
         foreach (var connector in attachedConnectors)
         {
