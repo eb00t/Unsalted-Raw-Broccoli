@@ -52,14 +52,14 @@ public class LockOnController : MonoBehaviour // TODO: Make toggle states load f
 
             UpdateTargetImg(lockedTarget.gameObject, true);
             _originalLocalScale = transform.localScale;
-            _characterMovement.lockedOn = true;
+            _characterMovement.LockedOn = true;
             UpdateDir();
         }
         else if (!isAuto)
         {
             UpdateTargetImg(lockedTarget.gameObject, false);
             lockedTarget = null;
-            _characterMovement.lockedOn = false;
+            _characterMovement.LockedOn = false;
             transform.localScale = _originalLocalScale;
         }
     }
@@ -188,7 +188,7 @@ public class LockOnController : MonoBehaviour // TODO: Make toggle states load f
         if (damageable == null)
         {
             lockedTarget = null;
-            _characterMovement.lockedOn = false;
+            _characterMovement.LockedOn = false;
             return;
         }
 
@@ -201,7 +201,7 @@ public class LockOnController : MonoBehaviour // TODO: Make toggle states load f
             {
                 lockedTarget = nearestTarget;
                 UpdateTargetImg(lockedTarget.gameObject, true);
-                _characterMovement.lockedOn = true;
+                _characterMovement.LockedOn = true;
                 UpdateDir();
                 
                 damageable = lockedTarget.GetComponentInParent<IDamageable>();
@@ -209,7 +209,7 @@ public class LockOnController : MonoBehaviour // TODO: Make toggle states load f
             else
             {
                 lockedTarget = null;
-                _characterMovement.lockedOn = false;
+                _characterMovement.LockedOn = false;
                 return;
             }
         }
@@ -225,7 +225,7 @@ public class LockOnController : MonoBehaviour // TODO: Make toggle states load f
         {
             UpdateTargetImg(lockedTarget.gameObject, false);
             lockedTarget = null;
-            _characterMovement.lockedOn = false;
+            _characterMovement.LockedOn = false;
             return;
         }
 

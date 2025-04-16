@@ -7,83 +7,95 @@ using UnityEngine.Serialization;
 
 public class CharacterMovement : MonoBehaviour
 {
-    private Rigidbody rb;
-    private BoxCollider groundCheck;
-    private Animator PlayerAnimator;
-    public bool walkAllowed = true;
-
-    public bool allowMovement = true;
-
-    public float acceleration = 1f;
-    public float maxSpeed = 10f;
-    public float jumpForce = 1f;
-    public float dashSpeed;
-    public int dashEnergyCost;
-    private int _midAirDashCount;
-    //public float slideSpeed = 1f;
-    //public float slideHoldTime = 1f;
-
-    public bool grounded;
-    private float groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time. 
-    private bool fallingThrough; // Bool to fix player not entering the fall state if they drop through platforms
-    public bool doubleJumpPerformed;
-    public bool isCrouching;
-    public Vector3 Velocity;
+    [Header("References")]
     [SerializeField] private Transform playerGround;
-
-    //private bool dashAllowed = true;
-    private bool startDashTimer;
-    //private float dashTimer;
-    //[SerializeField] private float dashBreak;
-
-    private float input;
-    //[SerializeField] private bool startSlide;
-    //[SerializeField] private bool startSlideTimer;
-    //[SerializeField] private bool sliding;
-    //public bool slideAllowed;
-    //[SerializeField] private float slideTimer;
-
-    //[SerializeField] bool isWallJumping;
-    //[SerializeField] private float wallJumpingCounter;
-    //[SerializeField] private float wallJumpingTime;
-    //[SerializeField] private Vector2 wallJumpForce;
-    //[SerializeField] private float wallJumpingDuration;
-
-    [NonSerialized] public bool uiOpen; // makes sure player doesnt move when ui is open
-    [NonSerialized] public bool lockedOn = false;
-    private bool _isDashing;
+    private Rigidbody _rb;
+    private Animator _playerAnimator;
     private Coroutine _dashCoroutine;
     private CharacterAttack _characterAttack;
+    
+    [Header("Player Properties")]
+    public bool grounded;
+    public bool walkAllowed = true;
+    public bool allowMovement = true;
+    public bool isCrouching;
     public bool isJumpAttacking;
     public bool isAttacking;
+    public bool doubleJumpPerformed;
+    public Vector3 velocity;
+    private bool _isDashing;
+    private int _midAirDashCount;
+    private float _input;
+    private bool _isHanging;
     
+    [Header("Other Properties")]
     [SerializeField] private float groundCheckDist;
     [SerializeField] private float groundCheckSpacing;
+    public bool uiOpen; // makes sure player doesnt move when ui is open
+    [NonSerialized] public bool LockedOn = false;
+    private float _groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time.
+    private float _hangTimer;
+    
+    [Header("Movement Stats")]
+    public float acceleration;
+    public float maxSpeed;
+    public float jumpForce;
+    public float dashSpeed;
+    [SerializeField] private float hangTime;
+    [SerializeField] private float hangThreshold;
+    
+    [Header("Energy")]
+    public int dashEnergyCost;  
+    
+    [Header("Animations")]
+    private static readonly int Dash1 = Animator.StringToHash("Dash");
+    private static readonly int Input1 = Animator.StringToHash("Input");
+    private static readonly int YVelocity = Animator.StringToHash("YVelocity");
+    private static readonly int XVelocity = Animator.StringToHash("XVelocity");
+    private static readonly int Grounded = Animator.StringToHash("Grounded");
+    private static readonly int IsWalkingBackwards = Animator.StringToHash("isWalkingBackwards");
+    private static readonly int IsCrouching = Animator.StringToHash("isCrouching");
+    private static readonly int Jump1 = Animator.StringToHash("Jump");
+    private static readonly int DoubleJump = Animator.StringToHash("DoubleJump");
+    
+    /*
+    [Header("Wall Jump")]
+    public float slideSpeed = 1f;
+    public float slideHoldTime = 1f;
+    [SerializeField] private bool startSlide;
+    [SerializeField] private bool startSlideTimer;
+    [SerializeField] private bool sliding;
+    public bool slideAllowed;
+    [SerializeField] private float slideTimer;
+    [SerializeField] bool isWallJumping;
+    [SerializeField] private float wallJumpingCounter;
+    [SerializeField] private float wallJumpingTime;
+    [SerializeField] private Vector2 wallJumpForce;
+    [SerializeField] private float wallJumpingDuration;
+    */
 
     public void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        groundCheck = GetComponent<BoxCollider>();
-        PlayerAnimator = GetComponentInChildren<Animator>();
+        _rb = GetComponent<Rigidbody>();
+        GetComponent<BoxCollider>();
+        _playerAnimator = GetComponentInChildren<Animator>();
         _characterAttack = GetComponentInChildren<CharacterAttack>();
     }
 
     public void Crouch(InputAction.CallbackContext ctx)
     {
         if (uiOpen) return;
-        
+
         if (ctx.ReadValue<float>() > 0)
         {
-            PlayerAnimator.SetBool("isCrouching", true);
+            _playerAnimator.SetBool(IsCrouching, true);
             if (!allowMovement) return;
-            fallingThrough = true;
             isCrouching = true;
         }
         else
         {
-            PlayerAnimator.SetBool("isCrouching", false);
+            _playerAnimator.SetBool(IsCrouching, false);
             if (!allowMovement) return;
-            fallingThrough = true;
             isCrouching = false;
         }
     }
@@ -91,19 +103,18 @@ public class CharacterMovement : MonoBehaviour
     public void XAxis(InputAction.CallbackContext ctx)
     {
         if (uiOpen) return;
-        //if (!allowMovement) return;
-        input = ctx.ReadValue<float>();
-        PlayerAnimator.SetFloat("Input", Mathf.Abs(input));
+        _input = ctx.ReadValue<float>();
+        _playerAnimator.SetFloat(Input1, Mathf.Abs(_input));
     }
 
     public void Jump(InputAction.CallbackContext ctx)
     {
-        if (uiOpen || !allowMovement|| !ctx.performed) return;
-        groundTimer = 0;
+        if (uiOpen || !allowMovement || !ctx.performed) return;
+        _groundTimer = 0;
         if (grounded && !doubleJumpPerformed /*&& !startSlideTimer && !sliding*/)
         {
-            rb.velocity = new Vector3(rb.velocity.x, jumpForce, 0f);
-            PlayerAnimator.SetBool("Jump", true);
+            _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, 0f);
+            _playerAnimator.SetBool(Jump1, true);
             _characterAttack.ResetCombo();
             grounded = false;
         }
@@ -112,14 +123,14 @@ public class CharacterMovement : MonoBehaviour
             slideAllowed = false;
             startSlideTimer = false;
             isWallJumping = true;
-                
+
             var direction = (input != 0) ? -Mathf.Sign(input) : -Mathf.Sign(transform.localScale.x);
             //rb.velocity = new Vector3(direction * wallJumpForce.x, wallJumpForce.y, 0f);
             Vector3 _wallJumpForce = new Vector3(direction * wallJumpForce.x, wallJumpForce.y, 0f);
             rb.AddForce(_wallJumpForce);
 
             wallJumpingCounter = 0f;
-                
+
             if (!lockedOn && Mathf.Abs(rb.velocity.x) > 0.1f)
             {
                 transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
@@ -127,34 +138,34 @@ public class CharacterMovement : MonoBehaviour
 
             Invoke(nameof(stopWallJump), wallJumpingDuration);
         }*/
-        else if (!grounded /*&& !startSlideTimer && !sliding*/ && !doubleJumpPerformed && !PlayerAnimator.GetBool("WallCling"))
+        else if (!grounded /*&& !startSlideTimer && !sliding*/ && !doubleJumpPerformed /*&& !_playerAnimator.GetBool("WallCling")*/)
         {
             doubleJumpPerformed = true;
-            rb.velocity = new Vector3(rb.velocity.x, jumpForce, 0f);
-            PlayerAnimator.SetBool("DoubleJump", true);
+            _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, 0f);
+            _playerAnimator.SetBool(DoubleJump, true);
         }
     }
 
-    /*private void wallJump()
+/*private void wallJump()
+{
+    if (uiOpen) return;
+    if (slideAllowed || startSlideTimer || grounded)
     {
-        if (uiOpen) return;
-        if (slideAllowed || startSlideTimer || grounded)
-        {
-            isWallJumping = false;
-            wallJumpingCounter = wallJumpingTime;
-            CancelInvoke(nameof(stopWallJump));
-        }
-        else
-        {
-            wallJumpingCounter -= Time.deltaTime;
-        }
-    }
-
-    private void stopWallJump()
-    {
-        if (uiOpen) return;
         isWallJumping = false;
-    }*/
+        wallJumpingCounter = wallJumpingTime;
+        CancelInvoke(nameof(stopWallJump));
+    }
+    else
+    {
+        wallJumpingCounter -= Time.deltaTime;
+    }
+}
+
+private void stopWallJump()
+{
+    if (uiOpen) return;
+    isWallJumping = false;
+}*/
 
     public void Dash(InputAction.CallbackContext ctx)
     {
@@ -162,19 +173,14 @@ public class CharacterMovement : MonoBehaviour
 
         if (ctx.performed && _midAirDashCount == 0) 
         {
-            var direction = input != 0 ? Mathf.Sign(input) : Mathf.Sign(transform.localScale.x);
+            var direction = _input != 0 ? Mathf.Sign(_input) : Mathf.Sign(transform.localScale.x);
             var dashForce = new Vector3(direction * dashSpeed, 0f, 0f);
 
             isAttacking = false;
             isJumpAttacking = false;
             _characterAttack.ResetCombo();
-            
-            rb.velocity = dashForce;
-
-            PlayerAnimator.SetBool("Dash", true);
-            //dashAllowed = false;
-            startDashTimer = true;
-            //dashTimer = 0f;
+            _rb.velocity = dashForce;
+            _playerAnimator.SetBool(Dash1, true);
 
             _isDashing = true;
             if (_dashCoroutine != null) StopCoroutine(_dashCoroutine);
@@ -190,55 +196,57 @@ public class CharacterMovement : MonoBehaviour
     private IEnumerator DashRoutine(float frameDur)
     {
         _characterAttack.isInvulnerable = true;
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        _rb.velocity = new Vector3(_rb.velocity.x, 0f, _rb.velocity.z);
 
         yield return new WaitForSeconds(frameDur);
 
         _characterAttack.isInvulnerable = false;
-        rb.velocity = Vector3.zero;
+        _rb.velocity = Vector3.zero;
         _isDashing = false;
-        PlayerAnimator.SetBool("Dash", false);
+        _playerAnimator.SetBool(Dash1, false);
     }
 
     public void Update()
     {
         if (uiOpen)
         {
-            input = 0;
-            rb.velocity = new Vector3(0, rb.velocity.y, 0);
-            PlayerAnimator.SetFloat("Input", 0);
+            _input = 0;
+            _rb.velocity = new Vector3(0, _rb.velocity.y, 0);
+            _playerAnimator.SetFloat(Input1, 0);
         }
-        groundTimer -= Time.deltaTime;
-        groundTimer = Mathf.Clamp(groundTimer, 0, 1f);
+        _groundTimer -= Time.deltaTime;
+        _groundTimer = Mathf.Clamp(_groundTimer, 0, 1f);
         //PlayerAnimator.SetBool("WallJump", isWallJumping);
-        Velocity = rb.velocity;
-        PlayerAnimator.SetFloat("XVelocity", rb.velocity.x);
-        PlayerAnimator.SetFloat("YVelocity", rb.velocity.y);
-        PlayerAnimator.SetBool("Grounded", grounded);
+        velocity = _rb.velocity;
+        _playerAnimator.SetFloat(XVelocity, _rb.velocity.x);
+        _playerAnimator.SetFloat(YVelocity, _rb.velocity.y);
+        _playerAnimator.SetBool(Grounded, grounded);
         
         if (uiOpen) return;
         
         //wallJump();
 
-        if (!uiOpen && !lockedOn && Mathf.Abs(Velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(Velocity.x)) // this has a check if the player is locked on to prevent them flipping
+        if (!uiOpen && !LockedOn && Mathf.Abs(velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(velocity.x)) // this has a check if the player is locked on to prevent them flipping
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
-        if (!uiOpen && !lockedOn && PlayerAnimator.GetBool("WallCling") && Mathf.Sign(transform.localScale.x) != Mathf.Sign(input)) // if wallcling is true and player isn't facing direction of input, flip the player
+        /*
+        if (!uiOpen && !LockedOn && _playerAnimator.GetBool(WallCling) && Mathf.Sign(transform.localScale.x) != Mathf.Sign(_input)) // if wallcling is true and player isn't facing direction of input, flip the player
         { 
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
+        */
 
-        var direction = Mathf.Sign(input);
+        var direction = Mathf.Sign(_input);
         var scaleDirection = Mathf.Sign(transform.localScale.x);
         
         if (direction != 0 && direction != scaleDirection)
         {
-            PlayerAnimator.SetBool("isWalkingBackwards", true);
+            _playerAnimator.SetBool(IsWalkingBackwards, true);
         }
         else
         {
-            PlayerAnimator.SetBool("isWalkingBackwards", false);
+            _playerAnimator.SetBool(IsWalkingBackwards, false);
         }
         
         /*if (startSlideTimer)
@@ -293,24 +301,47 @@ public class CharacterMovement : MonoBehaviour
         var rightGrounded = Physics.Raycast(rRayStart, Vector3.down, groundCheckDist, LayerMask.GetMask("Ground"));
 
         grounded = leftGrounded || rightGrounded;
-        PlayerAnimator.SetBool("Grounded", grounded);
+        _playerAnimator.SetBool(Grounded, grounded);
 
         if (grounded)
         {
             doubleJumpPerformed = false;
             _midAirDashCount = 0;
+            _isHanging = false;
+            _rb.useGravity = true;
         }
 
         if (walkAllowed && allowMovement && !_isDashing && !isJumpAttacking)
         {
             var acc = acceleration;
             if (isAttacking) acc = acceleration / 3;
-            if ((rb.velocity.x <= maxSpeed && Mathf.Sign(rb.velocity.x) == 1) || (rb.velocity.x >= -maxSpeed && Mathf.Sign(rb.velocity.x) == -1) || (Mathf.Sign(rb.velocity.x) != input))
+            if ((_rb.velocity.x <= maxSpeed && Mathf.Sign(_rb.velocity.x) == 1) || (_rb.velocity.x >= -maxSpeed && Mathf.Sign(_rb.velocity.x) == -1) || (Mathf.Sign(_rb.velocity.x) != _input))
             {
-                Vector3 walk = new Vector3(input * acc, rb.velocity.y, rb.velocity.z);
-                rb.velocity = walk;
+                Vector3 walk = new Vector3(_input * acc, _rb.velocity.y, _rb.velocity.z);
+                _rb.velocity = walk;
             }
         }
+        
+        // at the apex of a jump this basically gives the player a split second where they don't immediately fall back down
+        if (!grounded && !_isHanging)
+        {
+            if (Mathf.Abs(_rb.velocity.y) <= hangThreshold)
+            {
+                _isHanging = true;
+                _hangTimer = hangTime;
+                _rb.velocity = new Vector3(_rb.velocity.x, 0f, _rb.velocity.z);
+                _rb.useGravity = false;
+            }
+        }
+        
+        if (_isHanging)
+        {
+            _hangTimer -= Time.fixedDeltaTime;
+            if (!(_hangTimer <= 0f)) return;
+            _rb.useGravity = true;
+            _isHanging = false;
+        }
+
 
         /*if (slideAllowed && !grounded)
         {

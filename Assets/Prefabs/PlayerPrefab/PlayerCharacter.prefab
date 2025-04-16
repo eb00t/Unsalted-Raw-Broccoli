@@ -457,22 +457,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3fd3e67c191a224ab3e01639d2ef7b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerGround: {fileID: 3626529087780789351}
+  grounded: 0
   walkAllowed: 1
   allowMovement: 1
+  isCrouching: 0
+  isJumpAttacking: 0
+  isAttacking: 0
+  doubleJumpPerformed: 0
+  velocity: {x: 0, y: 0, z: 0}
+  groundCheckDist: 0.2
+  groundCheckSpacing: 1
+  uiOpen: 0
   acceleration: 17
   maxSpeed: 12
   jumpForce: 35
   dashSpeed: 30
+  hangTime: 0.1
+  hangThreshold: 0.5
   dashEnergyCost: 4
-  grounded: 0
-  doubleJumpPerformed: 0
-  isCrouching: 0
-  Velocity: {x: 0, y: 0, z: 0}
-  playerGround: {fileID: 3626529087780789351}
-  isJumpAttacking: 0
-  isAttacking: 0
-  groundCheckDist: 0.2
-  groundCheckSpacing: 1
 --- !u!136 &6454331290242472759
 CapsuleCollider:
   m_ObjectHideFlags: 0
