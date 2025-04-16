@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -140,10 +141,8 @@ public class MenuHandler : MonoBehaviour
 		SwitchSelected(_toolbarHandler.slots[_toolbarHandler.slotNo]);
 	}
 
-	public void ToggleShop(InputAction.CallbackContext context)
+	public void ToggleShop()
 	{
-		if (!context.performed) return;
-		if (characterMovement.uiOpen) return;
 		if (shopGUI == null || shopGUI.activeSelf) return;
 		var shopHandler = shopGUI.GetComponentInParent<ShopHandler>();
 		if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
@@ -154,8 +153,15 @@ public class MenuHandler : MonoBehaviour
 
 		if (shopHandler.itemsHeld.Count > 0)
 		{
-			SwitchSelected(shopHandler.grid.GetComponentInChildren<Button>().gameObject);
+			SwitchSelected(null);
+			StartCoroutine(DelayShopSwitch(shopHandler));
 		}
+	}
+
+	private IEnumerator DelayShopSwitch(ShopHandler shopHandler)
+	{
+		yield return new WaitForSecondsRealtime(.35f);
+		SwitchSelected(shopHandler.grid.GetComponentInChildren<Button>().gameObject);
 	}
 
 	public void NextLevelLoad(InputAction.CallbackContext context)
@@ -221,6 +227,9 @@ public class MenuHandler : MonoBehaviour
 		else if (shopGUI != null  && shopGUI.activeSelf)
 		{
 			shopGUI.SetActive(false);
+			dialogueGUI.SetActive(true);
+			dialogueController.isEndText = true;
+			dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
 		}
 		else if (settingGui.activeSelf)
 		{
@@ -264,7 +273,6 @@ public class MenuHandler : MonoBehaviour
 	public void TriggerDialogue(bool isDistanceBased, dialogueControllerScript controller)
 	{
 		if (characterMovement.uiOpen) return;
-
 		if (_itemPickupHandler.isPlrNearDialogue && isDistanceBased)
 		{
 			dialogueGUI.SetActive(true);

@@ -10,8 +10,11 @@ public class dialogueControllerScript : MonoBehaviour
 {
     public bool replayable;
     public DialogueObjectHandler dialogueToLoad;
+    public DialogueObjectHandler shopCloseDialogue;
     public LoreItemHandler loreToLoad;
     private ItemPickupHandler _itemPickupHandler;
+    [SerializeField] private GameObject shopCanvas;
+    public bool isShop, isEndText;
     [SerializeField] private float range;
     [SerializeField] public int dialogueID;
     private GameObject _player, _dialogueCanvas, _uiManager;
@@ -97,8 +100,22 @@ public class dialogueControllerScript : MonoBehaviour
             }
             else
             {
-                _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.RTrigger, null);
-                _menuHandler.dialogueController = this;
+                if (!isShop)
+                {
+                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.RTrigger, null);
+                    _menuHandler.dialogueController = this;
+                }
+                else if (isShop && shopCanvas.activeSelf)
+                {
+                    _itemPickupHandler.TogglePrompt("Close Shop", true, ControlsManager.ButtonType.ButtonEast, null);
+                    _itemPickupHandler.isPlrNearShop = true;
+                    _menuHandler.dialogueController = this;
+                }
+                else
+                {
+                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.RTrigger, null);
+                    _menuHandler.dialogueController = this;
+                }
             }
         }
         else if (dist > range)
@@ -158,8 +175,17 @@ public class dialogueControllerScript : MonoBehaviour
    public void LoadDialogue(DialogueObjectHandler dialogueHandler)
    {
        dialogueToLoad = dialogueHandler;
-       DialogueHandler.Instance.LoadDialogueScriptableObject(dialogueHandler);
-       DialogueHandler.Instance.StartSentence();
+       
+       if (isShop && isEndText)
+       {
+           DialogueHandler.Instance.LoadDialogueScriptableObject(shopCloseDialogue);
+       }
+       else
+       {
+           DialogueHandler.Instance.LoadDialogueScriptableObject(dialogueHandler);
+       }
+       
+       DialogueHandler.Instance.StartSentence(this);
        if (replayable == false)
        {
            DialogueHandler.Instance.trigger = transform.gameObject;
@@ -171,7 +197,7 @@ public class dialogueControllerScript : MonoBehaviour
     public void LoadLore(LoreItemHandler loreItem)
     {
         DialogueHandler.Instance.LoadLoreScriptableObject(loreItem);
-        DialogueHandler.Instance.StartSentence();
+        DialogueHandler.Instance.StartSentence(this);
         if (replayable == false)
         {
             DialogueHandler.Instance.trigger = transform.parent.gameObject;

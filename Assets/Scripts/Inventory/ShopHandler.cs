@@ -48,10 +48,6 @@ public class ShopHandler : MonoBehaviour
 			{
 				_itemPickupHandler.TogglePrompt("Close shop", true, ControlsManager.ButtonType.ButtonEast, null);
 			}
-			else
-			{
-				_itemPickupHandler.TogglePrompt("Open shop", true, ControlsManager.ButtonType.RTrigger, null);
-			}
 		}
 		else if (dist > range)
 		{

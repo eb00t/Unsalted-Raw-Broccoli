@@ -31,6 +31,7 @@ public class DialogueHandler : MonoBehaviour
    public List<string> loadedSpeakerText; // All the speakers that need to be displayed (this should always be the same size as the loadedBodyText string)
 
    private ItemPickupHandler _itemPickupHandler;
+   private dialogueControllerScript _dialogueController;
 
    private void Awake()
    {
@@ -104,6 +105,16 @@ public class DialogueHandler : MonoBehaviour
             _speakerText.text = "";
             _dialogueText.text = "";
             _dialogueCanvas.SetActive(false);
+
+            if (_dialogueController.isShop && !_dialogueController.isEndText)
+            {
+               _menuHandler.ToggleShop();
+            }
+            else if (_dialogueController.isEndText)
+            {
+               _dialogueController.isEndText = false;
+            }
+
             if (currentNPC != null)
             {
                currentNPC.spokenToAlready = true;
@@ -125,8 +136,9 @@ public class DialogueHandler : MonoBehaviour
       }
    }
 
-   public void StartSentence()
+   public void StartSentence(dialogueControllerScript dialogueController)
    {
+      _dialogueController = dialogueController;
       index = 0;
       _speakerText.text = "";
       _dialogueText.text = "";
@@ -162,6 +174,7 @@ public class DialogueHandler : MonoBehaviour
          loadedBodyText.Clear();
          currentLoreItem = null;
       }
+      
       currentDialogueObject = dialogueObject;
       loadedSpeakerText = new List<string>(currentDialogueObject.whoIsSpeaking);
       loadedBodyText = new List<string>(currentDialogueObject.dialogueBodyText);

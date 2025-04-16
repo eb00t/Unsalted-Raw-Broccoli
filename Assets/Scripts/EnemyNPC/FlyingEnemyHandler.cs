@@ -580,7 +580,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(duration);
         _rigidbody.velocity = Vector3.zero;
         _aiPath.canMove = true;
-        _aiPath.SearchPath();
+        //_aiPath.SearchPath();
         _isKnockedBack = false;
     }
     
