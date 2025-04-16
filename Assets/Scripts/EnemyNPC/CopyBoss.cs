@@ -322,7 +322,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     
     private void MoveTowards(Vector3 target)
     {
-        if (_isKnockedBack) return;
+        if (_isKnockedBack || _isAttacking) return;
         
         var direction = (target - transform.position).normalized;
         _rigidbody.velocity = new Vector3(direction.x * movementSpeed, _rigidbody.velocity.y, direction.z);
