@@ -85,7 +85,7 @@ public class ControlsManager : MonoBehaviour
             }
             else if (!_characterMovement.uiOpen)
             {
-                keyboardInteractBack = "R";
+                keyboardInteractBack = "W / Right Click";
             }
             else
             {
@@ -196,22 +196,22 @@ public class ControlsManager : MonoBehaviour
         
         KeyboardStrings = new Dictionary<ButtonType, string>
         {
-            { ButtonType.ButtonNorth, "Q" },
+            { ButtonType.ButtonNorth, "Q / Middle Mouse Button" },
             { ButtonType.ButtonEast, "Esc" },
             { ButtonType.ButtonSouth, "Space" },
-            { ButtonType.ButtonWest, "E" },
-            { ButtonType.LShoulder, "T" },
+            { ButtonType.ButtonWest, "E / Left Click" },
+            { ButtonType.LShoulder, "R" },
             { ButtonType.RShoulder, "Shift" },
             { ButtonType.LTrigger, "-" },
             { ButtonType.RTrigger, "F" },
-            { ButtonType.DpadNorth, "W" },
-            { ButtonType.DpadEast, "S" },
+            { ButtonType.DpadNorth, "1" },
+            { ButtonType.DpadEast, "TAB" },
             { ButtonType.DpadSouth, "-" },
-            { ButtonType.DpadWest, "I" },
+            { ButtonType.DpadWest, "TAB" },
             { ButtonType.Start, "Esc" },
             { ButtonType.Select, "I" },
             { ButtonType.LThumbstick, "A/D"},
-            { ButtonType.RThumbstick, "1/2"},
+            { ButtonType.RThumbstick, "Z/X"},
             { ButtonType.LThumbstickDown, "CTRL"},
             { ButtonType.RThumbstickDown, "CTRL"}
         };

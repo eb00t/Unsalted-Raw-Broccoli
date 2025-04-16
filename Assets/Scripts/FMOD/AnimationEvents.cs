@@ -76,7 +76,7 @@ public class AnimationEvents : MonoBehaviour
     public void ReduceEnergy(int LMH) //Light = 0, Medium = 1, Heavy = 0
     {
         //_characterAttack = transform.root.transform.Find("PlayerAttack").GetComponent<CharacterAttack>();
-        int energyUsed = 0;
+        float energyUsed = 0;
         switch (LMH)
         {
             case 0:

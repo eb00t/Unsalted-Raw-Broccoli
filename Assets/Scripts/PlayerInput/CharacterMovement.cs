@@ -169,7 +169,6 @@ public class CharacterMovement : MonoBehaviour
             isJumpAttacking = false;
             _characterAttack.ResetCombo();
             
-            //rb.velocity = Vector3.zero;
             rb.velocity = dashForce;
 
             PlayerAnimator.SetBool("Dash", true);
@@ -179,7 +178,7 @@ public class CharacterMovement : MonoBehaviour
 
             _isDashing = true;
             if (_dashCoroutine != null) StopCoroutine(_dashCoroutine);
-            _dashCoroutine = StartCoroutine(DashRoutine());
+            _dashCoroutine = StartCoroutine(DashRoutine(20f / 60f));
         }
 
         if (ctx.performed && !grounded)
@@ -188,10 +187,13 @@ public class CharacterMovement : MonoBehaviour
         }
     }
     
-    private IEnumerator DashRoutine()
+    private IEnumerator DashRoutine(float frameDur)
     {
         _characterAttack.isInvulnerable = true;
-        yield return new WaitForSeconds(0.2f);
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        yield return new WaitForSeconds(frameDur);
+
         _characterAttack.isInvulnerable = false;
         rb.velocity = Vector3.zero;
         _isDashing = false;

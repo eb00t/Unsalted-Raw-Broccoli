@@ -14,8 +14,8 @@ public class CharacterAttack : MonoBehaviour
     [Header("Stats")]
     public int currentHealth;
     public int maxHealth;
-    public int maxEnergy;
-    public int currentEnergy;
+    public float maxEnergy;
+    public float currentEnergy;
     public int baseAtk;
     [SerializeField] private float mediumAtkMultiplier;
     [SerializeField] private float heavyAtkMultiplier;
@@ -38,15 +38,16 @@ public class CharacterAttack : MonoBehaviour
     private float _rechargeTime;
     private bool _inputBuffer;
     private enum LightComboStep { None, Step1, Step2, Step3 }
-    private enum MediumComboStep { None, Step1 }
-    private enum HeavyComboStep { None, Step1, Step2 }
+    private enum MediumComboStep { None, Step1, Step2 }
+    private enum HeavyComboStep { None, Step1 }
     private LightComboStep _lightComboStep = LightComboStep.None;
     private MediumComboStep _mediumComboStep = MediumComboStep.None;
     private HeavyComboStep _heavyComboStep = HeavyComboStep.None;
     
     [Header("Energy")]
     [SerializeField] private float rechargeSpeed;
-    public int lightEnergyCost, mediumEnergyCost, heavyEnergyCost;
+    public float lightEnergyCost, mediumEnergyCost, heavyEnergyCost;
+    private bool _isEnergyPaused;
     
     [Header("Knockback Types")]
     public Vector2 knockbackPowerLight;
@@ -54,6 +55,9 @@ public class CharacterAttack : MonoBehaviour
     public Vector2 knockbackPowerHeavy;
     
     [Header("References")]
+    [SerializeField] private GameObject diedScreen;
+    [SerializeField] private GameObject atkHitbox;
+    [SerializeField] private Slider healthSlider, energySlider;
     private CinemachineCollisionImpulseSource _impulseSource;
     private InventoryStore _inventoryStore;
     private Rigidbody _rigidbody;
@@ -62,8 +66,6 @@ public class CharacterAttack : MonoBehaviour
     private MenuHandler _menuHandler;
     private PlayerStatus _playerStatus;
     private SettingManager _settingManager;
-    [SerializeField] private Slider healthSlider, energySlider;
-    [SerializeField] private GameObject diedScreen;
     public GameObject hitFlash;
     private EventInstance _enemyDamageEvent;
     private Coroutine _coyoteRoutine;
@@ -72,11 +74,11 @@ public class CharacterAttack : MonoBehaviour
     private Animator _playerAnimator;
     private static readonly int IsStaggered = Animator.StringToHash("isStaggered");
     private static readonly int IsJumpAttacking = Animator.StringToHash("isJumpAttacking");
-    private static readonly int MediumAttack0 = Animator.StringToHash("mediumAttack");
-    private static readonly int HeavyAttack0 = Animator.StringToHash("heavyAttack0");
+    private static readonly int MediumAttack0 = Animator.StringToHash("mediumAttack0");
+    private static readonly int MediumAttack1 = Animator.StringToHash("mediumAttack1");
+    private static readonly int HeavyAttack0 = Animator.StringToHash("heavyAttack");
     private static readonly int LightAttack0 = Animator.StringToHash("lightAttack0");
     private static readonly int IsAttacking = Animator.StringToHash("isAttacking");
-    private static readonly int HeavyAttack1 = Animator.StringToHash("heavyAttack1");
     private static readonly int IsDead = Animator.StringToHash("isDead");
     private static readonly int LightAttack1 = Animator.StringToHash("lightAttack1");
     private static readonly int LightAttack2 = Animator.StringToHash("lightAttack2");
@@ -288,8 +290,13 @@ public class CharacterAttack : MonoBehaviour
         switch (_mediumComboStep)
         {
             case MediumComboStep.Step1:
+                _mediumComboStep = MediumComboStep.Step2;
+                _playerAnimator.SetTrigger(MediumAttack1);
+                break;
+            case MediumComboStep.Step2:
                 if (doCombosLoop)
                 {
+                    _mediumComboStep = MediumComboStep.Step1;
                     _playerAnimator.SetTrigger(MediumAttack0);
                 }
                 else
@@ -315,13 +322,8 @@ public class CharacterAttack : MonoBehaviour
         switch (_heavyComboStep)
         {
             case HeavyComboStep.Step1:
-                _heavyComboStep = HeavyComboStep.Step2;
-                _playerAnimator.SetTrigger(HeavyAttack1);
-                break;
-            case HeavyComboStep.Step2:
                 if (doCombosLoop)
                 {
-                    _heavyComboStep = HeavyComboStep.Step1;
                     _playerAnimator.SetTrigger(HeavyAttack0);
                 }
                 else
@@ -342,8 +344,9 @@ public class CharacterAttack : MonoBehaviour
         _playerAnimator.ResetTrigger(LightAttack1);
         _playerAnimator.ResetTrigger(LightAttack2);
         _playerAnimator.ResetTrigger(MediumAttack0);
+        _playerAnimator.ResetTrigger(MediumAttack1);
         _playerAnimator.ResetTrigger(HeavyAttack0);
-        _playerAnimator.ResetTrigger(HeavyAttack1);
+        atkHitbox.SetActive(false);
         _characterMovement.isAttacking = false;
         _playerAnimator.SetBool(IsAttacking, false);
         _inputBuffer = false;
@@ -418,7 +421,7 @@ public class CharacterAttack : MonoBehaviour
         }
     }
     
-    public void UseEnergy(int amount)
+    public void UseEnergy(float amount)
     {
         if (currentEnergy <= amount)
         {
@@ -553,7 +556,7 @@ public class CharacterAttack : MonoBehaviour
             
             if (_rechargeTime <= 0)
             {
-                UseEnergy(-1);
+                UseEnergy(-1f);
                 _rechargeTime = 1f;
             }
         }
