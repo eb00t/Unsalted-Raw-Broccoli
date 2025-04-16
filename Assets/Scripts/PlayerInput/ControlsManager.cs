@@ -85,7 +85,7 @@ public class ControlsManager : MonoBehaviour
             }
             else if (!_characterMovement.uiOpen)
             {
-                keyboardInteractBack = "W / Right Click";
+                keyboardInteractBack = "E / Left Click";
             }
             else
             {
@@ -112,7 +112,7 @@ public class ControlsManager : MonoBehaviour
         
         if (KeyboardStrings.ContainsKey(ButtonType.ButtonEast))
         {
-            KeyboardStrings[ButtonType.ButtonEast] = keyboardInteractBack;
+            KeyboardStrings[ButtonType.ButtonWest] = keyboardInteractBack;
             KeyboardStrings[ButtonType.ButtonSouth] = keyboardInteractSelect;
         }
 
@@ -196,8 +196,8 @@ public class ControlsManager : MonoBehaviour
         
         KeyboardStrings = new Dictionary<ButtonType, string>
         {
-            { ButtonType.ButtonNorth, "Q / Middle Mouse Button" },
-            { ButtonType.ButtonEast, "Esc" },
+            { ButtonType.ButtonNorth, "W / Right Click" },
+            { ButtonType.ButtonEast, "Q / Middle Mouse Button" },
             { ButtonType.ButtonSouth, "Space" },
             { ButtonType.ButtonWest, "E / Left Click" },
             { ButtonType.LShoulder, "R" },

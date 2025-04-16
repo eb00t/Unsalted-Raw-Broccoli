@@ -154,10 +154,10 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Perform a light attack", ControlsManager.ButtonType.ButtonWest, null);
                 break;
             case TutorialStep.MediumAttack:
-                ShowMessage("Perform a medium attack", ControlsManager.ButtonType.ButtonEast, null);
+                ShowMessage("Perform a medium attack", ControlsManager.ButtonType.ButtonNorth, null);
                 break;
             case TutorialStep.HeavyAttack:
-                ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.ButtonNorth, null);
+                ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.ButtonEast, null);
                 break;
             case TutorialStep.JumpAttack:
                 ShowMessage("To perform a jump attack, jump and perform a light attack", ControlsManager.ButtonType.ButtonSouth, ControlsManager.ButtonType.ButtonWest);

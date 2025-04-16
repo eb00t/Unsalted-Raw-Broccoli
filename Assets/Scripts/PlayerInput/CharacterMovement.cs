@@ -180,11 +180,8 @@ private void stopWallJump()
             isJumpAttacking = false;
             _characterAttack.ResetCombo();
             _rb.velocity = dashForce;
-            _playerAnimator.SetBool(Dash1, true);
-
             _isDashing = true;
-            if (_dashCoroutine != null) StopCoroutine(_dashCoroutine);
-            _dashCoroutine = StartCoroutine(DashRoutine(20f / 60f));
+            StartCoroutine(DashRoutine());
         }
 
         if (ctx.performed && !grounded)
@@ -193,15 +190,17 @@ private void stopWallJump()
         }
     }
     
-    private IEnumerator DashRoutine(float frameDur)
+    private IEnumerator DashRoutine()
     {
+        _playerAnimator.SetBool(Dash1, true);
         _characterAttack.isInvulnerable = true;
-        _rb.velocity = new Vector3(_rb.velocity.x, 0f, _rb.velocity.z);
+        _isHanging = true;
 
-        yield return new WaitForSeconds(frameDur);
+        yield return new WaitForSeconds(0.25f);
 
         _characterAttack.isInvulnerable = false;
         _rb.velocity = Vector3.zero;
+        _isHanging = false;
         _isDashing = false;
         _playerAnimator.SetBool(Dash1, false);
     }
