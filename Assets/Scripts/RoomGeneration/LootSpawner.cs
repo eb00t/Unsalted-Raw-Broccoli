@@ -41,7 +41,14 @@ public class LootSpawner : MonoBehaviour
 
         if (howToSpawn == HowToSpawn.Specific)
         {
-            LootManager.Instance.SpawnSpecificLootHere(transform, pathForSpecificItem);
+            if (whatToSpawn == WhatToSpawn.Loot)
+            {
+                LootManager.Instance.SpawnSpecificLootHere(transform, pathForSpecificItem);
+            }
+            else if (whatToSpawn == WhatToSpawn.Lore)
+            {
+                LootManager.Instance.SpawnSpecificLoreHere(transform, pathForSpecificItem);
+            }
         }
     }
 }

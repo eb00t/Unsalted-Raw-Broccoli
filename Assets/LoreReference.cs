@@ -28,6 +28,7 @@ public class LoreReference : MonoBehaviour
         allLoreItems.Add(AllAboutRocks);
         allLoreItems.Add(EmailTest);
         allLoreItems.Add(RichardSecret);
+        allLoreItems.Add(WhyTheConstruct);
     }
     
     [field: Header("AI Communication")]
@@ -48,4 +49,5 @@ public class LoreReference : MonoBehaviour
 
     [field: Header("Character Lore")]
     [field: SerializeField] public LoreItemHandler RichardSecret { get; private set; }
+    [field: SerializeField] public LoreItemHandler WhyTheConstruct { get; private set; }
 }

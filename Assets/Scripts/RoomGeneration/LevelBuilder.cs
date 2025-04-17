@@ -123,6 +123,9 @@ public class LevelBuilder : MonoBehaviour
                 case LevelMode.Floor3:
                     howManyRoomsToSpawn = 9;
                     break;
+                case LevelMode.FinalBoss:
+                    howManyRoomsToSpawn = 0;
+                    break;
             }
         }
     }
@@ -155,6 +158,11 @@ public class LevelBuilder : MonoBehaviour
         if (lootRoomsToSpawn < 2)
         {
             lootRoomsToSpawn = 2;
+        }
+
+        if (currentFloor == LevelMode.FinalBoss)
+        {
+            lootRoomsToSpawn = 0;
         }
         _numberOfRoomsToSpawn += lootRoomsToSpawn;
         Debug.Log("Loot rooms to spawn: " + lootRoomsToSpawn);
@@ -217,6 +225,9 @@ public class LevelBuilder : MonoBehaviour
                 break;
             case LevelMode.Floor3:
                 _floorSpecificRoomPath = "Room Layouts/Floor 3";
+                _bossRoomPath = "Room Layouts/Boss Rooms/Empty Boss";
+                break;
+            case LevelMode.FinalBoss:
                 _bossRoomPath = "Room Layouts/Boss Rooms/Hands Boss";
                 break;
         }
@@ -722,12 +733,19 @@ public class LevelBuilder : MonoBehaviour
   {
       if (_spawnMode != SpawnMode.BossRooms)
       {
-          foreach (var room in _startingRoom.GetComponent<RoomInfo>().doorSpawnPoints)
-          {
-              spawnPoints.Remove(room.transform);
-          }
           roomRandomNumber = -1;
-          firstBossRoomSpawnPoints = new List<Transform>(lootRoomSpawnPoints);
+          if (currentFloor != LevelMode.FinalBoss)
+          {
+              foreach (var room in _startingRoom.GetComponent<RoomInfo>().doorSpawnPoints)
+              {
+                  spawnPoints.Remove(room.transform);
+              }
+              firstBossRoomSpawnPoints = new List<Transform>(lootRoomSpawnPoints);
+          }
+          else
+          {
+              firstBossRoomSpawnPoints = new List<Transform>(spawnPoints);
+          }
           secondBossRoomSpawnPoints = new List<Transform>();
           thirdBossRoomSpawnPoints = new List<Transform>();
           _numberOfRoomsToSpawn = possibleBossRooms.Count;

@@ -105,6 +105,14 @@ public class LootManager : MonoBehaviour
         lootToSpawn.SetActive(true);
         lootToSpawn.transform.parent = here.transform; 
     }
+
+    public void SpawnSpecificLoreHere(Transform here, string path)
+    {
+        GameObject chosenLoot = Resources.Load<GameObject>(path);
+        GameObject lootToSpawn = Instantiate(chosenLoot, here.position, Quaternion.identity);
+        lootToSpawn.SetActive(true);
+        lootToSpawn.transform.parent = here.transform;
+    }
     
     private int RandomiseNumber(int setSize)
     {

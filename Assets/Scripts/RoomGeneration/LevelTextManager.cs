@@ -54,6 +54,9 @@ public class LevelTextManager : MonoBehaviour
             case LevelBuilder.LevelMode.Floor3:
                 titleText.text = ("FLOOR 3");
                 break;
+            case LevelBuilder.LevelMode.FinalBoss:
+                titleText.text = ("FLOOR X");
+                break;
             case LevelBuilder.LevelMode.Intermission:
                 titleText.text = ("INTERMISSION");
                 break;
@@ -62,6 +65,9 @@ public class LevelTextManager : MonoBehaviour
                 break;
             case LevelBuilder.LevelMode.TitleScreen:
                 titleText.text = ("");
+                break;
+            default:
+                titleText.text = ("what are you doing here, man?");
                 break;
         }
 
@@ -84,6 +90,9 @@ public class LevelTextManager : MonoBehaviour
             case LevelBuilder.LevelMode.Floor3:
                 subtitleText.text = ("...");
                 break;
+            case LevelBuilder.LevelMode.FinalBoss:
+                subtitleText.text = ("The 'final' showdown...");
+                break;
             case LevelBuilder.LevelMode.Intermission:
                 subtitleText.text = ("A brief respite...");
                 break;
@@ -92,6 +101,9 @@ public class LevelTextManager : MonoBehaviour
                 break;
             case LevelBuilder.LevelMode.TitleScreen:
                 subtitleText.text = ("");
+                break;
+            default:
+                subtitleText.text = ("no, seriously. something went wrong.");
                 break;
         }
     }

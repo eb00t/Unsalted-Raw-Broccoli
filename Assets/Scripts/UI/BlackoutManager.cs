@@ -23,10 +23,17 @@ public class BlackoutManager : MonoBehaviour
     private float _failSafeTimer = 15;
     private bool _loading = true;
     private float _timer = 2;
-    
+
     private void Start()
     {
-        _failSafeTimer = LevelBuilder.Instance.howManyRoomsToSpawn + 3;
+        if (LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.FinalBoss)
+        {
+            _failSafeTimer = 6;
+        }
+        else
+        {
+            _failSafeTimer = 10;
+        }
     }
 
     private enum LerpDirection

@@ -17,13 +17,15 @@ public class DialogueReference : MonoBehaviour
     }
 
     [field: Header("Initial Dialogue")]
-    [field: Header("Tutorial NPC")]
     [field: SerializeField] public DialogueObjectHandler Floor1Intro { get; private set; }
     [field: SerializeField] public DialogueObjectHandler Floor1Boss { get; private set; }
     [field: SerializeField] public DialogueObjectHandler Floor2Intro { get; private set; }
     [field: SerializeField] public DialogueObjectHandler Floor2Boss { get; private set; }
     [field: SerializeField] public DialogueObjectHandler Floor3Intro { get; private set; }
     [field: SerializeField] public DialogueObjectHandler Floor3Boss { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler Floor4Intro { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler Floor4Boss { get; private set; }
+    [field: Header("Tutorial NPC")]
     [field: SerializeField] public DialogueObjectHandler TutorialIntro { get; private set; }
     [field: SerializeField] public DialogueObjectHandler TutorialFloor1 { get; private set; }
     [field: SerializeField] public DialogueObjectHandler TutorialFloor2 { get; private set; }
