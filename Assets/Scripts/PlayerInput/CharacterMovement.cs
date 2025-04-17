@@ -45,7 +45,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float hangThreshold;
     
     [Header("Energy")]
-    public int dashEnergyCost;  
+    public float dashEnergyCost;  
     
     [Header("Animations")]
     private static readonly int Dash1 = Animator.StringToHash("Dash");
