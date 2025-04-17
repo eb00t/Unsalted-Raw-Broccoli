@@ -4,9 +4,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class ShopHandler : MonoBehaviour
 {
+	[SerializeField] private List<GameObject> possibleItems;
+	[SerializeField] private List<int> chanceToStockItem;
+	[SerializeField] private List<int> minItemCost;
+	[SerializeField] private List<int> maxItemCost;
 	public List<GameObject> itemsHeld;
 	[SerializeField] private List<int> itemStock; // each index directly relates to itemsheld index
 	[SerializeField] private List<int> itemPrice; // each index directly relates to itemsheld index
@@ -34,6 +39,7 @@ public class ShopHandler : MonoBehaviour
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
 		_currencyManager = _uiManager.GetComponent<CurrencyManager>();
 
+		RandomiseStock();
 		RefreshShop();
 	}
 
@@ -60,7 +66,33 @@ public class ShopHandler : MonoBehaviour
 		_lastSelected = EventSystem.current.currentSelectedGameObject;
 		UpdateInfo();
 	}
-	
+
+	private void RandomiseStock()
+	{
+		// randomise which items are in the shop based on which items are possible
+		for (var i = 0; i < possibleItems.Count; i++)
+		{
+			var item = possibleItems[i];
+			var roll = Random.Range(0, 10);
+
+			if (roll < chanceToStockItem[i])
+			{
+				itemsHeld.Add(item);
+			}
+		}
+
+		// randomise how much of each item is held, and how much they cost
+		for (var i = 0; i < itemsHeld.Count; i++)
+		{
+			var item = itemsHeld[i];
+			var roll = Random.Range(1, 4); // 1-3
+			itemStock.Add(roll);
+
+			var priceRoll = Random.Range(minItemCost[i], maxItemCost[i]);
+			itemPrice.Add(priceRoll);
+		}
+	}
+
 	private void UpdateInfo()
 	{
 		if (EventSystem.current.currentSelectedGameObject == null) return;
