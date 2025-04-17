@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Cinemachine;
 using FMOD.Studio;
 using FMODUnity;
@@ -14,8 +12,6 @@ public class CharacterAttack : MonoBehaviour
     [Header("Stats")]
     public int currentHealth;
     public int maxHealth;
-    public float maxEnergy;
-    public float currentEnergy;
     public int baseAtk;
     [SerializeField] private float mediumAtkMultiplier;
     [SerializeField] private float heavyAtkMultiplier;
@@ -29,22 +25,26 @@ public class CharacterAttack : MonoBehaviour
     public bool isDead;
     [SerializeField] private float stunDuration;
     [SerializeField] private float jumpAttackDrag;
-    public int _jumpAttackCount;
+    public int jumpAttackCount;
     private int _poiseBuildup;
     
     [Header("Combo Variables")]
     [SerializeField] private bool doCombosLoop;
+    [SerializeField] private float animationCancelCooldown;
     [SerializeField] private float lightAttackForce, mediumAttackForce, heavyAttackForce;
     private float _rechargeTime;
+    [SerializeField] private bool _canCancel = true;
     private bool _inputBuffer;
-    private enum LightComboStep { None, Step1, Step2, Step3 }
-    private enum MediumComboStep { None, Step1, Step2 }
-    private enum HeavyComboStep { None, Step1 }
     private LightComboStep _lightComboStep = LightComboStep.None;
     private MediumComboStep _mediumComboStep = MediumComboStep.None;
     private HeavyComboStep _heavyComboStep = HeavyComboStep.None;
+    private enum LightComboStep { None, Step1, Step2, Step3 }
+    private enum MediumComboStep { None, Step1, Step2 }
+    private enum HeavyComboStep { None, Step1 }
     
     [Header("Energy")]
+    public float maxEnergy;
+    public float currentEnergy;
     [SerializeField] private float rechargeSpeed;
     public float lightEnergyCost, mediumEnergyCost, heavyEnergyCost;
     private bool _isEnergyPaused;
@@ -107,7 +107,7 @@ public class CharacterAttack : MonoBehaviour
     
     public void LightAttack(InputAction.CallbackContext ctx)
     {
-        if (isDead) return;
+        if (isDead || _characterMovement.uiOpen) return;
             
         if (ctx.performed && _characterMovement.grounded)
         {
@@ -121,7 +121,16 @@ public class CharacterAttack : MonoBehaviour
             
             if (_mediumComboStep != MediumComboStep.None || _heavyComboStep != HeavyComboStep.None)
             {
-                ResetCombo();
+                if (_canCancel)
+                {
+                    ResetCombo();
+                    _canCancel = false;
+                    StartCoroutine(AttackCancelCooldown());
+                }
+                else
+                {
+                    return;
+                }
             }
 
             // Start of chain
@@ -138,12 +147,12 @@ public class CharacterAttack : MonoBehaviour
                 _inputBuffer = true;
             }
         }
-        else if (ctx.performed && !_characterMovement.grounded && _jumpAttackCount == 0)
+        else if (ctx.performed && !_characterMovement.grounded && jumpAttackCount == 0)
         {
             gameObject.layer = 15;
             if (_coyoteRoutine != null) StopCoroutine(_coyoteRoutine);
             _coyoteRoutine = StartCoroutine(CoyoteTimer());
-            _jumpAttackCount++;
+            jumpAttackCount++;
         }
     }
 
@@ -188,7 +197,16 @@ public class CharacterAttack : MonoBehaviour
         
         if (_lightComboStep != LightComboStep.None || _heavyComboStep != HeavyComboStep.None)
         {
-            ResetCombo();
+            if (_canCancel)
+            {
+                ResetCombo();
+                _canCancel = false;
+                StartCoroutine(AttackCancelCooldown());
+            }
+            else
+            {
+                return;
+            }
         }
         
         if (_mediumComboStep == MediumComboStep.None)
@@ -220,7 +238,16 @@ public class CharacterAttack : MonoBehaviour
         
         if (_lightComboStep != LightComboStep.None || _mediumComboStep != MediumComboStep.None)
         {
-            ResetCombo();
+            if (_canCancel)
+            {
+                ResetCombo();
+                _canCancel = false;
+                StartCoroutine(AttackCancelCooldown());
+            }
+            else
+            {
+                return;
+            }
         }
         
         // Start of chain
@@ -334,6 +361,12 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
+    private IEnumerator AttackCancelCooldown()
+    {
+        yield return new WaitForSeconds(animationCancelCooldown);
+        _canCancel = true;
+    }
+
     // if a combo is completed or cancelled then reset combos and stop animations
     public void ResetCombo()
     {
@@ -347,8 +380,8 @@ public class CharacterAttack : MonoBehaviour
         _playerAnimator.ResetTrigger(MediumAttack1);
         _playerAnimator.ResetTrigger(HeavyAttack0);
         atkHitbox.SetActive(false);
-        _characterMovement.isAttacking = false;
         _playerAnimator.SetBool(IsAttacking, false);
+        _characterMovement.isAttacking = false;
         _inputBuffer = false;
     }
     
@@ -542,11 +575,11 @@ public class CharacterAttack : MonoBehaviour
     {
         if (isDead || _characterMovement.uiOpen) return;
 
-        if (_jumpAttackCount > 0)
+        if (jumpAttackCount > 0)
         {
             if (_characterMovement.grounded)
             {
-                _jumpAttackCount = 0;
+                jumpAttackCount = 0;
             }
         }
 

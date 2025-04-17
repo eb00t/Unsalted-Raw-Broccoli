@@ -114,8 +114,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 250
   maxHealth: 250
-  maxEnergy: 40
-  currentEnergy: 40
   baseAtk: 10
   mediumAtkMultiplier: 2
   heavyAtkMultiplier: 4
@@ -131,11 +129,15 @@ MonoBehaviour:
   isDead: 0
   stunDuration: 0.5
   jumpAttackDrag: 15
-  _jumpAttackCount: 0
+  jumpAttackCount: 0
   doCombosLoop: 0
+  animationCancelCooldown: 0.5
   lightAttackForce: 3
   mediumAttackForce: 6
   heavyAttackForce: 9
+  _canCancel: 1
+  maxEnergy: 40
+  currentEnergy: 40
   rechargeSpeed: 2.5
   lightEnergyCost: 0
   mediumEnergyCost: 3

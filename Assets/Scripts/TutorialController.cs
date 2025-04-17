@@ -87,7 +87,7 @@ public class TutorialController : MonoBehaviour
 
         if (_currentStep == TutorialStep.JumpAttack)
         {
-            if (_characterAttack._jumpAttackCount > 0)
+            if (_characterAttack.jumpAttackCount > 0)
             {
                 AdvanceStep();
             }
