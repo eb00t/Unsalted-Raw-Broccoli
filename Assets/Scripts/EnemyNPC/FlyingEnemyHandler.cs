@@ -71,6 +71,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private Image healthFillImage;
     [SerializeField] private GameObject lightProjectile;
     [SerializeField] private Transform projectileOrigin;
+    [SerializeField] private Material defaultMaterial, hitMaterial;
     private Collider _roomBounds;
     private Slider _healthSlider;
     private Animator _animator;
@@ -80,8 +81,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private Transform _spriteTransform;
     private BoxCollider _collider;
     private Rigidbody _rigidbody;
-    private MaterialPropertyBlock _propertyBlock;
-    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
     private AIPath _aiPath;
     
     [Header("Sound")]
@@ -121,16 +120,14 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _health = maxHealth;
         _healthSlider.gameObject.SetActive(false);
         _animator = GetComponent<Animator>();
-        _spriteTransform = GetComponentInChildren<SpriteRenderer>().transform;
-        _propertyBlock = new MaterialPropertyBlock();
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        _spriteTransform = _spriteRenderer.transform;
         _aiPath = GetComponent<AIPath>();
         _aiPath.maxSpeed = moveSpeed;
-
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
-        
         DisablePlatformCollisions();
     }
 
@@ -408,11 +405,12 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
         
+        StartCoroutine(HitFlash());
+        
         if (_health - damage > 0)
         {
             _health -= damage;
             _healthSlider.value = _health;
-            //StartCoroutine(HitFlash(Color.red, 0.1f));
         }
         else
         {
@@ -593,29 +591,10 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _animator.SetBool("isStaggered", false);
     }
     
-    private IEnumerator HitFlash(Color flashColor, float duration)
+    private IEnumerator HitFlash()
     {
-        _spriteRenderer.GetPropertyBlock(_propertyBlock);
-        _propertyBlock.SetColor(BaseColor, flashColor);
-        _spriteRenderer.SetPropertyBlock(_propertyBlock);
-
-        yield return new WaitForSecondsRealtime(duration);
-        
-        var elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            var newColor = Color.Lerp(flashColor, flashColor, elapsed / duration);
-
-            _spriteRenderer.GetPropertyBlock(_propertyBlock);
-            _propertyBlock.SetColor(BaseColor, newColor);
-            _spriteRenderer.SetPropertyBlock(_propertyBlock);
-
-            yield return null;
-        }
-        
-        _spriteRenderer.GetPropertyBlock(_propertyBlock);
-        _propertyBlock.SetColor(BaseColor, Color.white);
-        _spriteRenderer.SetPropertyBlock(_propertyBlock);
+        _spriteRenderer.material = hitMaterial;
+        yield return new WaitForSeconds(0.1f);
+        _spriteRenderer.material = defaultMaterial;
     }
 }

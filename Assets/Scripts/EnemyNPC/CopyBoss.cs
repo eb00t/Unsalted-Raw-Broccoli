@@ -65,6 +65,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private Image healthFillImage;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private float fallThroughTime = 2f;
+    [SerializeField] private Material defaultMaterial, hitMaterial;
     private CinemachineImpulseSource _impulseSource;
     private Vector3 _impulseVector; 
     private CapsuleCollider _bossCollider;
@@ -74,9 +75,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private Transform _player;
     private SpriteRenderer _spriteRenderer;
     private SettingManager _settingManager;
-    private MaterialPropertyBlock _propertyBlock;
     private bool _tookDamage;
-    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
     private GameObject dialogueGui;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
@@ -99,7 +98,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
-        _propertyBlock = new MaterialPropertyBlock();
         dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
 
         _health = maxHealth;
@@ -574,29 +572,10 @@ public class CopyBoss : MonoBehaviour, IDamageable
         Gizmos.DrawRay(transform.position, Vector3.down * dist);
     }
     
-    private IEnumerator HitFlash(Color flashColor, float duration)
+    private IEnumerator HitFlash()
     {
-        _spriteRenderer.GetPropertyBlock(_propertyBlock);
-        _propertyBlock.SetColor(BaseColor, flashColor);
-        _spriteRenderer.SetPropertyBlock(_propertyBlock);
-
-        yield return new WaitForSecondsRealtime(duration);
-        
-        var elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            var newColor = Color.Lerp(flashColor, flashColor, elapsed / duration);
-
-            _spriteRenderer.GetPropertyBlock(_propertyBlock);
-            _propertyBlock.SetColor(BaseColor, newColor);
-            _spriteRenderer.SetPropertyBlock(_propertyBlock);
-
-            yield return null;
-        }
-        
-        _spriteRenderer.GetPropertyBlock(_propertyBlock);
-        _propertyBlock.SetColor(BaseColor, new Color(11, 57, 94));
-        _spriteRenderer.SetPropertyBlock(_propertyBlock);
+        _spriteRenderer.material = hitMaterial;
+        yield return new WaitForSeconds(0.1f);
+        _spriteRenderer.material = defaultMaterial;
     }
 }

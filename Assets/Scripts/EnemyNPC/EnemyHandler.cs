@@ -76,13 +76,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private Transform passiveTarget;
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
+    [SerializeField] private Material defaultMaterial, hitMaterial;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
     private NavMeshAgent _agent;
     private CharacterAttack _characterAttack;
     private SpriteRenderer _spriteRenderer;
-    private MaterialPropertyBlock _propertyBlock;
     private AIPath _aiPath;
     private Rigidbody _rigidbody;
     
@@ -90,7 +90,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
     
-    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
     private static readonly int IsExplode = Animator.StringToHash("isExplode");
     private static readonly int Vel = Animator.StringToHash("vel");
     private static readonly int Attack1 = Animator.StringToHash("Attack");
@@ -128,10 +127,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _rigidbody = GetComponent<Rigidbody>();
         _enemyCollider = GetComponent<CapsuleCollider>();
         _target = GameObject.FindGameObjectWithTag("Player").transform;
-        //_agent = GetComponent<NavMeshAgent>();
-        //_agent.updateRotation = false;
-        _propertyBlock = new MaterialPropertyBlock();
-        
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
         _jumpTimer = jumpCooldown;
@@ -623,11 +618,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
         
+        StartCoroutine(HitFlash());
+        
         if (_health - damage > 0)
         {
             _health -= damage;
             _healthSlider.value = _health;
-            StartCoroutine(HitFlash(Color.red, 0.1f));
         }
         else
         {
@@ -795,7 +791,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(duration);
         _rigidbody.velocity = Vector3.zero;
         _aiPath.canMove = true;
-        //_aiPath.SearchPath();
     }
 
     private IEnumerator StunTimer(float stunTime)
@@ -805,30 +800,11 @@ public class EnemyHandler : MonoBehaviour, IDamageable
        _rigidbody.velocity = Vector3.zero;
        _animator.SetBool(IsStaggered, false);
     }
-    
-    private IEnumerator HitFlash(Color flashColor, float duration)
+
+    private IEnumerator HitFlash()
     {
-        _spriteRenderer.GetPropertyBlock(_propertyBlock);
-        _propertyBlock.SetColor(BaseColor, flashColor);
-        _spriteRenderer.SetPropertyBlock(_propertyBlock);
-
-        yield return new WaitForSecondsRealtime(duration);
-        
-        var elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            var newColor = Color.Lerp(flashColor, flashColor, elapsed / duration);
-
-            _spriteRenderer.GetPropertyBlock(_propertyBlock);
-            _propertyBlock.SetColor(BaseColor, newColor);
-            _spriteRenderer.SetPropertyBlock(_propertyBlock);
-
-            yield return null;
-        }
-        
-        _spriteRenderer.GetPropertyBlock(_propertyBlock);
-        _propertyBlock.SetColor(BaseColor, Color.white);
-        _spriteRenderer.SetPropertyBlock(_propertyBlock);
+        _spriteRenderer.material = hitMaterial;
+        yield return new WaitForSeconds(0.1f);
+        _spriteRenderer.material = defaultMaterial;
     }
 }

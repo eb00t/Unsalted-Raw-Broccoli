@@ -58,6 +58,8 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private GameObject diedScreen;
     [SerializeField] private GameObject atkHitbox;
     [SerializeField] private Slider healthSlider, energySlider;
+    [SerializeField] private Material defaultMaterial, hitMaterial;
+    private SpriteRenderer _spriteRenderer;
     private CinemachineCollisionImpulseSource _impulseSource;
     private InventoryStore _inventoryStore;
     private Rigidbody _rigidbody;
@@ -94,6 +96,7 @@ public class CharacterAttack : MonoBehaviour
         _playerStatus = _uiManager.GetComponent<PlayerStatus>();
         _inventoryStore = _menuHandler.GetComponent<InventoryStore>();
         _rigidbody = GetComponentInParent<Rigidbody>();
+        _spriteRenderer = _rigidbody.gameObject.GetComponentInChildren<SpriteRenderer>();
         healthSlider.maxValue = maxHealth;
         energySlider.maxValue = maxEnergy;
         energySlider.value = currentEnergy;
@@ -425,6 +428,10 @@ public class CharacterAttack : MonoBehaviour
         }
         
         var hitColor = (currentHealth - damage < currentHealth) ? Color.red : Color.green;
+        if (hitColor == Color.red)
+        {
+            StartCoroutine(HitFlash());
+        }
 
         if (currentHealth <= damage)
         {
@@ -452,6 +459,13 @@ public class CharacterAttack : MonoBehaviour
             StartCoroutine(StunTimer(stunDuration));
             _poiseBuildup = 0;
         }
+    }
+    
+    private IEnumerator HitFlash()
+    {
+        _spriteRenderer.material = hitMaterial;
+        yield return new WaitForSeconds(0.1f);
+        _spriteRenderer.material = defaultMaterial;
     }
     
     public void UseEnergy(float amount)

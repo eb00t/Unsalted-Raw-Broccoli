@@ -61,13 +61,13 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     [Header("References")] 
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
+    [SerializeField] private Material defaultMaterial, hitMaterial;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
     private NavMeshAgent _agent;
     private CharacterAttack _characterAttack;
     private SpriteRenderer _spriteRenderer;
-    private MaterialPropertyBlock _propertyBlock;
     private AIPath _aiPath;
     private Rigidbody _rigidbody;
     public CloneBossManager cloneBossManager;
@@ -77,7 +77,6 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
     
-    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
     private static readonly int Vel = Animator.StringToHash("vel");
     private static readonly int Attack1 = Animator.StringToHash("Attack");
     private static readonly int Attack2 = Animator.StringToHash("Attack2");
@@ -112,7 +111,6 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _rigidbody = GetComponent<Rigidbody>();
         _enemyCollider = GetComponent<CapsuleCollider>();
         _target = GameObject.FindGameObjectWithTag("Player").transform;
-        _propertyBlock = new MaterialPropertyBlock();
         _jumpTimer = jumpCooldown;
         
         gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
@@ -426,12 +424,12 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
+        StartCoroutine(HitFlash());
         
         if (health - damage > 0)
         {
             health -= damage;
             _healthSlider.value = health;
-            StartCoroutine(HitFlash(Color.red, 0.1f));
         }
         else
         {
@@ -545,29 +543,10 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
        _animator.SetBool(IsStaggered, false);
     }
     
-    private IEnumerator HitFlash(Color flashColor, float duration)
+    private IEnumerator HitFlash()
     {
-        _spriteRenderer.GetPropertyBlock(_propertyBlock);
-        _propertyBlock.SetColor(BaseColor, flashColor);
-        _spriteRenderer.SetPropertyBlock(_propertyBlock);
-
-        yield return new WaitForSecondsRealtime(duration);
-        
-        var elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            var newColor = Color.Lerp(flashColor, flashColor, elapsed / duration);
-
-            _spriteRenderer.GetPropertyBlock(_propertyBlock);
-            _propertyBlock.SetColor(BaseColor, newColor);
-            _spriteRenderer.SetPropertyBlock(_propertyBlock);
-
-            yield return null;
-        }
-        
-        _spriteRenderer.GetPropertyBlock(_propertyBlock);
-        _propertyBlock.SetColor(BaseColor, Color.white);
-        _spriteRenderer.SetPropertyBlock(_propertyBlock);
+        _spriteRenderer.material = hitMaterial;
+        yield return new WaitForSeconds(0.1f);
+        _spriteRenderer.material = defaultMaterial;
     }
 }
