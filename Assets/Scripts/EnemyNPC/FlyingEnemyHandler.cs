@@ -523,7 +523,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Currency Prefab"), transform.position, Quaternion.identity);
         }
         
-        var energyToDrop = Random.Range(1, 6);
+        var energyToDrop = Random.Range(0, 6);
         for (var i = 0; i < energyToDrop; i++)
         {
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);

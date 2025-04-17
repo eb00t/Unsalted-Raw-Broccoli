@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -35,13 +34,16 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private DataHolder dataHolder;
 	public ReadLore nearestLore;
 	public NextLevelTrigger nearestLevelTrigger;
+	public RechargeStationHandler rechargeStationHandler;
 	[NonSerialized] public dialogueControllerScript dialogueController;
 	private bool _distanceBasedDialogue;
+	private CurrencyManager _currencyManager;
 
 	private void Start()
 	{
 		_inventoryStore = GetComponent<InventoryStore>();
 		_toolbarHandler = GetComponent<ToolbarHandler>();
+		_currencyManager = GetComponent<CurrencyManager>();
 		_player = GameObject.FindGameObjectWithTag("Player");
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
 		_characterAttack = _player.GetComponentInChildren<CharacterAttack>();
@@ -362,6 +364,24 @@ public class MenuHandler : MonoBehaviour
 		{
 			// no items held popup
 			_inventoryStore.TriggerNotification(null, "No items held in inventory", false);
+		}
+	}
+
+	public void EnergyPurchased(InputAction.CallbackContext context)
+	{
+		if (!context.performed || characterMovement.uiOpen) return;
+		if (!_player.gameObject.GetComponent<ItemPickupHandler>().isPlayerNearRecharge) return;
+		if (rechargeStationHandler == null) return;
+		if (rechargeStationHandler.hasBeenPurchased) return;
+		
+		if (dataHolder.currencyHeld - rechargeStationHandler.cost >= 0)
+		{
+			_currencyManager.UpdateCurrency(-rechargeStationHandler.cost);
+			rechargeStationHandler.InstantiateEnergy();
+		}
+		else
+		{
+			_inventoryStore.TriggerNotification(null, "Not enough currency held.", false);
 		}
 	}
 

@@ -126,6 +126,11 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         
         Repulsion();
 
+        if (dialogue.activeSelf)
+        {
+            return;
+        }
+
         if (_isFrozen)
         {
             _state = States.Frozen;

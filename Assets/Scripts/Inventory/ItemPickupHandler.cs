@@ -17,7 +17,7 @@ public class ItemPickupHandler : MonoBehaviour
 
     [Header("Item Handling")] 
     public int itemCount;
-    public bool isPlrNearShop, isPlrNearEnd, isPlrNearDialogue, isPlrNearLore;
+    public bool isPlrNearShop, isPlrNearEnd, isPlrNearDialogue, isPlrNearLore, isPlayerNearRecharge;
     
     private ControlsManager controlsManager;
     [SerializeField] private DataHolder dataHolder;
@@ -34,7 +34,7 @@ public class ItemPickupHandler : MonoBehaviour
 
     private void Update()
     {
-        var isNearOtherObject = isPlrNearEnd || isPlrNearDialogue || isPlrNearLore || isPlrNearShop;
+        var isNearOtherObject = isPlrNearEnd || isPlrNearDialogue || isPlrNearLore || isPlrNearShop || isPlayerNearRecharge;
         if (SceneManager.GetActiveScene().name == "Tutorial" || characterMovement.uiOpen || isNearOtherObject) return;
         
         itemCount = 0;

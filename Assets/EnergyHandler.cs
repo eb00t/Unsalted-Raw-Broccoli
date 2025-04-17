@@ -44,12 +44,12 @@ public class EnergyHandler : MonoBehaviour
                 break;
             case < 99:
                 energySize = EnergySize.Large;
-                energyAmount = 4f;
+                energyAmount = 3f;
                 break;
             case 99:
                 energySize = EnergySize.VeryLarge;
                 //_spriteRenderer.color = new Color(0.22352941176f, 0.50588235294f, 0.44705882352f);
-                energyAmount = 8f;
+                energyAmount = 6f;
                 break;
         }
 

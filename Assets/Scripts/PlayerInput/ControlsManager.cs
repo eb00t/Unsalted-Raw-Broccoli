@@ -112,7 +112,7 @@ public class ControlsManager : MonoBehaviour
         
         if (KeyboardStrings.ContainsKey(ButtonType.ButtonEast))
         {
-            KeyboardStrings[ButtonType.ButtonWest] = keyboardInteractBack;
+            KeyboardStrings[ButtonType.ButtonEast] = keyboardInteractBack;
             KeyboardStrings[ButtonType.ButtonSouth] = keyboardInteractSelect;
         }
 
