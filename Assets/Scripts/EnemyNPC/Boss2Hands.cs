@@ -604,6 +604,19 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, leftHand.position);
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, rightHand.position);
         AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
+        
+        var currencyToDrop = Random.Range(5, 20);
+        for (var i = 0; i < currencyToDrop; i++)
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Currency Prefab"), transform.position, Quaternion.identity);
+        }
+        
+        var energyToDrop = Random.Range(1, 10);
+        for (var i = 0; i < energyToDrop; i++)
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
+        }
+        
         //_characterMovement.lockedOn = false;
         //_lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);

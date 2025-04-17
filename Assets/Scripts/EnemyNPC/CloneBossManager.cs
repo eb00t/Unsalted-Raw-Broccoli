@@ -131,6 +131,11 @@ public class CloneBossManager : MonoBehaviour
         {
             LevelBuilder.Instance.bossDead = true;
             _roomScripting.enemies.Remove(gameObject);
+            var currencyToDrop = Random.Range(5, 20);
+            for (var i = 0; i < currencyToDrop; i++)
+            {
+                Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Currency Prefab"), transform.position, Quaternion.identity);
+            }
             KillAllBosses();
         }
     }

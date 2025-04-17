@@ -544,6 +544,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 currencyToDrop = Random.Range(0, 5);
                 break;
         }
+        
+        var energyToDrop = Random.Range(1, 10);
+        for (var i = 0; i < energyToDrop; i++)
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
+        }
        
         for (int i = 0; i < currencyToDrop; i++)
         {
