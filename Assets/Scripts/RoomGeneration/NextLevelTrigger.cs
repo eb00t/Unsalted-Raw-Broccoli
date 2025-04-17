@@ -104,6 +104,15 @@ public class NextLevelTrigger : MonoBehaviour
                             dataHolder.highestFloorCleared = 2;
                         }
                     }
+                    else if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor3)
+                    {
+                        dataHolder.currentLevel = LevelBuilder.LevelMode.FinalBoss;
+                        scene = "MainScene"; 
+                        if (dataHolder.highestFloorCleared < 3)
+                        {
+                            dataHolder.highestFloorCleared = 3;
+                        }
+                    }
                 }
                 else
                 {
