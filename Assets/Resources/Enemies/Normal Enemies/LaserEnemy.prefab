@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 5756939950031232541}
   - component: {fileID: 6843074302455370846}
   m_Layer: 8
-  m_Name: FlyingEnemy
+  m_Name: LaserEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -101,12 +101,13 @@ MonoBehaviour:
   poiseDamage: 5
   numberOfAttacks: 1
   projectileSpeed: 13
-  chargeTime: 1
-  fireTime: 0.5
-  trackSpeed: 4
-  delay: 0.2
+  multiProjectileOffset: 0
+  chargeTime: 3
+  fireTime: 0.75
+  trackSpeed: 2
+  delay: 0.3
   laserTickCooldown: 0.25
-  attackRange: 15
+  attackRange: 10
   chaseRange: 20
   attackCooldown: 3.5
   chaseDuration: 5
@@ -117,8 +118,8 @@ MonoBehaviour:
   canBeStunned: 1
   moveSpeed: 5
   doesHaveLaserAttack: 1
-  doesHaveProjectileAttack: 1
-  numberOfProjectiles: 1
+  doesHaveProjectileAttack: 0
+  numberOfProjectiles: 0
   attackHitbox: {fileID: 3665861034403590735}
   flashEffect: {fileID: 0}
   healthFillImage: {fileID: 1081270885198895184}

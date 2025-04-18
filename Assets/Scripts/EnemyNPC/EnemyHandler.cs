@@ -54,6 +54,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [Header("Enemy Properties")] 
     public bool isBomb;
     [SerializeField] private bool isStalker;
+    [SerializeField] private bool canBlock;
+    [SerializeField] private bool isInvisible;
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool doesEnemyPatrol;
@@ -76,7 +78,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private Transform passiveTarget;
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
-    [SerializeField] private Material defaultMaterial, hitMaterial;
+    [SerializeField] private Material defaultMaterial, hitMaterial, invisMaterial;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
@@ -163,7 +165,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         var distance = Vector3.Distance(transform.position, _target.position);
         var heightDiffAbove = _target.position.y - transform.position.y;
 
-        if (isStalker)
+        if (isStalker && canBlock)
         {
             if (_isBlocking)
             {
@@ -225,6 +227,17 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             {
                 UpdateSpriteDirection(_playerDir.x < 0);
             }
+        }
+
+        if (isInvisible && _state is States.Chase or States.Jump)
+        {
+            _spriteRenderer.material = invisMaterial;
+            _healthSlider.gameObject.SetActive(false);
+        }
+        else if (isInvisible && _state is States.Attack)
+        {
+            _spriteRenderer.material = defaultMaterial;
+            _healthSlider.gameObject.SetActive(true);
         }
 
         switch (_state)
@@ -464,7 +477,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             {
                 _aiPath.destination = new Vector3(_target.position.x, transform.position.y, transform.position.z);
             }
-            _healthSlider.gameObject.SetActive(true);
+
+            if (!isInvisible)
+            {
+                _healthSlider.gameObject.SetActive(true);
+            }
+
             if (isBomb && _canLunge) StartCoroutine(BeginLunge());
         }
     }
@@ -524,7 +542,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                     _animator.SetTrigger(Attack1);
                     break;
                 case 1:
-                    if (isStalker)
+                    if (isStalker && canBlock)
                     {
                         if (!_wasLastAttackBlock)
                         {

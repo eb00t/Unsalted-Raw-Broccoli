@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 917948616307904250}
   - component: {fileID: 4127319016466431334}
   m_Layer: 8
-  m_Name: StalkerEnemy
+  m_Name: StalkerInvisible
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,18 +130,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2308ab9f6866004ebf515788c23a5b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 240
-  poise: 200
+  maxHealth: 200
+  poise: 120
   defense: 0
   poisonResistance: 50
   blockingDefense: 95
-  attack: 35
+  attack: 15
   poiseDamage: 15
-  numberOfAttacks: 2
-  attackRange: 4
+  numberOfAttacks: 1
+  attackRange: 3
   patrolRange: 10
   _roomBounds: {fileID: 0}
-  attackCooldown: 1.2
+  attackCooldown: 1.5
   freezeDuration: 1.5
   freezeCooldown: 4
   maxTimeToReachTarget: 5
@@ -152,18 +152,21 @@ MonoBehaviour:
   jumpThroughTime: 0.6
   isBomb: 0
   isStalker: 1
+  canBlock: 0
+  isInvisible: 1
   canBeFrozen: 1
   canBeStunned: 1
   doesEnemyPatrol: 1
   isPassive: 0
   lungeForce: 0
   jumpTriggerDistance: 1
-  maxJumpHeight: 6
+  maxJumpHeight: 8
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 3665861034403590735}
   healthFillImage: {fileID: 953913091542431065}
   defaultMaterial: {fileID: 2100000, guid: ba02e6b88d5290f45aba435b9f509e28, type: 2}
   hitMaterial: {fileID: 2100000, guid: 9bdeb67dd695bdb488b98aceb7ed95f6, type: 2}
+  invisMaterial: {fileID: 2100000, guid: 6115b33a7a78d484aaf52fa1b3f881d0, type: 2}
 --- !u!95 &1007004536666698315
 Animator:
   serializedVersion: 5

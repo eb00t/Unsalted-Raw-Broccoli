@@ -23,6 +23,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int poiseDamage;
     [SerializeField] private int numberOfAttacks;
     [SerializeField] private float projectileSpeed;
+    [SerializeField] private float multiProjectileOffset;
     
     [Header("Laser Stats")]
     [SerializeField] private float chargeTime;
@@ -55,6 +56,9 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
     [SerializeField] private float moveSpeed;
+    [SerializeField] private bool doesHaveLaserAttack;
+    [SerializeField] private bool doesHaveProjectileAttack;
+    [SerializeField] private float numberOfProjectiles;
     private bool _isRepositioning;
     private bool _isKnockedBack;
     private bool _isStunned;
@@ -265,9 +269,18 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private IEnumerator TriggerAttack()
     {
         _canAttack = false;
-        
-        var ran = Random.Range(0, 10);
-        if (ran < 5)
+        var ran = 0;
+
+        if (doesHaveLaserAttack && doesHaveProjectileAttack)
+        {
+            ran = Random.Range(0, 2);
+        }
+        else if (doesHaveProjectileAttack && !doesHaveLaserAttack)
+        {
+            ran = 1;
+        }
+
+        if (ran == 0)
         {
             yield return StartCoroutine(LaserAttack());
         }
@@ -283,16 +296,27 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     public void ProjectileAttack()
     {
         _canAttack = false;
-        var newProjectile = Instantiate(lightProjectile, projectileOrigin.position, Quaternion.identity);
-        newProjectile.GetComponent<HitboxHandler>().damageable = this;
-        newProjectile.SetActive(true);
-        var rb = newProjectile.GetComponent<Rigidbody>();
-        var dir = _playerDir.normalized;
-        var newVelocity = new Vector3(dir.x, dir.y, 0);
-        var newRot = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
- 
-        rb.velocity = newVelocity * projectileSpeed;
-        rb.rotation = Quaternion.Euler(0, 0, newRot);
+        var centre = numberOfProjectiles / 2;
+
+        for (var i = 0; i < numberOfProjectiles; i++)
+        {
+            var position = projectileOrigin.position;
+            var newProjectile = Instantiate(lightProjectile, position, Quaternion.identity);
+            newProjectile.GetComponent<HitboxHandler>().damageable = this;
+            newProjectile.SetActive(true);
+            
+            var rb = newProjectile.GetComponent<Rigidbody>();
+            var dir = _playerDir.normalized;
+            var centreOffset = i - centre;
+            var rotation = Quaternion.AngleAxis(centreOffset * multiProjectileOffset, Vector3.forward);
+            var angledDir = rotation * dir;
+
+            rb.velocity = new Vector3(angledDir.x, angledDir.y, 0) * projectileSpeed;
+            
+            var newRot = Mathf.Atan2(angledDir.y, angledDir.x) * Mathf.Rad2Deg;
+            rb.rotation = Quaternion.Euler(0, 0, newRot);
+        }
+        
         _canAttack = true;
     }
 
