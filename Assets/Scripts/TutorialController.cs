@@ -121,52 +121,66 @@ public class TutorialController : MonoBehaviour
         switch (_currentStep)
         {
             case TutorialStep.Move:
-                ShowMessage("Move left and right with", ControlsManager.ButtonType.LThumbstick, null);
+                ShowMessage("Move left and right with", ControlsManager.ButtonType.Move, null);
                 break;
             case TutorialStep.Jump:
-                ShowMessage("Jump by pressing", ControlsManager.ButtonType.ButtonSouth, null);
+                ShowMessage("Jump by pressing", ControlsManager.ButtonType.Jump, null);
                 break;
             case TutorialStep.DoubleJump:
-                ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.ButtonSouth, ControlsManager.ButtonType.ButtonSouth);
+                ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.Jump, ControlsManager.ButtonType.Jump);
                 break;
             case TutorialStep.Crouch:
-                ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.LThumbstickDown, null);
+                if (dataHolder.isGamepad)
+                {
+                    ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchL, ControlsManager.ButtonType.CrouchR);
+                }
+                else
+                {
+                    ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchL, null);
+                }
                 break;
             case TutorialStep.FindItems:
-                ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.RTrigger, null);
+                ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.Interact, null);
                 break;
             case TutorialStep.SwitchItem:
-                ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.DpadEast, null);
+                if (dataHolder.isGamepad)
+                {
+                    ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.CycleToolbarLeft, ControlsManager.ButtonType.CycleToolbarRight);
+                }
+                else
+                {
+                    ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.CycleToolbarLeft, null);
+                }
                 break;
             case TutorialStep.UseItem:
-                ShowMessage("Use an item by pressing", ControlsManager.ButtonType.DpadNorth, null);
+                ShowMessage("Use an item by pressing", ControlsManager.ButtonType.UseItem, null);
                 break;
             case TutorialStep.PauseGame:
-                ShowMessage("Pause the game by pressing", ControlsManager.ButtonType.Start, null);
+                ShowMessage("Pause the game by pressing", ControlsManager.ButtonType.Pause, null);
                 break;
             case TutorialStep.ExitUI:
-                ShowMessage("Exit the pause menu by pressing", ControlsManager.ButtonType.ButtonEast, null);
+                ShowMessage("Exit the pause menu by pressing", ControlsManager.ButtonType.Back, null);
                 break;
             case TutorialStep.FindEnemy:
-                ShowMessage("Find an enemy by exploring the rooms", ControlsManager.ButtonType.LThumbstick, null);
+                ShowMessage("Find an enemy by exploring the rooms", ControlsManager.ButtonType.Move, null);
                 break;
             case TutorialStep.LightAttack:
-                ShowMessage("Perform a light attack", ControlsManager.ButtonType.ButtonWest, null);
+                ShowMessage("Perform a light attack", ControlsManager.ButtonType.LightAttack, null);
                 break;
             case TutorialStep.MediumAttack:
-                ShowMessage("Perform a medium attack", ControlsManager.ButtonType.ButtonNorth, null);
+                ShowMessage("Perform a medium attack", ControlsManager.ButtonType.MediumAttack, null);
                 break;
             case TutorialStep.HeavyAttack:
-                ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.ButtonEast, null);
+                ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.HeavyAttack, null);
                 break;
             case TutorialStep.JumpAttack:
-                ShowMessage("To perform a jump attack, jump and perform a light attack", ControlsManager.ButtonType.ButtonSouth, ControlsManager.ButtonType.ButtonWest);
+                ShowMessage("To perform a jump attack, jump and perform a light attack", ControlsManager.ButtonType.Jump, ControlsManager.ButtonType.LightAttack);
                 break;
             case TutorialStep.DefeatEnemy:
-                ShowMessage("Defeat the enemy", ControlsManager.ButtonType.ButtonWest, null);
+                ShowMessage("Defeat the enemy", ControlsManager.ButtonType.LightAttack, null);
                 break;
             case TutorialStep.Complete:
-                ShowMessage("Tutorial complete! You may now continue to the game", ControlsManager.ButtonType.LThumbstick, null);
+                ShowMessage("Tutorial complete! You may now continue to the game", ControlsManager.ButtonType.Move, null);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

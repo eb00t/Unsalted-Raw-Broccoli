@@ -73,49 +73,6 @@ public class ControlsManager : MonoBehaviour
             dataHolder.isGamepad = false;
         }
 
-        if (SceneManager.GetActiveScene().name == "Tutorial")
-        {
-            if (_characterMovement.uiOpen && !diedScreen.activeSelf)
-            {
-                keyboardInteractBack = "Esc";
-            }
-            else if (diedScreen.activeSelf)
-            {
-                keyboardInteractBack = "F";
-            }
-            else if (!_characterMovement.uiOpen)
-            {
-                keyboardInteractBack = "E / Left Click";
-            }
-            else
-            {
-                keyboardInteractBack = "F";
-            }
-        }
-        else if (SceneManager.GetActiveScene().name != "StartScreen")
-        {
-            if (_characterMovement.uiOpen && !diedScreen.activeSelf && (Time.timeScale == 0 || (_menuHandler.shopGUI != null && _menuHandler.shopGUI.activeSelf)))
-            {
-                keyboardInteractBack = "Esc";
-                keyboardInteractSelect = "Enter/LMB";
-            }
-            else
-            {
-                keyboardInteractBack = "F";
-                keyboardInteractSelect = "Space";
-            }
-        }
-        else
-        {
-            keyboardInteractBack = "Esc";
-        }
-        
-        if (KeyboardStrings.ContainsKey(ButtonType.ButtonEast))
-        {
-            KeyboardStrings[ButtonType.ButtonEast] = keyboardInteractBack;
-            KeyboardStrings[ButtonType.ButtonSouth] = keyboardInteractSelect;
-        }
-
         CheckControl();
     }
 
@@ -152,78 +109,98 @@ public class ControlsManager : MonoBehaviour
     {
         XboxSprites = new Dictionary<ButtonType, Sprite>
         {
-            { ButtonType.ButtonNorth, Y },
-            { ButtonType.ButtonEast, B },
-            { ButtonType.ButtonSouth, A },
-            { ButtonType.ButtonWest, xboxX },
-            { ButtonType.LShoulder, LB },
-            { ButtonType.RShoulder, RB },
-            { ButtonType.LTrigger, LT },
-            { ButtonType.RTrigger, RT },
-            { ButtonType.DpadNorth, dPadUp },
-            { ButtonType.DpadEast, dPadRight },
-            { ButtonType.DpadSouth, dPadDown },
-            { ButtonType.DpadWest, dPadLeft },
-            { ButtonType.Start, menuImg },
-            { ButtonType.Select, select },
-            { ButtonType.LThumbstick, lThumbstick},
-            { ButtonType.RThumbstick, rThumbstick},
-            { ButtonType.LThumbstickDown, lThumbstickDown},
-            { ButtonType.RThumbstickDown, rThumbstickDown}
+            { ButtonType.Move, lThumbstick },
+            { ButtonType.LightAttack, xboxX },
+            { ButtonType.MediumAttack, Y },
+            { ButtonType.HeavyAttack, B },
+            { ButtonType.Jump, A },
+            { ButtonType.Dash, RB },
+            { ButtonType.CrouchL, lThumbstickDown },
+            { ButtonType.CrouchR, rThumbstickDown },
+            { ButtonType.Pause, menuImg },
+            { ButtonType.Back, B },
+            { ButtonType.CycleToolbarLeft, dPadLeft },
+            { ButtonType.CycleToolbarRight, dPadRight },
+            { ButtonType.UseItem, dPadUp },
+            { ButtonType.RemoveItemFromToolbar, xboxX },
+            { ButtonType.QuickOpenInventory, select },
+            { ButtonType.Interact, RT },
+            { ButtonType.LockOn, LT },
+            { ButtonType.SwitchLockOnTarget, rThumbstick },
+            { ButtonType.ProgressDialogue, A },
+            { ButtonType.UISelect, A },
         };
 
         PlaystationSprites = new Dictionary<ButtonType, Sprite>
         {
-            { ButtonType.ButtonNorth, triangle },
-            { ButtonType.ButtonEast, circle },
-            { ButtonType.ButtonSouth, psX },
-            { ButtonType.ButtonWest, square },
-            { ButtonType.LShoulder, L1 },
-            { ButtonType.RShoulder, R1 },
-            { ButtonType.LTrigger, L2 },
-            { ButtonType.RTrigger, R2 },
-            { ButtonType.DpadNorth, dPadUp },
-            { ButtonType.DpadEast, dPadRight },
-            { ButtonType.DpadSouth, dPadDown },
-            { ButtonType.DpadWest, dPadLeft },
-            { ButtonType.Start, menuImg },
-            { ButtonType.Select, create },
-            { ButtonType.LThumbstick, lThumbstick},
-            { ButtonType.RThumbstick, rThumbstick},
-            { ButtonType.LThumbstickDown, L3},
-            { ButtonType.RThumbstickDown, R3}
+            { ButtonType.Move, lThumbstick },
+            { ButtonType.LightAttack, square },
+            { ButtonType.MediumAttack, triangle },
+            { ButtonType.HeavyAttack, circle },
+            { ButtonType.Jump, psX },
+            { ButtonType.Dash, R1 },
+            { ButtonType.CrouchL, lThumbstickDown },
+            { ButtonType.CrouchR, rThumbstickDown },
+            { ButtonType.Pause, menuImg },
+            { ButtonType.Back, circle },
+            { ButtonType.CycleToolbarLeft, dPadLeft },
+            { ButtonType.CycleToolbarRight, dPadRight },
+            { ButtonType.UseItem, dPadUp },
+            { ButtonType.RemoveItemFromToolbar, square },
+            { ButtonType.QuickOpenInventory, create },
+            { ButtonType.Interact, R2 },
+            { ButtonType.LockOn, L1 },
+            { ButtonType.SwitchLockOnTarget, rThumbstick },
+            { ButtonType.ProgressDialogue, psX },
+            { ButtonType.UISelect, psX },
         };
         
         KeyboardStrings = new Dictionary<ButtonType, string>
         {
-            { ButtonType.ButtonNorth, "W / Right Click" },
-            { ButtonType.ButtonEast, "Q / Middle Mouse Button" },
-            { ButtonType.ButtonSouth, "Space" },
-            { ButtonType.ButtonWest, "E / Left Click" },
-            { ButtonType.LShoulder, "R" },
-            { ButtonType.RShoulder, "Shift" },
-            { ButtonType.LTrigger, "-" },
-            { ButtonType.RTrigger, "F" },
-            { ButtonType.DpadNorth, "1" },
-            { ButtonType.DpadEast, "TAB" },
-            { ButtonType.DpadSouth, "-" },
-            { ButtonType.DpadWest, "TAB" },
-            { ButtonType.Start, "Esc" },
-            { ButtonType.Select, "I" },
-            { ButtonType.LThumbstick, "A/D"},
-            { ButtonType.RThumbstick, "Z/X"},
-            { ButtonType.LThumbstickDown, "CTRL"},
-            { ButtonType.RThumbstickDown, "CTRL"}
+            { ButtonType.Move, "A/D" },
+            { ButtonType.LightAttack, "E / Left Click" },
+            { ButtonType.MediumAttack, "W / Right Click" },
+            { ButtonType.HeavyAttack, "Q / Middle Mouse Button" },
+            { ButtonType.Jump, "SPACE" },
+            { ButtonType.Dash, "SHIFT" },
+            { ButtonType.CrouchL, "CTRL" },
+            { ButtonType.CrouchR, "CTRL" },
+            { ButtonType.Pause, "ESC" },
+            { ButtonType.Back, "ESC" },
+            { ButtonType.CycleToolbarLeft, "TAB" },
+            { ButtonType.CycleToolbarRight, "TAB" },
+            { ButtonType.UseItem, "1" },
+            { ButtonType.RemoveItemFromToolbar, "E" },
+            { ButtonType.QuickOpenInventory, "I" },
+            { ButtonType.Interact, "F" },
+            { ButtonType.LockOn, "R" },
+            { ButtonType.SwitchLockOnTarget, "Z/X" },
+            { ButtonType.ProgressDialogue, "SPACE" },
+            { ButtonType.UISelect, "Enter / Left Click" },
         };
     }
     
     public enum ButtonType
-    {
-        LShoulder, RShoulder,
-        LTrigger, RTrigger,
-        LThumbstick, RThumbstick, LThumbstickDown, RThumbstickDown,
-        DpadNorth, DpadEast, DpadSouth, DpadWest,
-        ButtonNorth, ButtonEast, ButtonSouth, ButtonWest,
-        Start, Select
+    { 
+        Move,
+        LightAttack,
+        MediumAttack,
+        HeavyAttack,
+        Jump,
+        Dash,
+        CrouchL,
+        CrouchR,
+        Pause,
+        Back,
+        CycleToolbarLeft,
+        CycleToolbarRight,
+        UseItem,
+        RemoveItemFromToolbar,
+        QuickOpenInventory,
+        Interact,
+        LockOn,
+        SwitchLockOnTarget,
+        ProgressDialogue,
+        UISelect
     }
 }
