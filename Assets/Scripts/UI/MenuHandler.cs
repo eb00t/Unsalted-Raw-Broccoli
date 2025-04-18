@@ -145,9 +145,9 @@ public class MenuHandler : MonoBehaviour
 
 	public void ToggleShop()
 	{
-		if (shopGUI == null || shopGUI.activeSelf) return;
+		if (shopGUI == null) return;
 		var shopHandler = shopGUI.GetComponentInParent<ShopHandler>();
-		if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
+		//if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
 		
 		ButtonHandler.Instance.PlayConfirmSound();
 		
