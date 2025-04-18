@@ -439,6 +439,11 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _health -= damage;
         healthSlider.value = _health;
         
+        if (Random.Range(0, 10) < 4) // 20 percent chance on hit for enemy to drop energy
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
+        }
+        
         if (_health <= 0)
         {
             Die();

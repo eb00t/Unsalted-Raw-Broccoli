@@ -407,6 +407,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         StartCoroutine(HitFlash());
         
+        if (Random.Range(0, 10) < 1) // 10 percent chance on hit for enemy to drop energy
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
+        }
+
         if (_health - damage > 0)
         {
             _health -= damage;
@@ -523,7 +528,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Currency Prefab"), transform.position, Quaternion.identity);
         }
         
-        var energyToDrop = Random.Range(0, 6);
+        var energyToDrop = Random.Range(0, 3);
         for (var i = 0; i < energyToDrop; i++)
         {
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);

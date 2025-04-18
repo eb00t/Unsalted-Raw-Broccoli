@@ -510,6 +510,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
         
+        if (Random.Range(0, 10) < 4) // 20 percent chance on hit for enemy to drop energy
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
+        }
+        
         if (_health - damage > 0)
         {
             _health -= damage;

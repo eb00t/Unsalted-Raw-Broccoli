@@ -431,6 +431,11 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         damage = Mathf.RoundToInt(damage * dmgReduction);
         StartCoroutine(HitFlash());
         
+        if (Random.Range(0, 10) < 1) // 10 percent chance on hit for enemy to drop energy
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
+        }
+        
         if (health - damage > 0)
         {
             health -= damage;
@@ -487,7 +492,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         isDead = true;
         StopAllCoroutines();
         
-        var energyToDrop = Random.Range(1, 6);
+        var energyToDrop = Random.Range(0, 2);
         for (var i = 0; i < energyToDrop; i++)
         {
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);

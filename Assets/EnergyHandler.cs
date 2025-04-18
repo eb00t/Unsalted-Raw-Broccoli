@@ -35,21 +35,21 @@ public class EnergyHandler : MonoBehaviour
             case <= 49:
                 energySize = EnergySize.Small;
                 //_spriteRenderer.color = new Color(0.43137254902f, 0.30196078431f, 0.14509803921f);
-                energyAmount = 1f;
+                energyAmount = .5f;
                 break;
             case <= 75:
                 energySize = EnergySize.Medium;
                 //_spriteRenderer.color = new Color(0.64705882352f, 0.66274509803f, 0.70588235294f);
-                energyAmount = 2f;
+                energyAmount = 1f;
                 break;
             case < 99:
                 energySize = EnergySize.Large;
-                energyAmount = 3f;
+                energyAmount = 1.5f;
                 break;
             case 99:
                 energySize = EnergySize.VeryLarge;
                 //_spriteRenderer.color = new Color(0.22352941176f, 0.50588235294f, 0.44705882352f);
-                energyAmount = 6f;
+                energyAmount = 3f;
                 break;
         }
 
