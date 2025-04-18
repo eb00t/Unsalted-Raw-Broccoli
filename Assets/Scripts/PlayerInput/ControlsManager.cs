@@ -148,7 +148,7 @@ public class ControlsManager : MonoBehaviour
         }
     }
     
-     private void InitializeDictionaries()
+     private void InitializeDictionaries() // TODO: change these to be based on action rather than button to avoid messy overrides
     {
         XboxSprites = new Dictionary<ButtonType, Sprite>
         {
@@ -219,6 +219,7 @@ public class ControlsManager : MonoBehaviour
     
     public enum ButtonType
     {
+        None,
         LShoulder, RShoulder,
         LTrigger, RTrigger,
         LThumbstick, RThumbstick, LThumbstickDown, RThumbstickDown,

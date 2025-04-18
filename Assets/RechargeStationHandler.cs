@@ -26,26 +26,7 @@ public class RechargeStationHandler : MonoBehaviour
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
         _player = GameObject.FindGameObjectWithTag("Player");
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
-    }
-
-    private void Update()
-    {
-        if (hasBeenPurchased) return;
-        
-        var dist = Vector3.Distance(transform.position, _player.transform.position);
-        
-        if (dist <= range)
-        {
-            _itemPickupHandler.isPlayerNearRecharge = true;
-            _itemPickupHandler.TogglePrompt("Purchase energy refill for " + cost, true, ControlsManager.ButtonType.RTrigger, null);
-            _menuHandler.rechargeStationHandler = this;
-        }
-        else if (dist > range)
-        {
-            if (_itemPickupHandler.itemCount > 0) return;
-            if (!_menuHandler.rechargeStationHandler == this) return;
-            _itemPickupHandler.isPlayerNearRecharge = false;
-        }
+        GetComponent<PromptTrigger>().promptText = "Purchase energy refill for: " + cost;
     }
 
     public void InstantiateEnergy()
@@ -58,7 +39,6 @@ public class RechargeStationHandler : MonoBehaviour
         hasBeenPurchased = true;
         GetComponentInChildren<SpriteRenderer>().material = disabledMaterial;
         GetComponentInChildren<Light>().enabled = false;
-        _itemPickupHandler.isPlayerNearRecharge = false;
-        _menuHandler.rechargeStationHandler = null;
+        GetComponent<PromptTrigger>().isDisabled = true;
     }
 }

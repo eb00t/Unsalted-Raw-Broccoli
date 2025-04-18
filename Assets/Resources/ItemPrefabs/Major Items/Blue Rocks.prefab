@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8240086391682215846}
   - component: {fileID: 980048284870234866}
   - component: {fileID: 6755745443464375342}
+  - component: {fileID: -2010767645202934568}
   - component: {fileID: 3843640139126399565}
   - component: {fileID: 329370685633434005}
   - component: {fileID: -2659510645919969001}
@@ -70,9 +71,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e10f6c6f4f15a47825ddcb43f0e310, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 3
   canPickup: 0
   outLineSprite: {fileID: 4994393586640579354}
+--- !u!114 &-2010767645202934568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169769841124891387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b038a12d9b459d48b1a6f158e915c7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  promptType: 0
+  triggerRange: 3
+  priority: 0
+  promptText: 
+  button1: 4
+  button2: 0
+  doesOverrideOtherPrompts: 0
+  isDisabled: 0
 --- !u!114 &3843640139126399565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,8 +111,10 @@ MonoBehaviour:
   title: Blue Rocks
   uiIcon: {fileID: 21300000, guid: dfde6893ff51bbb4180572b2e1bcef45, type: 3}
   statusIcon: {fileID: 21300000, guid: 50d772c863082ed489534f382ad697ae, type: 3}
+  statusIcon2: {fileID: 0}
   statusColor: {r: 0.2901961, g: 0.5803922, b: 0.92549026, a: 0}
   statusText: ATK
+  statusText2: 
   isInstantUse: 0
   maximumHold: 3
   itemID: 1

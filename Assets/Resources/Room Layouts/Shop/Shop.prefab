@@ -5190,6 +5190,8 @@ GameObject:
   - component: {fileID: 6548544479652783233}
   - component: {fileID: 7319703628393863450}
   - component: {fileID: 2377181770151663227}
+  - component: {fileID: 5984927647070335874}
+  - component: {fileID: 4131161416596402965}
   m_Layer: 0
   m_Name: Shop
   m_TagString: Untagged
@@ -5290,6 +5292,46 @@ MonoBehaviour:
   reusable: 1
   hasDialogueOpened: 0
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
+--- !u!114 &5984927647070335874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8472105072737231956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b038a12d9b459d48b1a6f158e915c7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  promptType: 5
+  triggerRange: 3
+  priority: 2
+  promptText: Close Shop
+  button1: 14
+  button2: 0
+  doesOverrideOtherPrompts: 1
+  isDisabled: 0
+--- !u!114 &4131161416596402965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8472105072737231956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b038a12d9b459d48b1a6f158e915c7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  promptType: 1
+  triggerRange: 3
+  priority: 1
+  promptText: Talk to Shopkeep
+  button1: 4
+  button2: 0
+  doesOverrideOtherPrompts: 0
+  isDisabled: 0
 --- !u!1 &8770876105557797132
 GameObject:
   m_ObjectHideFlags: 0

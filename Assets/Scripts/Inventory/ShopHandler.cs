@@ -45,23 +45,6 @@ public class ShopHandler : MonoBehaviour
 
 	private void Update()
 	{
-		var dist = Vector3.Distance(transform.position, _player.transform.position);
-
-		if (dist <= range)
-		{
-			_itemPickupHandler.isPlrNearShop = true;
-			if (_shopGUI.activeSelf)
-			{
-				_itemPickupHandler.TogglePrompt("Close shop", true, ControlsManager.ButtonType.ButtonEast, null);
-			}
-		}
-		else if (dist > range)
-		{
-			if (_itemPickupHandler.itemCount > 0) return;
-			_itemPickupHandler.isPlrNearShop = false;
-			//_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
-		}
-		
 		if (EventSystem.current.currentSelectedGameObject == _lastSelected) return;
 		_lastSelected = EventSystem.current.currentSelectedGameObject;
 		UpdateInfo();

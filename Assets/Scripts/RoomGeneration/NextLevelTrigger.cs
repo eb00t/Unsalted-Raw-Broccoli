@@ -6,12 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class NextLevelTrigger : MonoBehaviour
 {
-    private CharacterMovement _characterMovement;
-    private ItemPickupHandler _itemPickupHandler;
     private MenuHandler _menuHandler;
     private GameObject _player;
     private GameObject _uiManager;
-    public float range = 5f;
     [SerializeField] private bool doesUseTrigger;
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private string promptText;
@@ -32,37 +29,8 @@ public class NextLevelTrigger : MonoBehaviour
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
-        _characterMovement = _player.GetComponent<CharacterMovement>();
-        _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
-        _menuHandler.nextLevelTrigger = gameObject;
-    }
-
-    private void Update()
-    {
-        if (SceneManager.GetActiveScene().name != "creditsScene" && !doesUseTrigger)
-        {
-            if (!_characterMovement.uiOpen)
-            {
-                var dist = Vector3.Distance(transform.position, _player.transform.position);
-
-                if (dist <= range)
-                {
-                    _itemPickupHandler.isPlrNearEnd = true;
-                    _itemPickupHandler.TogglePrompt(promptText, true, ControlsManager.ButtonType.RTrigger, null);
-                    _menuHandler.nearestLevelTrigger = this;
-                }
-                else if (dist > range)
-                {
-                    if (_itemPickupHandler.itemCount > 0) return;
-                    if (_menuHandler.nearestLevelTrigger != this) return;
-                    _itemPickupHandler.isPlrNearEnd = false;
-                    _menuHandler.nearestLevelTrigger = null;
-                    //_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
-                }
-            }
-        }
     }
 
     private void OnTriggerStay(Collider other)

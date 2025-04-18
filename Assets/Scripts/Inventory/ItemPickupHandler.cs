@@ -1,88 +1,108 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class ItemPickupHandler : MonoBehaviour
 {
-    private Transform player;
-    private CharacterMovement characterMovement;
+    private Transform _player;
+    private CharacterMovement _characterMovement;
+    private GameObject _uiManager;
+    private MenuHandler _menuHandler;
+    private bool _isGamepad;
 
-    [Header("UI References")]
+    [Header("References")]
     [SerializeField] private RectTransform rectTransform;
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private UpdateButton updateButton1, updateButton2;
-
-    [Header("Item Handling")] 
-    public int itemCount;
-    public bool isPlrNearShop, isPlrNearEnd, isPlrNearDialogue, isPlrNearLore, isPlayerNearRecharge;
-    
-    private ControlsManager controlsManager;
     [SerializeField] private DataHolder dataHolder;
-
-    private bool isGamepad;
-
+    
+    public List<PromptTrigger> promptTriggers;
+    public PromptTrigger nearestPromptTrigger;
+    
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        characterMovement = player.GetComponent<CharacterMovement>();
-
-        controlsManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<ControlsManager>();
+        _player = GameObject.FindGameObjectWithTag("Player").transform;
+        _characterMovement = _player.GetComponent<CharacterMovement>();
+        _uiManager = GameObject.FindGameObjectWithTag("UIManager");
+        _menuHandler = _uiManager.GetComponent<MenuHandler>();
     }
 
     private void Update()
     {
-        var isNearOtherObject = isPlrNearEnd || isPlrNearDialogue || isPlrNearLore || isPlrNearShop || isPlayerNearRecharge;
-        if (SceneManager.GetActiveScene().name == "Tutorial" || characterMovement.uiOpen || isNearOtherObject) return;
+        if (SceneManager.GetActiveScene().name == "Tutorial" || _characterMovement.uiOpen) return;
+        nearestPromptTrigger = FindNearestTrigger();
         
-        itemCount = 0;
-        foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
+        if (nearestPromptTrigger != null && promptTriggers.Count > 0)
         {
-            var itemPickup = item.GetComponent<ItemPickup>();
-            if (itemPickup == null || !itemPickup.canPickup) continue;
-            itemCount++;
+            _menuHandler.nearestTrigger = nearestPromptTrigger;
+            TogglePrompt(nearestPromptTrigger.promptText, true, nearestPromptTrigger.button1, nearestPromptTrigger.button2);
         }
-        
-        switch (itemCount)
+        else
         {
-            case 0:
-                TogglePrompt("", false, ControlsManager.ButtonType.RTrigger, null);
-                break;
-            case 1:
-                TogglePrompt("Pick up item", true, ControlsManager.ButtonType.RTrigger, null);
-                break;
-            default:
-                TogglePrompt("Pick up items", true, ControlsManager.ButtonType.RTrigger, null);
-                break;
+            TogglePrompt("", false, ControlsManager.ButtonType.None, ControlsManager.ButtonType.None);
         }
     }
 
-    public void PickUpItem(InputAction.CallbackContext context)
+    private PromptTrigger FindNearestTrigger()
     {
-        if (!context.performed || characterMovement.uiOpen) return;
-         
-        foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
+        PromptTrigger nearestTrigger = null;
+        
+        foreach (var trigger in promptTriggers)
         {
-            var itemPickup = item.GetComponent<ItemPickup>();
-            if (itemPickup == null || !itemPickup.canPickup) continue;
-            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemPickup, transform.position);
-            itemPickup.AddItemToInventory();
-        }
-    }
+            if (!trigger.gameObject.activeSelf) continue;
 
-    public void TogglePrompt(string promptText, bool toggle, ControlsManager.ButtonType button, ControlsManager.ButtonType? button2)
+            var dist = Vector3.Distance(transform.position, trigger.transform.position);
+
+            if (trigger.doesOverrideOtherPrompts)
+            {
+                if (trigger.promptType != PromptTrigger.PromptType.Shop) return trigger;
+                if (_menuHandler.shopGUI != null && !_menuHandler.shopGUI.activeSelf) continue;
+                return trigger;
+            }
+
+            if (nearestTrigger == null)
+            {
+                nearestTrigger = trigger;
+            }
+            else if (Vector3.Distance(transform.position, nearestTrigger.transform.position) < dist)
+            {
+                nearestTrigger = trigger;
+            }
+            else if (Mathf.Approximately(Vector3.Distance(transform.position, nearestTrigger.transform.position), dist))
+            {
+                if (trigger.priority > nearestTrigger.priority)
+                {
+                    nearestTrigger = trigger;
+                }
+            }
+        }
+        
+        return nearestTrigger;
+    }
+    
+    public void TogglePrompt(string promptText, bool toggle, ControlsManager.ButtonType button, ControlsManager.ButtonType button2)
     {
         if (toggle)
         {
-            rectTransform.anchoredPosition = new Vector3(0, 100, 0);
-            text.text = promptText;
-            updateButton1.button = button;
-
-            if (button2.HasValue)
+            if (button != ControlsManager.ButtonType.None)
             {
-                updateButton2.button = button2.Value;
+                rectTransform.anchoredPosition = new Vector3(0, 100, 0);
+                text.text = promptText;
+                updateButton1.button = button;
+            }
+            else
+            {
+                updateButton1.gameObject.SetActive(false);
+            }
+
+            if (button2 != ControlsManager.ButtonType.None)
+            {
+                updateButton2.button = button2;
                 updateButton2.gameObject.SetActive(true);
             }
             else

@@ -30,14 +30,13 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject selectedMenu, selectedEquip, slots;
 	private GameObject _lastSelected;
 
-	public GameObject shopGUI, nextLevelTrigger;
+	public GameObject shopGUI;
 	[SerializeField] private DataHolder dataHolder;
-	public ReadLore nearestLore;
-	public NextLevelTrigger nearestLevelTrigger;
 	public RechargeStationHandler rechargeStationHandler;
 	[NonSerialized] public dialogueControllerScript dialogueController;
 	private bool _distanceBasedDialogue;
 	private CurrencyManager _currencyManager;
+	public PromptTrigger nearestTrigger;
 
 	private void Start()
 	{
@@ -146,11 +145,11 @@ public class MenuHandler : MonoBehaviour
 	public void ToggleShop()
 	{
 		if (shopGUI == null || shopGUI.activeSelf) return;
+		if (nearestTrigger== null) return;
+		if (nearestTrigger.promptType != PromptTrigger.PromptType.Dialogue && nearestTrigger.promptType != PromptTrigger.PromptType.Shop) return;
+		
 		var shopHandler = shopGUI.GetComponentInParent<ShopHandler>();
-		if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
-		
 		ButtonHandler.Instance.PlayConfirmSound();
-		
 		shopGUI.SetActive(true);
 
 		if (shopHandler.itemsHeld.Count > 0)
@@ -158,11 +157,15 @@ public class MenuHandler : MonoBehaviour
 			SwitchSelected(null);
 			StartCoroutine(DelayShopSwitch(shopHandler));
 		}
+		else
+		{
+			Debug.LogWarning("Shop has no items in stock");
+		}
 	}
 
 	private IEnumerator DelayShopSwitch(ShopHandler shopHandler)
 	{
-		yield return new WaitForSecondsRealtime(.35f);
+		yield return new WaitForSeconds(.35f);
 		SwitchSelected(shopHandler.grid.GetComponentInChildren<Button>().gameObject);
 	}
 
@@ -170,10 +173,10 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (!context.performed) return;
 		if (characterMovement.uiOpen) return;
-		if (!_player.gameObject.GetComponent<ItemPickupHandler>().isPlrNearEnd) return;
-		if (nearestLevelTrigger == null) return;
+		if (nearestTrigger != null) return;
+		if (nearestTrigger.promptType != PromptTrigger.PromptType.LevelTrigger) return;
 		
-		nearestLevelTrigger.GetComponent<NextLevelTrigger>().LoadNextLevel();
+		nearestTrigger.GetComponent<NextLevelTrigger>().LoadNextLevel();
 	}
 
 	// when Button East/Esc is pressed close current menu and open previous menus
@@ -226,7 +229,7 @@ public class MenuHandler : MonoBehaviour
 			statsGui.SetActive(true);
 			SwitchSelected(null);
 		}
-		else if (shopGUI != null  && shopGUI.activeSelf)
+		else if (shopGUI != null && shopGUI.activeSelf)
 		{
 			shopGUI.SetActive(false);
 			dialogueGUI.SetActive(true);
@@ -268,14 +271,16 @@ public class MenuHandler : MonoBehaviour
 	
 	public void EnableDialogueBox(InputAction.CallbackContext context)
 	{
-		if (!context.performed) return;
-		TriggerDialogue(true, dialogueController);
+		if (!context.performed || nearestTrigger == null || nearestTrigger.promptType != PromptTrigger.PromptType.Dialogue) return;
+		TriggerDialogue(true, nearestTrigger.GetComponent<dialogueControllerScript>());
 	}
 
 	public void TriggerDialogue(bool isDistanceBased, dialogueControllerScript controller)
 	{
 		if (characterMovement.uiOpen) return;
-		if (_itemPickupHandler.isPlrNearDialogue && isDistanceBased)
+		if (nearestTrigger == null) return;
+		
+		if (nearestTrigger.promptType == PromptTrigger.PromptType.Dialogue && isDistanceBased)
 		{
 			dialogueGUI.SetActive(true);
 			controller.LoadDialogue(controller.dialogueToLoad);
@@ -290,13 +295,25 @@ public class MenuHandler : MonoBehaviour
 	public void ShowLore(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
+		if (nearestTrigger == null) return;
 		
-		if (_itemPickupHandler.isPlrNearLore && nearestLore.gameObject.activeSelf)
+		if (nearestTrigger.promptType == PromptTrigger.PromptType.Lore && nearestTrigger.gameObject.activeSelf)
 		{
+			var lore = nearestTrigger.GetComponent<ReadLore>();
 			dialogueGUI.SetActive(true);
-			dialogueController.LoadLore(nearestLore.whatLore);
-			Debug.Log(nearestLore.loreType);
+			dialogueController.LoadLore(lore.whatLore);
+			Debug.Log(lore.loreType);
 		}
+	}
+	
+	public void PickUpItem(InputAction.CallbackContext context)
+	{
+		if (!context.performed || characterMovement.uiOpen) return;
+		if (nearestTrigger.promptType != PromptTrigger.PromptType.Consumable || !nearestTrigger.gameObject.activeSelf) return;
+		
+		var itemPickup = nearestTrigger.GetComponent<ItemPickup>();
+		AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemPickup, transform.position);
+		itemPickup.AddItemToInventory();
 	}
 
 	// toggle pause menu
@@ -370,8 +387,8 @@ public class MenuHandler : MonoBehaviour
 	public void EnergyPurchased(InputAction.CallbackContext context)
 	{
 		if (!context.performed || characterMovement.uiOpen) return;
-		if (!_player.gameObject.GetComponent<ItemPickupHandler>().isPlayerNearRecharge) return;
-		if (rechargeStationHandler == null) return;
+		if (nearestTrigger == null) return;
+		if (nearestTrigger.promptType != PromptTrigger.PromptType.RechargeStation) return;
 		if (rechargeStationHandler.hasBeenPurchased) return;
 		
 		if (dataHolder.currencyHeld - rechargeStationHandler.cost >= 0)

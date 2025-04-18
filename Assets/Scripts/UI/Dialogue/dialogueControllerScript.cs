@@ -37,6 +37,7 @@ public class dialogueControllerScript : MonoBehaviour
 
     //public float fasterSpeed;
     public GameObject yesText, noText; // normalText; // normalBox;
+    private PromptTrigger _promptTrigger;
 
 
     private void Awake()
@@ -49,6 +50,7 @@ public class dialogueControllerScript : MonoBehaviour
 
     private void Start()
     {
+        _promptTrigger = GetComponent<PromptTrigger>();
         _player = GameObject.FindGameObjectWithTag("Player");
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
@@ -80,58 +82,16 @@ public class dialogueControllerScript : MonoBehaviour
 
     private void Update()
     {
-        var dist = Vector3.Distance(transform.position, _player.transform.position);
-
-        if (dist <= range)
+        if (_dialogueCanvas.activeSelf)
         {
-            switch (dialogueOrLore)
-            {
-                case DialogueOrLore.Dialogue:
-                    _itemPickupHandler.isPlrNearDialogue = true;
-                    break;
-                case DialogueOrLore.Lore:
-                    _itemPickupHandler.isPlrNearLore = true;
-                    break;
-            }
-            
-            if (_dialogueCanvas.activeSelf)
-            {
-                _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ButtonSouth, null);
-            }
-            else
-            {
-                if (!isShop)
-                {
-                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.RTrigger, null);
-                    _menuHandler.dialogueController = this;
-                }
-                else if (isShop && shopCanvas.activeSelf)
-                {
-                    _itemPickupHandler.TogglePrompt("Close Shop", true, ControlsManager.ButtonType.ButtonEast, null);
-                    _itemPickupHandler.isPlrNearShop = true;
-                    _menuHandler.dialogueController = this;
-                }
-                else
-                {
-                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.RTrigger, null);
-                    _menuHandler.dialogueController = this;
-                }
-            }
+            _promptTrigger.promptText = "Next sentence";
+            _promptTrigger.button1 = ControlsManager.ButtonType.ButtonSouth;
         }
-        else if (dist > range)
+        else
         {
-            if (_menuHandler.dialogueController != this) return;
-            switch (dialogueOrLore)
-            {
-                case DialogueOrLore.Dialogue:
-                    _itemPickupHandler.isPlrNearDialogue = false;
-                    break;
-                case DialogueOrLore.Lore:
-                    _itemPickupHandler.isPlrNearLore = false;
-                    break;
-            }
+            _promptTrigger.promptText = "Interact";
+            _promptTrigger.button1 = ControlsManager.ButtonType.RTrigger;
         }
-        
         /*
         //ANSWERS
         if (Input.GetKeyDown(KeyCode.Y))

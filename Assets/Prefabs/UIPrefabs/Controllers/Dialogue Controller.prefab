@@ -94,6 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2803193585703622190}
   - component: {fileID: 8915112397423299955}
+  - component: {fileID: 4395317929255757665}
   m_Layer: 0
   m_Name: Dialogue Controller
   m_TagString: Untagged
@@ -131,7 +132,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   replayable: 0
   dialogueToLoad: {fileID: 0}
+  shopCloseDialogue: {fileID: 0}
   loreToLoad: {fileID: 0}
+  shopCanvas: {fileID: 0}
+  isShop: 0
+  isEndText: 0
   range: 3
   dialogueID: 0
   dialogueOrLore: 0
@@ -139,3 +144,23 @@ MonoBehaviour:
   dialogueSpeed: 0
   yesText: {fileID: 0}
   noText: {fileID: 0}
+--- !u!114 &4395317929255757665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4338080822893355786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b038a12d9b459d48b1a6f158e915c7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  promptType: 1
+  triggerRange: 3
+  priority: 0
+  promptText: Next sentence
+  button1: 15
+  button2: 0
+  doesOverrideOtherPrompts: 0
+  isDisabled: 0

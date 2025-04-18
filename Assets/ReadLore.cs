@@ -54,31 +54,6 @@ public class ReadLore : MonoBehaviour
 
         int whatLoreToLoad = Random.Range(0, LoreReference.Instance.allLoreItems.Count);
         whatLore = LoreReference.Instance.allLoreItems[whatLoreToLoad];
-    }
-
-    private void Update()
-    {
-        if (!_characterMovement.uiOpen)
-        {
-            var dist = Vector3.Distance(transform.position, _player.transform.position);
-
-            if (dist <= pickupRange)
-            {
-                _itemPickupHandler.isPlrNearLore = true;
-                _itemPickupHandler.TogglePrompt("Read " + _loreObject, true, ControlsManager.ButtonType.RTrigger, null);
-                _menuHandler.nearestLore = this;
-            }
-            else if (dist > pickupRange)
-            {
-                if (_menuHandler.nearestLore != this) return;
-                _itemPickupHandler.isPlrNearLore = false;
-            }
-        }
-    }
-
-    private void OnDisable()
-    {
-        _itemPickupHandler.isPlrNearLore = false;
-        _menuHandler.nearestLore = null;
+        GetComponent<PromptTrigger>().promptText = "Read " + _loreObject;
     }
 }
