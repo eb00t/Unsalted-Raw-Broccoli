@@ -59,7 +59,11 @@
 			<destination>{75fc77fb-5eeb-43ff-969b-d85d71f78159}</destination>
 		</relationship>
 	</object>
-	<object class="EventAutomatableProperties" id="{859fa4dd-2f84-441b-a838-b1157408e08e}" />
+	<object class="EventAutomatableProperties" id="{859fa4dd-2f84-441b-a838-b1157408e08e}">
+		<property name="minimumDistance">
+			<value>3</value>
+		</property>
+	</object>
 	<object class="MarkerTrack" id="{aad8ca0e-2682-4e92-90db-4f253dabe172}" />
 	<object class="Timeline" id="{fa3a5420-cdec-4a68-8750-502c16d4b3a0}">
 		<property name="isProxyEnabled">
@@ -125,17 +129,14 @@
 		</property>
 	</object>
 	<object class="SpatialiserEffect" id="{87bf5d3b-739d-4f7b-ab08-0231825516b2}">
-		<property name="distanceRolloffType">
-			<value>3</value>
-		</property>
 		<property name="extentMode">
 			<value>1</value>
 		</property>
 		<property name="soundSize">
-			<value>2</value>
+			<value>6</value>
 		</property>
 		<property name="minimumExtent">
-			<value>270</value>
+			<value>200</value>
 		</property>
 	</object>
 	<object class="SingleSound" id="{1abbf319-0ef9-48f8-8968-749af5ae4ead}">

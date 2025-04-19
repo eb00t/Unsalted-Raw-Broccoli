@@ -63,7 +63,7 @@ public class AnimationEvents : MonoBehaviour
     public void PlayPlayerJumpSound()
     {
         _jumpEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.PlayerJump);
-        _jumpEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+        AudioManager.Instance.AttachInstanceToGameObject(_jumpEvent, gameObject.transform);;
         _jumpEvent.start();
         _jumpEvent.release();
     }
@@ -104,6 +104,29 @@ public class AnimationEvents : MonoBehaviour
         _explosionEvent.release();
     }
 
+    public void PlayEnemyFootstepSound()
+    {
+        _footstepEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyFootsteps);
+        _footstepEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+        _footstepEvent.start();
+        _footstepEvent.release();
+    }
+
+    public void PlayEnemyJumpSound()
+    {
+        _jumpEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyJump);
+        _jumpEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+        _jumpEvent.start();
+        _jumpEvent.release();
+    }
+    public void PlayBombFootstepsSound()
+    {
+        _footstepEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BombEnemyFootsteps);
+        _footstepEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+        _footstepEvent.start();
+        _footstepEvent.release();
+    }
+    
     public void BlowUp()
     {
         gameObject.GetComponent<CinemachineImpulseSource>().GenerateImpulseWithVelocity(new Vector3(Random.Range(-1f, 1f), 3f, 0f) * _settingManager.screenShakeMultiplier);
@@ -113,7 +136,7 @@ public class AnimationEvents : MonoBehaviour
     public void PlayCopyBossFootstepSound()
     {
         _footstepEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.CopyBossFootsteps);
-            
+        _footstepEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
         _footstepEvent.start();
         _footstepEvent.release();
     }

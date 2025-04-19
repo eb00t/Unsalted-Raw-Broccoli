@@ -896,6 +896,8 @@ MonoBehaviour:
   jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
+  canBlock: 0
+  isInvisible: 0
   canBeFrozen: 0
   canBeStunned: 0
   doesEnemyPatrol: 0
@@ -906,6 +908,9 @@ MonoBehaviour:
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 741127926}
+  defaultMaterial: {fileID: 0}
+  hitMaterial: {fileID: 0}
+  invisMaterial: {fileID: 0}
 --- !u!4 &95066218 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9201836616417202832, guid: 097097a378c265d489a743ebce154f28,
@@ -2717,9 +2722,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   replayable: 0
   dialogueToLoad: {fileID: 0}
+  shopCloseDialogue: {fileID: 0}
   loreToLoad: {fileID: 0}
+  shopCanvas: {fileID: 0}
+  isShop: 0
+  isEndText: 0
   range: 0
   dialogueID: 0
+  randomLore: 0
   dialogueOrLore: 0
   _index: 0
   dialogueSpeed: 0
@@ -2939,6 +2949,36 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3539117196614460635, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3539117196614460635, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3539117196614460635, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3539117196614460635, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3539117196614460635, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3539117196614460635, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4309984013583806159, guid: 82d96a92435624859a85308310350400,
         type: 3}
       propertyPath: dialogueGUI
@@ -2992,6 +3032,11 @@ PrefabInstance:
     - target: {fileID: 5442855408507386522, guid: 82d96a92435624859a85308310350400,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5945766403014155100, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6208669108584140494, guid: 82d96a92435624859a85308310350400,
@@ -7366,6 +7411,8 @@ MonoBehaviour:
   jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
+  canBlock: 0
+  isInvisible: 0
   canBeFrozen: 0
   canBeStunned: 0
   doesEnemyPatrol: 0
@@ -7376,6 +7423,9 @@ MonoBehaviour:
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 520673695}
+  defaultMaterial: {fileID: 0}
+  hitMaterial: {fileID: 0}
+  invisMaterial: {fileID: 0}
 --- !u!1001 &919525743
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14210,6 +14260,8 @@ MonoBehaviour:
   jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
+  canBlock: 0
+  isInvisible: 0
   canBeFrozen: 0
   canBeStunned: 0
   doesEnemyPatrol: 0
@@ -14220,6 +14272,9 @@ MonoBehaviour:
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 0}
+  defaultMaterial: {fileID: 0}
+  hitMaterial: {fileID: 0}
+  invisMaterial: {fileID: 0}
 --- !u!65 &1778587977
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17208,6 +17263,8 @@ MonoBehaviour:
   jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
+  canBlock: 0
+  isInvisible: 0
   canBeFrozen: 0
   canBeStunned: 0
   doesEnemyPatrol: 0
@@ -17218,6 +17275,9 @@ MonoBehaviour:
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 2327120454878590849}
+  defaultMaterial: {fileID: 0}
+  hitMaterial: {fileID: 0}
+  invisMaterial: {fileID: 0}
 --- !u!1 &374647565339419410
 GameObject:
   m_ObjectHideFlags: 0
@@ -23019,6 +23079,8 @@ MonoBehaviour:
   jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
+  canBlock: 0
+  isInvisible: 0
   canBeFrozen: 0
   canBeStunned: 0
   doesEnemyPatrol: 0
@@ -23029,6 +23091,9 @@ MonoBehaviour:
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 5680754485878443918}
+  defaultMaterial: {fileID: 0}
+  hitMaterial: {fileID: 0}
+  invisMaterial: {fileID: 0}
 --- !u!1 &7759293534576696093
 GameObject:
   m_ObjectHideFlags: 0
@@ -23541,6 +23606,8 @@ MonoBehaviour:
   jumpThroughTime: 0
   isBomb: 0
   isStalker: 0
+  canBlock: 0
+  isInvisible: 0
   canBeFrozen: 0
   canBeStunned: 0
   doesEnemyPatrol: 0
@@ -23551,6 +23618,9 @@ MonoBehaviour:
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 0}
+  defaultMaterial: {fileID: 0}
+  hitMaterial: {fileID: 0}
+  invisMaterial: {fileID: 0}
 --- !u!65 &8513952794155243319
 BoxCollider:
   m_ObjectHideFlags: 0

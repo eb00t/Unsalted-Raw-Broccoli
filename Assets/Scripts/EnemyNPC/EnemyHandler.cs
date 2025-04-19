@@ -91,6 +91,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [Header("Sound")]
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
+    private EventInstance _jumpEvent;
     
     private static readonly int IsExplode = Animator.StringToHash("isExplode");
     private static readonly int Vel = Animator.StringToHash("vel");
@@ -118,6 +119,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             _roomBounds = RoomScripting.GetComponent<Collider>();
         }
 
+        _jumpEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyJump);
+        AudioManager.Instance.AttachInstanceToGameObject(_jumpEvent, gameObject.transform);;
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -206,6 +209,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 {
                     _jumpTimer = jumpCooldown;
                     _state = States.Jump;
+                    _jumpEvent.start();
                 }
                 else
                 {

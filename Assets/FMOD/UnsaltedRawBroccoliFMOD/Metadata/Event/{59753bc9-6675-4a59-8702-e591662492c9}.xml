@@ -5,7 +5,7 @@
 			<value>Copy Attack Medium</value>
 		</property>
 		<property name="outputFormat">
-			<value>0</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{e71b0575-eb34-4388-b7e8-0ce689814fb5}</destination>
@@ -59,7 +59,11 @@
 			<destination>{75fc77fb-5eeb-43ff-969b-d85d71f78159}</destination>
 		</relationship>
 	</object>
-	<object class="EventAutomatableProperties" id="{e8a26ce2-dd24-4d8c-a455-6f1b6d6af441}" />
+	<object class="EventAutomatableProperties" id="{e8a26ce2-dd24-4d8c-a455-6f1b6d6af441}">
+		<property name="minimumDistance">
+			<value>3</value>
+		</property>
+	</object>
 	<object class="MarkerTrack" id="{bac3cc05-1eaa-4275-bb8a-a962c0c2a74b}" />
 	<object class="Timeline" id="{9cde47bb-c184-4dca-9518-68558fe1be59}">
 		<property name="isProxyEnabled">
@@ -97,6 +101,7 @@
 		<relationship name="effects">
 			<destination>{72c0233e-e7c5-41c8-9c14-1317e966c60a}</destination>
 			<destination>{ee59947a-a5e9-4014-86cc-4383a51a15cb}</destination>
+			<destination>{d9ec02ed-af51-44fd-ad61-61f97f902dff}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{ae094576-ed4e-46ff-9ac2-b93c933092ea}" />
@@ -119,6 +124,17 @@
 		</property>
 		<property name="mix">
 			<value>100</value>
+		</property>
+	</object>
+	<object class="SpatialiserEffect" id="{d9ec02ed-af51-44fd-ad61-61f97f902dff}">
+		<property name="extentMode">
+			<value>1</value>
+		</property>
+		<property name="soundSize">
+			<value>6</value>
+		</property>
+		<property name="minimumExtent">
+			<value>200</value>
 		</property>
 	</object>
 	<object class="SingleSound" id="{340457ae-1219-426c-87a6-5206db8738bd}">

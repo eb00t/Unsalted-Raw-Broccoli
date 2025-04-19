@@ -289,7 +289,15 @@ public class LevelBuilder : MonoBehaviour
                     break;
                 case SpawnMode.LootRooms:
                     spawnRandomNumber = RandomiseNumber(lootRoomSpawnPoints.Count);
-                    spawnPointPosition = lootRoomSpawnPoints[spawnRandomNumber].position;
+                    if (lootRoomSpawnPoints.Count > 0)
+                    {
+                        spawnPointPosition = lootRoomSpawnPoints[spawnRandomNumber].position;
+                    }
+                    else
+                    {
+                        spawnPointPosition = spawnPoints[spawnRandomNumber].position;
+                    }
+
                     break;
                 case SpawnMode.BossRooms:
                     switch (roomRandomNumber)

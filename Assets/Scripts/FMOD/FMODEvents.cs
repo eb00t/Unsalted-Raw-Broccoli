@@ -35,8 +35,10 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference EnemyLowHealthAlarm { get; private set; }
     [field: SerializeField] public EventReference EnemyDamage {get; private set;}
     [field: SerializeField] public EventReference EnemyDeath { get; private set; }
+    [field: SerializeField] public EventReference EnemyJump { get; private set; }
     [field: SerializeField] public EventReference Explosion { get; private set; }
     [field: SerializeField] public EventReference FlyingEnemyShoot { get; private set; }
+    [field: SerializeField] public EventReference FlyingEnemyLaser { get; private set; }
     [field: Header("Hands Boss SFX")]
     [field: SerializeField] public EventReference BossHandSlam { get; private set; }
     [field: SerializeField] public EventReference BossHandMove { get; private set; }

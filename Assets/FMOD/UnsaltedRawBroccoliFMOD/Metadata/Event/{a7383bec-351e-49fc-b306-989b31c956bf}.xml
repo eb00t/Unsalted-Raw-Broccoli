@@ -319,7 +319,17 @@
 		</relationship>
 	</object>
 	<object class="MixerBusFader" id="{a252b127-72e5-46e4-b15c-bfa071adb121}" />
-	<object class="SpatialiserEffect" id="{35730b24-f608-4d26-a71a-711390fc537c}" />
+	<object class="SpatialiserEffect" id="{35730b24-f608-4d26-a71a-711390fc537c}">
+		<property name="extentMode">
+			<value>1</value>
+		</property>
+		<property name="soundSize">
+			<value>20</value>
+		</property>
+		<property name="minimumExtent">
+			<value>200</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{20e0ad9a-a3f8-4190-bd5c-e178095427f5}" />
 	<object class="PitchShifterEffect" id="{dcaaf6cb-dcc8-4022-9259-ea552ec4997a}">
 		<property name="pitch">

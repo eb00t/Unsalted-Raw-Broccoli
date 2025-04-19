@@ -69,17 +69,15 @@ public class dialogueControllerScript : MonoBehaviour
              }
          }*/
 
-        if (randomLore)
+        switch (dialogueOrLore)
         {
-            switch (dialogueOrLore)
-            {
-                case DialogueOrLore.Lore:
-                    loreToLoad = LoreReference.Instance.allLoreItems[loreChoice];
-                    break;
-            }
+            case DialogueOrLore.Lore:
+                loreToLoad = LoreReference.Instance.allLoreItems[loreChoice];
+                break;
+        }
             //Start writing sentences
             //startSentence();
-        }
+        
     }
 
     private void Update()

@@ -118,6 +118,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _roomBounds = RoomScripting.GetComponent<Collider>();
         gameObject.transform.parent = gameObject.transform.root;
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
+        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);;
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -135,7 +136,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
         AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
         DisablePlatformCollisions();
-        _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandLaser);
+        _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.FlyingEnemyLaser);
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
     }
 
