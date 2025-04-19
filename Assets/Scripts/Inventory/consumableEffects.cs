@@ -10,3 +10,12 @@ public enum ConsumableEffect
     Invincibility, // give player invincibility during enemy attack string
     HorseFact // show fact about horses
 }
+
+public enum PassiveEffect
+{
+    None,
+    DefenseIncrease,
+    PassiveEnergyRegen,
+    Companion,
+    LuckIncrease
+}

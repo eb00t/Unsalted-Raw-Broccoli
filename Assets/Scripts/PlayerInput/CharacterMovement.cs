@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -208,14 +206,9 @@ private void stopWallJump()
 
         if (ctx.performed && _midAirDashCount == 0) 
         {
-            var direction = _input != 0 ? Mathf.Sign(_input) : Mathf.Sign(transform.localScale.x);
-            var dashForce = new Vector3(direction * dashSpeed, 0f, 0f);
-
             isAttacking = false;
             isJumpAttacking = false;
             _characterAttack.ResetCombo();
-            _rb.velocity = dashForce;
-            _isDashing = true;
             StartCoroutine(DashRoutine());
         }
 
@@ -229,14 +222,28 @@ private void stopWallJump()
     {
         _playerAnimator.SetBool(Dash1, true);
         _characterAttack.isInvulnerable = true;
-        _isHanging = true;
+        _isDashing = true;
 
-        yield return new WaitForSeconds(0.25f);
+        _rb.useGravity = false;
 
+        var dashDuration = 0.25f;
+        var elapsed = 0f;
+
+        var direction = _input != 0 ? Mathf.Sign(_input) : Mathf.Sign(transform.localScale.x);
+        var dashVelocity = new Vector3(direction * dashSpeed, 0f, 0f);
+        _rb.velocity = Vector3.zero;
+        
+        while (elapsed < dashDuration)
+        {
+            _rb.velocity = dashVelocity;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        
         _characterAttack.isInvulnerable = false;
-        _rb.velocity = new Vector3(0f, _rb.velocity.y, 0f);
-        _isHanging = false;
         _isDashing = false;
+        _rb.velocity = new Vector3(0f, _rb.velocity.y, 0f);
+        _rb.useGravity = true;
         _playerAnimator.SetBool(Dash1, false);
     }
 

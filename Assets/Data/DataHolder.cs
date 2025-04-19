@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -33,4 +34,5 @@ public class DataHolder : ScriptableObject
     public List<int> savedItems = new List<int>();
     public List<int> savedItemCounts = new List<int>();  
     public int[] equippedConsumables = new int[5];
+    public int[] permanentPassiveItems = new int[4];
 }

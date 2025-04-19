@@ -13,6 +13,7 @@ public class CharacterAttack : MonoBehaviour
     public int currentHealth;
     public int maxHealth;
     public int baseAtk;
+    public int defense;
     [SerializeField] private float mediumAtkMultiplier;
     [SerializeField] private float heavyAtkMultiplier;
     public int charAtk;
@@ -426,6 +427,10 @@ public class CharacterAttack : MonoBehaviour
             _playerStatus.UpdateStatuses(isInvincible);
             return;
         }
+        
+        defense = Mathf.Clamp(defense, 0, 100);
+        var dmgReduction = (100 - defense) / 100f;
+        damage = Mathf.RoundToInt(damage * dmgReduction);
         
         var hitColor = (currentHealth - damage < currentHealth) ? Color.red : Color.green;
         if (hitColor == Color.red)
