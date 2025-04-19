@@ -27,8 +27,9 @@ public class CharacterMovement : MonoBehaviour
     private int _midAirDashCount;
     private float _input;
     private bool _isHanging;
-    
-    [Header("Other Properties")]
+
+    [Header("Other Properties")] 
+    [SerializeField] private bool doubleJumpResetJumpAttack;
     [SerializeField] private float groundCheckDist;
     [SerializeField] private float groundCheckSpacing;
     public bool uiOpen; // makes sure player doesnt move when ui is open
@@ -141,6 +142,10 @@ public class CharacterMovement : MonoBehaviour
         else if (!grounded /*&& !startSlideTimer && !sliding*/ && !doubleJumpPerformed /*&& !_playerAnimator.GetBool("WallCling")*/)
         {
             doubleJumpPerformed = true;
+            if (doubleJumpResetJumpAttack)
+            {
+                _characterAttack.jumpAttackCount = 0;
+            }
             _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, 0f);
             _playerAnimator.SetBool(DoubleJump, true);
         }
