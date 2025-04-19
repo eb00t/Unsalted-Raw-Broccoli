@@ -581,24 +581,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerGround: {fileID: 3626529087780789351}
+  doesAttackStopFlip: 1
   grounded: 0
   walkAllowed: 1
   allowMovement: 1
   isCrouching: 0
-  isJumpAttacking: 0
   isAttacking: 0
-  doubleJumpPerformed: 0
   velocity: {x: 0, y: 0, z: 0}
-  doubleJumpResetJumpAttack: 1
   groundCheckDist: 0.2
   groundCheckSpacing: 1
   uiOpen: 0
-  acceleration: 17
-  maxSpeed: 12
-  jumpForce: 35
-  dashSpeed: 30
+  doubleJumpResetJumpAttack: 1
+  doesJumpInputCancel: 1
+  jumpCancelForce: 3
   hangTime: 0.1
   hangThreshold: 0.5
+  jumpCoyoteDur: 0.1
+  jumpBufferDur: 0.15
+  isJumpAttacking: 0
+  doubleJumpPerformed: 0
+  acceleration: 17
+  maxSpeed: 13
+  jumpForce: 36
+  dashSpeed: 30
   dashEnergyCost: 0.2
 --- !u!136 &6454331290242472759
 CapsuleCollider:

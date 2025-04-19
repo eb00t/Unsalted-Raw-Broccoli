@@ -13,37 +13,49 @@ public class CharacterMovement : MonoBehaviour
     private Animator _playerAnimator;
     private Coroutine _dashCoroutine;
     private CharacterAttack _characterAttack;
-    
-    [Header("Player Properties")]
+
+    [Header("Player Properties")] 
+    public bool doesAttackStopFlip;
     public bool grounded;
     public bool walkAllowed = true;
     public bool allowMovement = true;
     public bool isCrouching;
-    public bool isJumpAttacking;
     public bool isAttacking;
-    public bool doubleJumpPerformed;
     public Vector3 velocity;
     private bool _isDashing;
     private int _midAirDashCount;
     private float _input;
-    private bool _isHanging;
-
+    public bool isInUpThrust;
+    
     [Header("Other Properties")] 
-    [SerializeField] private bool doubleJumpResetJumpAttack;
     [SerializeField] private float groundCheckDist;
     [SerializeField] private float groundCheckSpacing;
     public bool uiOpen; // makes sure player doesnt move when ui is open
     [NonSerialized] public bool LockedOn = false;
-    private float _groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time.
+    //private float _groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time.
     private float _hangTimer;
+    
+    [Header("Jumping")]
+    [SerializeField] private bool doubleJumpResetJumpAttack;
+    [SerializeField] private bool doesJumpInputCancel;
+    [SerializeField] private float jumpCancelForce;
+    [SerializeField] private float hangTime;
+    [SerializeField] private float hangThreshold;
+    [SerializeField] private float jumpCoyoteDur;
+    [SerializeField] private float jumpBufferDur;
+    private float _lastGroundedTime;
+    private float _lastJumpInput;
+    private bool _jumpBuffered;
+    public bool isJumpAttacking;
+    public bool doubleJumpPerformed;
+    private bool _isHanging;
+    private bool _jumpHeld;
     
     [Header("Movement Stats")]
     public float acceleration;
     public float maxSpeed;
     public float jumpForce;
     public float dashSpeed;
-    [SerializeField] private float hangTime;
-    [SerializeField] private float hangThreshold;
     
     [Header("Energy")]
     public float dashEnergyCost;  
@@ -110,16 +122,45 @@ public class CharacterMovement : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext ctx)
     {
-        if (uiOpen || !allowMovement || !ctx.performed) return;
-        _groundTimer = 0;
-        if (grounded && !doubleJumpPerformed /*&& !startSlideTimer && !sliding*/)
+        if (uiOpen || !allowMovement || isInUpThrust) return;
+
+        if (ctx.started)
         {
-            _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, 0f);
-            _playerAnimator.SetBool(Jump1, true);
-            _characterAttack.ResetCombo();
-            grounded = false;
+            _jumpHeld = true;
+            _lastJumpInput = Time.time;
+            _jumpBuffered = true;
         }
-        /*else if (!grounded && wallJumpingCounter > 0f && (startSlideTimer || sliding) && !isWallJumping)
+
+        if (ctx.performed)
+        {
+            if (grounded && !doubleJumpPerformed)
+            {
+                _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, 0f);
+                _playerAnimator.SetBool(Jump1, true);
+                _characterAttack.ResetCombo();
+                grounded = false;
+            }
+            else if (!grounded && !doubleJumpPerformed)
+            {
+                doubleJumpPerformed = true;
+                if (doubleJumpResetJumpAttack)
+                {
+                    _characterAttack.jumpAttackCount = 0;
+                }
+                _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, 0f);
+                _playerAnimator.SetBool(DoubleJump, true);
+            }
+        }
+
+        if (ctx.canceled)
+        {
+            _jumpHeld = false;
+        }
+    }
+    
+    
+    /* ^ cut from Jump method for clarity
+     else if (!grounded && wallJumpingCounter > 0f && (startSlideTimer || sliding) && !isWallJumping)
         {
             slideAllowed = false;
             startSlideTimer = false;
@@ -139,17 +180,6 @@ public class CharacterMovement : MonoBehaviour
 
             Invoke(nameof(stopWallJump), wallJumpingDuration);
         }*/
-        else if (!grounded /*&& !startSlideTimer && !sliding*/ && !doubleJumpPerformed /*&& !_playerAnimator.GetBool("WallCling")*/)
-        {
-            doubleJumpPerformed = true;
-            if (doubleJumpResetJumpAttack)
-            {
-                _characterAttack.jumpAttackCount = 0;
-            }
-            _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, 0f);
-            _playerAnimator.SetBool(DoubleJump, true);
-        }
-    }
 
 /*private void wallJump()
 {
@@ -204,7 +234,7 @@ private void stopWallJump()
         yield return new WaitForSeconds(0.25f);
 
         _characterAttack.isInvulnerable = false;
-        _rb.velocity = Vector3.zero;
+        _rb.velocity = new Vector3(0f, _rb.velocity.y, 0f);
         _isHanging = false;
         _isDashing = false;
         _playerAnimator.SetBool(Dash1, false);
@@ -218,8 +248,8 @@ private void stopWallJump()
             _rb.velocity = new Vector3(0, _rb.velocity.y, 0);
             _playerAnimator.SetFloat(Input1, 0);
         }
-        _groundTimer -= Time.deltaTime;
-        _groundTimer = Mathf.Clamp(_groundTimer, 0, 1f);
+        //_groundTimer -= Time.deltaTime;
+        //_groundTimer = Mathf.Clamp(_groundTimer, 0, 1f);
         //PlayerAnimator.SetBool("WallJump", isWallJumping);
         velocity = _rb.velocity;
         _playerAnimator.SetFloat(XVelocity, _rb.velocity.x);
@@ -229,10 +259,17 @@ private void stopWallJump()
         if (uiOpen) return;
         
         //wallJump();
-
+        
         if (!uiOpen && !LockedOn && Mathf.Abs(velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(velocity.x)) // this has a check if the player is locked on to prevent them flipping
         {
-            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            if (doesAttackStopFlip && !isAttacking)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            }
+            else if (!doesAttackStopFlip)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            }
         }
         /*
         if (!uiOpen && !LockedOn && _playerAnimator.GetBool(WallCling) && Mathf.Sign(transform.localScale.x) != Mathf.Sign(_input)) // if wallcling is true and player isn't facing direction of input, flip the player
@@ -311,8 +348,10 @@ private void stopWallJump()
         {
             doubleJumpPerformed = false;
             _midAirDashCount = 0;
+            isInUpThrust = false;
             _isHanging = false;
             _rb.useGravity = true;
+            _lastGroundedTime = Time.time;
         }
 
         if (walkAllowed && allowMovement && !_isDashing && !isJumpAttacking)
@@ -324,6 +363,12 @@ private void stopWallJump()
                 Vector3 walk = new Vector3(_input * acc, _rb.velocity.y, _rb.velocity.z);
                 _rb.velocity = walk;
             }
+        }
+        
+        // pushes player down if jump is cancelled early
+        if (doesJumpInputCancel && !isInUpThrust && _rb.velocity.y > 0 && !_jumpHeld)
+        {
+            _rb.velocity -= Vector3.down * (Physics.gravity.y * (jumpCancelForce) * Time.fixedDeltaTime);
         }
         
         // at the apex of a jump this basically gives the player a split second where they don't immediately fall back down
@@ -340,12 +385,45 @@ private void stopWallJump()
         
         if (_isHanging)
         {
-            _hangTimer -= Time.fixedDeltaTime;
-            if (!(_hangTimer <= 0f)) return;
-            _rb.useGravity = true;
-            _isHanging = false;
+            if (!_isDashing)
+            {
+                _hangTimer -= Time.fixedDeltaTime;
+                if (!(_hangTimer <= 0f)) return;
+                _rb.useGravity = true;
+                _isHanging = false;
+            }
         }
+        
+        if (_jumpBuffered && !isInUpThrust)
+        {
+            var canCoyote = Time.time - _lastGroundedTime <= jumpCoyoteDur;
+            var canBuffer = Time.time - _lastJumpInput <= jumpBufferDur;
 
+            if (canCoyote && canBuffer)
+            {
+                _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, 0f);
+                _playerAnimator.SetBool(Jump1, true);
+                _characterAttack.ResetCombo();
+                grounded = false;
+                _jumpBuffered = false;
+            }
+            else if (!grounded && !doubleJumpPerformed && canBuffer)
+            {
+                doubleJumpPerformed = true;
+                if (doubleJumpResetJumpAttack)
+                {
+                    _characterAttack.jumpAttackCount = 0;
+                }
+                _rb.velocity = new Vector3(_rb.velocity.x, jumpForce, 0f);
+                _playerAnimator.SetBool(DoubleJump, true);
+                _jumpBuffered = false;
+            }
+        }
+        
+        if (Time.time - _lastJumpInput > jumpBufferDur)
+        {
+            _jumpBuffered = false;
+        }
 
         /*if (slideAllowed && !grounded)
         {
