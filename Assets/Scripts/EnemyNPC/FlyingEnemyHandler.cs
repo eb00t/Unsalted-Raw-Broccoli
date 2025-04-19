@@ -132,7 +132,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
+        _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
+        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
         DisablePlatformCollisions();
+        _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandLaser);
+        AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
     }
 
     private void Update()
@@ -322,15 +326,15 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
     private IEnumerator LaserAttack() // aims laser at player that tracks, then it stops and starts doing damage
     {
-        _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandLaser);
+        
         _canAttack = false;
         _lineRenderer.enabled = true;
         _lineRenderer.SetPosition(0, bossEyePosition.position);
         
         var targetPos = _target.position;
         var elapsed = 0f;
-
-        AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
+        
+        AudioManager.Instance.SetEventParameter(_laserEvent, "Firing", 0);
         _laserEvent.start();
         
         while (elapsed < chargeTime)
@@ -354,7 +358,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         var lastDamageTime = 0f;
         
         AudioManager.Instance.SetEventParameter(_laserEvent, "Firing", 1);
-        _laserEvent.release();
         while (elapsed < fireTime)
         {
             var dist = Vector3.Distance(targetPos, bossEyePosition.position);
@@ -565,15 +568,15 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     
     public void PlayAlarmSound()
     {
-        _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
-        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
         _alarmEvent.start();
     }
 
     public void StopAlarmSound()
     {
         _alarmEvent.stop(STOP_MODE.IMMEDIATE);
+        _laserEvent.stop(STOP_MODE.IMMEDIATE);
         _alarmEvent.release();
+        _laserEvent.release();
     }
     
     private IEnumerator FallToGround()

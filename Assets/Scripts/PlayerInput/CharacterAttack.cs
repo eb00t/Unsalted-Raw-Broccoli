@@ -503,6 +503,7 @@ public class CharacterAttack : MonoBehaviour
     private void Die()
     {
         if (isDead) return;
+        AudioManager.Instance.SetGlobalEventParameter("Music Track", 7);
         isDead = true;
         _playerAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
         _playerAnimator.SetBool(IsPlayerDead, true);

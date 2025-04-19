@@ -105,6 +105,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _lineRenderer = GetComponentInChildren<LineRenderer>();
         _lockOnController = _target.GetComponent<LockOnController>();
         dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
+        _armMovementL = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
+        _armMovementR = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
     }
 
     private void Update()
@@ -199,8 +201,6 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
         var leftStartPos = leftHand.position;
         var rightStartPos = rightHand.position;
-        
-        CreateHandMovementEvents();
 
         while (elapsed < resetDur)
         {
@@ -602,6 +602,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _armMovementL.release();
         _armMovementR.stop(STOP_MODE.IMMEDIATE);
         _armMovementR.release();
+        _laserEvent.stop(STOP_MODE.IMMEDIATE);
+        _laserEvent.release();
         _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
         _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
         _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
@@ -627,12 +629,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _roomScripting.enemies.Remove(gameObject);
         gameObject.SetActive(false);
     }
-
-    private void CreateHandMovementEvents()
-    {
-        _armMovementL = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
-        _armMovementR = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
-    }
+    
     
     private void OneHandAttackSoundFinish(bool isLeft, bool slam)
     {
@@ -640,12 +637,12 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         {
           case true:
               AudioManager.Instance.SetEventParameter(_armMovementL, "Move Complete", 1);
-              _armMovementL.release();
+              _armMovementL.stop(STOP_MODE.ALLOWFADEOUT);
               _soundLStarted = false;
               break;
           case false:
               AudioManager.Instance.SetEventParameter(_armMovementR, "Move Complete", 1);
-              _armMovementR.release();
+              _armMovementR.stop(STOP_MODE.ALLOWFADEOUT);
               _soundRStarted = false;
               break;
         }
@@ -669,8 +666,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         AudioManager.Instance.SetEventParameter(_armMovementL, "Move Complete", 1);
         AudioManager.Instance.SetEventParameter(_armMovementR, "Move Complete", 1);
-        _armMovementL.release();
-        _armMovementR.release();
+        _armMovementL.stop(STOP_MODE.ALLOWFADEOUT);
+        _armMovementR.stop(STOP_MODE.ALLOWFADEOUT);
         if (slam)
         {
             _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);

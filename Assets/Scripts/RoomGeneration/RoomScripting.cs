@@ -113,6 +113,7 @@ public class RoomScripting : MonoBehaviour
 
     void CloseAllRoomDoors()
     {
+        AudioManager.Instance.SetMusicParameter("Combat Weight", 0);
         foreach (var door in _roomInfo.usableDoors)
         {
             door.GetComponent<DoorInfo>().CloseDoor();
@@ -135,19 +136,15 @@ public class RoomScripting : MonoBehaviour
 
     void ChangeCombatWeight()
     {
-        if (_enemyCount < 2)
-        {
-            AudioManager.Instance.SetMusicParameter("Combat Weight", 0);
-        }
-        else if (_enemyCount >= 2)
+        if (_enemyCount >= 2)
         {
             AudioManager.Instance.SetMusicParameter("Combat Weight", 1);
         }
     }
-    
-    void EnterSpecialRoom()
+
+    public void EnterSpecialRoom()
     {
-        if (_roomInfo.shop)
+        if (_roomInfo.shop && _musicHasChanged == false)
         {
             AudioManager.Instance.SetGlobalEventParameter("Music Track", 3);
             _musicHasChanged = true;
@@ -160,7 +157,7 @@ public class RoomScripting : MonoBehaviour
         }*/
     }
 
-    void ExitSpecialRoom()
+    public void ExitSpecialRoom()
     {
         switch (LevelBuilder.Instance.bossDead)
         {

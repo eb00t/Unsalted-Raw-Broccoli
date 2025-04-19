@@ -155,6 +155,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         {
             defense = 100;
         }
+        
+        _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
+        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
     }
 
     private void Update()
@@ -739,8 +742,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     public void PlayAlarmSound()
     {
-        _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
-        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
         _alarmEvent.start();
     }
 
