@@ -19,6 +19,7 @@ public class dialogueControllerScript : MonoBehaviour
     [SerializeField] public int dialogueID;
     private GameObject _player, _dialogueCanvas, _uiManager;
     private MenuHandler _menuHandler;
+    public bool randomLore; // Usually true, false if the lore is spawned directly.
     
     public enum DialogueOrLore
     {
@@ -55,27 +56,30 @@ public class dialogueControllerScript : MonoBehaviour
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
         _dialogueCanvas = _menuHandler.dialogueGUI;
         int loreChoice = Random.Range(0, LoreReference.Instance.allLoreItems.Count);
-      /* foreach (var text in _dialogueCanvas.GetComponentsInChildren<TextMeshProUGUI>())
-       {
-           switch (text.name)
-           {
-               case "Normal Text":
-                   dialogueText = text;
-                   break;
-               case "SpeakerText":
-                   speakerText = text;
-                   break;
-           }
-       }*/
+        /* foreach (var text in _dialogueCanvas.GetComponentsInChildren<TextMeshProUGUI>())
+         {
+             switch (text.name)
+             {
+                 case "Normal Text":
+                     dialogueText = text;
+                     break;
+                 case "SpeakerText":
+                     speakerText = text;
+                     break;
+             }
+         }*/
 
-       switch (dialogueOrLore)
-       {
-           case DialogueOrLore.Lore:
-               loreToLoad = LoreReference.Instance.allLoreItems[loreChoice];
-               break;
-       }
-       //Start writing sentences
-       //startSentence();
+        if (randomLore)
+        {
+            switch (dialogueOrLore)
+            {
+                case DialogueOrLore.Lore:
+                    loreToLoad = LoreReference.Instance.allLoreItems[loreChoice];
+                    break;
+            }
+            //Start writing sentences
+            //startSentence();
+        }
     }
 
     private void Update()

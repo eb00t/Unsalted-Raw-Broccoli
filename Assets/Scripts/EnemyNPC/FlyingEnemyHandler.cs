@@ -321,6 +321,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
             rb.rotation = Quaternion.Euler(0, 0, newRot);
         }
         
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.FlyingEnemyShoot, transform.position);
+        
         _canAttack = true;
     }
 

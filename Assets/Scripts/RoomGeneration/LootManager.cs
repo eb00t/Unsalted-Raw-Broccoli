@@ -106,10 +106,15 @@ public class LootManager : MonoBehaviour
         lootToSpawn.transform.parent = here.transform; 
     }
 
-    public void SpawnSpecificLoreHere(Transform here, string path)
+    public void SpawnSpecificLoreHere(Transform here, string path) // TODO: THIS DOESN'T WORK, SON!
     {
-        GameObject chosenLoot = Resources.Load<GameObject>(path);
+        GameObject chosenLoot = Resources.Load<GameObject>("ItemPrefabs/Lore/Data Lore");
         GameObject lootToSpawn = Instantiate(chosenLoot, here.position, Quaternion.identity);
+        LoreItemHandler loreItemHandler = Resources.Load<LoreItemHandler>(path);
+        Debug.Log(loreItemHandler);
+        lootToSpawn.GetComponent<dialogueControllerScript>().randomLore = false;
+        lootToSpawn.GetComponent<dialogueControllerScript>().loreToLoad = loreItemHandler;
+        lootToSpawn.GetComponent<ReadLore>().whatLore = loreItemHandler;
         lootToSpawn.SetActive(true);
         lootToSpawn.transform.parent = here.transform;
     }

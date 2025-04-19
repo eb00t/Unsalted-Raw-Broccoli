@@ -52,8 +52,8 @@ public class ReadLore : MonoBehaviour
         _fullLorePath = _lorePath + "/" + _language + "/" + _loreObject;
         Debug.Log(_fullLorePath);
 
-        int whatLoreToLoad = Random.Range(0, LoreReference.Instance.allLoreItems.Count);
-        whatLore = LoreReference.Instance.allLoreItems[whatLoreToLoad];
+        //int whatLoreToLoad = Random.Range(0, LoreReference.Instance.allLoreItems.Count);
+        //whatLore = LoreReference.Instance.allLoreItems[whatLoreToLoad];
     }
 
     private void Update()

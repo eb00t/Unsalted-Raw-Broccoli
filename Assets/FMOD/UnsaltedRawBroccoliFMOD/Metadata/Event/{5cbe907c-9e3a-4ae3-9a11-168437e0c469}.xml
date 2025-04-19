@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Event" id="{5cbe907c-9e3a-4ae3-9a11-168437e0c469}">
 		<property name="name">
-			<value>Laser</value>
+			<value>Shoot</value>
 		</property>
 		<property name="outputFormat">
 			<value>2</value>
@@ -30,6 +30,9 @@
 		</relationship>
 		<relationship name="timeline">
 			<destination>{43a6e2b5-e011-46cc-ae61-469cfeee2e32}</destination>
+		</relationship>
+		<relationship name="banks">
+			<destination>{1804f486-e11c-4c05-8e95-812e7f2ab68e}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixer" id="{6669141f-b302-465e-847e-679125046b23}">
@@ -63,11 +66,18 @@
 	</object>
 	<object class="MarkerTrack" id="{35ba6c1e-4488-4b53-a7ec-f0e6c8d01d9e}" />
 	<object class="GroupTrack" id="{e5d5c00d-78aa-456a-ba40-eb847827feca}">
+		<relationship name="modules">
+			<destination>{db7fc670-79ed-410b-90c5-c69bb883dffd}</destination>
+		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{3cae33b4-0a5f-4e21-84fe-dab8170d9f78}</destination>
 		</relationship>
 	</object>
-	<object class="Timeline" id="{43a6e2b5-e011-46cc-ae61-469cfeee2e32}" />
+	<object class="Timeline" id="{43a6e2b5-e011-46cc-ae61-469cfeee2e32}">
+		<relationship name="modules">
+			<destination>{db7fc670-79ed-410b-90c5-c69bb883dffd}</destination>
+		</relationship>
+	</object>
 	<object class="EventMixerMaster" id="{c9b38ef4-5bf1-4d34-b8bd-74987e1843c1}">
 		<relationship name="effectChain">
 			<destination>{0f4e198b-61b1-4361-b3df-1dd6f3bb0c29}</destination>
@@ -85,7 +95,18 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{2f0bc892-3f61-4248-93b1-28c8f2484928}" />
+	<object class="SingleSound" id="{db7fc670-79ed-410b-90c5-c69bb883dffd}">
+		<property name="length">
+			<value>3</value>
+		</property>
+		<relationship name="audioFile">
+			<destination>{87363f36-ee44-4449-a064-215fdd65dbe7}</destination>
+		</relationship>
+	</object>
 	<object class="EventMixerGroup" id="{3cae33b4-0a5f-4e21-84fe-dab8170d9f78}">
+		<property name="volume">
+			<value>-12</value>
+		</property>
 		<property name="name">
 			<value>Shoot</value>
 		</property>
