@@ -1,43 +1,61 @@
 using System;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PassiveItemHandler : MonoBehaviour
 {
-    [SerializeField] private PassiveDataBase itemDatabase;
+    [Header("Item Tracking")] private int _itemSwapIndex;
+
+    [Header("References")] [SerializeField]
+    private PassiveDataBase itemDatabase;
+
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private Transform itemContainer;
+    [SerializeField] private GameObject infoPopup;
+    [SerializeField] private TextMeshProUGUI infoTitle;
+    [SerializeField] private TextMeshProUGUI infoDesc;
     private GameObject _player;
     private CharacterAttack _characterAttack;
-    private int _itemSwapIndex = 0; 
+    private ItemPickupHandler _itemPickupHandler;
 
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
+        _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
         ClearPassiveGUI();
         LoadPassives();
+    }
+
+    private void TriggerInfoPopup(PermanentPassiveItem passiveItem)
+    {
+        infoPopup.SetActive(true);
+        infoTitle.text = passiveItem.title;
+        infoDesc.text = passiveItem.description;
+        _itemPickupHandler.TogglePrompt("Close", true, ControlsManager.ButtonType.Back, null);
     }
 
     // checks each slot of passive items, if a free slot is found then equip the new passive there
     // if all slots are full get the item that has been equipped the longest
     // item swap index is increased to keep track of which item is the oldest
-    public void AddNewPassive(PermanentPassiveItem passive)
+    public void AddNewPassive(PermanentPassiveItem passiveItem)
     {
         for (var i = 0; i < dataHolder.permanentPassiveItems.Length; i++)
         {
-            if (dataHolder.permanentPassiveItems[i] == 0 || dataHolder.permanentPassiveItems[i] == passive.itemID)
+            if (dataHolder.permanentPassiveItems[i] == 0 || dataHolder.permanentPassiveItems[i] == passiveItem.itemID)
             {
-                dataHolder.permanentPassiveItems[i] = passive.itemID;
+                dataHolder.permanentPassiveItems[i] = passiveItem.itemID;
                 ClearPassiveGUI();
                 LoadPassives();
+                TriggerInfoPopup(passiveItem);
                 return; // stops method early if a free slot is found
             }
         }
         
-        dataHolder.permanentPassiveItems[_itemSwapIndex] = passive.itemID;
+        dataHolder.permanentPassiveItems[_itemSwapIndex] = passiveItem.itemID;
         _itemSwapIndex++;
         
         if (_itemSwapIndex == dataHolder.permanentPassiveItems.Length - 1)

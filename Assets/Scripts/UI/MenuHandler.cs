@@ -20,7 +20,16 @@ public class MenuHandler : MonoBehaviour
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
-	[SerializeField] private GameObject invGui, toolbarGui, menuGui, quitPopupGui, statsGui, infoGui, settingGui, controlGui, diedScreen;
+	[SerializeField] private GameObject invGui;
+	[SerializeField] private GameObject toolbarGui;
+	[SerializeField] private GameObject menuGui;
+	[SerializeField] private GameObject quitPopupGui;
+	[SerializeField] private GameObject statsGui;
+	[SerializeField] private GameObject infoGui;
+	[SerializeField] private GameObject settingGui;
+	[SerializeField] private GameObject controlGui;
+	[SerializeField] private GameObject diedScreen;
+	[SerializeField] private GameObject infoPopup;
 	public GameObject dialogueGUI;
 	[SerializeField] private GameObject settingsBtn, controlsBtn, quitBtn;
 	[SerializeField] private GameObject slotsTooltip, inventoryTooltip;
@@ -53,7 +62,13 @@ public class MenuHandler : MonoBehaviour
 	private void Update()
 	{
 		// update if ui is open or not in player movement script
-		var pauseGuisOpen = invGui.activeSelf || menuGui.activeSelf || quitPopupGui.activeSelf || settingGui.activeSelf || controlGui.activeSelf || diedScreen.activeSelf;
+		var pauseGuisOpen = invGui.activeSelf || 
+		                    menuGui.activeSelf || 
+		                    quitPopupGui.activeSelf || 
+		                    settingGui.activeSelf || 
+		                    controlGui.activeSelf || 
+		                    diedScreen.activeSelf || 
+		                    infoPopup.activeSelf;
 		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) || (dialogueGUI != null && dialogueGUI.activeSelf);
 
 		if (!_characterAttack.isDead)
@@ -253,6 +268,11 @@ public class MenuHandler : MonoBehaviour
 			controlGui.SetActive(false);
 			menuGui.SetActive(true);
 			SwitchSelected(controlsBtn);
+		}
+		else if (infoPopup.activeSelf)
+		{
+			infoPopup.SetActive(false);
+			_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Back, null);
 		}
 	}
 
