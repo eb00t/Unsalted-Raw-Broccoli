@@ -58,7 +58,10 @@ public class PassiveItemHandler : MonoBehaviour
         dataHolder.permanentPassiveItems[_itemSwapIndex] = passiveItem.itemID;
         _itemSwapIndex++;
         
-        if (_itemSwapIndex == dataHolder.permanentPassiveItems.Length)
+        ClearPassiveGUI();
+        LoadPassives();
+        
+        if (_itemSwapIndex == dataHolder.permanentPassiveItems.Length - 1)
         {
             _itemSwapIndex = 0;
         }
