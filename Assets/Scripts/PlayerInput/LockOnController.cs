@@ -110,7 +110,7 @@ public class LockOnController : MonoBehaviour // TODO: Make toggle states load f
     }
     
     // if the player is not locked on this finds the closest enemy to the player and locks onto them
-    private Transform FindNearestTarget(float radius)
+    public Transform FindNearestTarget(float radius)
     {
         var points = GameObject.FindGameObjectsWithTag("LockOnPoint");
         var minDistance = Mathf.Infinity;
