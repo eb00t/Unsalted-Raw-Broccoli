@@ -41,7 +41,7 @@ public class PassiveItemHandler : MonoBehaviour
     // checks each slot of passive items, if a free slot is found then equip the new passive there
     // if all slots are full get the item that has been equipped the longest
     // item swap index is increased to keep track of which item is the oldest
-    public void AddNewPassive(PermanentPassiveItem passiveItem)
+    public void AddNewPassive(PermanentPassiveItem passiveItem) // fix this to make sure duplicates are always caught
     {
         for (var i = 0; i < dataHolder.permanentPassiveItems.Length; i++)
         {
@@ -58,10 +58,25 @@ public class PassiveItemHandler : MonoBehaviour
         dataHolder.permanentPassiveItems[_itemSwapIndex] = passiveItem.itemID;
         _itemSwapIndex++;
         
-        if (_itemSwapIndex == dataHolder.permanentPassiveItems.Length - 1)
+        if (_itemSwapIndex == dataHolder.permanentPassiveItems.Length)
         {
             _itemSwapIndex = 0;
         }
+    }
+
+    public void RemovePassive(PermanentPassiveItem passiveItem)
+    {
+        for (var i = 0; i < dataHolder.permanentPassiveItems.Length; i++)
+        {
+            if (dataHolder.permanentPassiveItems[i] == passiveItem.itemID)
+            {
+                dataHolder.permanentPassiveItems[i] = 0;
+                break;
+            }
+        }
+        
+        ClearPassiveGUI();
+        LoadPassives();
     }
 
     // destroy all ui elements in passive item container ui object before refreshing
@@ -69,6 +84,11 @@ public class PassiveItemHandler : MonoBehaviour
     {
         foreach (var index in itemContainer.GetComponentsInChildren<IndexHolder>())
         {
+            foreach (var passiveItem in itemDatabase.allPassives)
+            {
+                ResetPassiveToDefault(passiveItem);
+            }
+
             Destroy(index.gameObject);
         }
     }
@@ -96,18 +116,26 @@ public class PassiveItemHandler : MonoBehaviour
         }
     }
 
-    // depending on the passives effect change things for the player (i.e. if the effect is more health then give more health)
-    private void ActivatePassiveEffect(PermanentPassiveItem passiveItem)
+    private void ResetPassiveToDefault(PermanentPassiveItem passiveItem)
     {
         switch (passiveItem.passiveEffect)
         {
             case PassiveEffect.None:
-                Debug.LogWarning("Permanent passive item has no effect set.");
                 break;
             case PassiveEffect.DefenseIncrease:
-                _characterAttack.defense = (int)passiveItem.effectAmount;
+                dataHolder.playerDefense = 10;
+                break;
+            case PassiveEffect.AttackIncrease:
+                dataHolder.playerBaseAttack = 10;
+                break;
+            case PassiveEffect.HpChanceOnKill:
+                dataHolder.hpChanceOnKill = false;
+                break;
+            case PassiveEffect.SurviveLethalHit:
+                dataHolder.surviveLethalHit = false;
                 break;
             case PassiveEffect.PassiveEnergyRegen:
+                dataHolder.passiveEnergyRegen = false;
                 break;
             case PassiveEffect.Companion:
                 break;
@@ -118,8 +146,39 @@ public class PassiveItemHandler : MonoBehaviour
         }
     }
 
+    // depending on the passives effect change things for the player (i.e. if the effect is more health then give more health)
+    private void ActivatePassiveEffect(PermanentPassiveItem passiveItem)
+    {
+        switch (passiveItem.passiveEffect)
+        {
+            case PassiveEffect.None:
+                Debug.LogWarning("Permanent passive item has no effect set.");
+                break;
+            case PassiveEffect.DefenseIncrease: // increases player defense (negates damage by percentage)
+                dataHolder.playerDefense = (int)passiveItem.effectAmount;
+                break;
+            case PassiveEffect.PassiveEnergyRegen: // energy regenerates slowly over time
+                dataHolder.passiveEnergyRegen = true;
+                break;
+            case PassiveEffect.Companion:
+                break;
+            case PassiveEffect.AttackIncrease: // increases base attack by percentage
+                var newAttack = (float)dataHolder.playerBaseAttack / 100 * passiveItem.effectAmount;
+                dataHolder.playerBaseAttack += (int)newAttack;
+                break;
+            case PassiveEffect.HpChanceOnKill:
+                dataHolder.hpChanceOnKill = true;
+                break;
+            case PassiveEffect.SurviveLethalHit: // allows player to survive death once
+                dataHolder.surviveLethalHit = true;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
     // gets the PermanentPassiveItem script based on itemID
-    private PermanentPassiveItem FindPassive(int itemID)
+    public PermanentPassiveItem FindPassive(int itemID)
     {
         return itemDatabase.allPassives.FirstOrDefault(item => item.itemID == itemID);
     }

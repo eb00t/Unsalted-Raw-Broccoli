@@ -4,6 +4,7 @@ using Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -77,6 +78,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private SettingManager _settingManager;
     private bool _tookDamage;
     private GameObject dialogueGui;
+    private CharacterAttack _characterAttack;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -99,6 +101,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
+        _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
 
         _health = maxHealth;
         healthSlider.maxValue = maxHealth;
@@ -539,6 +542,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         LevelBuilder.Instance.bossDead = true;
         _animator.SetBool("isDead", true);
         StopAllCoroutines();
+        _characterAttack.ChanceHeal();
         int currencyToDrop = 0;
         switch (_tookDamage)
         {

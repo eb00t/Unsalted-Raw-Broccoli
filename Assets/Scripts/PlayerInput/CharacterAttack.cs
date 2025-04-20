@@ -10,10 +10,10 @@ using Random = UnityEngine.Random;
 public class CharacterAttack : MonoBehaviour
 {
     [Header("Stats")]
-    public int currentHealth;
-    public int maxHealth;
-    public int baseAtk;
-    public int defense;
+    //public int currentHealth;
+    //public int maxHealth;
+    //public int baseAtk;
+    //public int defense;
     [SerializeField] private float mediumAtkMultiplier;
     [SerializeField] private float heavyAtkMultiplier;
     public int charAtk;
@@ -72,6 +72,8 @@ public class CharacterAttack : MonoBehaviour
     public GameObject hitFlash;
     private EventInstance _enemyDamageEvent;
     private Coroutine _coyoteRoutine;
+    private PassiveItemHandler _passiveItemHandler;
+    [SerializeField] private DataHolder dataHolder;
     
     [Header("Animation")]
     private Animator _playerAnimator;
@@ -98,12 +100,13 @@ public class CharacterAttack : MonoBehaviour
         _inventoryStore = _menuHandler.GetComponent<InventoryStore>();
         _rigidbody = GetComponentInParent<Rigidbody>();
         _spriteRenderer = _rigidbody.gameObject.GetComponentInChildren<SpriteRenderer>();
-        healthSlider.maxValue = maxHealth;
+        _passiveItemHandler = _uiManager.GetComponent<PassiveItemHandler>();
+        healthSlider.maxValue = dataHolder.playerMaxHealth;
         energySlider.maxValue = maxEnergy;
         energySlider.value = currentEnergy;
-        healthSlider.value = maxHealth;
-        currentHealth = maxHealth;
-        charAtk = baseAtk;
+        healthSlider.value = dataHolder.playerMaxHealth;
+        dataHolder.playerHealth = dataHolder.playerMaxHealth;
+        charAtk = dataHolder.playerBaseAttack;
         hitFlash = GameObject.FindWithTag("Hit Flash");
         hitFlash.SetActive(false);
         _impulseSource = GetComponent<CinemachineCollisionImpulseSource>();
@@ -428,35 +431,45 @@ public class CharacterAttack : MonoBehaviour
             return;
         }
         
-        defense = Mathf.Clamp(defense, 0, 100);
-        var dmgReduction = (100 - defense) / 100f;
+        dataHolder.playerDefense = Mathf.Clamp(dataHolder.playerDefense, 0, 100);
+        var dmgReduction = (100 - dataHolder.playerDefense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
         
-        var hitColor = (currentHealth - damage < currentHealth) ? Color.red : Color.green;
+        var hitColor = (dataHolder.playerHealth - damage < dataHolder.playerHealth) ? Color.red : Color.green;
         if (hitColor == Color.red)
         {
             StartCoroutine(HitFlash());
         }
 
-        if (currentHealth <= damage)
+        if (dataHolder.playerHealth <= damage)
         {
-            currentHealth = 0;
-            healthSlider.value = 0;
-            Die();
+            if (!dataHolder.surviveLethalHit)
+            {
+                dataHolder.playerHealth = 0;
+                healthSlider.value = 0;
+                Die();
+            }
+            else
+            {
+                dataHolder.playerHealth = 1;
+                healthSlider.value = 1;
+                dataHolder.surviveLethalHit = false;
+                _passiveItemHandler.RemovePassive(_passiveItemHandler.FindPassive(3));
+            }
         }
-        else if (currentHealth - damage > maxHealth)
+        else if (dataHolder.playerHealth - damage > dataHolder.playerMaxHealth)
         {
-            currentHealth = maxHealth;
+            dataHolder.playerHealth = dataHolder.playerMaxHealth;
         }
         else
         {
             hitFlash.GetComponent<Image>().color = hitColor;
             hitFlash.SetActive(true);
             
-            currentHealth -= damage;
+            dataHolder.playerHealth -= damage;
         }
         
-        healthSlider.value = currentHealth;
+        healthSlider.value = dataHolder.playerHealth;
         _poiseBuildup += poiseDmg;
         
         if (_poiseBuildup >= poise)
@@ -464,6 +477,15 @@ public class CharacterAttack : MonoBehaviour
             StartCoroutine(StunTimer(stunDuration));
             _poiseBuildup = 0;
         }
+    }
+
+    public void ChanceHeal()
+    {
+        if (!dataHolder.hpChanceOnKill) return;
+        if (Random.Range(0, 100) >= dataHolder.changeToRegen) return;
+            
+        var healAmount = dataHolder.playerMaxHealth / 100 * dataHolder.hpChanceHealPercentage;
+        TakeDamagePlayer(-healAmount, 0);
     }
     
     private IEnumerator HitFlash()
@@ -549,7 +571,7 @@ public class CharacterAttack : MonoBehaviour
         {
             float randomTinyX = Random.Range(0.5f, 1f);
             float randomTinyY = Random.Range(-0.25f, 0.25f);
-            var calcAtk = (charAtk - baseAtk) + (baseAtk * mediumAtkMultiplier);
+            var calcAtk = (charAtk - dataHolder.playerBaseAttack) + (dataHolder.playerBaseAttack * mediumAtkMultiplier);
             damageable.TakeDamage((int)calcAtk, poiseDamageMedium, knockbackPowerMedium);
             _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
@@ -568,7 +590,7 @@ public class CharacterAttack : MonoBehaviour
         {
             float randomTinyX = Random.Range(1.5f, 2f);
             float randomTinyY = Random.Range(-1f, 1f);
-            var calcAtk = (charAtk - baseAtk) + (baseAtk * heavyAtkMultiplier);
+            var calcAtk = (charAtk - dataHolder.playerBaseAttack) + (dataHolder.playerBaseAttack * heavyAtkMultiplier);
             damageable.TakeDamage((int)calcAtk, poiseDamageHeavy, knockbackPowerHeavy);
             _enemyDamageEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDamage);
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
@@ -603,17 +625,17 @@ public class CharacterAttack : MonoBehaviour
             }
         }
 
-        if (currentEnergy < maxEnergy)
+        if (dataHolder.passiveEnergyRegen && currentEnergy < maxEnergy)
         {
             _rechargeTime -= Time.deltaTime * rechargeSpeed;
-            
+
             if (_rechargeTime <= 0)
             {
                 UseEnergy(-1f);
                 _rechargeTime = 1f;
             }
         }
-        
+
         /*
         if (lightCombo[0])
         {

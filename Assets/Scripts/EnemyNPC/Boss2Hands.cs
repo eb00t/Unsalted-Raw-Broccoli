@@ -97,6 +97,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
+        _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         _health = maxHealth;
         _leftHandInitialPos = leftHand.position;
         _rightHandInitialPos = rightHand.position;
@@ -598,6 +599,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         isDead = true;
         LevelBuilder.Instance.bossDead = true;
+        _characterAttack.ChanceHeal();
         _armMovementL.stop(STOP_MODE.IMMEDIATE);
         _armMovementL.release();
         _armMovementR.stop(STOP_MODE.IMMEDIATE);

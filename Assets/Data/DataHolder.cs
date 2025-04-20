@@ -12,6 +12,17 @@ public class DataHolder : ScriptableObject
     public bool demoMode; // Essentially a playtest mode, if this is true, it should erase all data when reset is called
     public bool eraseViewedLore; // Bool to allow all lore to respawn
     
+    [Header("Player Stats")]
+    public int playerHealth;
+    public int playerMaxHealth;
+    public int playerBaseAttack;
+    public int playerDefense;
+    public bool surviveLethalHit;
+    public bool passiveEnergyRegen;
+    public bool hpChanceOnKill;
+    public int changeToRegen;
+    public int hpChanceHealPercentage;
+    
     [Header("Settings")]
     public ControlsManager.ControlScheme currentControl;
     public bool isAutoEquipEnabled;

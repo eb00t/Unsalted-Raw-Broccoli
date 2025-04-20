@@ -112,9 +112,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2770befe3bd5de741a53daf7afc04972, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 250
-  maxHealth: 250
-  baseAtk: 10
   mediumAtkMultiplier: 2
   heavyAtkMultiplier: 4
   charAtk: 0
@@ -138,7 +135,7 @@ MonoBehaviour:
   _canCancel: 1
   maxEnergy: 40
   currentEnergy: 40
-  rechargeSpeed: 0
+  rechargeSpeed: 0.25
   lightEnergyCost: 0
   mediumEnergyCost: 2
   heavyEnergyCost: 15
@@ -152,6 +149,7 @@ MonoBehaviour:
   defaultMaterial: {fileID: 2100000, guid: ba02e6b88d5290f45aba435b9f509e28, type: 2}
   hitMaterial: {fileID: 2100000, guid: 9bdeb67dd695bdb488b98aceb7ed95f6, type: 2}
   hitFlash: {fileID: 0}
+  dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
 --- !u!114 &4292942453058374287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -588,6 +586,7 @@ MonoBehaviour:
   isCrouching: 0
   isAttacking: 0
   velocity: {x: 0, y: 0, z: 0}
+  isInUpThrust: 0
   groundCheckDist: 0.2
   groundCheckSpacing: 1
   uiOpen: 0

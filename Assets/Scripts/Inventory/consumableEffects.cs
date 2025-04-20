@@ -15,6 +15,9 @@ public enum PassiveEffect
 {
     None,
     DefenseIncrease,
+    AttackIncrease,
+    HpChanceOnKill,
+    SurviveLethalHit,
     PassiveEnergyRegen,
     Companion,
     LuckIncrease

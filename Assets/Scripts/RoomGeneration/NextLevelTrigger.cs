@@ -168,5 +168,6 @@ public class NextLevelTrigger : MonoBehaviour
         dataHolder.currencyHeld = 0;
         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
         dataHolder.highestFloorCleared = 0;
+        dataHolder.permanentPassiveItems = new int[4];
     }
 }

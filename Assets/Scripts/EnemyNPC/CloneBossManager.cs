@@ -34,11 +34,15 @@ public class CloneBossManager : MonoBehaviour
     [SerializeField] private GameObject bossPrefab;
     private RoomScripting _roomScripting;
     private GameObject _dialogueGui;
+    private GameObject _player;
+    private CharacterAttack _characterAttack;
 
     private void Start()
     {
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
         _dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         InstantiateBoss(6);
         _maxHealth = maxNumberOfBosses * individualHealth;
@@ -136,6 +140,7 @@ public class CloneBossManager : MonoBehaviour
             {
                 Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Currency Prefab"), transform.position, Quaternion.identity);
             }
+            _characterAttack.ChanceHeal();
             KillAllBosses();
         }
     }

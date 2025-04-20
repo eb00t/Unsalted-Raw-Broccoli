@@ -132,6 +132,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _rigidbody = GetComponent<Rigidbody>();
         _enemyCollider = GetComponent<CapsuleCollider>();
         _target = GameObject.FindGameObjectWithTag("Player").transform;
+        _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
         _jumpTimer = jumpCooldown;
@@ -710,6 +711,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
         isDead = true;
         StopAllCoroutines();
+        _characterAttack.ChanceHeal();
 
         if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
         {

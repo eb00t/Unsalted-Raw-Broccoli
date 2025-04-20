@@ -133,6 +133,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
+        _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
         AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
         DisablePlatformCollisions();
@@ -540,6 +541,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         RoomScripting.enemies.Remove(gameObject);
         RoomScripting._enemyCount--;
         EnemySpawner.spawnedEnemies.Remove(gameObject);
+        
+        _characterAttack.ChanceHeal();
         
         StopAllCoroutines();
         StartCoroutine(FallToGround());

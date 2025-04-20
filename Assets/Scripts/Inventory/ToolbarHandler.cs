@@ -249,7 +249,7 @@ public class ToolbarHandler : MonoBehaviour
                 Debug.LogWarning("Item has no effect assigned.");
                 break;
             case ConsumableEffect.Heal: // Heals player by a percentage of their maximum health
-                var newHealth = (float)_characterAttack.maxHealth / 100 * consumable.effectAmount;
+                var newHealth = (float)dataHolder.playerMaxHealth / 100 * consumable.effectAmount;
                 _characterAttack.TakeDamagePlayer((int)-newHealth, 0);
                 break;
             case ConsumableEffect.GiveCurrency: // gives the player money
@@ -295,7 +295,7 @@ public class ToolbarHandler : MonoBehaviour
         var atkDecrease = -5;
         
         _activeAtkBuffs.Add(atkDecrease);
-        _characterAttack.charAtk = _characterAttack.baseAtk + _activeAtkBuffs.Sum();
+        _characterAttack.charAtk = dataHolder.playerBaseAttack + _activeAtkBuffs.Sum();
 
         var healInterval = consumable.effectDuration / 5f;
 
@@ -306,12 +306,12 @@ public class ToolbarHandler : MonoBehaviour
         }
 
         _activeAtkBuffs.Remove(atkDecrease);
-        _characterAttack.charAtk = _activeAtkBuffs.Sum() + _characterAttack.baseAtk;
+        _characterAttack.charAtk = _activeAtkBuffs.Sum() + dataHolder.playerBaseAttack;
     }
     
     private IEnumerator ActivateAtkBuff(Consumable consumable)
     {
-        var atkIncrease = (int)((float)_characterAttack.baseAtk / 100 * consumable.effectAmount); // converts percentage to value
+        var atkIncrease = (int)((float)dataHolder.playerBaseAttack / 100 * consumable.effectAmount); // converts percentage to value
 
         if (_activeAtkBuffs.Count > 0)
         {
@@ -323,13 +323,13 @@ public class ToolbarHandler : MonoBehaviour
         }
 
         _activeAtkBuffs.Add(atkIncrease);
-        _characterAttack.charAtk = _characterAttack.baseAtk + _activeAtkBuffs.Sum();
+        _characterAttack.charAtk = dataHolder.playerBaseAttack + _activeAtkBuffs.Sum();
         _playerStatus.AddNewStatus(consumable);
 
         yield return new WaitForSecondsRealtime(consumable.effectDuration);
 
         _activeAtkBuffs.Remove(atkIncrease);
-        _characterAttack.charAtk = _activeAtkBuffs.Sum() + _characterAttack.baseAtk;
+        _characterAttack.charAtk = _activeAtkBuffs.Sum() + dataHolder.playerBaseAttack;
     }
 
     private IEnumerator ActivateStatusEffect(Consumable consumable)
