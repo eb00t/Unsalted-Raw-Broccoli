@@ -3,6 +3,7 @@ using System.Collections;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -213,7 +214,18 @@ private void stopWallJump()
             isAttacking = false;
             isJumpAttacking = false;
             _characterAttack.ResetCombo();
-            _impulseSource.GenerateImpulse();
+            float facingImpulse = 0;
+            switch (transform.localScale.x)
+            {
+                case > 0:
+                    facingImpulse = 0.25f;
+                    break;
+                case < 0:
+                    facingImpulse = -0.25f;
+                    break;
+                
+            }
+            _impulseSource.GenerateImpulseWithVelocity(new Vector3(facingImpulse, 0, 0));
             StartCoroutine(DashRoutine());
             StartCoroutine(DashWait());
 
