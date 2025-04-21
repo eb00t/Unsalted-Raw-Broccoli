@@ -149,6 +149,7 @@ public class IntersectionRaycast : MonoBehaviour
             Debug.Log("HORIZ RAY HIT!");
             if (!objectsToIgnore.Contains(horizHit.collider.gameObject))
             {
+                Debug.Log("Horizontal Ray from " + gameObject.name + " hit " + horizHit.collider.gameObject.name);
                 discard = true;
             }
         }
@@ -196,10 +197,6 @@ public class IntersectionRaycast : MonoBehaviour
                 Debug.Log("Right Ray from: " + gameObject.name + " hit " + rightWallHit.collider.gameObject.name);
                 discard = true;
             }
-        }
-        else
-        {
-            discard = false;
         }
         
         if (_roomInfo.canBeDiscarded == false)

@@ -197,6 +197,7 @@ public class LevelBuilder : MonoBehaviour
             spawnRoomDoorB.transform,
             spawnRoomDoorT.transform
         };
+        lootRoomSpawnPoints = new List<Transform>(spawnPoints);
     }
 
     void AddRoomsToList()

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<objects serializationModel="Studio.02.02.00">
+<objects serializationModel="Studio.02.03.00">
 	<object class="Event" id="{53b1e388-732d-4b81-90fb-37d3724a8227}">
 		<property name="name">
 			<value>Intermission</value>
@@ -72,6 +72,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{b41fd4d3-fdbe-4aa8-a5b1-e9c176e89315}">
+		<relationship name="modulators">
+			<destination>{11e21f9f-5646-46c1-b7e4-fed782127135}</destination>
+		</relationship>
 		<relationship name="effectChain">
 			<destination>{07daa8d5-66db-42d9-9d47-178f307daded}</destination>
 		</relationship>
@@ -123,6 +126,17 @@
 		<relationship name="markerTrack">
 			<destination>{ef4a6531-0f0a-4834-ab4d-f949841c0436}</destination>
 		</relationship>
+	</object>
+	<object class="ADSRModulator" id="{11e21f9f-5646-46c1-b7e4-fed782127135}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>volume</value>
+		</property>
+		<property name="initialValue">
+			<value>-80</value>
+		</property>
+		<property name="finalValue">
+			<value>-80</value>
+		</property>
 	</object>
 	<object class="MixerBusEffectChain" id="{07daa8d5-66db-42d9-9d47-178f307daded}">
 		<relationship name="effects">

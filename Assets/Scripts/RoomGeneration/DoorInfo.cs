@@ -14,6 +14,8 @@ public class DoorInfo : MonoBehaviour
     public bool closed;
     private float _lerpTime;
     private Renderer _renderer;
+    private bool horiz;
+    private bool pos;
     private Animator _doorAnimator;
 private void Awake()
     {
@@ -30,15 +32,23 @@ private void Awake()
         {
             case "Left Door":
                 direction = Vector3.left;
+                horiz = true;
+                pos = false;
                 break;
             case "Right Door":
                 direction = Vector3.right;
+                horiz = true;
+                pos = true;
                 break;
             case "Top Door":
                 direction = Vector3.up;
+                horiz = false;
+                pos = true;
                 break;
             case "Bottom Door":
                 direction = Vector3.down;
+                horiz = false;
+                pos = false;
                 break;
             default:
                 direction = Vector3.zero;
@@ -64,6 +74,69 @@ private void Awake()
                     hasDoor = true;
                     hit.transform.gameObject.GetComponent<DoorInfo>().hasDoor = true;
                     _roomInfo.usableDoors.Add(gameObject);
+                }
+            }
+
+            if (hit.transform.gameObject == null)
+            {
+                if (Physics.Raycast(transform.position, direction, out RaycastHit hit2, 10))
+                {
+                    var transformPosition = hit2.transform.position;
+                    GameObject newConnector = null;
+                    float dist = Vector3.Distance(transformPosition, transform.position);
+                    Vector3 newSpawnPoint = Vector3.zero;
+                    switch (pos)
+                    {
+                        case true when horiz:
+                            newSpawnPoint = new Vector3(transform.position.x + 2.5f, transform.position.y, transform.position.z);
+                            break;
+                        case false when horiz:
+                            newSpawnPoint = new Vector3(transform.position.x - 2.5f, transform.position.y, transform.position.z);
+                            break;
+                        case true when horiz is false:
+                            newSpawnPoint = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
+                            break;
+                        case false when horiz is false:
+                            newSpawnPoint = new Vector3(transform.position.x, transform.position.y - 2.5f, transform.position.z);
+                            break;
+                    }
+                    switch (horiz)
+                    {
+                        case true:
+                            if (transformPosition.y == gameObject.transform.position.y)
+                            {
+                                switch (dist)
+                                {
+                                    case 5:
+                                        newConnector = Resources.Load<GameObject>("Room Layouts/Connectors/ConnectorShortHoriz");
+                                        break;
+                                    case 10:
+                                        newConnector = Resources.Load<GameObject>("Room Layouts/Connectors/ConnectorLongHoriz");
+                                        break;
+                                }
+                            }
+                            break;
+                        case false:
+                            if (transformPosition.x == gameObject.transform.position.x)
+                            {
+                                switch (dist)
+                                {
+                                    case 5:
+                                        newConnector = Resources.Load<GameObject>("Room Layouts/Connectors/ConnectorShortVerti");
+                                        break;
+                                    case 10:
+                                        newConnector = Resources.Load<GameObject>("Room Layouts/Connectors/ConnectorLongVerti");
+                                        break;
+                                }
+                            }
+                            break; 
+                    }
+
+                    if (newConnector != null && newSpawnPoint != Vector3.zero && (dist == 5 || dist == 10))
+                    {
+                        Instantiate(newConnector, newSpawnPoint, Quaternion.identity);
+                    }
+                       
                 }
             }
         }
