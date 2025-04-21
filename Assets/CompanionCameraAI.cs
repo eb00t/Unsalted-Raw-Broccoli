@@ -11,6 +11,7 @@ public class CompanionCameraAI : MonoBehaviour
     public int poiseDamage;
     [SerializeField] private int numberOfAttacks;
     [SerializeField] private float projectileSpeed;
+    [SerializeField] private float projectileRotSpeed;
     [SerializeField] private float multiProjectileOffset;
 
     [Header("Tracking")] 
@@ -39,6 +40,7 @@ public class CompanionCameraAI : MonoBehaviour
     private BoxCollider _collider;
     private Rigidbody _rigidbody;
     private LockOnController _lockOnController;
+    private Transform _target;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -54,6 +56,9 @@ public class CompanionCameraAI : MonoBehaviour
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _spriteTransform = _spriteRenderer.transform;
         _player = GameObject.FindGameObjectWithTag("Player").transform;
+        _target = GameObject.FindGameObjectWithTag("CompanionTarget").transform;
+        var newPos = new Vector3(_target.position.x, _target.position.y + 2, _target.position.z);
+        transform.position = newPos;
         _lockOnController = _player.GetComponent<LockOnController>();
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
@@ -62,12 +67,12 @@ public class CompanionCameraAI : MonoBehaviour
 
     private void Update()
     {
-        var distance = Vector3.Distance(transform.position, _player.position);
+        var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _player.position - transform.position;
 
         _attackTimer -= Time.deltaTime;
 
-        if (distance >= playerTrackDistance)
+        if (distance > playerTrackDistance)
         {
             UpdateSpriteDirection(_playerDir.x < 0 );
             Chase();
@@ -90,14 +95,14 @@ public class CompanionCameraAI : MonoBehaviour
 
     private void Chase()
     {
-        var dir = (_player.position - transform.position).normalized;
+        var dir = (_target.position - transform.position).normalized;
         var newPos = transform.position + dir * (moveSpeed * Time.deltaTime);
         _rigidbody.MovePosition(newPos);
     }
 
     private void Attack(Transform nearestTarget)
     {
-        _rigidbody.velocity = Vector3.zero;
+        //_rigidbody.velocity = Vector3.zero;
         ProjectileAttack(nearestTarget);
     }
 
@@ -111,15 +116,17 @@ public class CompanionCameraAI : MonoBehaviour
         {
             var position = projectileOrigin.position;
             var newProjectile = Instantiate(lightProjectile, position, Quaternion.identity);
-            newProjectile.GetComponent<CompanionCameraHitbox>().companionCameraAI = this;
+            var hitbox = newProjectile.GetComponent<CompanionCameraHitbox>();
+            hitbox.target = nearestTarget;
+            hitbox.rotSpeed = projectileRotSpeed;
+            hitbox.speed = projectileSpeed;
+            hitbox.companionCameraAI = this;
             newProjectile.SetActive(true);
             
             var rb = newProjectile.GetComponent<Rigidbody>();
             var centreOffset = i - centre;
             var rotation = Quaternion.AngleAxis(centreOffset * multiProjectileOffset, Vector3.forward);
             var angledDir = rotation * dir;
-
-            rb.velocity = new Vector3(angledDir.x, angledDir.y, 0) * projectileSpeed;
             
             var newRot = Mathf.Atan2(angledDir.y, angledDir.x) * Mathf.Rad2Deg;
             rb.rotation = Quaternion.Euler(0, 0, newRot);

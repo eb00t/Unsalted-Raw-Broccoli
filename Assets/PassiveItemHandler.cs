@@ -17,6 +17,7 @@ public class PassiveItemHandler : MonoBehaviour
     [SerializeField] private GameObject infoPopup;
     [SerializeField] private TextMeshProUGUI infoTitle;
     [SerializeField] private TextMeshProUGUI infoDesc;
+    [SerializeField] private GameObject companionCamera;
     private GameObject _player;
     private CharacterAttack _characterAttack;
     private ItemPickupHandler _itemPickupHandler;
@@ -141,6 +142,7 @@ public class PassiveItemHandler : MonoBehaviour
                 dataHolder.passiveEnergyRegen = false;
                 break;
             case PassiveEffect.Companion:
+                companionCamera.SetActive(false);
                 break;
             case PassiveEffect.LuckIncrease:
                 break;
@@ -164,6 +166,7 @@ public class PassiveItemHandler : MonoBehaviour
                 dataHolder.passiveEnergyRegen = true;
                 break;
             case PassiveEffect.Companion:
+                companionCamera.SetActive(true);
                 break;
             case PassiveEffect.AttackIncrease: // increases base attack by percentage
                 var newAttack = (float)dataHolder.playerBaseAttack / 100 * passiveItem.effectAmount;
