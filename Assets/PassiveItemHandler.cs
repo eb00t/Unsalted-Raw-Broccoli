@@ -127,7 +127,7 @@ public class PassiveItemHandler : MonoBehaviour
             case PassiveEffect.None:
                 break;
             case PassiveEffect.DefenseIncrease:
-                dataHolder.playerDefense = 10;
+                dataHolder.playerDefense = 0;
                 break;
             case PassiveEffect.AttackIncrease:
                 dataHolder.playerBaseAttack = 10;

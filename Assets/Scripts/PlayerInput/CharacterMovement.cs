@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +12,7 @@ public class CharacterMovement : MonoBehaviour
     private Animator _playerAnimator;
     private Coroutine _dashCoroutine;
     private CharacterAttack _characterAttack;
+    private CinemachineImpulseSource _impulseSource;
 
     [Header("Player Properties")] 
     public bool doesAttackStopFlip;
@@ -32,6 +34,7 @@ public class CharacterMovement : MonoBehaviour
     [NonSerialized] public bool LockedOn = false;
     //private float _groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time.
     private float _hangTimer;
+    private bool _canDash = true;
     
     [Header("Jumping")]
     [SerializeField] private bool doubleJumpResetJumpAttack;
@@ -91,6 +94,7 @@ public class CharacterMovement : MonoBehaviour
         GetComponent<BoxCollider>();
         _playerAnimator = GetComponentInChildren<Animator>();
         _characterAttack = GetComponentInChildren<CharacterAttack>();
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     public void Crouch(InputAction.CallbackContext ctx)
@@ -202,19 +206,21 @@ private void stopWallJump()
 
     public void Dash(InputAction.CallbackContext ctx)
     {
-        if (uiOpen || !allowMovement || _isDashing) return;
+        if (uiOpen || !allowMovement || _isDashing || !_canDash) return;
 
         if (ctx.performed && _midAirDashCount == 0) 
         {
             isAttacking = false;
             isJumpAttacking = false;
             _characterAttack.ResetCombo();
+            _impulseSource.GenerateImpulse();
             StartCoroutine(DashRoutine());
-        }
+            StartCoroutine(DashWait());
 
-        if (ctx.performed && !grounded)
-        {
-            _midAirDashCount++;
+            if (!grounded)
+            {
+                _midAirDashCount++;
+            }
         }
     }
     
@@ -223,23 +229,24 @@ private void stopWallJump()
         _playerAnimator.SetBool(Dash1, true);
         _characterAttack.isInvulnerable = true;
         _isDashing = true;
-
         _rb.useGravity = false;
-
-        var dashDuration = 0.25f;
-        var elapsed = 0f;
-
-        var direction = _input != 0 ? Mathf.Sign(_input) : Mathf.Sign(transform.localScale.x);
-        var dashVelocity = new Vector3(direction * dashSpeed, 0f, 0f);
-        _rb.velocity = Vector3.zero;
         
-        while (elapsed < dashDuration)
+        var elapsed = 0f;
+        var direction = _input != 0 ? Mathf.Sign(_input) : Mathf.Sign(transform.localScale.x);
+        var initialSpeed = dashSpeed;
+
+        _rb.velocity = Vector3.zero;
+
+        while (elapsed < 0.2f)
         {
-            _rb.velocity = dashVelocity;
+            var t = elapsed / 0.2f;
+
+            _rb.velocity = new Vector3(direction * initialSpeed * (1f - (t * t)), 0f, 0f);
+
             elapsed += Time.deltaTime;
             yield return null;
         }
-        
+
         _characterAttack.isInvulnerable = false;
         _isDashing = false;
         _rb.velocity = new Vector3(0f, _rb.velocity.y, 0f);
@@ -247,6 +254,13 @@ private void stopWallJump()
         _playerAnimator.SetBool(Dash1, false);
     }
 
+    private IEnumerator DashWait()
+    {
+        _canDash = false;
+        yield return new WaitForSeconds(.4f);
+        _canDash = true;
+    }
+    
     public void Update()
     {
         if (uiOpen)
