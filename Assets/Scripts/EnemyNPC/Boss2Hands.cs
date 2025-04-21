@@ -116,6 +116,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         {
             StopAllCoroutines();
             _attackCdCounter = 0;
+            _canAttack = true;
             return;
         }
         

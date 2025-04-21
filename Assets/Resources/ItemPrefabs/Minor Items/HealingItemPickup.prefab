@@ -72,6 +72,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 3
   canPickup: 0
+  isPermanentPassive: 0
   outLineSprite: {fileID: 6498433412841809633}
 --- !u!114 &3843640139126399565
 MonoBehaviour:
@@ -87,16 +88,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   consumableEffect: 1
   effectDuration: 0
-  effectAmount: 50
+  effectAmount: 20
   title: Healing Vial
   uiIcon: {fileID: 21300000, guid: b9435eeafe4edd743a78fae1cd5f54ad, type: 3}
   statusIcon: {fileID: 0}
+  statusIcon2: {fileID: 0}
   statusColor: {r: 0, g: 0, b: 0, a: 0}
   statusText: 
+  statusText2: 
   isInstantUse: 1
   maximumHold: 0
   itemID: 8
-  description: Restores 50% of maximum HP. This is instantly used when bought.
+  description: Restores 20% of maximum HP. This is instantly used when bought.
 --- !u!54 &-77197759441476653
 Rigidbody:
   m_ObjectHideFlags: 0
