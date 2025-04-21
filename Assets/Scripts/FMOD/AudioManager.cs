@@ -40,6 +40,7 @@ public class AudioManager : MonoBehaviour
     public EventInstance MusicEventInstance;
     public int nowPlaying = 0;
     public bool playLoadingSounds = true;
+    public bool playAmbienceSounds = true;
     //Add any more sort of background-ish sound effects here if necessary.
 
     private void Awake()
@@ -69,8 +70,12 @@ public class AudioManager : MonoBehaviour
         {
             loadingEventInstance.start();
         }
-        InitialiseAmbience(FMODEvents.Instance.Ambience);
-        
+
+        if (playAmbienceSounds)
+        {
+            InitialiseAmbience(FMODEvents.Instance.Ambience);
+        }
+
         InitialiseMusic(FMODEvents.Instance.Music);
     }
 
