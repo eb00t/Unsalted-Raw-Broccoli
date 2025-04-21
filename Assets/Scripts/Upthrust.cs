@@ -26,6 +26,7 @@ public class Upthrust : MonoBehaviour
             _playerRb.AddForce(Vector3.up * forceMultiplier, ForceMode.Impulse);
             _characterMovement.doubleJumpPerformed = true;
             _characterMovement.isInUpThrust = true;
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Upthrust, transform.position);
          }
       }
    }

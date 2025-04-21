@@ -23,6 +23,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference Music { get; private set; }
     [field: Header("SFX")]
     [field: SerializeField] public EventReference DoorSlam { get; private set; }
+    [field: SerializeField] public EventReference Upthrust { get; private set; }
     [field: Header("Player SFX")]
     [field: SerializeField] public EventReference PlayerFootsteps { get; private set; }
     [field: SerializeField] public EventReference PlayerJump { get; private set; }
