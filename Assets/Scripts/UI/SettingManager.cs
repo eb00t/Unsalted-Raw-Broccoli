@@ -39,18 +39,21 @@ public class SettingManager : MonoBehaviour
     {
         dataHolder.isAutoEquipEnabled = !dataHolder.isAutoEquipEnabled;
         ButtonHandler.Instance.PlayConfirmSound();
+        SaveData.Instance.UpdateSave();
     }
 
     public void ToggleAutoLockOn()
     {
         dataHolder.isAutoLockOnEnabled = !dataHolder.isAutoLockOnEnabled;
         ButtonHandler.Instance.PlayConfirmSound();
+        SaveData.Instance.UpdateSave();
     }
 
     public void ToggleAutoSwitchLockTarget()
     {
         dataHolder.isAutoSwitchEnabled = !dataHolder.isAutoSwitchEnabled;
         ButtonHandler.Instance.PlayConfirmSound();
+        SaveData.Instance.UpdateSave();
     }
 
     private void LoadSettings()
@@ -94,6 +97,7 @@ public class SettingManager : MonoBehaviour
     {
         screenShakeMultiplier = screenShakeSlider.value;
         dataHolder.screenShakeMultiplier = screenShakeSlider.value;
+        SaveData.Instance.UpdateSave();
     }
 
     public void UpdateVolume(int volumeType)
@@ -127,6 +131,8 @@ public class SettingManager : MonoBehaviour
                 _audioManager.uiSfxVolume = _currentSliderValue;
                 break;
         }
+        
+        SaveData.Instance.UpdateSave();
     }
 
     public void ForceControlScheme()
@@ -149,5 +155,7 @@ public class SettingManager : MonoBehaviour
                 dataHolder.currentControl = ControlsManager.ControlScheme.Keyboard;
                 break;
         }
+        
+        SaveData.Instance.UpdateSave();
     }
 }

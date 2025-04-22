@@ -86,37 +86,37 @@ public class NextLevelTrigger : MonoBehaviour
             case SceneToLoad.NextFloor:
                 if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission")
                 {
-                    if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor1)
+                    if (dataHolder.highestFloorCleared == 0)
                     {
+                        dataHolder.highestFloorCleared = 1;
                         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor2;
                         scene = "MainScene";
-                        if (dataHolder.highestFloorCleared < 1)
-                        {
-                            dataHolder.highestFloorCleared = 1;
-                        }
+                        SaveData.Instance.UpdateSave();
                     }
-                    else if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor2)
+                    else if (dataHolder.highestFloorCleared == 1)
                     {
+                        dataHolder.highestFloorCleared = 2;
                         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor3;
                         scene = "MainScene"; 
-                        if (dataHolder.highestFloorCleared < 2)
-                        {
-                            dataHolder.highestFloorCleared = 2;
-                        }
+                        SaveData.Instance.UpdateSave();
                     }
-                    else if (dataHolder.currentLevel == LevelBuilder.LevelMode.Floor3)
+                    else if  (dataHolder.highestFloorCleared == 2)
                     {
+                        dataHolder.highestFloorCleared = 3;
                         dataHolder.currentLevel = LevelBuilder.LevelMode.FinalBoss;
                         scene = "MainScene"; 
-                        if (dataHolder.highestFloorCleared < 3)
-                        {
-                            dataHolder.highestFloorCleared = 3;
-                        }
+                        SaveData.Instance.UpdateSave();
+                    }
+                    else if  (dataHolder.highestFloorCleared == 3)
+                    {
+                        dataHolder.highestFloorCleared = 0;
+                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
+                        scene = "MainScene"; 
+                        SaveData.Instance.UpdateSave();
                     }
                 }
                 else
                 {
-                    WipeData();
                     scene = "MainScene";
                 }
                 break;
@@ -125,10 +125,7 @@ public class NextLevelTrigger : MonoBehaviour
                 break;
             case SceneToLoad.Credits:
                 scene = "creditsScene";
-                if (dataHolder.highestFloorCleared < 3)
-                {
-                    dataHolder.highestFloorCleared = 3;
-                }
+                SaveData.Instance.EraseData();
                 break;
             case SceneToLoad.EndScreen:
                 scene = "EndScreen";
@@ -169,5 +166,6 @@ public class NextLevelTrigger : MonoBehaviour
         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
         dataHolder.highestFloorCleared = 0;
         dataHolder.permanentPassiveItems = new int[4];
+        SaveData.Instance.EraseData();
     }
 }
