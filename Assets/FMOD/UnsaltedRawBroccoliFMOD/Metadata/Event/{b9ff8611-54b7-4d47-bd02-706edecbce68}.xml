@@ -25,6 +25,7 @@
 		<relationship name="markerTracks">
 			<destination>{47f45a94-464d-473c-bb61-a93637408eb1}</destination>
 			<destination>{02b8b584-e021-4d46-9839-93ea333f02fc}</destination>
+			<destination>{53122b9c-a877-4c5a-a228-6cee80d6705c}</destination>
 		</relationship>
 		<relationship name="groupTracks">
 			<destination>{96bd509a-4830-4748-9e3c-82e1956bb533}</destination>
@@ -66,6 +67,7 @@
 	<object class="EventAutomatableProperties" id="{5a214e13-17c3-4e3e-9d7b-a94ff176fac9}" />
 	<object class="MarkerTrack" id="{47f45a94-464d-473c-bb61-a93637408eb1}" />
 	<object class="MarkerTrack" id="{02b8b584-e021-4d46-9839-93ea333f02fc}" />
+	<object class="MarkerTrack" id="{53122b9c-a877-4c5a-a228-6cee80d6705c}" />
 	<object class="GroupTrack" id="{96bd509a-4830-4748-9e3c-82e1956bb533}">
 		<relationship name="modules">
 			<destination>{7a01fbe9-a3e8-4288-9a13-d66f4a7c0cda}</destination>
@@ -270,6 +272,9 @@
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{e0a6291b-1d0b-43c5-aadd-c7af63dfff5f}">
+		<property name="start">
+			<value>375</value>
+		</property>
 		<property name="length">
 			<value>32</value>
 		</property>
@@ -304,7 +309,7 @@
 	</object>
 	<object class="SingleSound" id="{62320af1-c6f4-4356-bdb7-c3ed9c06835e}">
 		<property name="start">
-			<value>70</value>
+			<value>315</value>
 		</property>
 		<property name="length">
 			<value>32.727278911564625</value>
@@ -338,7 +343,7 @@
 	</object>
 	<object class="LoopRegion" id="{83da8100-9854-45c0-a04c-099dda35b00a}">
 		<property name="position">
-			<value>70</value>
+			<value>315</value>
 		</property>
 		<property name="length">
 			<value>32.727278911564625</value>
@@ -353,7 +358,7 @@
 			<destination>{044404e0-4c8f-40e8-b54c-34f5d2f4a850}</destination>
 		</relationship>
 		<relationship name="markerTrack">
-			<destination>{02b8b584-e021-4d46-9839-93ea333f02fc}</destination>
+			<destination>{53122b9c-a877-4c5a-a228-6cee80d6705c}</destination>
 		</relationship>
 		<relationship name="triggerConditions">
 			<destination>{c770b59d-cfc5-4fc2-8c48-184bd5ab7c1c}</destination>
@@ -384,13 +389,10 @@
 	</object>
 	<object class="LoopRegion" id="{b6d973c2-6deb-4685-abe2-d8adeeada02c}">
 		<property name="position">
-			<value>0</value>
+			<value>375</value>
 		</property>
 		<property name="length">
 			<value>32</value>
-		</property>
-		<property name="transitionOffset">
-			<value>1</value>
 		</property>
 		<property name="looping">
 			<value>2</value>

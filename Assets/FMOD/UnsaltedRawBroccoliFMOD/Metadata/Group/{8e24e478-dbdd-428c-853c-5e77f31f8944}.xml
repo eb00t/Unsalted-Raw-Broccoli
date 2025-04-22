@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="MixerGroup" id="{8e24e478-dbdd-428c-853c-5e77f31f8944}">
+		<property name="name">
+			<value>Not Music or UI</value>
+		</property>
+		<relationship name="automators">
+			<destination>{ffd216b8-7288-407e-b8b8-7dc8ea84fbcc}</destination>
+		</relationship>
+		<relationship name="effectChain">
+			<destination>{011f1393-f6ef-4207-9878-7cd0122a3fe3}</destination>
+		</relationship>
+		<relationship name="panner">
+			<destination>{9a168645-c60f-4cec-b76d-d09cf51c309a}</destination>
+		</relationship>
+		<relationship name="output">
+			<destination>{03b83766-023c-41ee-9ef7-65cc1cfb8161}</destination>
+		</relationship>
+	</object>
+	<object class="Automator" id="{ffd216b8-7288-407e-b8b8-7dc8ea84fbcc}">
+		<property name="nameOfPropertyBeingAutomated">
+			<value>volume</value>
+		</property>
+		<relationship name="automationCurves">
+			<destination>{2a0a1d5f-09a1-470d-be40-47049f08cf5d}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusEffectChain" id="{011f1393-f6ef-4207-9878-7cd0122a3fe3}">
+		<relationship name="effects">
+			<destination>{9cf241bc-e078-4faf-9131-f5f13345b5ab}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusPanner" id="{9a168645-c60f-4cec-b76d-d09cf51c309a}" />
+	<object class="AutomationCurve" id="{2a0a1d5f-09a1-470d-be40-47049f08cf5d}">
+		<relationship name="parameter">
+			<destination>{80187df2-aeab-41d9-9025-1e2a1eeed1b5}</destination>
+		</relationship>
+		<relationship name="automationPoints">
+			<destination>{1119551a-9807-4fdc-a1be-0034afb18370}</destination>
+			<destination>{22a2105c-b50d-4cf0-bd00-18105655a4be}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusFader" id="{9cf241bc-e078-4faf-9131-f5f13345b5ab}" />
+	<object class="AutomationPoint" id="{1119551a-9807-4fdc-a1be-0034afb18370}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<property name="value">
+			<value>-80</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{22a2105c-b50d-4cf0-bd00-18105655a4be}">
+		<property name="position">
+			<value>0.99293785310734461</value>
+		</property>
+		<property name="value">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

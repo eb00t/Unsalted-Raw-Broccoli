@@ -529,6 +529,7 @@ public class CharacterAttack : MonoBehaviour
     {
         if (isDead) return;
         AudioManager.Instance.SetGlobalEventParameter("Music Track", 7);
+        AudioManager.Instance.SetGlobalEventParameter("NoMusicUIVolume", 0.1f);
         isDead = true;
         _playerAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
         _playerAnimator.SetBool(IsPlayerDead, true);

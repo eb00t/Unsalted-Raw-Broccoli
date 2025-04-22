@@ -72,7 +72,10 @@ public class dialogueControllerScript : MonoBehaviour
         switch (dialogueOrLore)
         {
             case DialogueOrLore.Lore:
-                loreToLoad = LoreReference.Instance.allLoreItems[loreChoice];
+                if (randomLore)
+                {
+                    loreToLoad = LoreReference.Instance.allLoreItems[loreChoice];
+                }
                 break;
         }
             //Start writing sentences

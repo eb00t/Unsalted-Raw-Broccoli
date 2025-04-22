@@ -17,6 +17,8 @@ public class ReadLore : MonoBehaviour
     [SerializeField] private float pickupRange;
     private GameObject _player;
     public LoreItemHandler whatLore;
+    public dialogueControllerScript dialogueController;
+    public bool loadSpecificLore;
     public enum LoreType
     {
         Book,
@@ -25,7 +27,7 @@ public class ReadLore : MonoBehaviour
         Other
     }
     public LoreType loreType;
-    
+
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
@@ -33,7 +35,8 @@ public class ReadLore : MonoBehaviour
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
-        
+        dialogueController = GetComponentInChildren<dialogueControllerScript>();
+
         switch (loreType)
         {
             case LoreType.Book:
@@ -46,14 +49,21 @@ public class ReadLore : MonoBehaviour
                 _loreObject = "Scrap Of Paper Lore";
                 break;
         }
-        
+
         _lorePath = "Lore";
         _language = "English"; //TODO: Fix this to make it work with whatever language the game is.
         _fullLorePath = _lorePath + "/" + _language + "/" + _loreObject;
         Debug.Log(_fullLorePath);
 
-        int whatLoreToLoad = Random.Range(0, LoreReference.Instance.allLoreItems.Count);
-        whatLore = LoreReference.Instance.allLoreItems[whatLoreToLoad];
+        if (loadSpecificLore)
+        {
+            whatLore = dialogueController.loreToLoad;
+        }
+        else
+        {
+            int whatLoreToLoad = Random.Range(0, LoreReference.Instance.allLoreItems.Count);
+            whatLore = LoreReference.Instance.allLoreItems[whatLoreToLoad];
+        }
     }
 
     private void Update()
