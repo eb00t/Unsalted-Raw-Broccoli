@@ -517,14 +517,12 @@ public class CharacterAttack : MonoBehaviour
     private IEnumerator StunTimer(float stunTime)
     {
         _playerAnimator.SetBool(IsStaggered, true);
-        _characterMovement.allowMovement = false;
-        _characterMovement.walkAllowed = false;
+        _characterMovement.canMove = false;
         
         yield return new WaitForSecondsRealtime(stunTime);
         
         _playerAnimator.SetBool(IsStaggered, false);
-        _characterMovement.allowMovement = true;
-        _characterMovement.walkAllowed = true;
+        _characterMovement.canMove = false;
     }
     
     private void Die()

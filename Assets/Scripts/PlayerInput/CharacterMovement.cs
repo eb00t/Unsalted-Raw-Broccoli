@@ -18,8 +18,7 @@ public class CharacterMovement : MonoBehaviour
     [Header("Player Properties")] 
     public bool doesAttackStopFlip;
     public bool grounded;
-    public bool walkAllowed = true;
-    public bool allowMovement = true;
+    public bool canMove = true;
     public bool isCrouching;
     public bool isAttacking;
     public Vector3 velocity;
@@ -100,18 +99,16 @@ public class CharacterMovement : MonoBehaviour
 
     public void Crouch(InputAction.CallbackContext ctx)
     {
-        if (uiOpen) return;
+        if (uiOpen || !canMove) return;
 
         if (ctx.ReadValue<float>() > 0)
         {
             _playerAnimator.SetBool(IsCrouching, true);
-            if (!allowMovement) return;
             isCrouching = true;
         }
         else
         {
             _playerAnimator.SetBool(IsCrouching, false);
-            if (!allowMovement) return;
             isCrouching = false;
         }
     }
@@ -125,7 +122,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext ctx)
     {
-        if (uiOpen || !allowMovement || isInUpThrust) return;
+        if (uiOpen || !canMove || isInUpThrust) return;
 
         if (ctx.started)
         {
@@ -207,7 +204,7 @@ private void stopWallJump()
 
     public void Dash(InputAction.CallbackContext ctx)
     {
-        if (uiOpen || !allowMovement || _isDashing || !_canDash) return;
+        if (uiOpen || !canMove || _isDashing || !_canDash) return;
 
         if (ctx.performed && _midAirDashCount == 0) 
         {
@@ -242,29 +239,22 @@ private void stopWallJump()
         _characterAttack.isInvulnerable = true;
         _isDashing = true;
         _rb.useGravity = false;
-        
-        var elapsed = 0f;
+
         var direction = _input != 0 ? Mathf.Sign(_input) : Mathf.Sign(transform.localScale.x);
-        var initialSpeed = dashSpeed;
+        var dashVelocity = new Vector3(direction * dashSpeed, 0f, 0f);
 
-        _rb.velocity = Vector3.zero;
+        _rb.velocity = dashVelocity;
+        _rb.drag = 8f;
+        yield return new WaitForSeconds(0.2f);
 
-        while (elapsed < 0.2f)
-        {
-            var t = elapsed / 0.2f;
-
-            _rb.velocity = new Vector3(direction * initialSpeed * (1f - (t * t)), 0f, 0f);
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        _characterAttack.isInvulnerable = false;
-        _isDashing = false;
+        _rb.drag = 0f;
         _rb.velocity = new Vector3(0f, _rb.velocity.y, 0f);
         _rb.useGravity = true;
+        _isDashing = false;
+        _characterAttack.isInvulnerable = false;
         _playerAnimator.SetBool(Dash1, false);
     }
+
 
     private IEnumerator DashWait()
     {
@@ -353,13 +343,11 @@ private void stopWallJump()
             //Stop player moving while game is loading
             if (BlackoutManager.Instance.blackoutComplete == false)
             {
-                allowMovement = false;
-                walkAllowed = false;
+                canMove = false;
             }
             else if (BlackoutManager.Instance.blackoutComplete && uiOpen == false)
             {
-                allowMovement = true;
-                walkAllowed = true;
+                canMove = true;
             }
         }
     }
@@ -387,17 +375,20 @@ private void stopWallJump()
             _lastGroundedTime = Time.time;
         }
 
-        if (walkAllowed && allowMovement && !_isDashing && !isJumpAttacking)
+        if (isCrouching)
+        {
+            _rb.velocity = new Vector3(0f, _rb.velocity.y, _rb.velocity.z);
+        }
+        else if (canMove & !_isDashing && !isJumpAttacking && !isCrouching)
         {
             var acc = acceleration;
             if (isAttacking) acc = acceleration / 3;
             if ((_rb.velocity.x <= maxSpeed && Mathf.Sign(_rb.velocity.x) == 1) || (_rb.velocity.x >= -maxSpeed && Mathf.Sign(_rb.velocity.x) == -1) || (Mathf.Sign(_rb.velocity.x) != _input))
             {
-                Vector3 walk = new Vector3(_input * acc, _rb.velocity.y, _rb.velocity.z);
-                _rb.velocity = walk;
+                _rb.velocity = new Vector3(_input * acc, _rb.velocity.y, _rb.velocity.z);
             }
         }
-        
+
         // pushes player down if jump is cancelled early
         if (doesJumpInputCancel && !isInUpThrust && _rb.velocity.y > 0 && !_jumpHeld)
         {
