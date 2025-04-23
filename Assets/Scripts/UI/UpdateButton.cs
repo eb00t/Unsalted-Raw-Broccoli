@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class UpdateButton : MonoBehaviour
 {
-    [SerializeField] private Image image;
-    [SerializeField] private TextMeshProUGUI text;
+    public Image image;
+    public TextMeshProUGUI text;
     [SerializeField] private DataHolder dataHolder;
     private GameObject _uiManager;
     private ControlsManager _controlsManager;

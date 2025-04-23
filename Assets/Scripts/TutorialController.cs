@@ -25,8 +25,10 @@ public class TutorialController : MonoBehaviour
         Move,
         Jump,
         DoubleJump,
+        Dash,
         Crouch,
         FindItems,
+        UseUpThrust,
         SwitchItem,
         UseItem,
         PauseGame,
@@ -78,16 +80,20 @@ public class TutorialController : MonoBehaviour
             if (_characterMovement.doubleJumpPerformed)
             {
                 AdvanceStep();
-                highLight1.SetActive(true);
-                hightLight2.SetActive(true);
-                hightLight3.SetActive(true);
-                hightLight4.SetActive(true);
             }
         }
 
         if (_currentStep == TutorialStep.JumpAttack)
         {
             if (_characterAttack.jumpAttackCount > 0)
+            {
+                AdvanceStep();
+            }
+        }
+
+        if (_currentStep == TutorialStep.UseUpThrust)
+        {
+            if (_characterMovement.isInUpThrust)
             {
                 AdvanceStep();
             }
@@ -121,75 +127,86 @@ public class TutorialController : MonoBehaviour
         switch (_currentStep)
         {
             case TutorialStep.Move:
-                ShowMessage("Move left and right with", ControlsManager.ButtonType.Move, null);
+                ShowMessage("Move left and right with", ControlsManager.ButtonType.Move, "", null);
                 break;
             case TutorialStep.Jump:
-                ShowMessage("Jump by pressing", ControlsManager.ButtonType.Jump, null);
+                ShowMessage("Jump by pressing", ControlsManager.ButtonType.Jump, "", null);
                 break;
             case TutorialStep.DoubleJump:
-                ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.Jump, ControlsManager.ButtonType.Jump);
+                ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.Jump, " + ", ControlsManager.ButtonType.Jump);
+                break;
+            case TutorialStep.Dash:
+                ShowMessage("Dash on the ground or in the air", ControlsManager.ButtonType.Dash, "", null);
                 break;
             case TutorialStep.Crouch:
                 if (dataHolder.isGamepad)
                 {
-                    ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchL, ControlsManager.ButtonType.CrouchR);
+                    ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchL, " or ",ControlsManager.ButtonType.CrouchR);
                 }
                 else
                 {
-                    ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchL, null);
+                    ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchL, "", null);
                 }
                 break;
             case TutorialStep.FindItems:
-                ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.Interact, null);
+                ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.Interact, "", null);
+                break;
+            case TutorialStep.UseUpThrust:
+                ShowMessage("Jump into hallways with up arrows to get a lift to rooms above", ControlsManager.ButtonType.Jump, "", null);
                 break;
             case TutorialStep.SwitchItem:
-                if (dataHolder.isGamepad)
-                {
-                    ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.CycleToolbarLeft, ControlsManager.ButtonType.CycleToolbarRight);
-                }
-                else
-                {
-                    ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.CycleToolbarLeft, null);
-                }
+                ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.CycleToolbarLeft, " or ",ControlsManager.ButtonType.CycleToolbarRight);
                 break;
             case TutorialStep.UseItem:
-                ShowMessage("Use an item by pressing", ControlsManager.ButtonType.UseItem, null);
+                ShowMessage("Use an item by pressing", ControlsManager.ButtonType.UseItem, "", null);
                 break;
             case TutorialStep.PauseGame:
-                ShowMessage("Pause the game by pressing", ControlsManager.ButtonType.Pause, null);
+                ShowMessage("Pause the game by pressing", ControlsManager.ButtonType.Pause, "", null);
                 break;
             case TutorialStep.ExitUI:
-                ShowMessage("Exit the pause menu by pressing", ControlsManager.ButtonType.Back, null);
+                ShowMessage("Exit the pause menu by pressing", ControlsManager.ButtonType.Back, "", null);
                 break;
             case TutorialStep.FindEnemy:
-                ShowMessage("Find an enemy by exploring the rooms", ControlsManager.ButtonType.Move, null);
+                ShowMessage("Find an enemy by exploring the rooms", ControlsManager.ButtonType.Move, "", null);
                 break;
             case TutorialStep.LightAttack:
-                ShowMessage("Perform a light attack", ControlsManager.ButtonType.LightAttack, null);
+                ShowMessage("Perform a light attack", ControlsManager.ButtonType.LightAttack, "", null);
                 break;
             case TutorialStep.MediumAttack:
-                ShowMessage("Perform a medium attack", ControlsManager.ButtonType.MediumAttack, null);
+                ShowMessage("Perform a medium attack", ControlsManager.ButtonType.MediumAttack, "", null);
                 break;
             case TutorialStep.HeavyAttack:
-                ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.HeavyAttack, null);
+                ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.HeavyAttack, "", null);
                 break;
             case TutorialStep.JumpAttack:
-                ShowMessage("To perform a jump attack, jump and perform a light attack", ControlsManager.ButtonType.Jump, ControlsManager.ButtonType.LightAttack);
+                ShowMessage("To perform a jump attack, jump and perform a light attack", ControlsManager.ButtonType.Jump, " + ",ControlsManager.ButtonType.LightAttack);
                 break;
             case TutorialStep.DefeatEnemy:
-                ShowMessage("Defeat the enemy", ControlsManager.ButtonType.LightAttack, null);
+                ShowMessage("Defeat the enemy", ControlsManager.ButtonType.LightAttack, "", null);
                 break;
             case TutorialStep.Complete:
-                ShowMessage("Tutorial complete! You may now continue to the game", ControlsManager.ButtonType.Move, null);
+                ShowMessage("Tutorial complete! You may now continue to the game", ControlsManager.ButtonType.Move,"", null);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    private void ShowMessage(string message, ControlsManager.ButtonType button, ControlsManager.ButtonType? button2)
+    private void ShowMessage(string message, ControlsManager.ButtonType button, string betweenText,ControlsManager.ButtonType? button2)
     {
-        _itemPickupHandler.TogglePrompt(message, true, button, button2);
+        _itemPickupHandler.TogglePrompt(message, true, button, betweenText, button2);
+    }
+
+    public void DashPerformed(InputAction.CallbackContext context)
+    {
+        if (context.performed && _currentStep == TutorialStep.Dash)
+        {
+            highLight1.SetActive(true);
+            hightLight2.SetActive(true);
+            hightLight3.SetActive(true);
+            hightLight4.SetActive(true);
+            AdvanceStep();
+        }
     }
 
     public void OnItemPickedUp()
@@ -199,16 +216,19 @@ public class TutorialController : MonoBehaviour
         
         if (_itemsFound == 1)
         {
-            arrowItem1.SetActive(false);
-            arrowItem1Back.SetActive(true);
-            doorItemRight1.OpenDoor();
-            doorItemRight2.OpenDoor();
-            arrowItem2.SetActive(true);
+            doorItemDown1.OpenDoor();
+            doorItemDown2.OpenDoor();
+            arrowItem1.SetActive(true);
+            arrowItem2.SetActive(false);
+            arrowItem2Back.SetActive(true);
         }
 
         if (_itemsFound >= 2 && _currentStep == TutorialStep.FindItems)
         {
             arrowItem2.SetActive(false);
+            arrowItem1.SetActive(false);
+            arrowItem2Back.SetActive(false);
+            arrowItem1Back.SetActive(true);
             
             AdvanceStep();
         }
@@ -244,9 +264,9 @@ public class TutorialController : MonoBehaviour
             AdvanceStep();
             if (_itemsFound == 0)
             {
-                doorItemDown1.OpenDoor();
-                doorItemDown2.OpenDoor();
-                arrowItem1.SetActive(true);
+                doorItemRight1.OpenDoor();
+                doorItemRight2.OpenDoor();
+                arrowItem2.SetActive(true);
             }
         }
     }

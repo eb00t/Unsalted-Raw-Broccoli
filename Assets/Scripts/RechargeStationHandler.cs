@@ -37,7 +37,7 @@ public class RechargeStationHandler : MonoBehaviour
         if (dist <= range)
         {
             _itemPickupHandler.isPlayerNearRecharge = true;
-            _itemPickupHandler.TogglePrompt("Purchase energy refill for " + cost, true, ControlsManager.ButtonType.Interact, null);
+            _itemPickupHandler.TogglePrompt("Purchase energy refill for " + cost, true, ControlsManager.ButtonType.Interact, "", null);
             _menuHandler.rechargeStationHandler = this;
         }
         else if (dist > range)

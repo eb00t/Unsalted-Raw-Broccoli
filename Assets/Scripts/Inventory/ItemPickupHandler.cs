@@ -12,7 +12,7 @@ public class ItemPickupHandler : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private RectTransform rectTransform;
-    [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private TextMeshProUGUI text, betweenTxtObj;
     [SerializeField] private UpdateButton updateButton1, updateButton2;
 
     [Header("Item Handling")] 
@@ -48,13 +48,13 @@ public class ItemPickupHandler : MonoBehaviour
         switch (itemCount)
         {
             case 0:
-                TogglePrompt("", false, ControlsManager.ButtonType.Interact, null);
+                TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null);
                 break;
             case 1:
-                TogglePrompt("Pick up item", true, ControlsManager.ButtonType.Interact, null);
+                TogglePrompt("Pick up item", true, ControlsManager.ButtonType.Interact, "",null);
                 break;
             default:
-                TogglePrompt("Pick up items", true, ControlsManager.ButtonType.Interact, null);
+                TogglePrompt("Pick up items", true, ControlsManager.ButtonType.Interact, "", null);
                 break;
         }
     }
@@ -72,7 +72,7 @@ public class ItemPickupHandler : MonoBehaviour
         }
     }
 
-    public void TogglePrompt(string promptText, bool toggle, ControlsManager.ButtonType button, ControlsManager.ButtonType? button2)
+    public void TogglePrompt(string promptText, bool toggle, ControlsManager.ButtonType button, string betweenText, ControlsManager.ButtonType? button2)
     {
         if (toggle)
         {
@@ -83,11 +83,18 @@ public class ItemPickupHandler : MonoBehaviour
             if (button2.HasValue)
             {
                 updateButton2.button = button2.Value;
-                updateButton2.gameObject.SetActive(true);
+                betweenTxtObj.text = betweenText;
+                betweenTxtObj.gameObject.SetActive(true);
+                updateButton2.image.gameObject.SetActive(true);
+                updateButton2.text.gameObject.SetActive(true);
+                updateButton2.enabled = true;
             }
             else
             {
-                updateButton2.gameObject.SetActive(false);
+                updateButton2.image.gameObject.SetActive(false);
+                updateButton2.text.gameObject.SetActive(false);
+                betweenTxtObj.gameObject.SetActive(false);
+                updateButton2.enabled = false;
             }
         }
         else

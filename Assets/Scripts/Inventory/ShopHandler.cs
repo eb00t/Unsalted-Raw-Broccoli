@@ -52,7 +52,7 @@ public class ShopHandler : MonoBehaviour
 			_itemPickupHandler.isPlrNearShop = true;
 			if (_shopGUI.activeSelf)
 			{
-				_itemPickupHandler.TogglePrompt("Close shop", true, ControlsManager.ButtonType.Back, null);
+				_itemPickupHandler.TogglePrompt("Close shop", true, ControlsManager.ButtonType.Back, "", null);
 			}
 		}
 		else if (dist > range)

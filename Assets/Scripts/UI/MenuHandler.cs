@@ -272,7 +272,7 @@ public class MenuHandler : MonoBehaviour
 		else if (infoPopup.activeSelf)
 		{
 			infoPopup.SetActive(false);
-			_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Back, null);
+			_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Back, "", null);
 		}
 	}
 

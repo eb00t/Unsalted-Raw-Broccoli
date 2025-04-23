@@ -101,24 +101,24 @@ public class dialogueControllerScript : MonoBehaviour
             
             if (_dialogueCanvas.activeSelf)
             {
-                _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, null);
+                _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
             }
             else
             {
                 if (!isShop)
                 {
-                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, null);
+                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null);
                     _menuHandler.dialogueController = this;
                 }
                 else if (isShop && shopCanvas.activeSelf)
                 {
-                    _itemPickupHandler.TogglePrompt("Close Shop", true, ControlsManager.ButtonType.Back, null);
+                    _itemPickupHandler.TogglePrompt("Close Shop", true, ControlsManager.ButtonType.Back, "", null);
                     _itemPickupHandler.isPlrNearShop = true;
                     _menuHandler.dialogueController = this;
                 }
                 else
                 {
-                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, null);
+                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null);
                     _menuHandler.dialogueController = this;
                 }
             }

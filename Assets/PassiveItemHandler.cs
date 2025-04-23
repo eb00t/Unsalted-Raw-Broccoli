@@ -36,7 +36,7 @@ public class PassiveItemHandler : MonoBehaviour
         infoPopup.SetActive(true);
         infoTitle.text = passiveItem.title;
         infoDesc.text = passiveItem.description;
-        _itemPickupHandler.TogglePrompt("Close", true, ControlsManager.ButtonType.Back, null);
+        _itemPickupHandler.TogglePrompt("Close", true, ControlsManager.ButtonType.Back, "", null);
     }
 
     // checks each slot of passive items, if a free slot is found then equip the new passive there
