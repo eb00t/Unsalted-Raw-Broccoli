@@ -62,13 +62,11 @@ public class LaserObjectHandler : MonoBehaviour
 
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
         _laserEvent.start();
+        _lineRenderer.SetPosition(1, targetPos);
         
         while (elapsed < chargeTime)
         {
-            targetPos = Vector3.Lerp(targetPos, _player.position, Time.deltaTime * trackSpeed);
-            
             _lineRenderer.SetPosition(0, bossEyePosition.position); 
-            _lineRenderer.SetPosition(1, targetPos);
             _lineRenderer.startWidth = 0.01f;
             _lineRenderer.endWidth = 0.01f;
         

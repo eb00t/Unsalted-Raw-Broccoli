@@ -31,6 +31,14 @@ public class PassiveItemHandler : MonoBehaviour
         LoadPassives();
     }
 
+    private void Update()
+    {
+        if (infoPopup.activeSelf)
+        {
+            _itemPickupHandler.TogglePrompt("Close", true, ControlsManager.ButtonType.Back, "", null);
+        }
+    }
+
     private void TriggerInfoPopup(PermanentPassiveItem passiveItem)
     {
         infoPopup.SetActive(true);
