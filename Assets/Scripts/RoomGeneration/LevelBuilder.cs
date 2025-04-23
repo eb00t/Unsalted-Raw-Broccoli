@@ -84,6 +84,7 @@ public class LevelBuilder : MonoBehaviour
     private string _specialRoomPath;
     private string _loreRoomPath;
     private float _spawnTimer;
+    private int _spawnFailCount;
     [SerializeField] private DataHolder dataHolder;
     public enum SpawnMode
     {
@@ -873,12 +874,26 @@ public class LevelBuilder : MonoBehaviour
             case "Right" when spawningRoomInfo.missingLeftDoor:
             case "Top" when spawningRoomInfo.missingBottomDoor:
             case "Bottom" when spawningRoomInfo.missingTopDoor:
-                _spawnValid = false;
-                Debug.Log("Room and connector combo (" + spawningRoomInfo.gameObject.name + " and " + spawnedConnectorInfo.spawnedOnSide + ") is not valid.");
-                CheckIfRoomConnectorComboIsValid(spawnMode);
+                if (_spawnFailCount < 10)
+                {
+                    _spawnValid = false;
+                    Debug.Log("Room and connector combo (" + spawningRoomInfo.gameObject.name + " and " +
+                              spawnedConnectorInfo.spawnedOnSide + ") is not valid.");
+                    _spawnFailCount++;
+                    CheckIfRoomConnectorComboIsValid(spawnMode);
+                }
+                else
+                {
+                    //spawnMode = SpawnMode.Normal;
+                    Debug.Log("Spawn " + spawningRoomInfo.gameObject.name + " has failed completely, resetting to normal rooms.");
+                    _spawnFailCount = 0;
+                    spawningRoomInfo.MarkRoomForDiscard();
+                    //CheckIfRoomConnectorComboIsValid(spawnMode);
+                }
                 break;
             default:
                 _spawnValid = true;
+                _spawnFailCount = 0;
                 break;
         }
     }
