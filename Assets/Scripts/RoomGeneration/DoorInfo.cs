@@ -77,7 +77,7 @@ private void Awake()
                 }
             }
 
-            if (hit.transform.gameObject == null)
+            if (hit.transform.gameObject == null && _roomInfo.bossRoom == false)
             {
                 if (Physics.Raycast(transform.position, direction, out RaycastHit hit2, 10))
                 {

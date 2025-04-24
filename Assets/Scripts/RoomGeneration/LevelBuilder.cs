@@ -804,7 +804,7 @@ public class LevelBuilder : MonoBehaviour
            {
                Debug.Log(room.name + " has been discarded.");
                discardedRooms.Remove(room);
-               Destroy(badRoomInfo.connectorSpawnedOff);
+               Destroy(badRoomInfo.connectorSpawnedOff.gameObject);
                Destroy(room);
            }
            roomsDiscarded++;
@@ -878,7 +878,8 @@ public class LevelBuilder : MonoBehaviour
                 {
                     _spawnValid = false;
                     Debug.Log("Room and connector combo (" + spawningRoomInfo.gameObject.name + " and " +
-                              spawnedConnectorInfo.spawnedOnSide + ") is not valid.");
+                              spawnedConnectorInfo.spawnedOnSide + ") is not valid (" + _spawnFailCount + ")" );
+                    
                     _spawnFailCount++;
                     CheckIfRoomConnectorComboIsValid(spawnMode);
                 }
@@ -888,7 +889,8 @@ public class LevelBuilder : MonoBehaviour
                     Debug.Log("Spawn " + spawningRoomInfo.gameObject.name + " has failed completely, resetting to normal rooms.");
                     _spawnFailCount = 0;
                     spawningRoomInfo.MarkRoomForDiscard();
-                    //CheckIfRoomConnectorComboIsValid(spawnMode);
+                    spawnMode = SpawnMode.Normal;
+                    CheckIfRoomConnectorComboIsValid(spawnMode);
                 }
                 break;
             default:

@@ -118,10 +118,12 @@ public class RoomInfo : MonoBehaviour
         if (gameObject.CompareTag("StartingRoom"))
         {
             canBeDiscarded = false;
+            roomCam.Priority = 9999;
         }
         else
         {
             canBeDiscarded = true;
+            roomCam.Priority = 0;
         }
         
         LevelBuilder.Instance.spawnedRooms.Add(gameObject); //  Add to the list of rooms already in the level
