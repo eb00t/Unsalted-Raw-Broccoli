@@ -243,7 +243,7 @@ private void stopWallJump()
         var direction = _input != 0 ? Mathf.Sign(_input) : Mathf.Sign(transform.localScale.x);
         var dashVelocity = new Vector3(direction * dashSpeed, 0f, 0f);
 
-        _rb.velocity = dashVelocity;
+        _rb.velocity += dashVelocity;
         _rb.drag = 8f;
         yield return new WaitForSeconds(0.2f);
 
@@ -254,7 +254,6 @@ private void stopWallJump()
         _characterAttack.isInvulnerable = false;
         _playerAnimator.SetBool(Dash1, false);
     }
-
 
     private IEnumerator DashWait()
     {
