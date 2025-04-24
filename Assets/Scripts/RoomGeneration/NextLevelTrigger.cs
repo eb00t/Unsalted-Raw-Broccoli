@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -78,47 +79,44 @@ public class NextLevelTrigger : MonoBehaviour
         {
             case SceneToLoad.Intermission:
                 scene = "Intermission";
-                if (dataHolder.highestFloorCleared < 0)
+
+                switch (dataHolder.currentLevel)
                 {
-                    dataHolder.highestFloorCleared = 0;
+                    case LevelBuilder.LevelMode.Floor1:
+                        dataHolder.highestFloorCleared = 1;
+                        SaveData.Instance.UpdateSave();
+                        break;
+                    case LevelBuilder.LevelMode.Floor2:
+                        dataHolder.highestFloorCleared = 2;
+                        SaveData.Instance.UpdateSave();
+                        break;
+                    case LevelBuilder.LevelMode.Floor3:
+                        dataHolder.highestFloorCleared = 3;
+                        SaveData.Instance.UpdateSave();
+                        break;
                 }
                 break;
             case SceneToLoad.NextFloor:
-                if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission")
+                switch (dataHolder.highestFloorCleared)
                 {
-                    if (dataHolder.highestFloorCleared == 0)
-                    {
-                        dataHolder.highestFloorCleared = 1;
-                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor2;
-                        scene = "MainScene";
-                        SaveData.Instance.UpdateSave();
-                    }
-                    else if (dataHolder.highestFloorCleared == 1)
-                    {
-                        dataHolder.highestFloorCleared = 2;
-                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor3;
-                        scene = "MainScene"; 
-                        SaveData.Instance.UpdateSave();
-                    }
-                    else if  (dataHolder.highestFloorCleared == 2)
-                    {
-                        dataHolder.highestFloorCleared = 3;
-                        dataHolder.currentLevel = LevelBuilder.LevelMode.FinalBoss;
-                        scene = "MainScene"; 
-                        SaveData.Instance.UpdateSave();
-                    }
-                    else if  (dataHolder.highestFloorCleared == 3)
-                    {
-                        dataHolder.highestFloorCleared = 0;
+                    case 0:
                         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
-                        scene = "MainScene"; 
-                        SaveData.Instance.UpdateSave();
-                    }
+                        if (SceneManager.GetActiveScene().name == "Tutorial")
+                        {
+                            SaveData.Instance.EraseData();
+                        }
+                        break;
+                    case 1:
+                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor2;
+                        break;
+                    case 2:
+                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor3;
+                        break;
+                    case 3:
+                        dataHolder.currentLevel = LevelBuilder.LevelMode.FinalBoss;
+                        break;
                 }
-                else
-                {
-                    scene = "MainScene";
-                }
+                scene = "MainScene";
                 break;
             case SceneToLoad.TitleScreen:
                 scene = "StartScreen";
@@ -134,9 +132,10 @@ public class NextLevelTrigger : MonoBehaviour
                 scene = "Tutorial";
                 break;
         }
-            BlackoutManager.Instance.RaiseOpacity();
-            gameObject.GetComponent<BoxCollider>().enabled = false;
-            StartCoroutine(LoadNextScene(scene));
+        
+        BlackoutManager.Instance.RaiseOpacity();
+        gameObject.GetComponent<BoxCollider>().enabled = false;
+        StartCoroutine(LoadNextScene(scene));
     }
     
      IEnumerator LoadNextScene(string scene)
