@@ -502,146 +502,166 @@ public class LevelBuilder : MonoBehaviour
                 }
                 break;  
         }
-        if (spawningRoomInfo.specialRoom) 
+        if (spawningRoomInfo.specialRoom && !spawningRoomInfo.markedForDiscard) 
         {
             possibleSpecialRooms.Remove(possibleSpecialRooms[roomRandomNumber]); // Remove the rare room from the list of rooms that can spawn
         }
-        switch (_spawnMode)
+
+        if (!spawningRoomInfo.markedForDiscard)
         {
-            case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms or SpawnMode.LoreRooms: 
-                spawnPoints.Remove(spawnPoints[spawnRandomNumber]); //  Remove the door the room spawned on from the spawn point list.
-                lootRoomSpawnPoints.Remove(spawnPoints[spawnRandomNumber]);
-                break;
-            case SpawnMode.BossRooms:
-                switch (roomRandomNumber)
-                {
-                    case 0:
-                        secondBossRoomSpawnPoints.Remove(firstBossRoomSpawnPoints[spawnRandomNumber]);
-                        break;
-                    case 1:
-                        thirdBossRoomSpawnPoints.Remove(secondBossRoomSpawnPoints[spawnRandomNumber]);
-                        break;
-                    case 2:
-                        //thirdBossRoomSpawnPoints.Remove(thirdBossRoomSpawnPoints[spawnRandomNumber]);
-                        break;
-                }
-                break;
-        }
-        
-        switch (spawnedConnectorInfo.spawnedOnSide) //  Removing spawn points based on where the room spawned.
-        {
-            case "Left":
-                switch (_spawnMode)
-                {
-                    case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms or SpawnMode.LoreRooms:
-                        spawnPoints.Remove(spawningRoomInfo.doorR.transform);
-                        spawnPoints.Remove(otherConnectorSideRoomInfo.doorL.transform);
-                        lootRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
-                        lootRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorL.transform);
-                        break;
-                    case SpawnMode.BossRooms:
-                        switch (roomRandomNumber)
-                        {
-                            case 0:
-                                secondBossRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
-                                firstBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorL.transform);
-                                break;
-                            case 1:
-                               thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
-                               secondBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorL.transform);
-                               break;
-                            case 2:
-                                thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
-                                break;
-                        }
-                        spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorR.gameObject);
-                        break;
-                }
-                break;
-            case "Right":
-                switch (_spawnMode)
-                {
-                    case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms or SpawnMode.LoreRooms:
-                        spawnPoints.Remove(spawningRoomInfo.doorL.transform);
-                        spawnPoints.Remove(otherConnectorSideRoomInfo.doorR.transform);
-                        lootRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
-                        lootRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorR.transform);
-                        break;
-                    case SpawnMode.BossRooms:
-                        switch (roomRandomNumber)
-                        {
-                            case 0:
-                                secondBossRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
-                                firstBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorR.transform);
-                                break;
-                            case 1:
-                                thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
-                                secondBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorR.transform);
-                                break;
-                            case 2:
-                                thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
-                                break;
-                        }
-                        spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorL.gameObject);
-                        break;
-                }
-                break;
-            case "Top":
-                switch (_spawnMode)
-                {
-                    case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms or SpawnMode.LoreRooms:
-                        spawnPoints.Remove(spawningRoomInfo.doorB.transform);
-                        spawnPoints.Remove(otherConnectorSideRoomInfo.doorT.transform);
-                        lootRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
-                        lootRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorT.transform);
-                        break;
-                    case SpawnMode.BossRooms:
-                        switch (roomRandomNumber)
-                        {
-                            case 0:
-                                secondBossRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
-                                firstBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorT.transform);
-                                break;
-                            case 1:
-                                thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
-                                secondBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorT.transform);
-                                break;
-                            case 2:
-                                thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
-                                break;
-                        }
-                        spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorB.gameObject);
-                        break;
-                }
-                break;
-            case "Bottom":
-                switch (_spawnMode)
-                {
-                    case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms or SpawnMode.LoreRooms:
-                         spawnPoints.Remove(spawningRoomInfo.doorT.transform);
-                         spawnPoints.Remove(otherConnectorSideRoomInfo.doorB.transform);
-                         lootRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
-                         lootRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorB.transform);
-                        break;
-                    case SpawnMode.BossRooms:
-                        switch (roomRandomNumber)
-                        {
+            switch (_spawnMode)
+            {
+                case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms
+                    or SpawnMode.LoreRooms:
+                    spawnPoints.Remove(
+                        spawnPoints
+                            [spawnRandomNumber]); //  Remove the door the room spawned on from the spawn point list.
+                    lootRoomSpawnPoints.Remove(spawnPoints[spawnRandomNumber]);
+                    break;
+                case SpawnMode.BossRooms:
+                    switch (roomRandomNumber)
+                    {
                         case 0:
-                            secondBossRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
-                            firstBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorB.transform);
+                            secondBossRoomSpawnPoints.Remove(firstBossRoomSpawnPoints[spawnRandomNumber]);
                             break;
                         case 1:
-                            thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
-                            secondBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorB.transform);
+                            thirdBossRoomSpawnPoints.Remove(secondBossRoomSpawnPoints[spawnRandomNumber]);
                             break;
                         case 2:
-                            thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
+                            //thirdBossRoomSpawnPoints.Remove(thirdBossRoomSpawnPoints[spawnRandomNumber]);
                             break;
-                        }
-                        spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorT.gameObject);
-                        break;
-                }
-                break;
+                    }
+
+                    break;
+            }
+
+            switch (spawnedConnectorInfo.spawnedOnSide) //  Removing spawn points based on where the room spawned.
+            {
+                case "Left":
+                    switch (_spawnMode)
+                    {
+                        case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms
+                            or SpawnMode.LoreRooms:
+                            spawnPoints.Remove(spawningRoomInfo.doorR.transform);
+                            spawnPoints.Remove(otherConnectorSideRoomInfo.doorL.transform);
+                            lootRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
+                            lootRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorL.transform);
+                            break;
+                        case SpawnMode.BossRooms:
+                            switch (roomRandomNumber)
+                            {
+                                case 0:
+                                    secondBossRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
+                                    firstBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorL.transform);
+                                    break;
+                                case 1:
+                                    thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
+                                    secondBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorL.transform);
+                                    break;
+                                case 2:
+                                    thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorR.transform);
+                                    break;
+                            }
+
+                            spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorR.gameObject);
+                            break;
+                    }
+
+                    break;
+                case "Right":
+                    switch (_spawnMode)
+                    {
+                        case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms
+                            or SpawnMode.LoreRooms:
+                            spawnPoints.Remove(spawningRoomInfo.doorL.transform);
+                            spawnPoints.Remove(otherConnectorSideRoomInfo.doorR.transform);
+                            lootRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
+                            lootRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorR.transform);
+                            break;
+                        case SpawnMode.BossRooms:
+                            switch (roomRandomNumber)
+                            {
+                                case 0:
+                                    secondBossRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
+                                    firstBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorR.transform);
+                                    break;
+                                case 1:
+                                    thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
+                                    secondBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorR.transform);
+                                    break;
+                                case 2:
+                                    thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorL.transform);
+                                    break;
+                            }
+
+                            spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorL.gameObject);
+                            break;
+                    }
+
+                    break;
+                case "Top":
+                    switch (_spawnMode)
+                    {
+                        case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms
+                            or SpawnMode.LoreRooms:
+                            spawnPoints.Remove(spawningRoomInfo.doorB.transform);
+                            spawnPoints.Remove(otherConnectorSideRoomInfo.doorT.transform);
+                            lootRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
+                            lootRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorT.transform);
+                            break;
+                        case SpawnMode.BossRooms:
+                            switch (roomRandomNumber)
+                            {
+                                case 0:
+                                    secondBossRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
+                                    firstBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorT.transform);
+                                    break;
+                                case 1:
+                                    thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
+                                    secondBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorT.transform);
+                                    break;
+                                case 2:
+                                    thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorB.transform);
+                                    break;
+                            }
+
+                            spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorB.gameObject);
+                            break;
+                    }
+
+                    break;
+                case "Bottom":
+                    switch (_spawnMode)
+                    {
+                        case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms
+                            or SpawnMode.LoreRooms:
+                            spawnPoints.Remove(spawningRoomInfo.doorT.transform);
+                            spawnPoints.Remove(otherConnectorSideRoomInfo.doorB.transform);
+                            lootRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
+                            lootRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorB.transform);
+                            break;
+                        case SpawnMode.BossRooms:
+                            switch (roomRandomNumber)
+                            {
+                                case 0:
+                                    secondBossRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
+                                    firstBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorB.transform);
+                                    break;
+                                case 1:
+                                    thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
+                                    secondBossRoomSpawnPoints.Remove(otherConnectorSideRoomInfo.doorB.transform);
+                                    break;
+                                case 2:
+                                    thirdBossRoomSpawnPoints.Remove(spawningRoomInfo.doorT.transform);
+                                    break;
+                            }
+
+                            spawningRoomInfo.doorSpawnPoints.Remove(spawningRoomInfo.doorT.gameObject);
+                            break;
+                    }
+
+                    break;
+            }
         }
         var rareSpawn = RandomiseNumber(100);
         Debug.Log("Rare spawn number: " + rareSpawn);
@@ -765,6 +785,23 @@ public class LevelBuilder : MonoBehaviour
       if (spawnedBossRooms.Count == 3)
       {
           bossRoomGeneratingFinished = true;
+          foreach (var room in spawnedRooms)
+          {
+              room.GetComponent<RoomScripting>().CheckDoors();
+          }
+          
+          foreach (var connector in spawnedConnectors)
+          {
+              if (connector.GetComponent<ConnectorRoomInfo>().attachedRooms.Count < 2)
+              {
+                  Destroy(connector.gameObject);
+              }
+          }
+
+          foreach (var room in spawnedRooms)
+          {
+              room.GetComponent<RoomScripting>().CheckDoors();
+          }
       }
   }
 
@@ -879,7 +916,6 @@ public class LevelBuilder : MonoBehaviour
                     _spawnValid = false;
                     Debug.Log("Room and connector combo (" + spawningRoomInfo.gameObject.name + " and " +
                               spawnedConnectorInfo.spawnedOnSide + ") is not valid (" + _spawnFailCount + ")" );
-                    
                     _spawnFailCount++;
                     CheckIfRoomConnectorComboIsValid(spawnMode);
                 }
@@ -889,8 +925,6 @@ public class LevelBuilder : MonoBehaviour
                     Debug.Log("Spawn " + spawningRoomInfo.gameObject.name + " has failed completely, resetting to normal rooms.");
                     _spawnFailCount = 0;
                     spawningRoomInfo.MarkRoomForDiscard();
-                    spawnMode = SpawnMode.Normal;
-                    CheckIfRoomConnectorComboIsValid(spawnMode);
                 }
                 break;
             default:

@@ -31,7 +31,6 @@ public class ConnectorRoomInfo : MonoBehaviour
                 spawnWalls.Add(wallT.transform);
                 break;
         }
-        
     }
 
     void Start()
@@ -41,7 +40,6 @@ public class ConnectorRoomInfo : MonoBehaviour
             LightManager.Instance.allConnectorLights.Add(lit.GetComponent<Light>());
             allLights.Add(lit.GetComponent<Light>());
         }
-
         foreach (var lit in allLights)
         {
             lit.enabled = false;

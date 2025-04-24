@@ -59,7 +59,10 @@ private void Awake()
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Connector Intersection Checker"))
             {
                 Debug.Log(name + " hit a connector! " + "(" + hit.transform.gameObject.name + ")");
-                _roomInfo.attachedConnectors.Add(hit.transform.gameObject);
+                if (!_roomInfo.attachedConnectors.Contains(hit.transform.gameObject))
+                {
+                    _roomInfo.attachedConnectors.Add(hit.transform.gameObject);
+                }
                 _connectorRoomInfo = hit.transform.GetComponent<ConnectorRoomInfo>();
                 _connectorRoomInfo.attachedRooms.Add(transform.root.gameObject);
                 hasDoor = true;
@@ -144,6 +147,10 @@ private void Awake()
         {
             OpenDoor();
         }
+        else
+        {
+            CloseDoor();
+        }
         _roomInfo.gameObject.GetComponent<IntersectionRaycast>().FixDoorLayers();
     }
 
@@ -158,8 +165,6 @@ private void Awake()
    {
        _doorAnimator.SetBool(CloseDoors, true);
       Debug.Log("Closing door (" + gameObject.name + ") in " + transform.root.name);
-     
-       
    }
    public void PlaySlamSound()
    {
