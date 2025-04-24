@@ -7,9 +7,10 @@ using Random = UnityEngine.Random;
 public class LootManager : MonoBehaviour
 {    
     public static LootManager Instance { get; private set; }
-    public List<GameObject> minorLoot, majorLoot, lore;
-    private readonly int _willLootSpawn = 2; //It has a 10% chance to spawn by default
+    public List<GameObject> minorLoot, majorLoot, lore, permaLoot;
+    private readonly int _willLootSpawn = 2; //It has a 50% chance to spawn by default
     private int _willMajorLootSpawn = 10;
+    private int _willPermaLootSpawn = 20;
     private void Awake()
     {
         foreach (var item in Resources.LoadAll<GameObject>("ItemPrefabs/Minor Items"))
@@ -19,6 +20,10 @@ public class LootManager : MonoBehaviour
         foreach (var item in Resources.LoadAll<GameObject>("ItemPrefabs/Major Items"))
         {
             majorLoot.Add(item);
+        }
+        foreach (var item in Resources.LoadAll<GameObject>("ItemPrefabs/Permanent Items"))
+        {
+            permaLoot.Add(item);
         }
         foreach (var item in Resources.LoadAll<GameObject>("ItemPrefabs/Lore"))
         {
@@ -37,20 +42,24 @@ public class LootManager : MonoBehaviour
     {
         int spawnChance = RandomiseNumber(_willLootSpawn);
         int majorLootChance = RandomiseNumber(_willMajorLootSpawn);
+        int permaLootChance = RandomiseNumber(_willPermaLootSpawn);
         if (spawnChance == 0)
         {
             int chosenLoot;
             GameObject lootToSpawn;
             Debug.Log("Spawning loot.");
-            if (majorLootChance != 0)
+            if (majorLootChance != 0 && permaLootChance != 0)
             {
                 chosenLoot = RandomiseNumber(minorLoot.Count);
             }
-            else
+            else if (majorLootChance == 0 && permaLootChance != 0)
             {
                 chosenLoot = RandomiseNumber(majorLoot.Count);
             }
-
+            else
+            {
+                chosenLoot = RandomiseNumber(permaLoot.Count);
+            }
             float offsetSpawnPos;
             int leftOffset = RandomiseNumber(2);
             Debug.Log(leftOffset);
@@ -63,13 +72,17 @@ public class LootManager : MonoBehaviour
                 offsetSpawnPos = room.transform.position.x + room.GetComponent<RoomInfo>().roomLength / 4;
             }
             Vector3 realSpawnPos = new Vector3(offsetSpawnPos, room.transform.position.y, room.transform.position.z);
-            if (majorLootChance != 0)
+            if (majorLootChance != 0 && permaLootChance != 0)
             {
                 lootToSpawn = Instantiate(minorLoot[chosenLoot], realSpawnPos, Quaternion.identity);
             }
-            else
+            else if (majorLootChance == 0 && permaLootChance != 0)
             {
-                lootToSpawn = Instantiate(majorLoot[chosenLoot], realSpawnPos, Quaternion.identity);
+                lootToSpawn = Instantiate(majorLoot [chosenLoot], realSpawnPos, Quaternion.identity);
+            }
+            else 
+            {
+                lootToSpawn = Instantiate(permaLoot[chosenLoot], realSpawnPos, Quaternion.identity);
             }
 
             lootToSpawn.SetActive(true);
@@ -82,11 +95,24 @@ public class LootManager : MonoBehaviour
 
     public void SpawnRandomLootHere(Transform here)
     {
-        int chosenLoot = RandomiseNumber(majorLoot.Count);
-        GameObject lootToSpawn = Instantiate(majorLoot[chosenLoot], here.position, Quaternion.identity);
+        GameObject lootToSpawn;
+        int chosenLoot;
+        int permaOrActive = RandomiseNumber(3);
+        switch (permaOrActive)
+        {
+            case 0 or 1:
+                chosenLoot = RandomiseNumber(majorLoot.Count);
+                lootToSpawn = Instantiate(majorLoot[chosenLoot], here.position, Quaternion.identity);
+                majorLoot.Remove(majorLoot[chosenLoot]);
+                break;
+            default:
+                 chosenLoot = RandomiseNumber(permaLoot.Count);
+                 lootToSpawn = Instantiate(permaLoot[chosenLoot], here.position, Quaternion.identity);
+                 permaLoot.Remove(permaLoot[chosenLoot]);
+                 break;
+        }
         lootToSpawn.SetActive(true);
         lootToSpawn.transform.parent = here.transform; 
-        majorLoot.Remove(majorLoot[chosenLoot]);
     }
 
     public void SpawnSpecificLootHere(Transform here, string path)
