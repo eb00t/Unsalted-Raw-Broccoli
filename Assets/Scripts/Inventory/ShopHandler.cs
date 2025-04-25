@@ -162,18 +162,24 @@ public class ShopHandler : MonoBehaviour
 		if (dataHolder.currencyHeld - indexHolder.price < 0)
 		{
 			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseFailed, transform.position);
+			_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Not enough currency held.", false);
 			return;
 		}
 		if (indexHolder.numHeld <= 0)
 		{
 			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseFailed, transform.position);
+			_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Item is no longer in stock.", false);
 			return;
 		}
 
 		foreach (var n in _inventoryStore.grid.GetComponentsInChildren<IndexHolder>())
 		{
 			if (n.consumable.title != indexHolder.consumable.title) continue;
-			if (n.numHeld == n.consumable.maximumHold) return;
+			if (n.numHeld == n.consumable.maximumHold)
+			{
+				_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Maximum number of item held", false);
+				return;
+			}
 		}
 
 		_currencyManager.UpdateCurrency(-indexHolder.price);
@@ -182,8 +188,7 @@ public class ShopHandler : MonoBehaviour
 		indexHolder.numHeld--;
 		
 		// add item to inventory when bought, instantiation prevents errors due to using a prefab
-		var inventoryStore = _uiManager.GetComponent<InventoryStore>();
-		inventoryStore.AddNewItem(indexHolder.consumable);
+		_inventoryStore.AddNewItem(indexHolder.consumable);
 		
 		AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseMade, transform.position);
 		

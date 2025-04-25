@@ -77,22 +77,24 @@ public class ToolbarHandler : MonoBehaviour
     {
         for (var i = 0; i < dataHolder.equippedConsumables.Length; i++)
         {
-            if (dataHolder.equippedConsumables[i] != consumable.itemID) continue;
-            
-            dataHolder.equippedConsumables[i] = 0;
-            break;
+            if (dataHolder.equippedConsumables[i] == consumable.itemID)
+            {
+                dataHolder.equippedConsumables[i] = 0;
+                break;
+            }
         }
         
         var index = -1;
 
-        if (dataHolder.isAutoEquipEnabled && !_characterMovement.uiOpen)
+        if (dataHolder.isAutoEquipEnabled && (!_characterMovement.uiOpen || _menuHandler.shopGUI.activeSelf))
         {
             for (var i = 0; i < dataHolder.equippedConsumables.Length; i++)
             {
-                if (dataHolder.equippedConsumables[i] > 0) continue;
-                
-                index = i;
-                break;
+                if (dataHolder.equippedConsumables[i] == 0)
+                {
+                    index = i;
+                    break;
+                }
             }
         }
         else

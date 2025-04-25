@@ -9,7 +9,7 @@ public class ItemPickup : MonoBehaviour
     [SerializeField] private float range;
     private Transform _player;
     public bool canPickup;
-    [SerializeField] private bool isPermanentPassive;
+    public bool isPermanentPassive;
     private CharacterMovement _characterMovement;
     private GameObject _uiManager;
     private InventoryStore _inventoryStore;

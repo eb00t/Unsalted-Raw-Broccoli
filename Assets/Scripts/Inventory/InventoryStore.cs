@@ -113,8 +113,7 @@ public class InventoryStore : MonoBehaviour
         {
             if (t != consumable.itemID) continue;
             
-            var b = grid.GetComponentsInChildren<IndexHolder>()
-                .FirstOrDefault(b => b.consumable.itemID == consumable.itemID);
+            var b = grid.GetComponentsInChildren<IndexHolder>().FirstOrDefault(b => b.consumable.itemID == consumable.itemID);
 
             if (b == null) continue;
                 
@@ -159,7 +158,7 @@ public class InventoryStore : MonoBehaviour
 
         if (dataHolder.isAutoEquipEnabled)
         {
-            if (_menuHandler.shopGUI != null && _menuHandler.shopGUI.activeSelf) return;
+            //if (_menuHandler.shopGUI != null && _menuHandler.shopGUI.activeSelf) return;
             _toolbarHandler.AddToToolbar(consumable);
         }
     }

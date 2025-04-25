@@ -395,7 +395,7 @@ private void stopWallJump()
         }
         
         // at the apex of a jump this basically gives the player a split second where they don't immediately fall back down
-        if (!grounded && !_isHanging)
+        if (!grounded && !_isHanging && !isInUpThrust)
         {
             if (Mathf.Abs(_rb.velocity.y) <= hangThreshold)
             {
@@ -408,13 +408,10 @@ private void stopWallJump()
         
         if (_isHanging)
         {
-            if (!_isDashing)
-            {
-                _hangTimer -= Time.fixedDeltaTime;
-                if (!(_hangTimer <= 0f)) return;
-                _rb.useGravity = true;
-                _isHanging = false;
-            }
+            _hangTimer -= Time.fixedDeltaTime;
+            if (!(_hangTimer <= 0f)) return;
+            _rb.useGravity = true;
+            _isHanging = false;
         }
         
         if (_jumpBuffered && !isInUpThrust)
