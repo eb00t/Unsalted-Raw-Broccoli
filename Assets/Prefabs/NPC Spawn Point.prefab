@@ -73,9 +73,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   replayable: 1
   dialogueToLoad: {fileID: 0}
+  shopCloseDialogue: {fileID: 0}
   loreToLoad: {fileID: 0}
+  shopCanvas: {fileID: 0}
+  isShop: 0
+  isEndText: 0
   range: 3
   dialogueID: 0
+  randomLore: 0
   dialogueOrLore: 0
   _index: 0
   dialogueSpeed: 0
@@ -92,6 +97,7 @@ GameObject:
   - component: {fileID: 5377369703417297139}
   - component: {fileID: 7629218153183295817}
   - component: {fileID: 6731220684723133357}
+  - component: {fileID: 2948538866575673402}
   m_Layer: 0
   m_Name: NPC Sprite
   m_TagString: Untagged
@@ -188,3 +194,17 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2948538866575673402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3813825425713145093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0a259e741bea8640ba6d4a6df5491cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isFacingLeft: 0
+  facePlayerDistance: 5
