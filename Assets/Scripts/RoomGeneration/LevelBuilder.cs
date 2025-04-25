@@ -427,28 +427,8 @@ public class LevelBuilder : MonoBehaviour
                 break;
         }
 
-        switch (_spawnMode)
-        {
-            case SpawnMode.Normal:
-                roomToSpawn = Instantiate(possibleRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //  Instantiate the room at the spawnpoint's position
-                break;
-            case SpawnMode.BossRooms:
-                roomToSpawn = Instantiate(possibleBossRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity);
-                break;
-            case SpawnMode.Shops:
-                roomToSpawn = Instantiate(possibleShops[roomRandomNumber], realSpawnPosition, Quaternion.identity); //There is only one type of shop
-                break;
-            case SpawnMode.SpecialRooms:
-                roomToSpawn = Instantiate(possibleSpecialRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); //  Instantiate the special room at the spawnpoint's position
-                break;
-            case SpawnMode.LootRooms:
-                roomToSpawn = Instantiate(possibleLootRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity); 
-                break;
-            case SpawnMode.LoreRooms:
-                roomToSpawn = Instantiate(possibleLoreRooms[roomRandomNumber], realSpawnPosition, Quaternion.identity);
-                _numberOfRoomsToSpawn++;
-                break;
-        }
+        roomToSpawn = Instantiate(roomToSpawn, realSpawnPosition, Quaternion.identity); //  Instantiate the room at the spawnpoint's position
+        
         spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
         spawningRoomInfo.connectorSpawnedOff = _connectorToSpawn;
         //Debug.Log("Spawned " + possibleRooms[roomRandomNumber] + " at " + realSpawnPosition);
@@ -513,9 +493,7 @@ public class LevelBuilder : MonoBehaviour
             {
                 case SpawnMode.Normal or SpawnMode.SpecialRooms or SpawnMode.Shops or SpawnMode.LootRooms
                     or SpawnMode.LoreRooms:
-                    spawnPoints.Remove(
-                        spawnPoints
-                            [spawnRandomNumber]); //  Remove the door the room spawned on from the spawn point list.
+                    spawnPoints.Remove(spawnPoints[spawnRandomNumber]); //  Remove the door the room spawned on from the spawn point list.
                     lootRoomSpawnPoints.Remove(spawnPoints[spawnRandomNumber]);
                     break;
                 case SpawnMode.BossRooms:
@@ -697,7 +675,7 @@ public class LevelBuilder : MonoBehaviour
                     }
                     break;
                 case > 60 and <= 90:
-                    if (spawnedLootRooms.Count < lootRoomsToSpawn)
+                    if (lootRoomsToSpawn > spawnedLootRooms.Count && lootRoomSpawnPoints != null)
                     {
                         Debug.Log("LOOT ROOM SPAWNING");
                         _spawnMode = SpawnMode.LootRooms;
@@ -734,9 +712,8 @@ public class LevelBuilder : MonoBehaviour
             IntersectionRaycast intersectionRaycast = spawnedRooms[i].GetComponent<IntersectionRaycast>();
             if (!spawningRoomInfo.markedForDiscard)
             {
-                spawningRoomInfo.canBeDiscarded = false;
+                intersectionRaycast.CheckForInternalIntersection();
             }
-            intersectionRaycast.CheckForInternalIntersection();
         }
         if (roomsDiscarded > 0)
         {
@@ -748,13 +725,10 @@ public class LevelBuilder : MonoBehaviour
             yield return new WaitForSecondsRealtime(.5f);
             SpawnBossRoom();
             roomGeneratingFinished = true;
-            AudioManager.Instance.SetEventParameter(AudioManager.Instance.loadingEventInstance, "Level Loaded", 1);
             foreach (var room in spawnedRooms)
             {
                 RoomScripting roomScript = room.GetComponent<RoomScripting>();
                 roomScript.CheckDoors();
-                IntersectionRaycast intersectionRaycast = room.GetComponent<IntersectionRaycast>();
-                intersectionRaycast.FixWallLayers();
             }
         }
     }
@@ -802,6 +776,8 @@ public class LevelBuilder : MonoBehaviour
           {
               room.GetComponent<RoomScripting>().CheckDoors();
           }
+          AudioManager.Instance.SetEventParameter(AudioManager.Instance.loadingEventInstance, "Level Loaded", 1);
+          _startingRoom.GetComponent<RoomInfo>().roomCam.Priority = 99999999;
       }
   }
 
@@ -841,7 +817,7 @@ public class LevelBuilder : MonoBehaviour
            {
                Debug.Log(room.name + " has been discarded.");
                discardedRooms.Remove(room);
-               Destroy(badRoomInfo.connectorSpawnedOff.gameObject);
+               //Destroy(badRoomInfo.connectorSpawnedOff.gameObject);
                Destroy(room);
            }
            roomsDiscarded++;
@@ -882,27 +858,33 @@ public class LevelBuilder : MonoBehaviour
         {
             case SpawnMode.Normal:
                 roomRandomNumber = RandomiseNumber(possibleRooms.Count); // Spawn a random room from the list of possible rooms
-                spawningRoomInfo = possibleRooms[roomRandomNumber].GetComponent<RoomInfo>();
+                roomToSpawn = possibleRooms[roomRandomNumber];
+                spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
                 break;
             case SpawnMode.SpecialRooms:
                 roomRandomNumber = RandomiseNumber(possibleSpecialRooms.Count);
-                spawningRoomInfo = possibleSpecialRooms[roomRandomNumber].GetComponent<RoomInfo>();
+                roomToSpawn = possibleSpecialRooms[roomRandomNumber];
+                spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
                 break;
             case SpawnMode.LoreRooms:
                 roomRandomNumber = RandomiseNumber(possibleLoreRooms.Count);
-                spawningRoomInfo = possibleLoreRooms[roomRandomNumber].GetComponent<RoomInfo>();
+                roomToSpawn = possibleLoreRooms[roomRandomNumber];
+                spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
                 break;   
             case SpawnMode.LootRooms:
                 roomRandomNumber = RandomiseNumber(possibleLootRooms.Count);
-                spawningRoomInfo = possibleLootRooms[roomRandomNumber].GetComponent<RoomInfo>();
+                roomToSpawn = possibleLootRooms[roomRandomNumber];
+                spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
                 break; 
             case SpawnMode.BossRooms:
                 roomRandomNumber++;
-                spawningRoomInfo = possibleBossRooms[roomRandomNumber].GetComponent<RoomInfo>();
+                roomToSpawn = possibleBossRooms[roomRandomNumber];
+                spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
                 break;
             case SpawnMode.Shops:
                 roomRandomNumber = RandomiseNumber(possibleShops.Count);
-                spawningRoomInfo = possibleShops[roomRandomNumber].GetComponent<RoomInfo>();
+                roomToSpawn = possibleShops[roomRandomNumber];
+                spawningRoomInfo = roomToSpawn.GetComponent<RoomInfo>();
                 break;
         }
         switch (spawnedConnectorInfo.spawnedOnSide)
@@ -914,7 +896,7 @@ public class LevelBuilder : MonoBehaviour
                 if (_spawnFailCount < 10)
                 {
                     _spawnValid = false;
-                    Debug.Log("Room and connector combo (" + spawningRoomInfo.gameObject.name + " and " +
+                    Debug.Log("Room and connector combo (" + roomToSpawn + " and " +
                               spawnedConnectorInfo.spawnedOnSide + ") is not valid (" + _spawnFailCount + ")" );
                     _spawnFailCount++;
                     CheckIfRoomConnectorComboIsValid(spawnMode);
@@ -922,7 +904,7 @@ public class LevelBuilder : MonoBehaviour
                 else
                 {
                     //spawnMode = SpawnMode.Normal;
-                    Debug.Log("Spawn " + spawningRoomInfo.gameObject.name + " has failed completely, resetting to normal rooms.");
+                    Debug.Log("Spawn " + roomToSpawn + " has failed completely, resetting to normal rooms.");
                     _spawnFailCount = 0;
                     spawningRoomInfo.MarkRoomForDiscard();
                 }

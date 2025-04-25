@@ -24,9 +24,9 @@ private void Awake()
         _initialPosition = transform.position;
         _doorAnimator = gameObject.GetComponent<Animator>();
     }
-    public void CheckDoors()
+    public void CheckDoors() // Check if a connector or door (from another room) is nearby, and open it up. Also contains code to instantiate connectors to distant rooms.
     {
-        Debug.Log("Checking for doors");
+        //Debug.Log("Checking for doors");
         Vector3 direction;
         switch (tag)
         {
@@ -64,7 +64,11 @@ private void Awake()
                     _roomInfo.attachedConnectors.Add(hit.transform.gameObject);
                 }
                 _connectorRoomInfo = hit.transform.GetComponent<ConnectorRoomInfo>();
-                _connectorRoomInfo.attachedRooms.Add(transform.root.gameObject);
+                
+                if (!_connectorRoomInfo.attachedRooms.Contains(transform.root.gameObject))
+                {
+                    _connectorRoomInfo.attachedRooms.Add(transform.root.gameObject);
+                }
                 hasDoor = true;
                 _roomInfo.usableDoors.Add(gameObject);
             } 
@@ -78,6 +82,10 @@ private void Awake()
                     hit.transform.gameObject.GetComponent<DoorInfo>().hasDoor = true;
                     _roomInfo.usableDoors.Add(gameObject);
                 }
+            }
+            else
+            {
+                hasDoor = false;
             }
 
             if (hit.transform.gameObject == null && _roomInfo.bossRoom == false)
@@ -151,7 +159,6 @@ private void Awake()
         {
             CloseDoor();
         }
-        _roomInfo.gameObject.GetComponent<IntersectionRaycast>().FixDoorLayers();
     }
 
    public void OpenDoor()

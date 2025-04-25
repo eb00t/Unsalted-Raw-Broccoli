@@ -30,7 +30,7 @@ public class CameraTrigger : MonoBehaviour
         }
         //_doorInfo = transform.parent.GetComponent<DoorInfo>();
         _playerCam = CameraManager.Instance.playerCam;
-        Debug.Log(_playerCam.name);
+        //Debug.Log(_playerCam.name);
         //StartCoroutine(CheckIfDoorCanOpen());
         switch (roomOrConnector)
         {

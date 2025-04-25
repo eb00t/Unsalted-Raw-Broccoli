@@ -48,7 +48,7 @@ public class EnemySpawner : MonoBehaviour
                 break;
         }
 
-        Debug.Log("Wave count: " + _waveCount);
+//        Debug.Log("Wave count: " + _waveCount);
         if (howToSpawn == HowToSpawn.Random)
         {
             foreach (var enemy in Resources.LoadAll<GameObject>("Enemies/Normal Enemies"))

@@ -40,7 +40,7 @@ public class RoomInfo : MonoBehaviour
     public Transform wallL, wallR, wallB, wallT;
     public List<GameObject> attachedConnectors;
     public GameObject connectorSpawnedOff;
-    public bool markedForDiscard; 
+    public bool markedForDiscard = false; 
     public CinemachineVirtualCamera roomCam;
     public bool canBeDiscarded = true;
     public string roomPath;
@@ -93,6 +93,7 @@ public class RoomInfo : MonoBehaviour
 
     void Start()
     {
+        LevelBuilder.Instance.spawnedRooms.Add(gameObject); //  Add to the list of rooms already in the level
         foreach (var lit in gameObject.GetComponentsInChildren<Light>())
         {
             LightManager.Instance.allRoomLights.Add(lit);
@@ -126,7 +127,7 @@ public class RoomInfo : MonoBehaviour
             roomCam.Priority = 0;
         }
         
-        LevelBuilder.Instance.spawnedRooms.Add(gameObject); //  Add to the list of rooms already in the level
+        
         if (bossRoom)
         {
             LevelBuilder.Instance.spawnedBossRooms.Add(gameObject);
@@ -152,6 +153,7 @@ public class RoomInfo : MonoBehaviour
         if (loreRoom)
         {
             LevelBuilder.Instance.spawnedLoreRooms.Add(gameObject);
+            LevelBuilder.Instance.howManyRoomsToSpawn++;
             if (LevelBuilder.Instance.spawnedLoreRooms.Count > 1)
             {
                 MarkRoomForDiscard();
@@ -243,6 +245,7 @@ public class RoomInfo : MonoBehaviour
         if (loreRoom)
         {
             LevelBuilder.Instance.spawnedLoreRooms.Remove(gameObject);
+            LevelBuilder.Instance.howManyRoomsToSpawn--;
         }
         foreach (var connector in attachedConnectors)
         {

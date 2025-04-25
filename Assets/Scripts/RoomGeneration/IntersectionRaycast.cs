@@ -24,7 +24,7 @@ public class IntersectionRaycast : MonoBehaviour
     public List<GameObject> objectsToIgnore;
 
 
-    void Awake()
+    void Start()
     {
         _allChildren = new List<Transform>();
         _allWalls = new List<Transform>();
@@ -37,15 +37,16 @@ public class IntersectionRaycast : MonoBehaviour
         {
             _allChildren.Add(child);
         }
-
-        foreach (var child in _allChildren)
-        {
-            _layers.Add(child.gameObject.layer);
-        }
-
+        
         foreach (var child in _allChildren)
         {
             objectsToIgnore.Add(child.gameObject);
+            _layers.Add(child.gameObject.layer);
+        }
+
+        foreach (var child in objectsToIgnore)
+        {
+            child.layer = LayerMask.NameToLayer("Ignore Raycast");
         }
 
         objectsToIgnore.Add(GameObject.FindWithTag("Player"));
@@ -56,17 +57,15 @@ public class IntersectionRaycast : MonoBehaviour
         _quarterRoomLength = _roomInfo.roomLength / 4;
         _quarterRoomHeight = _roomInfo.roomHeight / 4;
 
-        MessUpLayers();
+        _rayCastLength = _roomInfo.roomLength + 2.5f;
+        _rayCastHeight = _roomInfo.roomHeight + 2.5f;
 
-        _rayCastLength = _roomInfo.roomLength + 2;
-        _rayCastHeight = _roomInfo.roomHeight + 2;
-
-        Vector3 cornerTL = new Vector3(_roomInfo.wallL.position.x - .4f,
-            _roomInfo.wallL.position.y + _halfRoomHeight + .9f, _roomInfo.wallL.position.z);
-        Vector3 cornerTR = new Vector3(_roomInfo.wallR.position.x +.4f,
-            _roomInfo.wallL.position.y + _halfRoomHeight + .9f, _roomInfo.wallL.position.z);
-        Vector3 cornerBL = new Vector3(_roomInfo.wallL.position.x -.4f,
-            _roomInfo.wallR.position.y - _halfRoomHeight - .9f, _roomInfo.wallR.position.z);
+        Vector3 cornerTL = new Vector3(_roomInfo.wallL.position.x - .45f,
+            _roomInfo.wallL.position.y + _halfRoomHeight + .95f, _roomInfo.wallL.position.z);
+        Vector3 cornerTR = new Vector3(_roomInfo.wallR.position.x +.45f,
+            _roomInfo.wallL.position.y + _halfRoomHeight + .95f, _roomInfo.wallL.position.z);
+        Vector3 cornerBL = new Vector3(_roomInfo.wallL.position.x -.45f,
+            _roomInfo.wallR.position.y - _halfRoomHeight - .95f, _roomInfo.wallR.position.z);
         Vector3 cornerBR = new Vector3(_roomInfo.wallR.position.x, _roomInfo.wallR.position.y - _halfRoomHeight + 0.5f,
             _roomInfo.wallR.position.z);
         Vector3 adjHorizRayPos = new Vector3(_roomInfo.wallL.position.x + 0.5f, _roomInfo.wallL.position.y,
@@ -85,62 +84,13 @@ public class IntersectionRaycast : MonoBehaviour
         //_rightBottomRay = new Ray(cornerBR, Vector3.left);
         _horizMiddleRay = new Ray(adjHorizRayPos, Vector3.right);
         _verticMiddleRay = new Ray(adjVertiRayPos, Vector3.down);
-    }
 
-    void MessUpLayers() // Changes all layers of children to ensure they don't trigger the raycasts.
-    {
-        Debug.Log("Messing up layers of " + gameObject.name);
-        foreach (var child in _allChildren)
-        {
-            child.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-        }
-    }
-
-    void FixLayers() // Return layers to normal
-    {
-        Debug.Log("Fixing layers of " + gameObject.name);
-        for (int i = 0; i < _allChildren.Count; i++)
-        {
-            _allChildren[i].gameObject.layer = _layers[i];
-        }
-
-        _layers.Clear();
-        foreach (var wall in _roomInfo.allWalls)
-        {
-            _wallLayers.Add(wall.gameObject.layer);
-            _allWalls.Add(wall.transform);
-            wall.gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
-        }
-
-        foreach (var door in _roomInfo.doorSpawnPoints)
-        {
-            _doorLayers.Add(door.gameObject.layer);
-            _allDoors.Add(door.transform);
-            door.gameObject.layer = LayerMask.NameToLayer("Intersection Checker");
-        }
-    }
-
-    public void FixWallLayers()
-    {
-        for (int i = 0; i < _allWalls.Count; i++)
-        {
-            _allWalls[i].gameObject.layer = _wallLayers[i];
-        }
-    }
-
-    public void FixDoorLayers()
-    {
-        for (int i = 0; i < _allDoors.Count; i++)
-        {
-            _allDoors[i].gameObject.layer = _doorLayers[i];
-        }
-    }
-
-    private void Start()
-    {
         CheckForInternalIntersection(); //_roomInfo.connectorSpawnedOff.GetComponent<ConnectorRoomInfo>());
+
+
     }
 
+    
     private bool FireInternalRayCast()
     {
         bool discard = false;
@@ -214,7 +164,6 @@ public class IntersectionRaycast : MonoBehaviour
     public void CheckForInternalIntersection()
     {
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-        MessUpLayers();
         bool discard = FireInternalRayCast();
         if (discard)
         {
@@ -230,11 +179,12 @@ public class IntersectionRaycast : MonoBehaviour
             }
             else
             {
-                _roomInfo.canBeDiscarded = false;
-                 FixLayers();
+                for (int i = 0; i < _layers.Count; i++)
+                {
+                    objectsToIgnore[i].layer = _layers[i];
+                }
             }
         }
-       
     }
     
 
