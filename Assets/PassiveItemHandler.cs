@@ -178,7 +178,7 @@ public class PassiveItemHandler : MonoBehaviour
                 break;
             case PassiveEffect.AttackIncrease: // increases base attack by percentage
                 var newAttack = (float)dataHolder.playerBaseAttack / 100 * passiveItem.effectAmount;
-                dataHolder.playerBaseAttack += (int)newAttack;
+                dataHolder.playerBaseAttack = 10 + (int)newAttack;
                 break;
             case PassiveEffect.HpChanceOnKill:
                 dataHolder.hpChanceOnKill = true;

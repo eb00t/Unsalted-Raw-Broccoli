@@ -19,6 +19,8 @@ public class ReadLore : MonoBehaviour
     public LoreItemHandler whatLore;
     public dialogueControllerScript dialogueController;
     public bool loadSpecificLore;
+    public bool hasBeenRead; 
+
     public enum LoreType
     {
         Book,
