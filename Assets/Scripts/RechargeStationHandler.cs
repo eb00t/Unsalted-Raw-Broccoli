@@ -20,7 +20,7 @@ public class RechargeStationHandler : MonoBehaviour
     private void Start()
     {
         cost = Random.Range(minCost, maxCost);
-        _energyStored = (cost / 7) + (cost % 7);
+        _energyStored = (cost / 4) + (cost % 4);
         Debug.Log(_energyStored);
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
@@ -43,7 +43,7 @@ public class RechargeStationHandler : MonoBehaviour
         else if (dist > range)
         {
             if (_itemPickupHandler.itemCount > 0) return;
-            if (!_menuHandler.rechargeStationHandler == this) return;
+            if (_menuHandler.rechargeStationHandler != this) return;
             _itemPickupHandler.isPlayerNearRecharge = false;
         }
     }
