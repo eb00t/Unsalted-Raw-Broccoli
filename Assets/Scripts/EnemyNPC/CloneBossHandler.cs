@@ -24,6 +24,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     [SerializeField] private int attack;
     [SerializeField] private int poiseDamage;
     [SerializeField] private int numberOfAttacks;
+    [SerializeField] private Vector3 knockbackPower;
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
@@ -56,7 +57,6 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private bool _isStuck;
     private int _poisonBuildup;
     private int _poiseBuildup;
-    private bool _isJumpingThroughPlatform;
 
     [Header("References")] 
     [SerializeField] private BoxCollider attackHitbox;
@@ -86,6 +86,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
     int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
+    Vector3 IDamageable.KnockbackPower { get => knockbackPower; set => knockbackPower = value; }
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
@@ -251,8 +252,6 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         {
             Physics.IgnoreCollision(_enemyCollider, col, false);
         }
-
-        _isJumpingThroughPlatform = false;
     }
     
     private void TriggerJump(Vector3 target)

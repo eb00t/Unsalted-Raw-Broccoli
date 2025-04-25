@@ -252,7 +252,7 @@ public class ToolbarHandler : MonoBehaviour
                 break;
             case ConsumableEffect.Heal: // Heals player by a percentage of their maximum health
                 var newHealth = (float)dataHolder.playerMaxHealth / 100 * consumable.effectAmount;
-                _characterAttack.TakeDamagePlayer((int)-newHealth, 0);
+                _characterAttack.TakeDamagePlayer((int)-newHealth, 0, Vector3.zero);
                 break;
             case ConsumableEffect.GiveCurrency: // gives the player money
                 AudioManager.Instance.PlayOneShot(FMODEvents.Instance.CurrencyPickup, transform.position);
@@ -303,7 +303,7 @@ public class ToolbarHandler : MonoBehaviour
 
         for (var i = 0; i < 5; i++)
         {
-            _characterAttack.TakeDamagePlayer((int)-consumable.effectAmount, 0);
+            _characterAttack.TakeDamagePlayer((int)-consumable.effectAmount, 0, Vector3.zero);
             yield return new WaitForSecondsRealtime(healInterval);
         }
 

@@ -102,6 +102,7 @@ public class CompanionCameraAI : MonoBehaviour
 
     private void Attack(Transform nearestTarget)
     {
+        if (!_canAttack) return;
         //_rigidbody.velocity = Vector3.zero;
         ProjectileAttack(nearestTarget);
     }

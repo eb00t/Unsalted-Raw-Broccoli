@@ -21,7 +21,7 @@ public class globalStatsScript : MonoBehaviour
     {
         loadData();
         
-        if (PlayerPrefs.GetFloat("DeathCounter") != null)
+        if (PlayerPrefs.GetFloat("DeathCounter") > 0)
         {
             deathCounter = PlayerPrefs.GetFloat("DeathCounter");
         }

@@ -37,9 +37,6 @@ public class ControlsManager : MonoBehaviour
     [SerializeField] private Sprite dPadUp, dPadDown, dPadLeft, dPadRight;
     [SerializeField] private Sprite lThumbstick, rThumbstick;
     [SerializeField] private Sprite lThumbstickDown, rThumbstickDown;
-
-    private string keyboardInteractBack = "F";
-    private string keyboardInteractSelect = "Space";
     
     private void Awake()
     {

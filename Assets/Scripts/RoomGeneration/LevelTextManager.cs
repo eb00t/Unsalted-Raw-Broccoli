@@ -15,7 +15,7 @@ public class LevelTextManager : MonoBehaviour
     private float _lerpTime;
     private bool _fadedOut;
     private Color _startColor;
-    private float _timer = 2;
+    //private float _timer = 2;
     
     public Color loadBckColor, loadSqrColor;
     [SerializeField] private Image loadBck, loadSqr;

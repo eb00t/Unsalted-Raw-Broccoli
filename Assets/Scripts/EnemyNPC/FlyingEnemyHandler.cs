@@ -21,6 +21,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [Header("Offensive Stats")] 
     [SerializeField] private int attack;
     [SerializeField] private int poiseDamage;
+    [SerializeField] private Vector3 knockbackPower;
     [SerializeField] private int numberOfAttacks;
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float multiProjectileOffset;
@@ -60,12 +61,10 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private bool doesHaveProjectileAttack;
     [SerializeField] private float numberOfProjectiles;
     private bool _isRepositioning;
-    private bool _isKnockedBack;
     private bool _isStunned;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
-    private bool _isStuck;
     private int _poisonBuildup;
     private int _poiseBuildup;
     
@@ -98,6 +97,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
     int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
+    Vector3 IDamageable.KnockbackPower { get => knockbackPower; set => knockbackPower = value; }
     public bool isPlayerInRange { get; set; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
@@ -145,8 +145,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         if (_animator.GetBool("isDead")) return;
         
-        CheckIfStuck();
-        
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;
         
@@ -192,25 +190,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private bool IsPlayerInRoom()
     {
         return _roomBounds != null && _roomBounds.bounds.Contains(_target.position);
-    }
-    
-    private void CheckIfStuck()
-    {
-        if (Vector3.Distance(transform.position, _lastPosition) > 0.1f)
-        {
-            _timeSinceLastMove = 0f;
-            _lastPosition = transform.position;
-            _isStuck = false;
-        }
-        else
-        {
-            _timeSinceLastMove += Time.deltaTime;
-        }
-
-        if (_timeSinceLastMove > maxTimeToReachTarget)
-        {
-            _isStuck = true;
-        }
     }
 
     private void Chase()
@@ -384,7 +363,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
                     {
                         if (Time.time >= lastDamageTime + laserTickCooldown) // makes sure player only takes damage at intervals
                         {
-                            player.TakeDamagePlayer(attack, poiseDamage);
+                            player.TakeDamagePlayer(attack, poiseDamage, knockbackPower);
                             lastDamageTime = Time.time;
                         }
                     }
@@ -616,7 +595,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
     {
-        _isKnockedBack = true;
         _aiPath.canMove = false;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.AddForce(force, ForceMode.Impulse);
@@ -624,7 +602,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _rigidbody.velocity = Vector3.zero;
         _aiPath.canMove = true;
         //_aiPath.SearchPath();
-        _isKnockedBack = false;
     }
     
     private IEnumerator StunTimer(float stunTime)

@@ -25,7 +25,7 @@ public class HitboxHandler : MonoBehaviour
             {
                 var characterAttack = other.GetComponentInChildren<CharacterAttack>();
 
-                characterAttack.TakeDamagePlayer(damageable.Attack, damageable.PoiseDamage);
+                characterAttack.TakeDamagePlayer(damageable.Attack, damageable.PoiseDamage, damageable.KnockbackPower);
                 if (doesSelfDestruct)
                 {
                     Destroy(gameObject);

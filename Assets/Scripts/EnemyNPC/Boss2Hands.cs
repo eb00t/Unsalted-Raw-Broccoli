@@ -23,6 +23,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [Header("Offensive Stats")] 
     [SerializeField] private int attack;
     [SerializeField] private int poiseDamage;
+    [SerializeField] private Vector3 knockbackPower;
 
     [Header("Tracking")] 
     private Vector3 _leftHandInitialPos, _rightHandInitialPos;
@@ -47,7 +48,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool isIdle;
     private Vector3 _impulseVector;
-    private bool _isFrozen;
+    //private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
     private bool _isStuck;
@@ -81,6 +82,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     
     public int Poise { get; set; }
     bool IDamageable.isPlayerInRange { get => _isPlayerInRange; set => _isPlayerInRange = value; }
+    Vector3 IDamageable.KnockbackPower { get => knockbackPower; set => knockbackPower = value; }
     public bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }
     public EnemySpawner EnemySpawner { get; set; }
@@ -435,7 +437,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
                     {
                         if (Time.time >= lastDamageTime + 0.25f) // makes sure player only takes damage at intervals
                         {
-                            player.TakeDamagePlayer(attack, poiseDamage);
+                            player.TakeDamagePlayer(attack, poiseDamage, knockbackPower);
                             lastDamageTime = Time.time;
                         }
                     }
@@ -561,7 +563,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         {
             case ConsumableEffect.Ice:
                 if (!canBeFrozen) return;
-                _isFrozen = true;
+                //_isFrozen = true;
                 break;
             case ConsumableEffect.Poison:
                 if (_isPoisoned) return;

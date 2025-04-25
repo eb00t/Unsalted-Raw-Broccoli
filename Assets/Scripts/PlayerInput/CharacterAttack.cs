@@ -419,7 +419,7 @@ public class CharacterAttack : MonoBehaviour
         _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
     }
 
-    public void TakeDamagePlayer(int damage, int poiseDmg)
+    public void TakeDamagePlayer(int damage, int poiseDmg, Vector3 knockback)
     {
         if (isDead || _characterMovement.uiOpen) return;
         if (isInvulnerable) return;
@@ -439,6 +439,10 @@ public class CharacterAttack : MonoBehaviour
         if (hitColor == Color.red)
         {
             StartCoroutine(HitFlash());
+            if (_characterMovement.grounded)
+            {
+                ApplyKnockback(knockback);
+            }
         }
 
         if (dataHolder.playerHealth <= damage)
@@ -471,12 +475,32 @@ public class CharacterAttack : MonoBehaviour
         
         healthSlider.value = dataHolder.playerHealth;
         _poiseBuildup += poiseDmg;
-        
-        if (_poiseBuildup >= poise)
-        {
-            StartCoroutine(StunTimer(stunDuration));
-            _poiseBuildup = 0;
-        }
+    }
+    
+    public void ApplyKnockback(Vector2 knockbackPower)
+    {
+        if (isDead) return;
+
+        var knockbackDir = -_characterMovement.transform.localScale.x;
+        var knockbackMultiplier = (_poiseBuildup >= poise) ? 15f : 10f; 
+        var knockbackForce = new Vector3(knockbackPower.x * knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
+
+        StartCoroutine(TriggerKnockback(knockbackForce, 0.35f));
+        StartCoroutine(StunTimer(.05f));
+
+        if (_poiseBuildup < poise) return;
+        StartCoroutine(StunTimer(stunDuration));
+        _poiseBuildup = 0;
+    }
+    
+    private IEnumerator TriggerKnockback(Vector3 force, float duration)
+    {
+        _characterMovement.canMove = false;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.AddForce(force, ForceMode.Impulse);
+        yield return new WaitForSeconds(duration);
+        _rigidbody.velocity = Vector3.zero;
+        _characterMovement.canMove = true;
     }
 
     public void ChanceHeal()
@@ -485,7 +509,7 @@ public class CharacterAttack : MonoBehaviour
         if (Random.Range(0, 100) >= dataHolder.changeToRegen) return;
             
         var healAmount = dataHolder.playerMaxHealth / 100 * dataHolder.hpChanceHealPercentage;
-        TakeDamagePlayer(-healAmount, 0);
+        TakeDamagePlayer(-healAmount, 0, Vector3.zero);
     }
     
     private IEnumerator HitFlash()
@@ -516,13 +540,14 @@ public class CharacterAttack : MonoBehaviour
 
     private IEnumerator StunTimer(float stunTime)
     {
+        ResetCombo();
         _playerAnimator.SetBool(IsStaggered, true);
         _characterMovement.canMove = false;
         
         yield return new WaitForSecondsRealtime(stunTime);
         
         _playerAnimator.SetBool(IsStaggered, false);
-        _characterMovement.canMove = false;
+        _characterMovement.canMove = true;
     }
     
     private void Die()

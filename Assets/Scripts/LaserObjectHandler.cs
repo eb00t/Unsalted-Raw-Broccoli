@@ -102,7 +102,7 @@ public class LaserObjectHandler : MonoBehaviour
                     {
                         if (Time.time >= lastDamageTime + laserTickCooldown) // makes sure player only takes damage at intervals
                         {
-                            player.TakeDamagePlayer(attack, poiseDamage);
+                            player.TakeDamagePlayer(attack, poiseDamage, Vector3.zero);
                             lastDamageTime = Time.time;
                         }
                     }

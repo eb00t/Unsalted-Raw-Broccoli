@@ -4,6 +4,7 @@ public interface IDamageable
     int Attack { get; set; }
     int Poise { get; set; }
     int PoiseDamage { get; set; }
+    Vector3 KnockbackPower { get; set; }
     bool isPlayerInRange { get; set; }
     bool isDead { get; set; }
     public RoomScripting RoomScripting { get; set; }

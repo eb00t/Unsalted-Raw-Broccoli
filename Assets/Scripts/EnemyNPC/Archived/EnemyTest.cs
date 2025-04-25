@@ -6,13 +6,13 @@ public class EnemyTest : MonoBehaviour
 {
     Vector3 initTransform;
     Quaternion initRotation;
-    SpriteRenderer renderer;
+    SpriteRenderer _renderer;
 
     void Start()
     {
         initTransform = transform.position;
         initRotation = transform.rotation;
-        renderer = GetComponent<SpriteRenderer>();
+        _renderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -26,7 +26,7 @@ public class EnemyTest : MonoBehaviour
             gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         }
 
-        if(renderer.color == Color.red)
+        if(_renderer.color == Color.red)
         {
             Invoke(nameof(ChangeColor), .4f);
         }
@@ -36,12 +36,12 @@ public class EnemyTest : MonoBehaviour
     {
         if (other.CompareTag("PlayerAttackBox"))
         {
-            renderer.color = Color.red;
+            _renderer.color = Color.red;
         }
     }
 
     private void ChangeColor()
     {
-        renderer.color = Color.white;
+        _renderer.color = Color.white;
     }
 }

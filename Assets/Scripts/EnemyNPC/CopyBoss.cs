@@ -21,6 +21,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private int attack;
     [SerializeField] private int poiseDamage;
     [SerializeField] private float comboChance;
+    [SerializeField] private Vector3 knockbackPower;
     
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
@@ -83,6 +84,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
     int IDamageable.PoiseDamage { get => poiseDamage; set => poiseDamage = value; }
+    Vector3 IDamageable.KnockbackPower { get => knockbackPower; set => knockbackPower = value; }
     public bool isPlayerInRange { get; set; }
     public bool isDead { get => _isDead; set => _isDead = value; }
     public RoomScripting RoomScripting { get; set; }
