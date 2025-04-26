@@ -49,6 +49,10 @@ public class ConnectorRoomInfo : MonoBehaviour
 
     void OnDestroy()
     {
+        foreach (var room in attachedRooms)
+        {
+            room.GetComponent<RoomInfo>().attachedConnectors.Remove(gameObject);
+        }
         LevelBuilder.Instance.spawnedConnectors.Remove(gameObject);
         foreach (var lit in allLights)
         { 

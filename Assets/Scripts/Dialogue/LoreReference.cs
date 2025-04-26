@@ -29,6 +29,11 @@ public class LoreReference : MonoBehaviour
         allLoreItems.Add(EmailTest);
         allLoreItems.Add(RichardSecret);
         allLoreItems.Add(WhyTheConstruct);
+        allLoreItems.Add(DistressCall);
+        allLoreItems.Add(Breadcrumbs);
+        allLoreItems.Add(Fortunes);
+        allLoreItems.Add(OldFriend);
+        allLoreItems.Add(MessageToSelf);
     }
     
     [field: Header("AI Communication")]
@@ -47,7 +52,14 @@ public class LoreReference : MonoBehaviour
     [field: SerializeField] public LoreItemHandler AllAboutRocks { get; private set; }
     [field: SerializeField] public LoreItemHandler EmailTest { get; private set; }
 
-    [field: Header("Character Lore")]
+    [field: Header("Intermission Character Lore")]
     [field: SerializeField] public LoreItemHandler RichardSecret { get; private set; }
     [field: SerializeField] public LoreItemHandler WhyTheConstruct { get; private set; }
+    [field: SerializeField] public LoreItemHandler MessageToSelf { get; private set; }
+    [field: SerializeField] public LoreItemHandler DistressCall { get; private set; }
+    
+    [field: Header("Other")]
+    [field: SerializeField] public LoreItemHandler Breadcrumbs { get; private set; }
+    [field: SerializeField] public LoreItemHandler Fortunes { get; private set; }
+    [field: SerializeField] public LoreItemHandler OldFriend { get; private set; }
 }
