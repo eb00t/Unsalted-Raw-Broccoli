@@ -26,7 +26,7 @@ public class AnimationEvents : MonoBehaviour
     private void Start()
     {
         _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
-        _characterAttack = GameObject.FindGameObjectWithTag("PlayerAttackBox").GetComponent<CharacterAttack>();
+        _characterAttack = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CharacterAttack>();
         _characterMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterMovement>();
     }
 

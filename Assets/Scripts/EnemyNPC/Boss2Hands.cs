@@ -59,6 +59,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [Header("References")] 
     [SerializeField] private Image healthFillImage;
     [SerializeField] private TextMeshProUGUI bossNameTxt;
+    [SerializeField] private Material defaultMaterial, hitMaterial;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
@@ -596,6 +597,13 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     public void ApplyKnockback(Vector2 knockbackPower)
     {
         throw new System.NotImplementedException();
+    }
+    
+    public IEnumerator HitFlash(SpriteRenderer spriteRenderer)
+    {
+        spriteRenderer.material = hitMaterial;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.material = defaultMaterial;
     }
 
     private void Die()

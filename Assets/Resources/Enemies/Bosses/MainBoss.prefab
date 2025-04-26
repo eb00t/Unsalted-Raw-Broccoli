@@ -783,7 +783,7 @@ MonoBehaviour:
   poisonResistance: 60
   attack: 30
   poiseDamage: 10
-  knockbackPower: {x: 25, y: 2, z: 0}
+  knockbackPower: {x: 15, y: 2, z: 0}
   attackCooldown: 2
   freezeDuration: 2
   freezeCooldown: 2
@@ -795,6 +795,8 @@ MonoBehaviour:
   isIdle: 0
   healthFillImage: {fileID: 3786656424194055331}
   bossNameTxt: {fileID: 1344281777784514113}
+  defaultMaterial: {fileID: 2100000, guid: ba02e6b88d5290f45aba435b9f509e28, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 9bdeb67dd695bdb488b98aceb7ed95f6, type: 2}
   leftHand: {fileID: 257467735486826967}
   rightHand: {fileID: 2212177813976856691}
   groundPosition: {fileID: 4452955902958484965}
@@ -996,6 +998,7 @@ GameObject:
   - component: {fileID: 2819429970382728735}
   - component: {fileID: 8030214061471143326}
   - component: {fileID: 4527229070816777033}
+  - component: {fileID: 6365911363792330783}
   m_Layer: 11
   m_Name: EnemyHitBox
   m_TagString: Enemy
@@ -1047,6 +1050,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4421962900869210758}
   m_CullTransparentMesh: 1
+--- !u!114 &6365911363792330783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4421962900869210758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ef5bc09e6b89004983a25065fcaf9da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer1: {fileID: 1218848623436649414}
+  spriteRenderer2: {fileID: 8453342686683311627}
 --- !u!1 &4579260885807157502
 GameObject:
   m_ObjectHideFlags: 0
@@ -2127,6 +2144,7 @@ GameObject:
   - component: {fileID: 3309271869212053491}
   - component: {fileID: 2460622042754677718}
   - component: {fileID: 5362806170657173797}
+  - component: {fileID: 2366767754035919123}
   m_Layer: 11
   m_Name: EnemyHitBox
   m_TagString: Enemy
@@ -2178,3 +2196,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8985083752324436317}
   m_CullTransparentMesh: 1
+--- !u!114 &2366767754035919123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8985083752324436317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ef5bc09e6b89004983a25065fcaf9da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer1: {fileID: 2965860117450533045}
+  spriteRenderer2: {fileID: 5172255235161365190}
