@@ -842,11 +842,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
             foreach (var hit in hits)
             {
-                if (hit.collider.tag.Contains("Wall") 
-                    || hit.collider.tag.Contains("Door") 
-                    || hit.collider.name.Contains("enemyCollider")
-                    || hit.collider.GetComponent<SemiSolidPlatform>() 
-                    || hit.collider.GetComponent<SemiSolidPlatformTrigger>())
+                if (Mathf.Abs(hit.normal.y) < 0.5 
+                    && !hit.collider.tag.Contains("Player")
+                    && !hit.collider.isTrigger
+                    && !hit.collider.CompareTag("Enemy")
+                    && hit.collider.gameObject.layer != 19
+                    && hit.collider.gameObject.layer != 16
+                    && hit.collider.gameObject.layer != 18)
                 {
                    ReboundForce(hit.normal);
                    Debug.Log("rebound: " + hit.collider.name);
