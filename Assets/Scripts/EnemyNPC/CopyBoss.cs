@@ -52,6 +52,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private float movementSpeed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float jumpTriggerDistance;
+    [SerializeField] private float reboundForce;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
@@ -443,6 +444,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         
         _health -= damage;
         healthSlider.value = _health;
+        StartCoroutine(HitFlash());
         
         if (Random.Range(0, 10) < 4) // 20 percent chance on hit for enemy to drop energy
         {
@@ -506,6 +508,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             StartCoroutine(TriggerKnockback(knockbackForce, 0.1f));
             StartCoroutine(StunTimer(0.005f));
+            StartCoroutine(WallHitCheck(3f));
         }
 
         if (_poiseBuildup >= poise)
@@ -527,6 +530,43 @@ public class CopyBoss : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(duration);
 
         _isKnockedBack = false;
+    }
+    
+    private IEnumerator WallHitCheck(float dur)
+    {
+        var elapsed = 0f;
+
+        while (elapsed < dur)
+        {
+            var dir = new Vector3(_rigidbody.velocity.x, 0, 0).normalized;
+            var hits = Physics.RaycastAll(transform.position, dir, 4f);
+
+            foreach (var hit in hits)
+            {
+                if (Mathf.Abs(hit.normal.y) < 0.5 
+                    && !hit.collider.tag.Contains("Player")
+                    && !hit.collider.isTrigger
+                    && !hit.collider.CompareTag("Enemy")
+                    && hit.collider.gameObject.layer != 19
+                    && hit.collider.gameObject.layer != 16
+                    && hit.collider.gameObject.layer != 18)
+                {
+                    ReboundForce(hit.normal);
+                    Debug.Log("rebound: " + hit.collider.name);
+                    yield break;
+                }
+            }
+            
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private void ReboundForce(Vector3 normal)
+    {
+        var reflectVel = Vector3.Reflect(_rigidbody.velocity, normal);
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.AddForce(reflectVel.normalized * reboundForce, ForceMode.Impulse);
     }
     
     private IEnumerator StunTimer(float stunTime)
