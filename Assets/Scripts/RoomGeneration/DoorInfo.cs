@@ -26,8 +26,6 @@ private void Awake()
     }
     public void CheckDoors() // Check if a connector or door (from another room) is nearby, and open it up. Also contains code to instantiate connectors to distant rooms.
     {
-        CloseDoor();
-        //Debug.Log("Checking for doors");
         Vector3 direction;
         switch (tag)
         {
@@ -70,8 +68,11 @@ private void Awake()
                 {
                     _connectorRoomInfo.attachedRooms.Add(transform.root.gameObject);
                 }
-                hasDoor = true;
-                _roomInfo.usableDoors.Add(gameObject);
+                if (!_roomInfo.usableDoors.Contains(gameObject))
+                {
+                    _roomInfo.usableDoors.Add(gameObject);
+                }
+                OpenDoor();
             } 
             else if (hit.transform.gameObject.tag.Contains("Door"))
             {
@@ -79,14 +80,15 @@ private void Awake()
                 if (transformPosition.y == gameObject.transform.position.y)
                 {
                     //Debug.Log(name + " hit another door! " + "(" + hit.transform.gameObject.name + ")");
-                    hasDoor = true;
+                    OpenDoor();
                     hit.transform.gameObject.GetComponent<DoorInfo>().hasDoor = true;
                     _roomInfo.usableDoors.Add(gameObject);
                 }
             }
             else
             {
-                hasDoor = false;
+                CloseDoor();
+                _roomInfo.usableDoors.Remove(gameObject);
             }
 
             if ((!hit.transform.gameObject.tag.Contains("Wall") || !hit.transform.gameObject.tag.Contains("Door")) && _roomInfo.bossRoom == false)
@@ -164,7 +166,6 @@ private void Awake()
 
    public void OpenDoor()
    { 
-       _doorAnimator.SetBool(CloseDoors, false);
        hasDoor = true;
        Debug.Log("Opening door (" + gameObject.name + ") in " + transform.root.name);
       
@@ -172,7 +173,6 @@ private void Awake()
 
    public void CloseDoor()
    {
-       _doorAnimator.SetBool(CloseDoors, true);
        hasDoor = false;
       Debug.Log("Closing door (" + gameObject.name + ") in " + transform.root.name);
    }
@@ -181,4 +181,8 @@ private void Awake()
        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DoorSlam, transform.position);
    }
 
+   private void Update()
+   {
+       _doorAnimator.SetBool(CloseDoors, !hasDoor);
+   }
 }
