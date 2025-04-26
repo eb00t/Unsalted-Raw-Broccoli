@@ -64,6 +64,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float lungeForce;
     [SerializeField] private float jumpTriggerDistance;
     [SerializeField] private float maxJumpHeight;
+    [SerializeField] private float reboundForce;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
@@ -802,6 +803,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             StartCoroutine(StunTimer(.05f));
         }
 
+        StartCoroutine(WallHitCheck(3f));
+
         if (_poiseBuildup < poise) return;
         
         if (isStalker)
@@ -828,12 +831,49 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _aiPath.canMove = true;
     }
 
+    private IEnumerator WallHitCheck(float dur)
+    {
+        var elapsed = 0f;
+
+        while (elapsed < dur)
+        {
+            var dir = new Vector3(_rigidbody.velocity.x, 0, 0).normalized;
+            var hits = Physics.RaycastAll(transform.position, dir, 4f);
+
+            foreach (var hit in hits)
+            {
+                if (hit.collider.tag.Contains("Wall") 
+                    || hit.collider.tag.Contains("Door") 
+                    || hit.collider.name.Contains("enemyCollider")
+                    || hit.collider.GetComponent<SemiSolidPlatform>() 
+                    || hit.collider.GetComponent<SemiSolidPlatformTrigger>())
+                {
+                   ReboundForce(hit.normal);
+                   Debug.Log("rebound: " + hit.collider.name);
+                   yield break;
+                }
+            }
+            
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private void ReboundForce(Vector3 normal)
+    {
+        var reflectVel = Vector3.Reflect(_rigidbody.velocity, normal);
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.AddForce(reflectVel.normalized * reboundForce, ForceMode.Impulse);
+    }
+
     private IEnumerator StunTimer(float stunTime)
     {
         _animator.SetBool(IsStaggered, true);
+        _aiPath.canMove = false;
        yield return new WaitForSecondsRealtime(stunTime);
        _rigidbody.velocity = Vector3.zero;
        _animator.SetBool(IsStaggered, false);
+       _aiPath.canMove = true;
     }
 
     private IEnumerator HitFlash()
