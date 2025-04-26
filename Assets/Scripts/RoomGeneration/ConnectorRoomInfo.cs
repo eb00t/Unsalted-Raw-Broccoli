@@ -15,6 +15,7 @@ public class ConnectorRoomInfo : MonoBehaviour
     public float connectorHeight; // The smaller side (should typically be the same for each connector)
     public List<Light> allLights;
     public bool markedForDiscard;
+    public List<GameObject> attachedDoors;
 
     private void Awake()
     {
@@ -52,6 +53,11 @@ public class ConnectorRoomInfo : MonoBehaviour
         foreach (var room in attachedRooms)
         {
             room.GetComponent<RoomInfo>().attachedConnectors.Remove(gameObject);
+        }
+
+        foreach (var door in attachedDoors)
+        {
+            door.GetComponent<DoorInfo>().CloseDoor();
         }
         LevelBuilder.Instance.spawnedConnectors.Remove(gameObject);
         foreach (var lit in allLights)

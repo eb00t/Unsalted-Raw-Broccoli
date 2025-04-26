@@ -731,6 +731,7 @@ public class LevelBuilder : MonoBehaviour
             yield return new WaitForSecondsRealtime(.5f);
             SpawnBossRoom();
             roomGeneratingFinished = true;
+            
             foreach (var room in spawnedRooms)
             {
                 RoomScripting roomScript = room.GetComponent<RoomScripting>();
