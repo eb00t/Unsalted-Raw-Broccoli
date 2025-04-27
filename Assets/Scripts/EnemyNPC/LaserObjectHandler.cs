@@ -43,6 +43,12 @@ public class LaserObjectHandler : MonoBehaviour
                 StartCoroutine(LaserAttack());
             }
         }
+        else if (LevelBuilder.Instance.bossDead)
+        {
+            StopAllCoroutines();
+            _lineRenderer.enabled = false;
+            enabled = false;
+        }
     }
 
     private bool IsPlayerInRoom()
