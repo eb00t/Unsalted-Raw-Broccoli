@@ -13,7 +13,7 @@ public class TutorialController : MonoBehaviour
 
     [SerializeField] private DoorInfo doorItemDown1, doorItemDown2, doorItemRight1, doorItemRight2, doorUp1, doorUp2, doorUpRight, doorUpRight1, doorToEnd1, doorToEnd2;
     [SerializeField] private GameObject arrowItem1, arrowItem1Back, arrowItem2, arrowItem2Back, arrowUp, arrowToEnemy, arrowToEnd1, arrowToEnd2;
-    [SerializeField] private GameObject highLight1, hightLight2, hightLight3, hightLight4;
+    [SerializeField] private GameObject highLight1, arrowRect1, hightLight3, arrowRect2;
 
     [SerializeField] private GameObject enemy;
     [SerializeField] private float rangeToEnemy;
@@ -46,9 +46,11 @@ public class TutorialController : MonoBehaviour
     private int _itemsFound;
     private CharacterMovement _characterMovement;
     private CharacterAttack _characterAttack;
+    private EnemyHandler _enemyHandler;
 
     private void Start()
     {
+        _enemyHandler = enemy.GetComponent<EnemyHandler>();
         if (!SceneManager.GetActiveScene().name.Equals("Tutorial"))
         {
             enabled = false;
@@ -87,15 +89,22 @@ public class TutorialController : MonoBehaviour
         {
             if (_characterAttack.jumpAttackCount > 0)
             {
+                _enemyHandler.defense = 0;
+                _enemyHandler.alwaysShowHealth = true;
+                
                 AdvanceStep();
             }
         }
 
         if (_currentStep == TutorialStep.UseUpThrust)
         {
+            arrowRect1.SetActive(true);
+            arrowRect2.SetActive(true);
             if (_characterMovement.isInUpThrust)
             {
                 AdvanceStep();
+                arrowRect1.SetActive(false);
+                arrowRect2.SetActive(false);
             }
         }
     }
@@ -152,7 +161,7 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.Interact, "", null);
                 break;
             case TutorialStep.UseUpThrust:
-                ShowMessage("Jump into hallways with up arrows to get a lift to rooms above", ControlsManager.ButtonType.Jump, "", null);
+                ShowMessage("Jump into vertical hallways to get a lift to rooms above", ControlsManager.ButtonType.Jump, "", null);
                 break;
             case TutorialStep.SwitchItem:
                 ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.CycleToolbarLeft, " or ",ControlsManager.ButtonType.CycleToolbarRight);
@@ -202,9 +211,7 @@ public class TutorialController : MonoBehaviour
         if (context.performed && _currentStep == TutorialStep.Dash)
         {
             highLight1.SetActive(true);
-            hightLight2.SetActive(true);
             hightLight3.SetActive(true);
-            hightLight4.SetActive(true);
             AdvanceStep();
         }
     }
@@ -257,9 +264,7 @@ public class TutorialController : MonoBehaviour
         if (_currentStep == TutorialStep.Crouch)
         {
             highLight1.SetActive(false);
-            hightLight2.SetActive(false);
             hightLight3.SetActive(false);
-            hightLight4.SetActive(false);
             
             AdvanceStep();
             if (_itemsFound == 0)

@@ -17,7 +17,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int maxHealth;
     private int _health;
     [SerializeField] private int poise;
-    [SerializeField] private int defense;
+    public int defense;
     [SerializeField] private int poisonResistance;
     [SerializeField] private int blockingDefense;
 
@@ -66,6 +66,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float jumpTriggerDistance;
     [SerializeField] private float maxJumpHeight;
     [SerializeField] private float reboundForce;
+    public bool alwaysShowHealth;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
@@ -129,7 +130,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
         _health = maxHealth;
-        _healthSlider.gameObject.SetActive(false);
+        _healthSlider.gameObject.SetActive(alwaysShowHealth);
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _aiPath = GetComponent<AIPath>();
@@ -140,7 +141,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
         _jumpTimer = jumpCooldown;
-        
+
         if (isStalker)
         {
             gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
@@ -190,7 +191,12 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 defense = 0;
             }
         }
-        
+
+        if (alwaysShowHealth)
+        {
+            _healthSlider.gameObject.SetActive(true);
+        }
+
         Repulsion();
 
         if (_isFrozen)
@@ -244,7 +250,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (isInvisible && _state is States.Chase or States.Jump)
         {
             _spriteRenderer.material = invisMaterial;
-            _healthSlider.gameObject.SetActive(false);
+            if (!alwaysShowHealth)
+            {
+                _healthSlider.gameObject.SetActive(false);
+            }
         }
         else if (isInvisible && _state is States.Attack)
         {
@@ -463,7 +472,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             }
         }
         _aiPath.canMove = true;
-        _healthSlider.gameObject.SetActive(false);
+        if (!alwaysShowHealth)
+        {
+            _healthSlider.gameObject.SetActive(false);
+        }
     }
     
    private void PickPatrolPoints()

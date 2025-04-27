@@ -5,6 +5,7 @@ using Cinemachine;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
 
@@ -76,6 +77,7 @@ public class AnimationEvents : MonoBehaviour
     public void ReduceEnergy(int LMH) //Light = 0, Medium = 1, Heavy = 0
     {
         //_characterAttack = transform.root.transform.Find("PlayerAttack").GetComponent<CharacterAttack>();
+        if (SceneManager.GetActiveScene().name == "Tutorial") return;
         float energyUsed = 0;
         switch (LMH)
         {
