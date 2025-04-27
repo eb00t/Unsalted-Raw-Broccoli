@@ -215,7 +215,6 @@ public class RoomInfo : MonoBehaviour
             if (LevelBuilder.Instance.spawnedShops.Count <= 0)
             {
                 LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.Shops;
-                LevelBuilder.Instance.spawnModeChangedByDestroy = true;
             }
             LevelBuilder.Instance.spawnedShops.Remove(gameObject);
         }

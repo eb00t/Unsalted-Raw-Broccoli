@@ -34,8 +34,8 @@ public class ResizeBoxCollider : MonoBehaviour
         {
             _roomInfo = transform.root.gameObject.GetComponent<RoomInfo>();
             var colliderSize = _collider.size;
-            colliderSize.x = _roomInfo.roomLength + 1.5f;
-            colliderSize.y = _roomInfo.roomHeight + 1.5f;
+            colliderSize.x = _roomInfo.roomLength + 2.5f;
+            colliderSize.y = _roomInfo.roomHeight + 2.5f;
             _collider.size = colliderSize;
         }
        

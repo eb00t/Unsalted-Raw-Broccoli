@@ -74,8 +74,7 @@ public class LevelBuilder : MonoBehaviour
     public List<GameObject> spawnedConnectors;
     public GameObject roomToSpawn;
     public bool roomGeneratingFinished;
-    public bool bossRoomGeneratingFinished; 
-    public bool spawnModeChangedByDestroy;
+    public bool bossRoomGeneratingFinished;
     public bool bossDead;
     public bool loreRoomChance;
     private bool _spawnValid;
@@ -652,7 +651,7 @@ public class LevelBuilder : MonoBehaviour
         }
         var rareSpawn = RandomiseNumber(100);
         Debug.Log("Rare spawn number: " + rareSpawn);
-        if (_spawnMode != SpawnMode.BossRooms && spawnModeChangedByDestroy == false) //Special rooms will not spawn when boss rooms are being spawned
+        if (_spawnMode != SpawnMode.BossRooms) //Special rooms will not spawn when boss rooms are being spawned
         {
             switch (rareSpawn)
             {
@@ -710,7 +709,6 @@ public class LevelBuilder : MonoBehaviour
                 _spawnMode = SpawnMode.Shops;
             }
         }
-        spawnModeChangedByDestroy = false;
     }
 
     IEnumerator WaitASec()

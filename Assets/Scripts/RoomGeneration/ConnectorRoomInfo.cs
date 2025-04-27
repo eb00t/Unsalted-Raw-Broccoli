@@ -52,11 +52,16 @@ public class ConnectorRoomInfo : MonoBehaviour
     {
         foreach (var room in attachedRooms)
         {
-            room.GetComponent<RoomInfo>().attachedConnectors.Remove(gameObject);
+            if (room.GetComponent<RoomInfo>().attachedConnectors.Contains(gameObject))
+            {
+                 room.GetComponent<RoomInfo>().attachedConnectors.Remove(gameObject);
+            }
+           
         }
 
         foreach (var door in attachedDoors)
         {
+            door.transform.root.GetComponent<RoomInfo>().usableDoors.Remove(door);
             door.GetComponent<DoorInfo>().CloseDoor();
         }
         LevelBuilder.Instance.spawnedConnectors.Remove(gameObject);
