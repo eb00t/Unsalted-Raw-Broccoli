@@ -26,6 +26,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int poiseDamage;
     [SerializeField] private int numberOfAttacks;
     [SerializeField] private Vector3 knockbackPower;
+    [SerializeField] private float floor2Multiplier, floor3Multiplier;
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
@@ -120,7 +121,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             RoomScripting.enemies.Add(gameObject);
             _roomBounds = RoomScripting.GetComponent<Collider>();
         }
-
+        
+        ScaleStats();
         _jumpEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyJump);
         AudioManager.Instance.AttachInstanceToGameObject(_jumpEvent, gameObject.transform);;
         _healthSlider = GetComponentInChildren<Slider>();
@@ -280,6 +282,27 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
 
         _animator.SetFloat(Vel, Mathf.Abs(velocity.x));
+    }
+
+    private void ScaleStats()
+    {
+        switch (LevelBuilder.Instance.currentFloor)
+        {
+            case LevelBuilder.LevelMode.Floor2:
+                maxHealth = (int)(maxHealth * floor2Multiplier);
+                poise = (int)(poise * floor2Multiplier);
+                poisonResistance = (int)(poisonResistance * floor2Multiplier);
+                attack = (int)(attack * floor2Multiplier);
+                knockbackPower = new Vector3(knockbackPower.x * floor2Multiplier, knockbackPower.y * floor2Multiplier, 0);
+                break;
+            case LevelBuilder.LevelMode.Floor3:
+                maxHealth = (int)(maxHealth * floor3Multiplier);
+                poise = (int)(poise * floor3Multiplier);
+                poisonResistance = (int)(poisonResistance * floor3Multiplier);
+                attack = (int)(attack * floor3Multiplier);
+                knockbackPower = new Vector3(knockbackPower.x * floor3Multiplier, knockbackPower.y * floor3Multiplier, 0);
+                break;
+        }
     }
 
     private void Jump()

@@ -25,6 +25,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int numberOfAttacks;
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float multiProjectileOffset;
+    [SerializeField] private float floor2Multiplier, floor3Multiplier;
     
     [Header("Laser Stats")]
     [SerializeField] private float chargeTime;
@@ -116,6 +117,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         RoomScripting.enemies.Add(gameObject);
         _roomBounds = RoomScripting.GetComponent<Collider>();
+        ScaleStats();
         gameObject.transform.parent = gameObject.transform.root;
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
         AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);;
@@ -183,6 +185,27 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
                 break;
             case States.Frozen:
                 Frozen();
+                break;
+        }
+    }
+    
+    private void ScaleStats()
+    {
+        switch (LevelBuilder.Instance.currentFloor)
+        {
+            case LevelBuilder.LevelMode.Floor2:
+                maxHealth = (int)(maxHealth * floor2Multiplier);
+                poise = (int)(poise * floor2Multiplier);
+                poisonResistance = (int)(poisonResistance * floor2Multiplier);
+                attack = (int)(attack * floor2Multiplier);
+                knockbackPower = new Vector3(knockbackPower.x * floor2Multiplier, knockbackPower.y * floor2Multiplier, 0);
+                break;
+            case LevelBuilder.LevelMode.Floor3:
+                maxHealth = (int)(maxHealth * floor3Multiplier);
+                poise = (int)(poise * floor3Multiplier);
+                poisonResistance = (int)(poisonResistance * floor3Multiplier);
+                attack = (int)(attack * floor3Multiplier);
+                knockbackPower = new Vector3(knockbackPower.x * floor3Multiplier, knockbackPower.y * floor3Multiplier, 0);
                 break;
         }
     }
