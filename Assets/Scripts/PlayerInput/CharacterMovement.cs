@@ -311,7 +311,12 @@ private void stopWallJump()
         {
             _playerAnimator.SetBool(IsWalkingBackwards, false);
         }
-        
+
+        if (!canMove)
+        {
+            _rb.useGravity = true;
+        }
+
         /*if (startSlideTimer)
         {
             slideTimer += 10f * Time.deltaTime;
