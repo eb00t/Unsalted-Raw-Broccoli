@@ -673,7 +673,7 @@ public class LevelBuilder : MonoBehaviour
                     {
                         _spawnMode = SpawnMode.LoreRooms;
                     } 
-                    else if (loreRoomChance == false && possibleSpecialRooms.Count <= 0)
+                    else if (loreRoomChance == false && possibleSpecialRooms.Count >= 0)
                     {
                         _spawnMode = SpawnMode.SpecialRooms;
                     }

@@ -191,76 +191,100 @@ public class RoomInfo : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if(connectorSpawnedOff == null && !gameObject.CompareTag("StartingRoom"))
+        {
+            MarkRoomForDiscard();
+        }   
+    }
+
+
     public void MarkRoomForDiscard()
     {
-        markedForDiscard = true;
-        if (!LevelBuilder.Instance.discardedRooms.Contains(gameObject))
+        if (markedForDiscard == false)
         {
-            LevelBuilder.Instance.discardedRooms.Add(gameObject);
-        }
+            markedForDiscard = true;
+            if (!LevelBuilder.Instance.discardedRooms.Contains(gameObject))
+            {
+                LevelBuilder.Instance.discardedRooms.Add(gameObject);
+            }
 
-        foreach (var lit in allLights)
-        { 
-            LightManager.Instance.allRoomLights.Remove(lit);
-        }
+            foreach (var lit in allLights)
+            {
+                LightManager.Instance.allRoomLights.Remove(lit);
+            }
 
-        LevelBuilder.Instance.spawnedRooms.Remove(gameObject);
-        
-        if (specialRoom)
-        {
-            LevelBuilder.Instance.possibleSpecialRooms.Add(Resources.Load<GameObject>(roomPath));
-        }
-        if (shop)
-        {
-            if (LevelBuilder.Instance.spawnedShops.Count <= 0)
+            LevelBuilder.Instance.spawnedRooms.Remove(gameObject);
+
+            if (specialRoom)
             {
-                LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.Shops;
+                LevelBuilder.Instance.possibleSpecialRooms.Add(Resources.Load<GameObject>(roomPath));
             }
-            LevelBuilder.Instance.spawnedShops.Remove(gameObject);
-        }
-        if (lootRoom)
-        {
-            LevelBuilder.Instance.spawnedLootRooms.Remove(gameObject);
-        }
-        if (bossRoom)
-        {
-            LevelBuilder.Instance.spawnedBossRooms.Remove(gameObject);
-            LevelBuilder.Instance.roomRandomNumber--;
-            switch (LevelBuilder.Instance.roomRandomNumber)
+
+            if (shop)
             {
-                case -1:
-                    LevelBuilder.Instance.firstBossRoomSpawnPoints = new List<Transform>(LevelBuilder.Instance.lootRoomSpawnPoints);
-                    LevelBuilder.Instance.secondBossRoomSpawnPoints.Clear();
-                    break;
-                case 0:
-                    LevelBuilder.Instance.thirdBossRoomSpawnPoints.Clear();
-                    LevelBuilder.Instance.otherConnectorSideRoomInfo = LevelBuilder.Instance.spawnedBossRooms[0].GetComponent<RoomInfo>();
-                    break;
-                case 1:
-                    LevelBuilder.Instance.otherConnectorSideRoomInfo = LevelBuilder.Instance.spawnedBossRooms[1].GetComponent<RoomInfo>();
-                    break;
+                if (LevelBuilder.Instance.spawnedShops.Count <= 0)
+                {
+                    LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.Shops;
+                }
+
+                LevelBuilder.Instance.spawnedShops.Remove(gameObject);
             }
-        }
-        if (loreRoom)
-        {
-            LevelBuilder.Instance.spawnedLoreRooms.Remove(gameObject);
-            LevelBuilder.Instance.howManyRoomsToSpawn--;
-        }
-        foreach (var connector in attachedConnectors)
-        {
-            if (connector != null)
+
+            if (lootRoom)
             {
-                connector.GetComponent<ConnectorRoomInfo>().attachedRooms.Remove(gameObject);
+                LevelBuilder.Instance.spawnedLootRooms.Remove(gameObject);
             }
+
+            if (bossRoom)
+            {
+                LevelBuilder.Instance.spawnedBossRooms.Remove(gameObject);
+                LevelBuilder.Instance.roomRandomNumber--;
+                switch (LevelBuilder.Instance.roomRandomNumber)
+                {
+                    case -1:
+                        LevelBuilder.Instance.firstBossRoomSpawnPoints =
+                            new List<Transform>(LevelBuilder.Instance.lootRoomSpawnPoints);
+                        LevelBuilder.Instance.secondBossRoomSpawnPoints.Clear();
+                        break;
+                    case 0:
+                        LevelBuilder.Instance.thirdBossRoomSpawnPoints.Clear();
+                        LevelBuilder.Instance.otherConnectorSideRoomInfo =
+                            LevelBuilder.Instance.spawnedBossRooms[0].GetComponent<RoomInfo>();
+                        break;
+                    case 1:
+                        LevelBuilder.Instance.otherConnectorSideRoomInfo =
+                            LevelBuilder.Instance.spawnedBossRooms[1].GetComponent<RoomInfo>();
+                        break;
+                }
+            }
+
+            if (loreRoom)
+            {
+                LevelBuilder.Instance.spawnedLoreRooms.Remove(gameObject);
+                LevelBuilder.Instance.howManyRoomsToSpawn--;
+            }
+
+            foreach (var connector in attachedConnectors)
+            {
+                if (connector != null)
+                {
+                    connector.GetComponent<ConnectorRoomInfo>().attachedRooms.Remove(gameObject);
+                }
+            }
+
+            foreach (var door in doorSpawnPoints)
+            {
+                LevelBuilder.Instance.spawnPoints.Remove(door.transform);
+                LevelBuilder.Instance.lootRoomSpawnPoints.Remove(door.transform);
+            }
+
+            doorSpawnPoints.Clear();
+            LevelBuilder.Instance.CleanUpBadRooms();
         }
-        foreach (var door in doorSpawnPoints)
-        {
-            LevelBuilder.Instance.spawnPoints.Remove(door.transform); 
-            LevelBuilder.Instance.lootRoomSpawnPoints.Remove(door.transform);
-        }
-        doorSpawnPoints.Clear();
-        LevelBuilder.Instance.CleanUpBadRooms();
     }
+
     private void OnDestroy()
     {
         CameraManager.Instance.virtualCameras.Remove(roomCam);

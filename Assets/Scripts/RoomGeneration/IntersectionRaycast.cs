@@ -22,6 +22,7 @@ public class IntersectionRaycast : MonoBehaviour
     private BoxCollider _collider;
     private bool _checkedTwice;
     public List<GameObject> objectsToIgnore;
+    private Vector3 _halfExtents;
 
 
     void Start()
@@ -87,6 +88,7 @@ public class IntersectionRaycast : MonoBehaviour
 
         CheckForInternalIntersection(); //_roomInfo.connectorSpawnedOff.GetComponent<ConnectorRoomInfo>());
 
+        _halfExtents = new Vector3(_halfRoomLength, _halfRoomHeight, 1.5f);
 
     }
 
@@ -94,43 +96,52 @@ public class IntersectionRaycast : MonoBehaviour
     private bool FireInternalRayCast()
     {
         bool discard = false;
-        if (Physics.Raycast(_horizMiddleRay, out RaycastHit horizHit, _roomInfo.roomLength + .9f, layerMask))
+        Collider[] horizHits = Physics.OverlapBox(transform.position, _halfExtents, Quaternion.identity, layerMask);
+        //Debug.Log("HORIZ RAY HIT!");
+        foreach (var horizHit in horizHits)
         {
-            Debug.Log("HORIZ RAY HIT!");
-            if (!objectsToIgnore.Contains(horizHit.collider.gameObject))
+            if (!objectsToIgnore.Contains(horizHit.gameObject))
             {
-                Debug.Log("Horizontal Ray from " + gameObject.name + " hit " + horizHit.collider.gameObject.name);
+                Debug.Log("Horizontal Ray from " + gameObject.name + " hit " + horizHit.gameObject.name);
                 discard = true;
             }
         }
-        else if (Physics.Raycast(_verticMiddleRay, out RaycastHit vertHit, _roomInfo.roomHeight + .9f, layerMask))
+        Debug.Log(horizHits);
+        /*RaycastHit[] vertHits = Physics.RaycastAll(_verticMiddleRay, _roomInfo.roomHeight + .9f, layerMask, QueryTriggerInteraction.Collide);
+        foreach (var vertHit in vertHits)
         {
-            Debug.Log("VERT RAY HIT!");
+            //Debug.Log("VERT RAY HIT!");
             if (!objectsToIgnore.Contains(vertHit.collider.gameObject))
             {
                 Debug.Log("Vertical Ray from: " + gameObject.name + " hit " + vertHit.collider.gameObject.name);
                 discard = true;
             }
         }
-        else if (Physics.Raycast(_topLeftRay, out RaycastHit topWallHit, _roomInfo.roomHeight, layerMask))
+        Debug.Log(vertHits);
+        RaycastHit[] topWallHits = Physics.RaycastAll(_topLeftRay, _roomInfo.roomHeight, layerMask, QueryTriggerInteraction.Collide);
+        foreach (var topWallHit in topWallHits)
         {
-            Debug.Log("TOP WALL RAY HIT!");
+            //Debug.Log("TOP WALL RAY HIT!");
             if (!objectsToIgnore.Contains(topWallHit.collider.gameObject))
             {
                 Debug.Log("Top Ray from: " + gameObject.name + " hit " + topWallHit.collider.gameObject.name);
                 discard = true;
             }
         }
-        else if (Physics.Raycast(_topRightRay, out RaycastHit bottomWallHit, _roomInfo.roomHeight, layerMask))
+        Debug.Log(topWallHits);
+        RaycastHit[] bottomWallHits = Physics.RaycastAll(_topRightRay, _roomInfo.roomHeight, layerMask, QueryTriggerInteraction.Collide);
+        foreach (var bottomWallHit in bottomWallHits)
         {
-            Debug.Log("BOTTOM WALL RAY HIT!");
+            //Debug.Log("BOTTOM WALL RAY HIT!");
             if (!objectsToIgnore.Contains(bottomWallHit.collider.gameObject))
             {
                 Debug.Log("Bottom Ray from: " + gameObject.name + " hit " + bottomWallHit.collider.gameObject.name);
                 discard = true;
             }
         }
-        else if (Physics.Raycast(_leftTopRay, out RaycastHit leftWallHit, _roomInfo.roomLength, layerMask))
+        Debug.Log(bottomWallHits);
+        RaycastHit[] leftWallHits = Physics.RaycastAll(_leftTopRay, _roomInfo.roomLength, layerMask, QueryTriggerInteraction.Collide);
+        foreach (var leftWallHit in leftWallHits)
         {
             Debug.Log("LEFT WALL RAY HIT!");
             if (!objectsToIgnore.Contains(leftWallHit.collider.gameObject))
@@ -139,7 +150,9 @@ public class IntersectionRaycast : MonoBehaviour
                 discard = true;
             }
         }
-        else if (Physics.Raycast(_leftBottomRay, out RaycastHit rightWallHit, _roomInfo.roomLength, layerMask))
+        
+        RaycastHit[] rightWallHits = Physics.RaycastAll(_leftBottomRay, _roomInfo.roomLength, layerMask, QueryTriggerInteraction.Collide);
+        foreach (var rightWallHit in rightWallHits)
         {
             Debug.Log("RIGHT WALL RAY HIT!");
             if (!objectsToIgnore.Contains(rightWallHit.collider.gameObject))
@@ -148,7 +161,8 @@ public class IntersectionRaycast : MonoBehaviour
                 discard = true;
             }
         }
-        
+        Debug.Log(rightWallHits);
+        */
         if (_roomInfo.canBeDiscarded == false)
         {
             return false;
