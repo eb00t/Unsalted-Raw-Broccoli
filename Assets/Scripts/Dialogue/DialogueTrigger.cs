@@ -12,10 +12,13 @@ public class DialogueTrigger : MonoBehaviour
     private GameObject _player;
     public bool hasDialogueOpened;
     public DataHolder dataHolder;
+    private ItemPickupHandler _itemPickupHandler;
 
     private void Start()
     {
         menuHandler = GameObject.FindWithTag("UIManager").GetComponent<MenuHandler>();
+        _player = GameObject.FindWithTag("Player");
+        _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
         //if (dialogueControllerScript == null || menuHandler == null)
         //{
         //    gameObject.SetActive(false);
@@ -24,7 +27,6 @@ public class DialogueTrigger : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
-        
     }
 
     private void OnTriggerStay(Collider other)
@@ -68,5 +70,9 @@ public class DialogueTrigger : MonoBehaviour
             }
         }
         
+        if (hasDialogueOpened)
+        {
+            _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
+        }
     }
 }
