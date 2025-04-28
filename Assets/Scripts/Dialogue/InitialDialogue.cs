@@ -67,6 +67,17 @@ public class InitialDialogue : MonoBehaviour
               _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor3Boss;
             }
             break;
+          case LevelBuilder.LevelMode.Floor4:
+            if (bossOrIntro == BossOrIntro.Intro)
+            {
+              _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor4Intro;
+              dataHolder.demoMode = false;
+            }
+            else if (bossOrIntro == BossOrIntro.Boss)
+            {
+              _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor4Boss;
+            }
+            break;
           case LevelBuilder.LevelMode.FinalBoss:
             if (bossOrIntro == BossOrIntro.Intro)
             {

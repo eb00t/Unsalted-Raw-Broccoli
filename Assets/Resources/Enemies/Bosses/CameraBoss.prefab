@@ -216,28 +216,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7148d94fe5537546a1f6e3afffbd580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 600
+  maxHealth: 800
   poise: 140
   defense: 0
   poisonResistance: 80
-  attack: 15
+  attack: 20
   poiseDamage: 10
   knockbackPower: {x: 5, y: 0.5, z: 0}
   numberOfAttacks: 1
-  floor2Multiplier: 1.1
-  floor3Multiplier: 1.2
   chargeTime: 1
   fireTime: 0.5
   trackSpeed: 4
   delay: 0.2
   laserTickCooldown: 0.25
-  projectileSpeed: 10
-  waveOffset: 30
+  projectileSpeed: 9
+  waveOffset: 18
   numberOfProjectiles: 10
-  maxProjectileWaves: 3
+  maxProjectileWaves: 4
+  projectileSpawnRadius: 3.5
   attackRange: 15
   chaseRange: 20
-  attackCooldown: 6.5
+  attackCooldown: 7
   chaseDuration: 5
   freezeDuration: 3
   freezeCooldown: 4
@@ -301,8 +300,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.647962, y: 1.7273042, z: 1}
-  m_Center: {x: 0.07273036, y: 0.9983903, z: 0}
+  m_Size: {x: 9.833884, y: 9.877511, z: 1}
+  m_Center: {x: -0.026682382, y: 0.0016021729, z: 0}
 --- !u!95 &1730301689728780009
 Animator:
   serializedVersion: 5

@@ -23,7 +23,6 @@ public class CameraBoss : MonoBehaviour, IDamageable
     [SerializeField] private int poiseDamage;
     [SerializeField] private Vector3 knockbackPower;
     [SerializeField] private int numberOfAttacks;
-    [SerializeField] private float floor2Multiplier, floor3Multiplier;
     
     [Header("Laser Stats")]
     [SerializeField] private float chargeTime;
@@ -37,6 +36,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     [SerializeField] private float waveOffset;
     [SerializeField] private float numberOfProjectiles;
     [SerializeField] private int maxProjectileWaves;
+    [SerializeField] private float projectileSpawnRadius;
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
@@ -305,7 +305,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
                 var rad = angle * Mathf.Deg2Rad;
                 var direction = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0);
 
-                var position = projectileOrigin.position;
+                var position = projectileOrigin.position + direction.normalized * projectileSpawnRadius;
                 var newProjectile = Instantiate(lightProjectile, position, Quaternion.identity);
                 newProjectile.GetComponent<HitboxHandler>().damageable = this;
                 newProjectile.SetActive(true);
