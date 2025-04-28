@@ -25,7 +25,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int numberOfAttacks;
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float multiProjectileOffset;
-    [SerializeField] private float floor2Multiplier, floor3Multiplier;
+    [SerializeField] private float floor2Multiplier, floor3Multiplier, floor4Multiplier;
     
     [Header("Laser Stats")]
     [SerializeField] private float chargeTime;
@@ -206,6 +206,13 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
                 poisonResistance = (int)(poisonResistance * floor3Multiplier);
                 attack = (int)(attack * floor3Multiplier);
                 knockbackPower = new Vector3(knockbackPower.x * floor3Multiplier, knockbackPower.y * floor3Multiplier, 0);
+                break;
+            case LevelBuilder.LevelMode.Floor4:
+                maxHealth = (int)(maxHealth * floor4Multiplier);
+                poise = (int)(poise * floor4Multiplier);
+                poisonResistance = (int)(poisonResistance * floor4Multiplier);
+                attack = (int)(attack * floor4Multiplier);
+                knockbackPower = new Vector3(knockbackPower.x * floor4Multiplier, knockbackPower.y * floor4Multiplier, 0);
                 break;
         }
     }

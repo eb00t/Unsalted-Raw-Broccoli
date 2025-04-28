@@ -26,7 +26,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int poiseDamage;
     [SerializeField] private int numberOfAttacks;
     [SerializeField] private Vector3 knockbackPower;
-    [SerializeField] private float floor2Multiplier, floor3Multiplier;
+    [SerializeField] private float floor2Multiplier, floor3Multiplier, floor4Multiplier;
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
@@ -310,6 +310,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 poisonResistance = (int)(poisonResistance * floor3Multiplier);
                 attack = (int)(attack * floor3Multiplier);
                 knockbackPower = new Vector3(knockbackPower.x * floor3Multiplier, knockbackPower.y * floor3Multiplier, 0);
+                break;
+            case LevelBuilder.LevelMode.Floor4:
+                maxHealth = (int)(maxHealth * floor4Multiplier);
+                poise = (int)(poise * floor4Multiplier);
+                poisonResistance = (int)(poisonResistance * floor4Multiplier);
+                attack = (int)(attack * floor4Multiplier);
+                knockbackPower = new Vector3(knockbackPower.x * floor4Multiplier, knockbackPower.y * floor4Multiplier, 0);
                 break;
         }
     }
