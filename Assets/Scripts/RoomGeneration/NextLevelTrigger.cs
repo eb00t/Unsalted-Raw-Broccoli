@@ -94,6 +94,10 @@ public class NextLevelTrigger : MonoBehaviour
                         dataHolder.highestFloorCleared = 3;
                         SaveData.Instance.UpdateSave();
                         break;
+                    case LevelBuilder.LevelMode.Floor4:
+                        dataHolder.highestFloorCleared = 4;
+                        SaveData.Instance.UpdateSave();
+                        break;
                 }
                 break;
             case SceneToLoad.NextFloor:
@@ -113,6 +117,9 @@ public class NextLevelTrigger : MonoBehaviour
                         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor3;
                         break;
                     case 3:
+                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor4;
+                        break;
+                    case 4:
                         dataHolder.currentLevel = LevelBuilder.LevelMode.FinalBoss;
                         break;
                 }
