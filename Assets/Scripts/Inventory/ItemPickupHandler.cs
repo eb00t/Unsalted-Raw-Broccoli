@@ -49,6 +49,7 @@ public class ItemPickupHandler : MonoBehaviour
         if (itemCount == 1 && itemPickup != null && itemPickup.isPermanentPassive)
         {
             TogglePrompt("Pick up passive item", true,  ControlsManager.ButtonType.Interact, "", null);
+            return;
         }
         
         switch (itemCount)
