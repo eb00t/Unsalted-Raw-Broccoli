@@ -791,7 +791,6 @@ MonoBehaviour:
   roomToSpawn: {fileID: 0}
   roomGeneratingFinished: 0
   bossRoomGeneratingFinished: 0
-  spawnModeChangedByDestroy: 0
   bossDead: 0
   loreRoomChance: 1
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
@@ -875,17 +874,23 @@ MonoBehaviour:
     type: 2}
   <Floor3Boss>k__BackingField: {fileID: 11400000, guid: 6e1b6a430a6110a4ba113e1d522881e9,
     type: 2}
-  <Floor4Intro>k__BackingField: {fileID: 11400000, guid: 2a627ff8603ba5e4a9dc7b72be21fdf6,
+  <Floor4Intro>k__BackingField: {fileID: 11400000, guid: e24fddd3e875b5645bbd01ae915c33e9,
     type: 2}
-  <Floor4Boss>k__BackingField: {fileID: 11400000, guid: 210566d356fc3944ba5732b4362d84f4,
+  <Floor4Boss>k__BackingField: {fileID: 11400000, guid: eff25215aa7666e4587972ad381cd5c4,
+    type: 2}
+  <Floor5Intro>k__BackingField: {fileID: 11400000, guid: 2a627ff8603ba5e4a9dc7b72be21fdf6,
+    type: 2}
+  <Floor5Boss>k__BackingField: {fileID: 11400000, guid: 210566d356fc3944ba5732b4362d84f4,
     type: 2}
   <TutorialIntro>k__BackingField: {fileID: 11400000, guid: 0f944b2d7dce44b48ac4948d209f1bc3,
     type: 2}
   <TutorialFloor1>k__BackingField: {fileID: 11400000, guid: 70064c5bd70e7c14eb4b7cb89263233b,
     type: 2}
-  <TutorialFloor2>k__BackingField: {fileID: 11400000, guid: e3649f655aed05848a2df2219bb38136,
+  <TutorialFloor2>k__BackingField: {fileID: 11400000, guid: c12e92eb5ac7dae4c9053f8dc763d0da,
     type: 2}
-  <TutorialFloor3>k__BackingField: {fileID: 11400000, guid: c12e92eb5ac7dae4c9053f8dc763d0da,
+  <TutorialFloor3>k__BackingField: {fileID: 11400000, guid: e3649f655aed05848a2df2219bb38136,
+    type: 2}
+  <TutorialFloor4>k__BackingField: {fileID: 11400000, guid: 2881fb3734249a24db2e28e65d35a001,
     type: 2}
   <Stats>k__BackingField: {fileID: 11400000, guid: e91df8cba3aa64548a224b4f3ba1855a,
     type: 2}
@@ -897,6 +902,7 @@ MonoBehaviour:
     type: 2}
   <RichFloor3>k__BackingField: {fileID: 11400000, guid: bcbb451c87cd65441861bf7e7a203cf7,
     type: 2}
+  <RichFloor4>k__BackingField: {fileID: 0}
   <KidIntro>k__BackingField: {fileID: 11400000, guid: 9190d19586a7c434fa90f10c567f773f,
     type: 2}
   <KidFloor1>k__BackingField: {fileID: 11400000, guid: fef0c77e75fa95741a48e65aa4f22eec,
@@ -905,6 +911,7 @@ MonoBehaviour:
     type: 2}
   <KidFloor3>k__BackingField: {fileID: 11400000, guid: e3e84d0dab7cdd442987bc7be2457e92,
     type: 2}
+  <KidFloor4>k__BackingField: {fileID: 0}
   <PunkIntro>k__BackingField: {fileID: 11400000, guid: b4dc73af5724556419db518f300f4b6e,
     type: 2}
   <PunkFloor1>k__BackingField: {fileID: 11400000, guid: 3c348d1e84858a84b9d12bd6000130ed,
@@ -913,6 +920,7 @@ MonoBehaviour:
     type: 2}
   <PunkFloor3>k__BackingField: {fileID: 11400000, guid: 7a33778f96edca343911534999545513,
     type: 2}
+  <PunkFloor4>k__BackingField: {fileID: 0}
   <ShopkeepIntro>k__BackingField: {fileID: 11400000, guid: 24f3d0408479b2949a9bb1f32ee4e0ce,
     type: 2}
   <ShopkeepFloor1>k__BackingField: {fileID: 11400000, guid: a864da0883c71b94eaac383fd9ef5b11,
@@ -921,14 +929,16 @@ MonoBehaviour:
     type: 2}
   <ShopkeepFloor3>k__BackingField: {fileID: 11400000, guid: d7ce36dc1bedd534e80f530ba95d604d,
     type: 2}
+  <ShopkeepFloor4>k__BackingField: {fileID: 0}
   <TutorialIntroRepeat>k__BackingField: {fileID: 11400000, guid: 48f59ceb4b13dec469c8b33a49b60428,
     type: 2}
   <TutorialFloor1Repeat>k__BackingField: {fileID: 11400000, guid: a9de9be7aafa8624d90707621c9b3774,
     type: 2}
-  <TutorialFloor2Repeat>k__BackingField: {fileID: 11400000, guid: 5009c5f0875ae1b44b16ab837a56d7d1,
+  <TutorialFloor2Repeat>k__BackingField: {fileID: 11400000, guid: 766bfd977cbf0ef49b8ca6c6749d4ec5,
     type: 2}
-  <TutorialFloor3Repeat>k__BackingField: {fileID: 11400000, guid: 766bfd977cbf0ef49b8ca6c6749d4ec5,
+  <TutorialFloor3Repeat>k__BackingField: {fileID: 11400000, guid: 5009c5f0875ae1b44b16ab837a56d7d1,
     type: 2}
+  <TutorialFloor4Repeat>k__BackingField: {fileID: 0}
   <StatsRepeat>k__BackingField: {fileID: 11400000, guid: dfc51715eab0e8c4faabb2d12ec190ea,
     type: 2}
   <RichIntroRepeat>k__BackingField: {fileID: 11400000, guid: 39ff42a094c9b8b43a1d72538064c27d,
@@ -939,6 +949,7 @@ MonoBehaviour:
     type: 2}
   <RichFloor3Repeat>k__BackingField: {fileID: 11400000, guid: d6f21198f8e96034589cf4df817dbfa1,
     type: 2}
+  <RichFloor4Repeat>k__BackingField: {fileID: 0}
   <KidIntroRepeat>k__BackingField: {fileID: 11400000, guid: 4e70f48d1933f004ebf9235e2b99421f,
     type: 2}
   <KidFloor1Repeat>k__BackingField: {fileID: 11400000, guid: 98bf71138bda92246a1f99dcf7d14b87,
@@ -947,6 +958,7 @@ MonoBehaviour:
     type: 2}
   <KidFloor3Repeat>k__BackingField: {fileID: 11400000, guid: 8215eb13a3700724fbfaaa21e041938a,
     type: 2}
+  <KidFloor4Repeat>k__BackingField: {fileID: 0}
   <PunkIntroRepeat>k__BackingField: {fileID: 11400000, guid: 65c0da571d5bd3848925d203d1caa5b7,
     type: 2}
   <PunkFloor1Repeat>k__BackingField: {fileID: 11400000, guid: 7bec0fad57fd66b40b20f129448c8a89,
@@ -955,6 +967,7 @@ MonoBehaviour:
     type: 2}
   <PunkFloor3Repeat>k__BackingField: {fileID: 11400000, guid: 10b6d8e5757912641bf3c09ddceb0b69,
     type: 2}
+  <PunkFloor4Repeat>k__BackingField: {fileID: 0}
   <ShopkeepIntroRepeat>k__BackingField: {fileID: 11400000, guid: efb08e97f9ebde0498afe72cd1789eb0,
     type: 2}
   <ShopkeepFloor1Repeat>k__BackingField: {fileID: 11400000, guid: e73586648d948964eb64c81247262cf3,
@@ -963,6 +976,7 @@ MonoBehaviour:
     type: 2}
   <ShopkeepFloor3Repeat>k__BackingField: {fileID: 11400000, guid: d7ce36dc1bedd534e80f530ba95d604d,
     type: 2}
+  <ShopkeepFloor4Repeat>k__BackingField: {fileID: 0}
 --- !u!114 &1995495827513124369
 MonoBehaviour:
   m_ObjectHideFlags: 0
