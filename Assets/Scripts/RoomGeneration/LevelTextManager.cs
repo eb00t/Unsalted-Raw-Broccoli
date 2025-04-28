@@ -54,6 +54,9 @@ public class LevelTextManager : MonoBehaviour
             case LevelBuilder.LevelMode.Floor3:
                 titleText.text = ("FLOOR 3");
                 break;
+            case LevelBuilder.LevelMode.Floor4:
+                titleText.text = ("FLOOR 4");
+                break;
             case LevelBuilder.LevelMode.FinalBoss:
                 titleText.text = ("FLOOR X");
                 break;
@@ -85,9 +88,12 @@ public class LevelTextManager : MonoBehaviour
                 subtitleText.text = ("And so it begins...");
                 break;
             case LevelBuilder.LevelMode.Floor2:
-                subtitleText.text = ("Welcome to the midpoint.");
+                subtitleText.text = ("Your journey continues...");
                 break;
             case LevelBuilder.LevelMode.Floor3:
+                subtitleText.text = ("Welcome to the midpoint.");
+                break;
+            case LevelBuilder.LevelMode.Floor4:
                 subtitleText.text = ("...");
                 break;
             case LevelBuilder.LevelMode.FinalBoss:

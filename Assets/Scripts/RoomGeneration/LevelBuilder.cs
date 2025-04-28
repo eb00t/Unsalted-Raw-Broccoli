@@ -24,6 +24,7 @@ public class LevelBuilder : MonoBehaviour
         Tutorial,
         FinalBoss,
         TitleScreen,
+        Floor4
     }
 
     [field: Header("Configuration")] 
@@ -122,6 +123,9 @@ public class LevelBuilder : MonoBehaviour
                     break;
                 case LevelMode.Floor3:
                     howManyRoomsToSpawn = 9;
+                    break;
+                case LevelMode.Floor4:
+                    howManyRoomsToSpawn = 11;
                     break;
                 case LevelMode.FinalBoss:
                     howManyRoomsToSpawn = 0;
@@ -226,7 +230,11 @@ public class LevelBuilder : MonoBehaviour
                 break;
             case LevelMode.Floor3:
                 _floorSpecificRoomPath = "Room Layouts/Floor 3";
-                _bossRoomPath = "Room Layouts/Boss Rooms/Empty Boss";
+                _bossRoomPath = "Room Layouts/Boss Rooms/Camera Boss";
+                break;
+            case LevelMode.Floor4:
+                _floorSpecificRoomPath = "Room Layouts/Floor 4";
+                _bossRoomPath = "Room Layouts/Boss Rooms/Hands Boss";
                 break;
             case LevelMode.FinalBoss:
                 _bossRoomPath = "Room Layouts/Boss Rooms/Hands Boss";
