@@ -6,6 +6,7 @@ public class HitboxHandler : MonoBehaviour
     [SerializeField] private bool _canDamage = true;
     public IDamageable damageable;
     [SerializeField] private bool doesSelfDestruct;
+    [SerializeField] private bool isConstantDamage;
 
     private void Start()
     {
@@ -17,6 +18,7 @@ public class HitboxHandler : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (isConstantDamage) return;
         damageable ??= GetComponentInParent<IDamageable>();
 
         if (other.CompareTag("Player"))
@@ -38,6 +40,28 @@ public class HitboxHandler : MonoBehaviour
         if (!other.GetComponent<SemiSolidPlatform>() && !other.GetComponent<SemiSolidPlatformTrigger>() && !other.CompareTag("Player") && !other.CompareTag("Enemy") && !other.isTrigger)
         {
             if (doesSelfDestruct) { Destroy(gameObject); }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!isConstantDamage) return;
+        damageable ??= GetComponentInParent<IDamageable>();
+        
+        if (other.CompareTag("Player"))
+        {
+            if (_canDamage)
+            {
+                var characterAttack = other.GetComponentInChildren<CharacterAttack>();
+
+                characterAttack.TakeDamagePlayer(damageable.Attack, damageable.PoiseDamage, damageable.KnockbackPower);
+                if (doesSelfDestruct)
+                {
+                    Destroy(gameObject);
+                }
+
+                StartCoroutine(AtkCooldown());
+            }
         }
     }
 

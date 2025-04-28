@@ -5,6 +5,7 @@ using FMOD.Studio;
 using Pathfinding;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -23,13 +24,11 @@ public class CameraBoss : MonoBehaviour, IDamageable
     [SerializeField] private int poiseDamage;
     [SerializeField] private Vector3 knockbackPower;
     [SerializeField] private int numberOfAttacks;
-    
-    [Header("Laser Stats")]
-    [SerializeField] private float chargeTime;
-    [SerializeField] private float fireTime;
-    [SerializeField] private float trackSpeed;
-    [SerializeField] private float delay;
-    [SerializeField] private float laserTickCooldown;
+
+    [Header("Laser Shield")] 
+    [SerializeField] private GameObject shieldObject;
+    [SerializeField] private float shieldRotSpeed;
+    [SerializeField] private float shieldDur;
     
     [Header("Projectiles")]
     [SerializeField] private float projectileSpeed;
@@ -64,6 +63,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     [SerializeField] private float moveSpeed;
     [SerializeField] private bool doesHaveLaserAttack;
     [SerializeField] private bool doesHaveProjectileAttack;
+    private bool _isShieldUp;
     private bool _isRepositioning;
     private bool _isStunned;
     private bool _isFrozen;
@@ -84,7 +84,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private Animator _animator;
     private Transform _target;
     private CharacterAttack _characterAttack;
-    private SpriteRenderer _spriteRenderer;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     private Transform _spriteTransform;
     private BoxCollider _collider;
     private Rigidbody _rigidbody;
@@ -95,8 +95,9 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private EventInstance _deathEvent;
     private EventInstance _laserEvent;
     private bool _canAttack = true;
-    private LineRenderer _lineRenderer;
+    //private LineRenderer _lineRenderer;
     [SerializeField] private Transform bossEyePosition;
+    private SpriteRenderer _spriteRenderer;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -117,6 +118,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        _spriteRenderer = shieldObject.GetComponent<SpriteRenderer>();
         RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         RoomScripting.enemies.Add(gameObject);
         _roomBounds = RoomScripting.GetComponent<Collider>();
@@ -129,14 +131,13 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _health = maxHealth;
         _healthSlider.gameObject.SetActive(false);
         _animator = GetComponent<Animator>();
-        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        _spriteTransform = _spriteRenderer.transform;
+        _spriteTransform = spriteRenderer.transform;
         _aiPath = GetComponent<AIPath>();
         _aiPath.maxSpeed = moveSpeed;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
-        _lineRenderer = GetComponentInChildren<LineRenderer>();
+        //_lineRenderer = GetComponentInChildren<LineRenderer>();
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
         AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
@@ -240,7 +241,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         {
             _targetTime -= Time.deltaTime;
 
-            if (_targetTime <= 0f && _canAttack)
+            if (_targetTime <= 0f && _canAttack && !_isShieldUp)
             {
                 _aiPath.canMove = false;
                 yield return StartCoroutine(TriggerAttack());
@@ -257,7 +258,6 @@ public class CameraBoss : MonoBehaviour, IDamageable
     
     private IEnumerator TriggerAttack()
     {
-        _canAttack = false;
         var ran = 0;
 
         if (doesHaveLaserAttack && doesHaveProjectileAttack)
@@ -271,15 +271,13 @@ public class CameraBoss : MonoBehaviour, IDamageable
 
         if (ran == 0)
         {
-            yield return StartCoroutine(LaserAttack());
+            yield return StartCoroutine(LaserShield());
         }
         else
         {
             _animator.SetTrigger("Projectile");
             yield return new WaitForSeconds(0.25f);
         }
-
-        _canAttack = true;
     }
     
     public void ProjectileAttack()
@@ -321,82 +319,56 @@ public class CameraBoss : MonoBehaviour, IDamageable
 
             if (ring < waves - 1)
             {
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(2f);
             }
         }
 
         _canAttack = true;
     }
 
-
-    private IEnumerator LaserAttack() // aims laser at player that tracks, then it stops and starts doing damage
+    private IEnumerator LaserShield()
     {
         _canAttack = false;
-        _lineRenderer.enabled = true;
-        _lineRenderer.SetPosition(0, bossEyePosition.position);
+        _isShieldUp = true;
+
+        shieldObject.SetActive(true);
+        yield return StartCoroutine(FadeInShield(0.5f));
+        shieldObject.GetComponent<HitboxHandler>().enabled = true;
         
-        var targetPos = _target.position;
         var elapsed = 0f;
-        
-        AudioManager.Instance.SetEventParameter(_laserEvent, "Firing", 0);
-        _laserEvent.start();
-        
-        while (elapsed < chargeTime)
+        while (elapsed < shieldDur)
         {
-            targetPos = Vector3.Lerp(targetPos, _target.position, Time.deltaTime * trackSpeed);
-            
-            _lineRenderer.SetPosition(0, bossEyePosition.position); 
-            _lineRenderer.SetPosition(1, targetPos);
-            _lineRenderer.startWidth = 0.01f;
-            _lineRenderer.endWidth = 0.01f;
-            //_lineRenderer.startColor = Color.white;
-            //_lineRenderer.endColor = Color.white;
-        
+            shieldObject.transform.Rotate(0f, 0f, shieldRotSpeed * Time.deltaTime);
+
             elapsed += Time.deltaTime;
             yield return null;
         }
-
-        yield return new WaitForSecondsRealtime(delay);
         
-        elapsed = 0f;
-        var lastDamageTime = 0f;
-        
-        AudioManager.Instance.SetEventParameter(_laserEvent, "Firing", 1);
-        while (elapsed < fireTime)
-        {
-            var dist = Vector3.Distance(targetPos, bossEyePosition.position);
-            var direction = (targetPos - bossEyePosition.position).normalized;
-            var laserEndPos = bossEyePosition.position + direction * (dist + 5f);
-
-            _lineRenderer.SetPosition(0, bossEyePosition.position);
-            _lineRenderer.SetPosition(1, laserEndPos);
-            _lineRenderer.startWidth = 0.1f;
-            _lineRenderer.endWidth = 0.05f;
-            //_lineRenderer.endColor = Color.red;
-            var layerMask = LayerMask.GetMask("Player");
-            
-            if (Physics.Raycast(bossEyePosition.position, direction, out var hit, 50f, layerMask))
-            {
-                if (hit.collider.CompareTag("Player"))
-                {
-                    var player = hit.collider.GetComponentInChildren<CharacterAttack>();
-                    if (player != null)
-                    {
-                        if (Time.time >= lastDamageTime + laserTickCooldown) // makes sure player only takes damage at intervals
-                        {
-                            player.TakeDamagePlayer(attack, poiseDamage, knockbackPower);
-                            lastDamageTime = Time.time;
-                        }
-                    }
-                }
-            }
-            
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        _lineRenderer.enabled = false;
+        shieldObject.SetActive(false);
+        shieldObject.GetComponent<HitboxHandler>().enabled = false;
+        shieldObject.transform.rotation = Quaternion.identity;
+        _isShieldUp = false;
         _canAttack = true;
+    }
+    
+    private IEnumerator FadeInShield(float fadeDuration)
+    {
+        var elapsedTime = 0f;
+        var color = _spriteRenderer.color;
+        color.a = 0f;
+        _spriteRenderer.color = color;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            var a = Mathf.Clamp01(elapsedTime / fadeDuration);
+            color.a = a;
+            _spriteRenderer.color = color;
+            yield return null;
+        }
+        
+        color.a = 1f;
+        _spriteRenderer.color = color;
     }
     
     private void UpdateSpriteDirection(bool isLeft)
@@ -550,8 +522,6 @@ public class CameraBoss : MonoBehaviour, IDamageable
             hb.gameObject.SetActive(false);
         }
         
-        EnemySpawner.spawnedEnemy = null;
-        EnemySpawner.SpawnEnemies();
         AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);
         int currencyToDrop = Random.Range(0, 12);
         for (int i = 0; i < currencyToDrop; i++)
@@ -634,8 +604,8 @@ public class CameraBoss : MonoBehaviour, IDamageable
     
     private IEnumerator HitFlash()
     {
-        _spriteRenderer.material = hitMaterial;
+        spriteRenderer.material = hitMaterial;
         yield return new WaitForSeconds(0.1f);
-        _spriteRenderer.material = defaultMaterial;
+        spriteRenderer.material = defaultMaterial;
     }
 }
