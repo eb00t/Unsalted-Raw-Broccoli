@@ -53,6 +53,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private float jumpForce;
     [SerializeField] private float jumpTriggerDistance;
     [SerializeField] private float reboundForce;
+    private Color _healthDefault;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
@@ -105,7 +106,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
-
+        _healthDefault = healthFillImage.color;
         _health = maxHealth;
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
@@ -400,7 +401,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         yield return new WaitForSeconds(freezeDuration);
 
-        healthFillImage.color = Color.red;
+        healthFillImage.color = _healthDefault;
         _isFrozen = false;
         _currentState = States.Chase;
 
@@ -427,7 +428,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         else
         {
             _isPoisoned = false;
-            healthFillImage.color = new Color(1f, .48f, .48f, 1);
+            healthFillImage.color = _healthDefault;
             yield break;
         }
         

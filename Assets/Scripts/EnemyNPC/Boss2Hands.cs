@@ -31,7 +31,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private Vector3 _lastPosition;
     private bool _isPlayerInRange;
     private States _state;
-    private enum States { Idle, Attack }
+    private enum States { Idle, Attack, Frozen }
     
     [Header("Timing")]
     [SerializeField] private float attackCooldown; // time between attacks
@@ -47,14 +47,17 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool isIdle;
+    private Color _healthDefault;
     private Vector3 _impulseVector;
-    //private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
     private bool _isStuck;
     private int _poisonBuildup;
     private int _poiseBuildup;
     private bool _canAttack;
+    private bool _isFrozen;
+    private bool _isFreezing;
+    private bool _isIdling;
 
     [Header("References")] 
     [SerializeField] private Image healthFillImage;
@@ -111,6 +114,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         _armMovementL = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
         _armMovementR = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
+        _healthDefault = healthFillImage.color;
     }
 
     private void Update()
@@ -125,38 +129,82 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         
         _attackCdCounter -= Time.deltaTime;
 
-        if (_isPlayerInRange)
+        if (_isFrozen)
         {
-            _state = States.Attack;
-            _lockOnController.isNearBoss = true;
+            _state = States.Frozen;
         }
         else
         {
-            _healthSlider.gameObject.SetActive(false);
-            _lockOnController.isNearBoss = false;
-            if (_state == States.Idle) return;
+            if (_isPlayerInRange)
             {
-                _state = States.Idle;
+                _state = States.Attack;
+                _lockOnController.isNearBoss = true;
+            }
+            else
+            {
+                _healthSlider.gameObject.SetActive(false);
+                _lockOnController.isNearBoss = false;
+                if (_state == States.Idle) return;
+                {
+                    _state = States.Idle;
+                }
             }
         }
 
         switch (_state)
         {
             case States.Idle:
-                StartCoroutine(Idle());
+                if (!_isIdling)
+                {
+                    StartCoroutine(Idle());
+                }
+
                 break;
             case States.Attack:
                 _healthSlider.gameObject.SetActive(true);
                 if (!_canAttack || _attackCdCounter > 0) return;
                 StartCoroutine(Attack());
                 break;
+            case States.Frozen:
+                if (!_isFreezing && canBeFrozen)
+                {
+                    StopAllCoroutines();
+                    _canAttack = true;
+                    _lineRenderer.enabled = false;
+                    StartCoroutine(BeginFreeze());
+                }
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
     
+    private IEnumerator BeginFreeze()
+    {
+        _isFrozen = true;
+        _isFreezing = true;
+        canBeFrozen = false;
+        healthFillImage.color = Color.cyan;
+
+        yield return new WaitForSeconds(freezeDuration);
+
+        healthFillImage.color = _healthDefault;
+        _isFrozen = false;
+        _state = States.Attack;
+
+        StartCoroutine(StartFreezeCooldown());
+        _isFreezing = false;
+    }
+    
+    private IEnumerator StartFreezeCooldown()
+    {
+        yield return new WaitForSeconds(freezeCooldown);
+        canBeFrozen = true;
+    }
+    
     private IEnumerator Idle() // makes the hands hover up and down while idle
     {
+        _isIdling = true;
         var hoverSpeed = 2f;
         var height = 0.2f;
 
@@ -169,6 +217,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
             yield return null;
         }
+        
+        _isIdling = false;
     }
 
     private IEnumerator Attack() // randomly pick an attack
@@ -550,7 +600,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         else
         {
             _isPoisoned = false;
-            healthFillImage.color = new Color(1f, .48f, .48f, 1);
+            healthFillImage.color = _healthDefault;
             yield break;
         }
         
@@ -564,7 +614,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         {
             case ConsumableEffect.Ice:
                 if (!canBeFrozen) return;
-                //_isFrozen = true;
+                _isFrozen = true;
                 break;
             case ConsumableEffect.Poison:
                 if (_isPoisoned) return;

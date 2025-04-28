@@ -214,7 +214,7 @@ public class LockOnController : MonoBehaviour // TODO: Make toggle states load f
             }
         }
 
-        var unlockDist = dataHolder.isAutoLockOnEnabled ? autoLockOnDist : autoSwitchDist;
+        var unlockDist = dataHolder.isAutoLockOnEnabled ? autoLockOnDist : manualLockOnDist;
         
         if (dataHolder.isAutoLockOnEnabled)
         {
