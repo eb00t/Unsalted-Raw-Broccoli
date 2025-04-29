@@ -66,6 +66,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float jumpTriggerDistance;
     [SerializeField] private float maxJumpHeight;
     [SerializeField] private float reboundForce;
+    private Vector3 _knockbackForce;
     public bool alwaysShowHealth;
     private bool _isFrozen;
     private bool _isPoisoned;
@@ -82,6 +83,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
     [SerializeField] private Material defaultMaterial, hitMaterial, invisMaterial;
+    [SerializeField] private GameObject gibs;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
@@ -708,6 +710,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             }
             else
             {
+                if (knockback.HasValue)
+                {
+                    ApplyKnockback(knockback.Value);
+                }
                 Die();
             }
         }
@@ -754,6 +760,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         isDead = true;
         StopAllCoroutines();
         _characterAttack.ChanceHeal();
+        
+        var newGibs = Instantiate(gibs, transform.position, Quaternion.identity);
+
+        foreach (var gib in newGibs.GetComponentsInChildren<Rigidbody>())
+        {
+            gib.AddForce(knockbackPower, ForceMode.Impulse);
+        }
 
         if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
         {
@@ -821,9 +834,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
         
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 15f : 10f; 
-        var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
+        _knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
-        StartCoroutine(TriggerKnockback(knockbackForce, 0.35f));
+        StartCoroutine(TriggerKnockback(_knockbackForce, 0.35f));
         
         var facingRight = _spriteRenderer.transform.localScale.x > 0;
         var playerInFront = (facingRight && _playerDir.x > 0) || (!facingRight && _playerDir.x < 0);
@@ -893,7 +906,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                     && hit.collider.gameObject.layer != 18)
                 {
                    ReboundForce(hit.normal);
-                   Debug.Log("rebound: " + hit.collider.name);
+                   //Debug.Log("rebound: " + hit.collider.name);
                    yield break;
                 }
             }

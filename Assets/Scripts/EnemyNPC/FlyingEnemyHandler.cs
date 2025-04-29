@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using FMOD.Studio;
 using Pathfinding;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -61,6 +59,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private bool doesHaveLaserAttack;
     [SerializeField] private bool doesHaveProjectileAttack;
     [SerializeField] private float numberOfProjectiles;
+    private Vector3 _knockbackForce;
     private bool _isRepositioning;
     private bool _isStunned;
     private bool _isFrozen;
@@ -76,6 +75,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private GameObject lightProjectile;
     [SerializeField] private Transform projectileOrigin;
     [SerializeField] private Material defaultMaterial, hitMaterial;
+    [SerializeField] private GameObject gibs;
     private Collider _roomBounds;
     private Slider _healthSlider;
     private Animator _animator;
@@ -461,6 +461,10 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         {
             _health = 0;
             _healthSlider.value = 0;
+            if (knockback.HasValue)
+            {
+                ApplyKnockback(knockback.Value);
+            }
             Die();
         }
         if (_health <= maxHealth / 3 && _lowHealth == false)
@@ -551,10 +555,16 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         RoomScripting._enemyCount--;
         EnemySpawner.spawnedEnemies.Remove(gameObject);
         
+        var newGibs = Instantiate(gibs, transform.position, Quaternion.identity);
+
+        foreach (var gib in newGibs.GetComponentsInChildren<Rigidbody>())
+        {
+            gib.AddForce(knockbackPower, ForceMode.Impulse);
+        }
+        
         _characterAttack.ChanceHeal();
         
         StopAllCoroutines();
-        StartCoroutine(FallToGround());
 
         foreach (var hb in GetComponentsInChildren<BoxCollider>()) // stops player being able to hit enemy on death
         {
@@ -594,16 +604,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _laserEvent.release();
     }
     
-    private IEnumerator FallToGround()
-    {
-        _rigidbody.isKinematic = false;
-        _rigidbody.useGravity = true;
-
-        yield return new WaitForSeconds(2f);
-
-        gameObject.SetActive(false);
-    }
-    
     public void ApplyKnockback(Vector2 knockbackPower)
     {
         if (_isFrozen || isDead) return;
@@ -611,9 +611,9 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
         
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 2f : 1f; 
-        var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
+        _knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
-        StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
+        StartCoroutine(TriggerKnockback(_knockbackForce, 0.2f));
         StartCoroutine(StunTimer(0.1f));
 
         if (_poiseBuildup >= poise)
