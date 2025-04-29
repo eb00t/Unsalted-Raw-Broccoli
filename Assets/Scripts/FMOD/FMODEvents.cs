@@ -30,6 +30,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference PlayerLightAttack { get; private set; }
     [field: SerializeField] public EventReference PlayerMediumAttack { get; private set; }
     [field: SerializeField] public EventReference PlayerHeavyAttack { get; private set; }
+    [field: SerializeField] public EventReference PlayerDamage { get; private set; }
     [field: Header("Enemy SFX")]
     [field: SerializeField] public EventReference EnemyFootsteps { get; private set; }
     [field: SerializeField] public EventReference BombEnemyFootsteps { get; private set; }
@@ -37,6 +38,8 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference EnemyDamage {get; private set;}
     [field: SerializeField] public EventReference EnemyDeath { get; private set; }
     [field: SerializeField] public EventReference EnemyJump { get; private set; }
+    [field: SerializeField] public EventReference EnemyAttack { get; private set; }
+    [field: SerializeField] public EventReference EnemySlash { get; private set; }
     [field: SerializeField] public EventReference Explosion { get; private set; }
     [field: SerializeField] public EventReference FlyingEnemyShoot { get; private set; }
     [field: SerializeField] public EventReference FlyingEnemyLaser { get; private set; }

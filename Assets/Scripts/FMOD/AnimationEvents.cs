@@ -98,6 +98,11 @@ public class AnimationEvents : MonoBehaviour
     }
     
     //ENEMIES
+    public void PlayEnemySwingSound()
+    {
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.EnemyAttack, transform.position);
+    }
+    
     public void PlayExplosionSound()
     {
         _explosionEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.Explosion);

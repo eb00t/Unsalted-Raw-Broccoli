@@ -52,7 +52,7 @@ public class ConnectorRoomInfo : MonoBehaviour
     {
         foreach (var room in attachedRooms)
         {
-            if (room.GetComponent<RoomInfo>().attachedConnectors.Contains(gameObject))
+            if (room != null && room.GetComponent<RoomInfo>().attachedConnectors.Contains(gameObject))
             {
                  room.GetComponent<RoomInfo>().attachedConnectors.Remove(gameObject);
             }
@@ -61,8 +61,11 @@ public class ConnectorRoomInfo : MonoBehaviour
 
         foreach (var door in attachedDoors)
         {
-            door.transform.root.GetComponent<RoomInfo>().usableDoors.Remove(door);
-            door.GetComponent<DoorInfo>().CloseDoor();
+            if (door != null)
+            {
+                door.transform.root.GetComponent<RoomInfo>().usableDoors.Remove(door);
+                door.GetComponent<DoorInfo>().CloseDoor();
+            }
         }
         LevelBuilder.Instance.spawnedConnectors.Remove(gameObject);
         foreach (var lit in allLights)

@@ -228,8 +228,8 @@ public class RoomInfo : MonoBehaviour
                 {
                     LevelBuilder.Instance._spawnMode = LevelBuilder.SpawnMode.Shops;
                 }
-
                 LevelBuilder.Instance.spawnedShops.Remove(gameObject);
+                LevelBuilder.Instance.spawnModeChangedByDestroy = true;
             }
 
             if (lootRoom)

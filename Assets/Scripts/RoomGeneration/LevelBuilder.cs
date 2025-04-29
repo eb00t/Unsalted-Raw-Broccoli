@@ -85,6 +85,7 @@ public class LevelBuilder : MonoBehaviour
     private string _loreRoomPath;
     private float _spawnTimer;
     private int _spawnFailCount;
+    public bool spawnModeChangedByDestroy = false; // Used to guarantee a shop
     [SerializeField] private DataHolder dataHolder;
     public enum SpawnMode
     {
@@ -659,7 +660,7 @@ public class LevelBuilder : MonoBehaviour
         }
         var rareSpawn = RandomiseNumber(100);
         Debug.Log("Rare spawn number: " + rareSpawn);
-        if (_spawnMode != SpawnMode.BossRooms) //Special rooms will not spawn when boss rooms are being spawned
+        if (_spawnMode != SpawnMode.BossRooms && spawnModeChangedByDestroy == false) //Special rooms will not spawn when boss rooms are being spawned
         {
             switch (rareSpawn)
             {
@@ -717,6 +718,7 @@ public class LevelBuilder : MonoBehaviour
                 _spawnMode = SpawnMode.Shops;
             }
         }
+        spawnModeChangedByDestroy = false;
     }
 
     IEnumerator WaitASec()
@@ -737,11 +739,18 @@ public class LevelBuilder : MonoBehaviour
             yield return new WaitForSecondsRealtime(.5f);
             SpawnBossRoom();
             roomGeneratingFinished = true;
-            
+
             foreach (var room in spawnedRooms)
             {
                 RoomScripting roomScript = room.GetComponent<RoomScripting>();
                 roomScript.CheckDoors();
+            }
+            foreach (var connector in spawnedConnectors)
+            {
+                if (connector.GetComponent<ConnectorRoomInfo>().attachedRooms.Count < 2)
+                {
+                    Destroy(connector.gameObject);
+                }
             }
         }
     }
