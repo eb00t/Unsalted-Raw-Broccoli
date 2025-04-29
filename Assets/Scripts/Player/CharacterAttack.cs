@@ -555,6 +555,12 @@ public class CharacterAttack : MonoBehaviour
         if (isDead) return;
         AudioManager.Instance.SetGlobalEventParameter("Music Track", 7);
         AudioManager.Instance.SetGlobalEventParameter("NoMusicUIVolume", 0.1f);
+        StartCoroutine(WaitUntilGrounded());
+    }
+
+    private IEnumerator WaitUntilGrounded()
+    {
+        yield return new WaitUntil(() => _characterMovement.grounded);
         isDead = true;
         _playerAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
         _playerAnimator.SetBool(IsPlayerDead, true);
