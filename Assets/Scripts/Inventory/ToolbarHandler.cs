@@ -86,7 +86,7 @@ public class ToolbarHandler : MonoBehaviour
         
         var index = -1;
 
-        if (dataHolder.isAutoEquipEnabled && (!_characterMovement.uiOpen || _menuHandler.shopGUI.activeSelf))
+        if (dataHolder.isAutoEquipEnabled && (!_characterMovement.uiOpen || (_menuHandler.shopGUI != null && _menuHandler.shopGUI.activeSelf)))
         {
             for (var i = 0; i < dataHolder.equippedConsumables.Length; i++)
             {

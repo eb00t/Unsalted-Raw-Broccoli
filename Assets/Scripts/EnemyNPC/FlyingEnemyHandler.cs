@@ -559,7 +559,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
         foreach (var gib in newGibs.GetComponentsInChildren<Rigidbody>())
         {
-            gib.AddForce(knockbackPower, ForceMode.Impulse);
+            var dir = new Vector3(_knockbackForce.x, _knockbackForce.y, 0);
+            gib.AddForce(dir * (_knockbackForce.magnitude * Random.Range(2f, 4f)), ForceMode.Impulse);
         }
         
         _characterAttack.ChanceHeal();

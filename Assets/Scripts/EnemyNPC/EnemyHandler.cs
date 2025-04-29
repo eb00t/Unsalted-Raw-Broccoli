@@ -765,7 +765,18 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         foreach (var gib in newGibs.GetComponentsInChildren<Rigidbody>())
         {
-            gib.AddForce(knockbackPower, ForceMode.Impulse);
+            if (isBomb)
+            {
+                var dir = Random.onUnitSphere;
+                dir.z = 0;
+                gib.AddForce(dir.normalized * Random.Range(50f, 80f), ForceMode.Impulse);
+                gib.AddTorque(Random.insideUnitSphere * 20f, ForceMode.Impulse);
+            }
+            else
+            {
+                var dir = new Vector3(_knockbackForce.x, _knockbackForce.y, 0);
+                gib.AddForce(dir * (_knockbackForce.magnitude * Random.Range(0.1f, .15f)), ForceMode.Impulse);
+            }
         }
 
         if (!SceneManager.GetActiveScene().name.Contains("Tutorial") && !SceneManager.GetActiveScene().name.Contains("Intermission"))
@@ -832,7 +843,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         if (_isFrozen || isDead) return;
 
         _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
-        
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 15f : 10f; 
         _knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
