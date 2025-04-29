@@ -36,6 +36,8 @@ public class CameraBoss : MonoBehaviour, IDamageable
     [SerializeField] private float numberOfProjectiles;
     [SerializeField] private int maxProjectileWaves;
     [SerializeField] private float projectileSpawnRadius;
+    private int _wavesLeft;
+    private bool _isWindingUp;
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
@@ -277,55 +279,67 @@ public class CameraBoss : MonoBehaviour, IDamageable
         }
         else
         {
-            _animator.SetTrigger("Projectile");
-            yield return new WaitForSeconds(0.25f);
+            InitiateProjectileAttack();
         }
     }
-    
-    public void ProjectileAttack()
-    {
-        StartCoroutine(TriggerProjectileAttack());
-    }
 
-    private IEnumerator TriggerProjectileAttack()
+    private void InitiateProjectileAttack()
     {
         _canAttack = false;
+        _isWindingUp = true;
+        _wavesLeft = Random.Range(2, maxProjectileWaves + 1);
 
-        var baseAngle = Random.Range(0f, 360f);
-        var waves = Random.Range(1, maxProjectileWaves + 1);
-
-        for (var ring = 0; ring < waves; ring++)
+        FireWave();
+    }
+    
+    private void FireWave()
+    {
+        if (_wavesLeft <= 0)
         {
-            var angleOffset = 360f / numberOfProjectiles;
-            var startAngle = baseAngle + (ring * waveOffset);
-
-            for (var i = 0; i < numberOfProjectiles; i++)
-            {
-                var angle = startAngle + (i * angleOffset);
-                var rad = angle * Mathf.Deg2Rad;
-                var direction = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0);
-
-                var position = projectileOrigin.position + direction.normalized * projectileSpawnRadius;
-                var newProjectile = Instantiate(lightProjectile, position, Quaternion.identity);
-                newProjectile.GetComponent<HitboxHandler>().damageable = this;
-                newProjectile.SetActive(true);
-
-                var rb = newProjectile.GetComponent<Rigidbody>();
-                rb.velocity = direction * projectileSpeed;
-
-                var projectileRotation = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                rb.rotation = Quaternion.Euler(0, 0, projectileRotation);
-            }
-
-            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.FlyingEnemyShoot, transform.position);
-
-            if (ring < waves - 1)
-            {
-                yield return new WaitForSeconds(.5f);
-            }
+            _isWindingUp = false;
+            _canAttack = true;
+            return;
         }
 
-        _canAttack = true;
+        _animator.SetTrigger("Projectile");
+    }
+
+    private void ProjectileAttack()
+    {
+        var angleOffset = 360f / numberOfProjectiles;
+        var startAngle = Random.Range(0f, 360f);
+
+        for (var i = 0; i < numberOfProjectiles; i++)
+        {
+            var angle = startAngle + (i * angleOffset);
+            var rad = angle * Mathf.Deg2Rad;
+            var direction = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0);
+
+            var position = projectileOrigin.position + direction.normalized * projectileSpawnRadius;
+            var newProjectile = Instantiate(lightProjectile, position, Quaternion.identity);
+            newProjectile.GetComponent<HitboxHandler>().damageable = this;
+            newProjectile.SetActive(true);
+
+            var rb = newProjectile.GetComponent<Rigidbody>();
+            rb.velocity = direction * projectileSpeed;
+
+            var projectileRotation = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            rb.rotation = Quaternion.Euler(0, 0, projectileRotation);
+        }
+
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.FlyingEnemyShoot, transform.position);
+
+        _wavesLeft--;
+        
+        if (_wavesLeft > 0)
+        {
+            Invoke(nameof(FireWave), 1f); 
+        }
+        else
+        {
+            _isWindingUp = false;
+            _canAttack = true;
+        }
     }
 
     private IEnumerator LaserShield()
