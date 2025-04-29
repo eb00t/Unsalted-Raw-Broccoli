@@ -436,14 +436,6 @@ public class CharacterAttack : MonoBehaviour
         damage = Mathf.RoundToInt(damage * dmgReduction);
         
         var hitColor = (dataHolder.playerHealth - damage < dataHolder.playerHealth) ? Color.red : Color.green;
-        if (hitColor == Color.red)
-        {
-            StartCoroutine(HitFlash());
-            //if (_characterMovement.grounded)
-            //{
-                ApplyKnockback(knockback);
-            //}
-        }
 
         if (dataHolder.playerHealth <= damage)
         {
@@ -471,6 +463,15 @@ public class CharacterAttack : MonoBehaviour
             hitFlash.SetActive(true);
             
             dataHolder.playerHealth -= damage;
+        }
+        
+        if (hitColor == Color.red)
+        {
+            StartCoroutine(HitFlash());
+            if (dataHolder.playerHealth > 0f)
+            {
+                ApplyKnockback(knockback);
+            }
         }
         
         healthSlider.value = dataHolder.playerHealth;

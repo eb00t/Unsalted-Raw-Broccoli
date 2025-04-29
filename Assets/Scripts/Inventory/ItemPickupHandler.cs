@@ -38,15 +38,18 @@ public class ItemPickupHandler : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "Tutorial" || characterMovement.uiOpen || isNearOtherObject) return;
         
         itemCount = 0;
-        ItemPickup itemPickup = null;
-        foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
+        var nearbyItems = GameObject.FindGameObjectsWithTag("Item");
+        var isNearPassive = false;
+        
+        foreach (var item in nearbyItems)
         {
-            itemPickup = item.GetComponent<ItemPickup>();
+            var itemPickup = item.GetComponent<ItemPickup>();
             if (itemPickup == null || !itemPickup.canPickup) continue;
+            isNearPassive = itemPickup.isPermanentPassive;
             itemCount++;
         }
 
-        if (itemCount == 1 && itemPickup != null && itemPickup.isPermanentPassive)
+        if (isNearPassive)
         {
             TogglePrompt("Pick up passive item", true,  ControlsManager.ButtonType.Interact, "", null);
             return;
@@ -58,10 +61,10 @@ public class ItemPickupHandler : MonoBehaviour
                 TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null);
                 break;
             case 1:
-                TogglePrompt("Pick up consumable item", true, ControlsManager.ButtonType.Interact, "",null);
+                TogglePrompt("Pick up consumable", true, ControlsManager.ButtonType.Interact, "",null);
                 break;
             default:
-                TogglePrompt("Pick up consumable items", true, ControlsManager.ButtonType.Interact, "", null);
+                TogglePrompt("Pick up consumables", true, ControlsManager.ButtonType.Interact, "", null);
                 break;
         }
     }
