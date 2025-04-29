@@ -387,7 +387,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.AddForce(force, ForceMode.VelocityChange);
-
+		AudioManager.Instance.PlayOneShot(FMODEvents.Instance.EnemyJump, transform.position);
         StartCoroutine(PostJumpDelay(0.5f));
     }
     

@@ -461,7 +461,6 @@ public class CharacterAttack : MonoBehaviour
         {
             hitFlash.GetComponent<Image>().color = hitColor;
             hitFlash.SetActive(true);
-            
             dataHolder.playerHealth -= damage;
         }
         
@@ -473,7 +472,7 @@ public class CharacterAttack : MonoBehaviour
                 ApplyKnockback(knockback);
             }
         }
-        
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PlayerDamage, transform.position);
         healthSlider.value = dataHolder.playerHealth;
         _poiseBuildup += poiseDmg;
     }
