@@ -885,6 +885,7 @@ MonoBehaviour:
   knockbackPower: {x: 0, y: 0, z: 0}
   floor2Multiplier: 0
   floor3Multiplier: 0
+  floor4Multiplier: 0
   attackRange: 3
   patrolRange: 0
   _roomBounds: {fileID: 0}
@@ -909,12 +910,14 @@ MonoBehaviour:
   jumpTriggerDistance: 0
   maxJumpHeight: 0
   reboundForce: 0
+  alwaysShowHealth: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 741127926}
   defaultMaterial: {fileID: 0}
   hitMaterial: {fileID: 0}
   invisMaterial: {fileID: 0}
+  gibs: {fileID: 0}
 --- !u!4 &95066218 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9201836616417202832, guid: 097097a378c265d489a743ebce154f28,
@@ -2801,6 +2804,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canDamage: 1
   doesSelfDestruct: 0
+  isConstantDamage: 0
 --- !u!65 &392235281
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3053,6 +3057,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6356117330687796896, guid: 82d96a92435624859a85308310350400,
+        type: 3}
+      propertyPath: companionCamera
+      value: 
+      objectReference: {fileID: 866448919}
     - target: {fileID: 6575749232390662724, guid: 82d96a92435624859a85308310350400,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -6958,6 +6967,85 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e524f5ae53523947bf71b17cc7ea8e0, type: 3}
+--- !u!1001 &866448918
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2069409593576255661, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_Name
+      value: CompanionCamera
+      objectReference: {fileID: 0}
+    - target: {fileID: 2069409593576255661, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810324875042115482, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810324875042115482, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810324875042115482, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810324875042115482, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810324875042115482, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810324875042115482, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810324875042115482, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810324875042115482, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810324875042115482, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810324875042115482, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5ee9a3e1882e0904fac416d54a76eb98, type: 3}
+--- !u!1 &866448919 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2069409593576255661, guid: 5ee9a3e1882e0904fac416d54a76eb98,
+    type: 3}
+  m_PrefabInstance: {fileID: 866448918}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &867287539
 GameObject:
   m_ObjectHideFlags: 0
@@ -7397,6 +7485,7 @@ MonoBehaviour:
   knockbackPower: {x: 0, y: 0, z: 0}
   floor2Multiplier: 0
   floor3Multiplier: 0
+  floor4Multiplier: 0
   attackRange: 3
   patrolRange: 0
   _roomBounds: {fileID: 0}
@@ -7421,12 +7510,14 @@ MonoBehaviour:
   jumpTriggerDistance: 0
   maxJumpHeight: 0
   reboundForce: 0
+  alwaysShowHealth: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 520673695}
   defaultMaterial: {fileID: 0}
   hitMaterial: {fileID: 0}
   invisMaterial: {fileID: 0}
+  gibs: {fileID: 0}
 --- !u!1001 &919525743
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13046,6 +13137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canDamage: 1
   doesSelfDestruct: 0
+  isConstantDamage: 0
 --- !u!65 &1606519838
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14221,6 +14313,7 @@ MonoBehaviour:
   knockbackPower: {x: 0, y: 0, z: 0}
   floor2Multiplier: 0
   floor3Multiplier: 0
+  floor4Multiplier: 0
   attackRange: 5
   patrolRange: 0
   _roomBounds: {fileID: 0}
@@ -14245,12 +14338,14 @@ MonoBehaviour:
   jumpTriggerDistance: 0
   maxJumpHeight: 0
   reboundForce: 0
+  alwaysShowHealth: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 0}
   defaultMaterial: {fileID: 0}
   hitMaterial: {fileID: 0}
   invisMaterial: {fileID: 0}
+  gibs: {fileID: 0}
 --- !u!65 &1778587977
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17347,6 +17442,7 @@ MonoBehaviour:
   knockbackPower: {x: 0, y: 0, z: 0}
   floor2Multiplier: 0
   floor3Multiplier: 0
+  floor4Multiplier: 0
   attackRange: 3
   patrolRange: 0
   _roomBounds: {fileID: 0}
@@ -17371,12 +17467,14 @@ MonoBehaviour:
   jumpTriggerDistance: 0
   maxJumpHeight: 0
   reboundForce: 0
+  alwaysShowHealth: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 2327120454878590849}
   defaultMaterial: {fileID: 0}
   hitMaterial: {fileID: 0}
   invisMaterial: {fileID: 0}
+  gibs: {fileID: 0}
 --- !u!1 &374647565339419410
 GameObject:
   m_ObjectHideFlags: 0
@@ -17702,6 +17800,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canDamage: 1
   doesSelfDestruct: 0
+  isConstantDamage: 0
 --- !u!4 &1009917714320351229
 Transform:
   m_ObjectHideFlags: 0
@@ -22613,6 +22712,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canDamage: 1
   doesSelfDestruct: 0
+  isConstantDamage: 0
 --- !u!1839735485 &7166182601149229524
 Tilemap:
   m_ObjectHideFlags: 0
@@ -23167,6 +23267,7 @@ MonoBehaviour:
   knockbackPower: {x: 0, y: 0, z: 0}
   floor2Multiplier: 0
   floor3Multiplier: 0
+  floor4Multiplier: 0
   attackRange: 3
   patrolRange: 0
   _roomBounds: {fileID: 0}
@@ -23191,12 +23292,14 @@ MonoBehaviour:
   jumpTriggerDistance: 0
   maxJumpHeight: 0
   reboundForce: 0
+  alwaysShowHealth: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 5680754485878443918}
   defaultMaterial: {fileID: 0}
   hitMaterial: {fileID: 0}
   invisMaterial: {fileID: 0}
+  gibs: {fileID: 0}
 --- !u!1 &7759293534576696093
 GameObject:
   m_ObjectHideFlags: 0
@@ -23698,6 +23801,7 @@ MonoBehaviour:
   knockbackPower: {x: 0, y: 0, z: 0}
   floor2Multiplier: 0
   floor3Multiplier: 0
+  floor4Multiplier: 0
   attackRange: 5
   patrolRange: 0
   _roomBounds: {fileID: 0}
@@ -23722,12 +23826,14 @@ MonoBehaviour:
   jumpTriggerDistance: 0
   maxJumpHeight: 0
   reboundForce: 0
+  alwaysShowHealth: 0
   passiveTarget: {fileID: 0}
   attackHitbox: {fileID: 0}
   healthFillImage: {fileID: 0}
   defaultMaterial: {fileID: 0}
   hitMaterial: {fileID: 0}
   invisMaterial: {fileID: 0}
+  gibs: {fileID: 0}
 --- !u!65 &8513952794155243319
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24355,3 +24461,4 @@ SceneRoots:
   - {fileID: 1239465604}
   - {fileID: 1387307449}
   - {fileID: 931884552}
+  - {fileID: 866448918}

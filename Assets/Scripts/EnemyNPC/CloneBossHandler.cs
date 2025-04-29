@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using FMOD.Studio;
 using Pathfinding;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -51,6 +52,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     [SerializeField] private bool canBeStunned;
     [SerializeField] private float jumpTriggerDistance;
     [SerializeField] private float maxJumpHeight;
+    private Vector3 _knockbackForce;
     private bool _isFrozen;
     private bool _isPoisoned;
     private bool _lowHealth;
@@ -62,6 +64,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     [SerializeField] private BoxCollider attackHitbox;
     [SerializeField] private Image healthFillImage;
     [SerializeField] private Material defaultMaterial, hitMaterial;
+    [SerializeField] private GameObject gibs;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
@@ -446,6 +449,10 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         {
             health = 0;
             _healthSlider.value = 0;
+            if (knockback.HasValue)
+            {
+                ApplyKnockback(knockback.Value);
+            }
             Die();
         }
 
@@ -493,6 +500,14 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         isDead = true;
         StopAllCoroutines();
         
+        var newGibs = Instantiate(gibs, transform.position, Quaternion.identity);
+
+        foreach (var gib in newGibs.GetComponentsInChildren<Rigidbody>())
+        {
+            gib.AddForce(knockbackPower, ForceMode.Impulse);
+        }
+
+        
         var energyToDrop = Random.Range(0, 2);
         for (var i = 0; i < energyToDrop; i++)
         {
@@ -529,9 +544,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
         
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 15f : 10f; 
-        var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
+        _knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
-        StartCoroutine(TriggerKnockback(knockbackForce, 0.2f));
+        StartCoroutine(TriggerKnockback(_knockbackForce, 0.2f));
         StartCoroutine(StunTimer(.05f));
 
         if (_poiseBuildup < poise) return;
