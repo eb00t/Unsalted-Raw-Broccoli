@@ -34,6 +34,10 @@ public class LoreReference : MonoBehaviour
         allLoreItems.Add(Fortunes);
         allLoreItems.Add(OldFriend);
         allLoreItems.Add(MessageToSelf);
+        allLoreItems.Add(BasicEnemyTips);
+        allLoreItems.Add(FlyingEnemyTips);
+        allLoreItems.Add(SilentEnemyTips);
+        allLoreItems.Add(BombEnemyTips);
     }
     
     [field: Header("AI Communication")]
@@ -57,6 +61,12 @@ public class LoreReference : MonoBehaviour
     [field: SerializeField] public LoreItemHandler WhyTheConstruct { get; private set; }
     [field: SerializeField] public LoreItemHandler MessageToSelf { get; private set; }
     [field: SerializeField] public LoreItemHandler DistressCall { get; private set; }
+    
+    [field: Header("Enemy Tips")]
+    [field: SerializeField] public LoreItemHandler BasicEnemyTips { get; private set; }
+    [field: SerializeField] public LoreItemHandler FlyingEnemyTips { get; private set; }
+    [field: SerializeField] public LoreItemHandler SilentEnemyTips { get; private set; }
+    [field: SerializeField] public LoreItemHandler BombEnemyTips { get; private set; }
     
     [field: Header("Other")]
     [field: SerializeField] public LoreItemHandler Breadcrumbs { get; private set; }
