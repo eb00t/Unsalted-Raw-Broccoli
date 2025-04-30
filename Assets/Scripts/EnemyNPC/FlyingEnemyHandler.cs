@@ -369,6 +369,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         elapsed = 0f;
         var lastDamageTime = 0f;
+        var hasAppliedKnockback = false;
         
         AudioManager.Instance.SetEventParameter(_laserEvent, "Firing", 1);
         while (elapsed < fireTime)
@@ -393,7 +394,15 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
                     {
                         if (Time.time >= lastDamageTime + laserTickCooldown) // makes sure player only takes damage at intervals
                         {
-                            player.TakeDamagePlayer(attack, poiseDamage, knockbackPower);
+                            if (!hasAppliedKnockback)
+                            {
+                                player.TakeDamagePlayer(attack, poiseDamage, knockbackPower);
+                                hasAppliedKnockback = true;
+                            }
+                            else
+                            {
+                                player.TakeDamagePlayer(attack, poiseDamage, Vector3.zero);
+                            }
                             lastDamageTime = Time.time;
                         }
                     }

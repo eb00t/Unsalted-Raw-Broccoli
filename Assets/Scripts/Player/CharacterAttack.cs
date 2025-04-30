@@ -74,6 +74,7 @@ public class CharacterAttack : MonoBehaviour
     private Coroutine _coyoteRoutine;
     private PassiveItemHandler _passiveItemHandler;
     [SerializeField] private DataHolder dataHolder;
+    private Coroutine _knockbackRoutine;
     
     [Header("Animation")]
     private Animator _playerAnimator;
@@ -485,7 +486,12 @@ public class CharacterAttack : MonoBehaviour
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 15f : 10f; 
         var knockbackForce = new Vector3(knockbackPower.x * knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
-        StartCoroutine(TriggerKnockback(knockbackForce, 0.35f));
+        if (_knockbackRoutine != null)
+        {
+            StopCoroutine(_knockbackRoutine);
+        }
+        
+        _knockbackRoutine = StartCoroutine(TriggerKnockback(knockbackForce, 0.35f));
         StartCoroutine(StunTimer(.05f));
 
         if (_poiseBuildup < poise) return;
@@ -501,6 +507,7 @@ public class CharacterAttack : MonoBehaviour
         yield return new WaitForSeconds(duration);
         _rigidbody.velocity = Vector3.zero;
         _characterMovement.canMove = true;
+        _knockbackRoutine = null;
     }
 
     public void ChanceHeal()
@@ -646,6 +653,14 @@ public class CharacterAttack : MonoBehaviour
     private void Update()
     {
         if (isDead || _characterMovement.uiOpen) return;
+
+        if (!_characterMovement.grounded || !_rigidbody.useGravity)
+        {
+            if (_knockbackRoutine != null)
+            {
+                StopCoroutine(_knockbackRoutine);
+            }
+        }
 
         if (jumpAttackCount > 0)
         {
