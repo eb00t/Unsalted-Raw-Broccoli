@@ -467,7 +467,7 @@ public class CharacterAttack : MonoBehaviour
         if (hitColor == Color.red)
         {
             StartCoroutine(HitFlash());
-            if (dataHolder.playerHealth > 0f)
+            if (dataHolder.playerHealth > 0f && _characterMovement.grounded)
             {
                 ApplyKnockback(knockback);
             }

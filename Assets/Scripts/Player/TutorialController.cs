@@ -148,14 +148,7 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Dash on the ground or in the air", ControlsManager.ButtonType.Dash, "", null);
                 break;
             case TutorialStep.Crouch:
-                if (dataHolder.isGamepad)
-                {
-                    ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchL, " or ",ControlsManager.ButtonType.CrouchR);
-                }
-                else
-                {
-                    ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchL, "", null);
-                }
+                ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchC, " or ",ControlsManager.ButtonType.CrouchR);
                 break;
             case TutorialStep.FindItems:
                 ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.Interact, "", null);

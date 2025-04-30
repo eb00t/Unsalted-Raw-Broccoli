@@ -36,7 +36,8 @@ public class ControlsManager : MonoBehaviour
     [SerializeField] private Sprite menuImg;
     [SerializeField] private Sprite dPadUp, dPadDown, dPadLeft, dPadRight;
     [SerializeField] private Sprite lThumbstick, rThumbstick;
-    [SerializeField] private Sprite lThumbstickDown, rThumbstickDown;
+    [SerializeField] private Sprite lThumbstickPress, rThumbstickPress;
+    [SerializeField] private Sprite lThumbstickDown;
     
     private void Awake()
     {
@@ -112,8 +113,9 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.HeavyAttack, B },
             { ButtonType.Jump, A },
             { ButtonType.Dash, RB },
-            { ButtonType.CrouchL, lThumbstickDown },
-            { ButtonType.CrouchR, rThumbstickDown },
+            { ButtonType.CrouchL, lThumbstickPress },
+            { ButtonType.CrouchR, rThumbstickPress },
+            { ButtonType.CrouchC, lThumbstickDown },
             { ButtonType.Pause, menuImg },
             { ButtonType.Back, B },
             { ButtonType.CycleToolbarLeft, dPadLeft },
@@ -136,8 +138,9 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.HeavyAttack, circle },
             { ButtonType.Jump, psX },
             { ButtonType.Dash, R1 },
-            { ButtonType.CrouchL, lThumbstickDown },
-            { ButtonType.CrouchR, rThumbstickDown },
+            { ButtonType.CrouchL, lThumbstickPress },
+            { ButtonType.CrouchR, rThumbstickPress },
+            { ButtonType.CrouchC, lThumbstickDown },
             { ButtonType.Pause, menuImg },
             { ButtonType.Back, circle },
             { ButtonType.CycleToolbarLeft, dPadLeft },
@@ -162,6 +165,7 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.Dash, "SHIFT" },
             { ButtonType.CrouchL, "CTRL" },
             { ButtonType.CrouchR, "CTRL" },
+            { ButtonType.CrouchC, "C" },
             { ButtonType.Pause, "ESC" },
             { ButtonType.Back, "ESC" },
             { ButtonType.CycleToolbarLeft, "Z" },
@@ -187,6 +191,7 @@ public class ControlsManager : MonoBehaviour
         Dash,
         CrouchL,
         CrouchR,
+        CrouchC,
         Pause,
         Back,
         CycleToolbarLeft,
