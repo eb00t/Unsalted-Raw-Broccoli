@@ -7,6 +7,7 @@ public class HitboxHandler : MonoBehaviour
     public IDamageable damageable;
     [SerializeField] private bool doesSelfDestruct;
     [SerializeField] private bool isConstantDamage;
+    [SerializeField] private float damageDelay = 0.25f;
 
     private void Start()
     {
@@ -68,7 +69,7 @@ public class HitboxHandler : MonoBehaviour
     private IEnumerator AtkCooldown()
     {
         _canDamage = false;
-        yield return new WaitForSecondsRealtime(0.25f);
+        yield return new WaitForSecondsRealtime(damageDelay);
         _canDamage = true;
     }
 

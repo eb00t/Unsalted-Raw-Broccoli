@@ -229,7 +229,7 @@ MonoBehaviour:
   shieldDur: 4
   projectileSpeed: 13
   waveOffset: 90
-  numberOfProjectiles: 8
+  numberOfProjectiles: 9
   maxProjectileWaves: 6
   projectileSpawnRadius: 3.5
   attackRange: 15
@@ -958,6 +958,7 @@ MonoBehaviour:
   _canDamage: 1
   doesSelfDestruct: 0
   isConstantDamage: 0
+  damageDelay: 0.25
 --- !u!1 &4810268734969390951
 GameObject:
   m_ObjectHideFlags: 0
@@ -1200,6 +1201,7 @@ MonoBehaviour:
   _canDamage: 1
   doesSelfDestruct: 0
   isConstantDamage: 1
+  damageDelay: 0.75
 --- !u!212 &2422184600147461831
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1711,6 +1713,7 @@ MonoBehaviour:
   _canDamage: 1
   doesSelfDestruct: 1
   isConstantDamage: 0
+  damageDelay: 0.25
 --- !u!54 &2162322399734670511
 Rigidbody:
   m_ObjectHideFlags: 0

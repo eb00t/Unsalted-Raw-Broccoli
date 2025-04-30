@@ -93,6 +93,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private BoxCollider _collider;
     private Rigidbody _rigidbody;
     private AIPath _aiPath;
+    private GameObject dialogueGui;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -139,6 +140,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _aiPath = GetComponent<AIPath>();
         _aiPath.maxSpeed = moveSpeed;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
+        dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
         //_lineRenderer = GetComponentInChildren<LineRenderer>();
@@ -153,6 +155,17 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private void Update()
     {
         if (_animator.GetBool("isDead")) return;
+        
+        /*
+        if (dialogueGui.activeSelf)
+        {
+            StopAllCoroutines();
+            _targetTime = 0;
+            _canAttack = true;
+            
+            return;
+        }
+        */
         
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;
