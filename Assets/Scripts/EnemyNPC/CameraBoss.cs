@@ -361,7 +361,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _isShieldUp = true;
 
         shieldObject.SetActive(true);
-        yield return StartCoroutine(FadeInShield(0.5f));
+        yield return StartCoroutine(FadeInShield(1.2f));
         shieldObject.GetComponent<HitboxHandler>().enabled = true;
         
         var elapsed = 0f;
