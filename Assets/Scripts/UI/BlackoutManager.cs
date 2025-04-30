@@ -32,7 +32,7 @@ public class BlackoutManager : MonoBehaviour
         }
         else
         {
-            _failSafeTimer = 20;
+            _failSafeTimer = 10;
         }
     }
 
