@@ -129,7 +129,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _roomBounds = RoomScripting.GetComponent<Collider>();
         gameObject.transform.parent = gameObject.transform.root;
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
-        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);;
+        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject);;
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -146,10 +146,10 @@ public class CameraBoss : MonoBehaviour, IDamageable
         //_lineRenderer = GetComponentInChildren<LineRenderer>();
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
-        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
+        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject);
         DisablePlatformCollisions();
         _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.FlyingEnemyLaser);
-        AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
+        AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject);
     }
 
     private void Update()
@@ -561,7 +561,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
             hb.gameObject.SetActive(false);
         }
         
-        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);
+        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject);
         int currencyToDrop = Random.Range(0, 12);
         for (int i = 0; i < currencyToDrop; i++)
         {

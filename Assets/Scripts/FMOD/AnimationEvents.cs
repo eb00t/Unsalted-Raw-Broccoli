@@ -64,7 +64,7 @@ public class AnimationEvents : MonoBehaviour
     public void PlayPlayerJumpSound()
     {
         _jumpEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.PlayerJump);
-        AudioManager.Instance.AttachInstanceToGameObject(_jumpEvent, gameObject.transform);;
+        AudioManager.Instance.AttachInstanceToGameObject(_jumpEvent, gameObject);
         _jumpEvent.start();
         _jumpEvent.release();
     }
@@ -106,7 +106,7 @@ public class AnimationEvents : MonoBehaviour
     public void PlayExplosionSound()
     {
         _explosionEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.Explosion);
-        AudioManager.Instance.AttachInstanceToGameObject(_explosionEvent, gameObject.transform);
+        AudioManager.Instance.AttachInstanceToGameObject(_explosionEvent, gameObject);
         _explosionEvent.start();
         _explosionEvent.release();
     }

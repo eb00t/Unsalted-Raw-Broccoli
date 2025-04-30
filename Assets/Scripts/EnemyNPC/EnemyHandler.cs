@@ -127,7 +127,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         ScaleStats();
         _jumpEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyJump);
-        AudioManager.Instance.AttachInstanceToGameObject(_jumpEvent, gameObject.transform);;
+        AudioManager.Instance.AttachInstanceToGameObject(_jumpEvent, gameObject);;
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -168,7 +168,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         }
         
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
-        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
+        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject);
     }
 
     private void Update()
@@ -791,7 +791,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         if (!isBomb)
         {
-            AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject.transform);
+            AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject);
             _deathEvent.start();
             _deathEvent.release();
         }

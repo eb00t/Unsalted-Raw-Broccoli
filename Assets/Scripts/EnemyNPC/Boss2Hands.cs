@@ -430,7 +430,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var targetPos = _target.position;
         var elapsed = 0f;
 
-        AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
+        AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject);
         _laserEvent.start();
         
         while (elapsed < chargeTime)
@@ -528,8 +528,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             Debug.Log("Lowering volume of hands to save your ears.");
         }
         
-        AudioManager.Instance.AttachInstanceToGameObject(_armMovementL, leftHand);
-        AudioManager.Instance.AttachInstanceToGameObject(_armMovementR, rightHand);
+        AudioManager.Instance.AttachInstanceToGameObject(_armMovementL, leftHand.gameObject);
+        AudioManager.Instance.AttachInstanceToGameObject(_armMovementR, rightHand.gameObject);
         while (elapsed < duration)
         {
             var t = elapsed / duration;

@@ -66,7 +66,7 @@ public class LaserObjectHandler : MonoBehaviour
         var targetPos = _player.position;
         var elapsed = 0f;
 
-        AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject.transform);
+        AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject);
         _laserEvent.start();
         _lineRenderer.SetPosition(1, targetPos);
         

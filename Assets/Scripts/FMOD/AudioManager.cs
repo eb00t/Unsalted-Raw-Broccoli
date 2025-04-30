@@ -106,9 +106,9 @@ public class AudioManager : MonoBehaviour
         return eventInstance;
     }
 
-    public void AttachInstanceToGameObject(EventInstance eventInstance, Transform objectTransform)
+    public void AttachInstanceToGameObject(EventInstance eventInstance, GameObject gameObject)
     {
-        RuntimeManager.AttachInstanceToGameObject(eventInstance, objectTransform);
+        RuntimeManager.AttachInstanceToGameObject(eventInstance, gameObject);
     }
 
     public StudioEventEmitter InitialiseEventEmitter(EventReference eventReference, GameObject emitterGameObject)

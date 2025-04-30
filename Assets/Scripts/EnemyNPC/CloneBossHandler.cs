@@ -120,7 +120,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
-        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject.transform);
+        AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject);
     }
 
     private void Update()
