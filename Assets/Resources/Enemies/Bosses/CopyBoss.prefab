@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1508970005027326810}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.9899998, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -69,6 +69,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canDamage: 1
   doesSelfDestruct: 0
+  isConstantDamage: 0
+  damageDelay: 0.25
 --- !u!114 &6326636246051950418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,7 +156,7 @@ Transform:
   m_GameObject: {fileID: 1659209396537210285}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.22, y: -6.76, z: 0}
+  m_LocalPosition: {x: -0.22, y: -4.7700005, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -277,7 +279,7 @@ Transform:
   m_GameObject: {fileID: 3448458326421946408}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.28, y: 0.02, z: 0}
+  m_LocalPosition: {x: 0.28, y: 2.01, z: 0}
   m_LocalScale: {x: 2.38, y: 2.38, z: 2.38}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -557,6 +559,9 @@ GameObject:
   - component: {fileID: 6417974471265160124}
   - component: {fileID: 2123765925253177802}
   - component: {fileID: 1299688431869215202}
+  - component: {fileID: -5610273766111474832}
+  - component: {fileID: 3086756112336238424}
+  - component: {fileID: -429247876905813899}
   m_Layer: 8
   m_Name: CopyBoss
   m_TagString: Enemy
@@ -616,8 +621,10 @@ MonoBehaviour:
   canJump: 1
   maxJumpCount: 1
   movementSpeed: 13
-  jumpForce: 12
+  jumpCooldown: 3
+  jumpForce: 17
   jumpTriggerDistance: 1
+  maxJumpHeight: 18
   reboundForce: 40
   atkHitbox: {fileID: 7175001486363548954}
   healthFillImage: {fileID: 7650418133877005130}
@@ -693,9 +700,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 2.3646038
-  m_Height: 10.23983
+  m_Height: 9.919282
   m_Direction: 1
-  m_Center: {x: -0.011880057, y: -1.6389686, z: 0}
+  m_Center: {x: 0, y: 0.13810226, z: 0}
 --- !u!114 &2123765925253177802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -763,6 +770,90 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &-5610273766111474832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6832886180655181025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
+--- !u!114 &3086756112336238424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6832886180655181025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6eb1402c17e84a9282a7f0f62eb584f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5
+  radius: 5.5
+  height: 1
+  canMove: 1
+  maxSpeed: 5
+  gravity: {x: NaN, y: NaN, z: NaN}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  centerOffsetCompatibility: NaN
+  repathRateCompatibility: NaN
+  canSearchCompability: 0
+  orientation: 1
+  enableRotation: 0
+  autoRepath:
+    mode: 2
+    interval: 0.5
+    sensitivity: 10
+    maximumInterval: 2
+    visualizeSensitivity: 0
+  targetCompatibility: {fileID: 0}
+  maxAcceleration: -2.5
+  rotationSpeed: 360
+  slowdownDistance: 0.6
+  pickNextWaypointDist: 2
+  endReachedDistance: 0.2
+  alwaysDrawGizmos: 1
+  slowWhenNotFacingTarget: 1
+  whenCloseToDestination: 0
+  constrainInsideGraph: 0
+--- !u!114 &-429247876905813899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6832886180655181025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9679e68a0f1144e79c664d9a11ca121, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  target: {fileID: 0}
 --- !u!1 &7057332795354280631
 GameObject:
   m_ObjectHideFlags: 0
@@ -789,7 +880,7 @@ Transform:
   m_GameObject: {fileID: 7057332795354280631}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.9899998, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -842,7 +933,7 @@ Transform:
   m_GameObject: {fileID: 7233417540277773559}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.9899998, z: 0}
   m_LocalScale: {x: 3.87, y: 3.87, z: 3.87}
   m_ConstrainProportionsScale: 1
   m_Children: []

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Cinemachine;
+using Pathfinding;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -40,6 +41,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private float chaseDuration; // how long the enemy will chase after player leaves range
     [SerializeField] private float freezeDuration; // how long the enemy is frozen for
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
+    private float _jumpTimer;
     private float _playerBelowTimer;
     private float _activeAtkDelay;
     
@@ -50,8 +52,10 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private bool canJump;
     [SerializeField] private int maxJumpCount;
     [SerializeField] private float movementSpeed;
+    [SerializeField] private float jumpCooldown;
     [SerializeField] private float jumpForce;
     [SerializeField] private float jumpTriggerDistance;
+    [SerializeField] private float maxJumpHeight;
     [SerializeField] private float reboundForce;
     private Color _healthDefault;
     private bool _isFrozen;
@@ -70,6 +74,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private Slider healthSlider;
     [SerializeField] private float fallThroughTime = 2f;
     [SerializeField] private Material defaultMaterial, hitMaterial;
+    private AIPath _aiPath;
     private CinemachineImpulseSource _impulseSource;
     private Vector3 _impulseVector; 
     private CapsuleCollider _bossCollider;
@@ -102,6 +107,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _bossCollider = GetComponent<CapsuleCollider>();
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
+        _aiPath = GetComponent<AIPath>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
@@ -131,6 +137,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             _jumpCount = 0;
         }
+        
+        _jumpTimer -= Time.deltaTime;
 
         switch (IsPlayerInRoom())
         {
@@ -154,8 +162,9 @@ public class CopyBoss : MonoBehaviour, IDamageable
         }
         else if (IsPlayerInRoom())
         {
-            if (canJump && heightDiffAbove > jumpTriggerDistance)
+            if (heightDiffAbove > jumpTriggerDistance && _jumpTimer <= 0f && IsGrounded())
             {
+                _jumpTimer = jumpCooldown;
                 _currentState = States.Jumping;
             }
             else if (heightDiffBelow > jumpTriggerDistance)
@@ -167,7 +176,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 _currentState = States.Chase;
                 if (Mathf.Abs(_rigidbody.velocity.x) > 0.1f)
                 {
-                    UpdateSpriteDirection(_rigidbody.velocity.x < 0);
+                    UpdateSpriteDirection(_aiPath.velocity.x < 0);
                 }
                 else
                 {
@@ -183,11 +192,13 @@ public class CopyBoss : MonoBehaviour, IDamageable
         switch (_currentState)
         {
             case States.Idle:
+                _aiPath.canMove = false;
                 break;
             case States.Chase:
                 Chase();
                 break;
             case States.Attack:
+                _aiPath.canMove = false;
                 if (!_isAttacking)
                 {
                     UpdateSpriteDirection(_playerDir.x < 0);
@@ -195,6 +206,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 }
                 break;
             case States.Frozen:
+                _aiPath.canMove = false;
                 StartCoroutine(BeginFreeze());
                 break;
             case States.Jumping:
@@ -209,7 +221,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         if (!_isKnockedBack)
         {
-            _animator.SetFloat("XVelocity", Mathf.Abs(_rigidbody.velocity.x));
+            _animator.SetFloat("XVelocity", Mathf.Abs(_aiPath.velocity.x));
         }
     }
     
@@ -240,7 +252,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     
     private bool IsGrounded()
     {
-        return Physics.Raycast(transform.position, Vector3.down, 3f, LayerMask.GetMask("Ground"));
+        return Physics.Raycast(transform.position, Vector3.down, 2.25f, LayerMask.GetMask("Ground"));
     }
 
     private void Crouching()
@@ -280,68 +292,117 @@ public class CopyBoss : MonoBehaviour, IDamageable
         
         return null;
     }
-
+    
     private void Jump()
     {
-        if (_jumpCount >= maxJumpCount) return;
-
-        _jumpCount++;
-
+        var targetPos = new Vector3(_player.position.x, _player.position.y, transform.position.z);
+        
         var platform = FindPlatform(Vector3.up);
-    
         if (platform != null)
         {
+            var verticalDistance = Mathf.Abs(platform.transform.position.y - transform.position.y);
+    
+            if (verticalDistance > maxJumpHeight)
+            {
+                _currentState = States.Chase;
+                return;
+            }
+
             StartCoroutine(DisableCollision(platform));
         }
 
-        var newForce = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * (_player.position.y - transform.position.y + 1.5f));
-        newForce = Mathf.Max(newForce, jumpForce);
-        
-        var dirX = Mathf.Sign(transform.localScale.x);
-        
-        _rigidbody.velocity = new Vector3(2f * dirX, newForce, _rigidbody.velocity.z);
-        _animator.SetTrigger("Jump");
+        TriggerJump(targetPos);
+        _currentState = States.Chase;
+    }
+
+    private void TriggerJump(Vector3 target)
+    {
+        _aiPath.canMove = false;
+        _rigidbody.useGravity = true;
+
+        var force = CalculateForce(transform.position, target, 8f);
+
+        if (float.IsNaN(force.x) || float.IsNaN(force.y) || float.IsNaN(force.z)) return;
+
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.AddForce(force, ForceMode.VelocityChange);
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.EnemyJump, transform.position);
+        StartCoroutine(PostJumpDelay(0.5f));
+    }
+    
+    private IEnumerator PostJumpDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _aiPath.canMove = true;
+    }
+    
+    private Vector3 CalculateForce(Vector3 start, Vector3 end, float jumpHeight)
+    {
+        var direction = end - start;
+        var gravity = Mathf.Abs(Physics.gravity.y);
+        var horizontalDir = new Vector3(direction.x, 0f, direction.z);
+        var yDiff = end.y - start.y;
+
+        if (jumpHeight < yDiff)
+        {
+            jumpHeight = yDiff + 2f;
+        }
+
+        var yVelocity = Mathf.Sqrt(2f * gravity * jumpHeight);
+        var maxHeightTime = yVelocity / gravity;
+
+        var fallHeight = jumpHeight - yDiff;
+        if (fallHeight < 0f) fallHeight = 0f;
+
+        var timeToDescend = Mathf.Sqrt(2f * fallHeight / gravity);
+        var totalTime = maxHeightTime + timeToDescend;
+
+        if (totalTime <= 0.01f) return Vector3.zero;
+
+        var horizontalVelocity = horizontalDir / totalTime;
+        return horizontalVelocity + Vector3.up * yVelocity;
     }
 
     private IEnumerator DisableCollision(GameObject platform)
     {
-        if (platform.GetComponent<SemiSolidPlatform>() == null) yield break;
-        
-        if (_bossCollider != null && platform != null)
+        if (_bossCollider == null || platform == null) yield break;
+
+        var verticalDistance = Mathf.Abs(platform.transform.position.y - transform.position.y);
+        var est = verticalDistance * 0.11f; // estimate time to disable collision based on how far the platform is
+
+        foreach (var col in platform.GetComponentsInChildren<Collider>())
         {
-            foreach (var collider in platform.GetComponentsInChildren<Collider>())
-            {
-                Physics.IgnoreCollision(_bossCollider, collider, true);  
-            }
-            
-            yield return new WaitForSeconds(.8f);
-            
-            foreach (var collider in platform.GetComponentsInChildren<Collider>())
-            {
-                Physics.IgnoreCollision(_bossCollider, collider, false);
-            }
+            Physics.IgnoreCollision(_bossCollider, col, true);
         }
 
-        _isFallingThrough = false;
+        yield return new WaitForSeconds(est);
+
+        foreach (var col in platform.GetComponentsInChildren<Collider>())
+        {
+            Physics.IgnoreCollision(_bossCollider, col, false);
+        }
     }
     
-    private void MoveTowards(Vector3 target)
-    {
-        if (_isKnockedBack || _isAttacking) return;
-        
-        var direction = (target - transform.position).normalized;
-        _rigidbody.velocity = new Vector3(direction.x * movementSpeed, _rigidbody.velocity.y, direction.z);
-    }
-
     private void Chase()
     {
-        MoveTowards(_player.position);
+        if (_isKnockedBack || _isAttacking || _aiPath == null) return;
+
+        _aiPath.canMove = true;
+        _aiPath.maxSpeed = movementSpeed;
+        if (transform.position.y - _player.position.y > 0.1f)
+        {
+            _aiPath.destination = new Vector3(_player.position.x, _player.position.y, transform.position.z);
+        }
+        else
+        {
+            _aiPath.destination = new Vector3(_player.position.x, transform.position.y, transform.position.z);
+        }
     }
     
     private IEnumerator Attack()
     {
         _isAttacking = true;
-        _rigidbody.velocity = Vector3.zero;
+        //_rigidbody.velocity = Vector3.zero;
 
         var comboCount = Random.Range(2, 6);
         defense = 40;
@@ -397,7 +458,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         _isFrozen = true;
         healthFillImage.color = Color.cyan;
-        _rigidbody.velocity = Vector3.zero;
+        //_rigidbody.velocity = Vector3.zero;
 
         yield return new WaitForSeconds(freezeDuration);
 
@@ -626,8 +687,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void OnDrawGizmos()
     {
-        var dist = 3f;
-        Gizmos.DrawRay(transform.position, Vector3.down * dist);
+        Gizmos.DrawRay(transform.position, Vector3.down * 2.25f);
     }
     
     private IEnumerator HitFlash()

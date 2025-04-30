@@ -48,7 +48,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float lungeCooldown;
     [SerializeField] private float blockDuration;
     [SerializeField] private float jumpCooldown;
-    [SerializeField] private float jumpThroughTime;
+    //[SerializeField] private float jumpThroughTime;
     private float _timeSinceLastMove;
     private float _targetTime;
     private float _jumpTimer;
