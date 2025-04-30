@@ -82,12 +82,18 @@ public class ConnectorRoomInfo : MonoBehaviour
             {
                 if (allLights.Count != 0)
                 {
-                    lit.GetComponent<Light>().enabled = true;
+                    var light = lit.GetComponent<Light>();
+                    if (light != null)
+                    {
+                        light.enabled = true;
+                    }
+
                     foreach (var lit2 in attachedRooms)
                     {
-                        if (lit2 != null)
+                        var light2 = lit2.GetComponent<Light>();
+                        if (lit2 != null && light2 != null)
                         {
-                            lit2.GetComponentInChildren<Light>().enabled = true;
+                            light2.enabled = true;
                         }
                     }
                     if (LightManager.Instance.connectorLightQueue.Contains(lit.transform.root.gameObject))
