@@ -602,16 +602,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219b7179daa085c4da3de6837d1ad6e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 900
+  maxHealth: 700
   poise: 100
   defense: 0
   poisonResistance: 50
-  attack: 15
+  attack: 12
   poiseDamage: 15
   comboChance: 1
-  knockbackPower: {x: 10, y: 2, z: 0}
-  attackRange: 5
-  attackCooldown: 2
+  knockbackPower: {x: 5, y: 1, z: 0}
+  attackRange: 3
+  attackCooldown: 4
   chaseDuration: 5
   freezeDuration: 3
   freezeCooldown: 6
@@ -624,8 +624,8 @@ MonoBehaviour:
   jumpCooldown: 3
   jumpForce: 17
   jumpTriggerDistance: 1
-  maxJumpHeight: 18
-  reboundForce: 40
+  maxJumpHeight: 10
+  reboundForce: 20
   atkHitbox: {fileID: 7175001486363548954}
   healthFillImage: {fileID: 7650418133877005130}
   healthSlider: {fileID: 2396132944833924107}
@@ -657,7 +657,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!95 &410324089879113830
 Animator:
@@ -811,7 +811,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
-  radius: 5.5
+  radius: 4.9
   height: 1
   canMove: 1
   maxSpeed: 5
@@ -833,9 +833,9 @@ MonoBehaviour:
   targetCompatibility: {fileID: 0}
   maxAcceleration: -2.5
   rotationSpeed: 360
-  slowdownDistance: 0.6
+  slowdownDistance: 5
   pickNextWaypointDist: 2
-  endReachedDistance: 0.2
+  endReachedDistance: 3
   alwaysDrawGizmos: 1
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
