@@ -57,6 +57,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private float jumpTriggerDistance;
     [SerializeField] private float maxJumpHeight;
     [SerializeField] private float reboundForce;
+    private int _attackType;
+    private int _comboNumber;
     private Color _healthDefault;
     private bool _isFrozen;
     private bool _isPoisoned;
@@ -87,6 +89,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private bool _tookDamage;
     private GameObject dialogueGui;
     private CharacterAttack _characterAttack;
+    private Coroutine _atkCD;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -156,7 +159,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             _currentState = States.Frozen;
         }
-        else if (distance < attackRange)
+        else if (distance <= attackRange)
         {
             _currentState = States.Attack;
         }
@@ -195,14 +198,19 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 _aiPath.canMove = false;
                 break;
             case States.Chase:
+                _aiPath.canMove = true;
                 Chase();
                 break;
             case States.Attack:
-                _aiPath.canMove = false;
                 if (!_isAttacking)
                 {
+                    _aiPath.canMove = true;
                     UpdateSpriteDirection(_playerDir.x < 0);
                     StartCoroutine(Attack());
+                }
+                else
+                {
+                    _aiPath.canMove = false;
                 }
                 break;
             case States.Frozen:
@@ -210,10 +218,16 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 StartCoroutine(BeginFreeze());
                 break;
             case States.Jumping:
-                Jump();
+                if (!_isAttacking)
+                {
+                    Jump();
+                }
                 break;
             case States.Crouching:
-                Crouching();
+                if (!_isAttacking)
+                {
+                    Crouching();
+                }
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -223,6 +237,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             _animator.SetFloat("XVelocity", Mathf.Abs(_aiPath.velocity.x));
         }
+        
+        _animator.SetBool("canMove", _aiPath.canMove);
     }
     
     private void UpdateSpriteDirection(bool isLeft)
@@ -268,11 +284,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void FallThroughPlatform()
     {
-        _isFallingThrough = true;
         var platform = FindPlatform(Vector3.down); 
 
         if (platform != null)
         {
+            _isFallingThrough = true;
+            _animator.SetBool("isCrouching", true);
             StartCoroutine(DisableCollision(platform));
         }
     }
@@ -365,7 +382,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private IEnumerator DisableCollision(GameObject platform)
     {
-        if (_bossCollider == null || platform == null) yield break;
+        if (_bossCollider == null || platform == null)
+        {
+            _animator.SetBool("isCrouching", false);
+            _isFallingThrough = false;
+            yield break;
+        }
 
         var verticalDistance = Mathf.Abs(platform.transform.position.y - transform.position.y);
         var est = verticalDistance * 0.11f; // estimate time to disable collision based on how far the platform is
@@ -381,6 +403,9 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             Physics.IgnoreCollision(_bossCollider, col, false);
         }
+        
+        _animator.SetBool("isCrouching", false);
+        _isFallingThrough = false;
     }
     
     private void Chase()
@@ -402,54 +427,65 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private IEnumerator Attack()
     {
         _isAttacking = true;
-        //_rigidbody.velocity = Vector3.zero;
 
-        var comboCount = Random.Range(2, 6);
+        var attackRoll = Random.Range(0, 10);
         defense = 40;
 
-        for (var i = 0; i < comboCount; i++)
+        switch (attackRoll)
         {
-            var attackType = Random.Range(0, 6);
-
-            switch (attackType)
-            {
-                case 0:
-                    _animator.SetTrigger("LightAttack1");
-                    break;
-                case 1:
-                    _animator.SetTrigger("LightAttack2");
-                    break;
-                case 2:
-                    _animator.SetTrigger("LightAttack3");
-                    break;
-                case 3:
-                    _animator.SetTrigger("HeavyAttack1");
-                    break;
-                case 4:
-                    _animator.SetTrigger("HeavyAttack2");
-                    break;
-                case 5:
-                    _animator.SetTrigger("HeavyAttack3");
-                    break;
-            }
-
-            yield return new WaitForSeconds(_activeAtkDelay);
-
-            if (Random.value > comboChance) // if combo stopped increase chance to combo
-            {
-                comboChance += 0.1f;
-                defense = 0;
-                _activeAtkDelay = attackCooldown;
+            case < 2: // 20% chance for heavy
+                _animator.SetTrigger("HeavyAttack0");
                 break;
-            }
-
-            _activeAtkDelay = 0f;
-            comboChance -= 0.05f; // if combo triggered reduce chance to combo
+            case < 4: // 30% chance for medium
+                _attackType = 1;
+                _comboNumber = Random.Range(0, 2);
+                _animator.SetTrigger("MediumAttack0");
+                break;
+            case >= 4: // 50% chance for light
+                _attackType = 2;
+                _comboNumber = Random.Range(0, 3);
+                _animator.SetTrigger("LightAttack0");
+                break;
         }
-
+        
+        yield return new WaitUntil(() => _comboNumber == 0);
         defense = 0;
+        if (_atkCD == null)
+        {
+            _atkCD = StartCoroutine(CooldownAttack());
+        }
+    }
+
+    private IEnumerator CooldownAttack()
+    {
         yield return new WaitForSeconds(attackCooldown);
         _isAttacking = false;
+        _atkCD = null;
+    }
+
+    private void BufferNextAttack()
+    {
+        if (_comboNumber > 0)
+        {
+            switch (_attackType)
+            {
+                case 1: // medium attack
+                    _animator.SetTrigger("MediumAttack1");
+                    break;
+                case 2: // light attack
+                    if (_comboNumber == 2)
+                    {
+                        _animator.SetTrigger("LightAttack1");
+                    }
+                    else
+                    {
+                        _animator.SetTrigger("LightAttack2");
+                    }
+                    break;
+            }
+            
+            _comboNumber--;
+        }
     }
 
     private IEnumerator BeginFreeze()
@@ -583,14 +619,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
     {
         _isKnockedBack = true;
-
+        _aiPath.canMove = false;
         _rigidbody.velocity = Vector3.zero;
-        yield return null;
-
         _rigidbody.AddForce(force, ForceMode.Impulse);
-
         yield return new WaitForSeconds(duration);
-
+        _aiPath.canMove = false;
+        _rigidbody.velocity = Vector3.zero;
         _isKnockedBack = false;
     }
     

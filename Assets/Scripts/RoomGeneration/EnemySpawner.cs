@@ -16,12 +16,12 @@ public class EnemySpawner : MonoBehaviour
         Specific_NOT_IMPLEMENTED
     }
     public HowToSpawn howToSpawn = HowToSpawn.Random;
-    
+
     private int _rng;
     public GameObject spawnedEnemy;
     public RoomScripting roomScripting;
     public List<GameObject> spawnQueue, possibleEnemies, spawnedEnemies;
-    public int basicWeight, stalkerWeight, bomberWeight, cameraWeight;
+    
     public bool disabled;
 
     void Start()
@@ -51,15 +51,52 @@ public class EnemySpawner : MonoBehaviour
 //        Debug.Log("Wave count: " + _waveCount);
         if (howToSpawn == HowToSpawn.Random)
         {
-            foreach (var enemy in Resources.LoadAll<GameObject>("Enemies/Normal Enemies"))
-            {
-                possibleEnemies.Add(enemy);
-            }
-
             for (int i = 0; i < _waveCount; i++)
             {
-                _rng = RandomiseNumber(possibleEnemies.Count);
-                spawnQueue.Add(possibleEnemies[_rng]);
+                int randomEnemy = RandomiseNumber(100);
+                
+                switch (randomEnemy)
+                {
+                    case <= 29:
+                        spawnQueue.Add(Resources.Load<GameObject>("Enemies/Normal Enemies/RobotEnemy"));
+                        break;
+                    case >= 30 and <= 59:
+                        int randomVariantF = RandomiseNumber(3);
+                        switch (randomVariantF)
+                        {
+                            case 0:
+                                spawnQueue.Add(Resources.Load<GameObject>("Enemies/Normal Enemies/FlyingEnemy"));
+                                break;
+                            case 1:
+                                spawnQueue.Add(Resources.Load<GameObject>("Enemies/Normal Enemies/LaserEnemy"));
+                                break;
+                            case 2:
+                                spawnQueue.Add(Resources.Load<GameObject>("Enemies/Normal Enemies/ProjectileEnemy"));
+                                break;
+                        }
+                        break;
+                    case >= 60 and <= 79:
+                        spawnQueue.Add(Resources.Load<GameObject>("Enemies/Normal Enemies/BombEnemy"));
+                        break;
+                    case >= 80 and <= 99:
+                        int randomVariantS = RandomiseNumber(3);
+                        switch (randomVariantS)
+                        {
+                            case 0:
+                                spawnQueue.Add(Resources.Load<GameObject>("Enemies/Normal Enemies/StalkerBlock"));
+                                break;
+                            case 1:
+                                spawnQueue.Add(Resources.Load<GameObject>("Enemies/Normal Enemies/StalkerInvisible")); 
+                                break;
+                            default:
+                                spawnQueue.Add(Resources.Load<GameObject>("Enemies/Normal Enemies/StalkerBlock"));
+                                break;
+                        }
+                        break;
+                    default:
+                        spawnQueue.Add(Resources.Load<GameObject>("Enemies/Normal Enemies/RobotEnemy"));
+                        break;
+                }
             }
         }
         SpawnEnemies();
