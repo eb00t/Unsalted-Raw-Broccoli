@@ -75,6 +75,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private Rigidbody _rigidbody;
     public CloneBossManager cloneBossManager;
     public GameObject dialogue;
+    private DialogueTrigger[] _dialogueTriggers;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -121,21 +122,29 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
         AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject);
+        _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
     }
 
     private void Update()
     {
+        foreach (var trigger in _dialogueTriggers)
+        {
+            if (trigger.triggered)
+            {
+                break;
+            }
+            
+            return;
+        }
+        
+        if (dialogue.activeSelf) return;
+        
         var velocity = _aiPath.velocity;
         _playerDir = _target.position - transform.position;
         var distance = Vector3.Distance(transform.position, _target.position);
         var heightDiffAbove = _target.position.y - transform.position.y;
         
         Repulsion();
-
-        if (dialogue.activeSelf)
-        {
-            return;
-        }
 
         if (_isFrozen)
         {

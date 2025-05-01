@@ -90,6 +90,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private GameObject dialogueGui;
     private CharacterAttack _characterAttack;
     private Coroutine _atkCD;
+    private DialogueTrigger[] _dialogueTriggers;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -120,16 +121,24 @@ public class CopyBoss : MonoBehaviour, IDamageable
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
         healthSlider.gameObject.SetActive(false);
+        _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
     }
 
     private void Update()
     {
         if (_isDead) return;
 
-        if (dialogueGui.activeSelf)
+        foreach (var trigger in _dialogueTriggers)
         {
+            if (trigger.triggered)
+            {
+                break;
+            }
+            
             return;
         }
+        
+        if (dialogueGui.activeSelf) return;
 
         var distance = Vector3.Distance(transform.position, _player.position);
         var heightDiffAbove = _player.position.y - transform.position.y;

@@ -38,11 +38,13 @@ public class LightManager : MonoBehaviour
         _startingRoomInfo = GameObject.FindWithTag("StartingRoom").GetComponent<RoomInfo>();
         foreach (var lit in allConnectorLights)
         {
+            if (lit == null) continue;
             lit.enabled = false;
         }
 
         foreach (var lit in allRoomLights)
         {
+            if (lit == null) continue;
             lit.enabled = false;
         }
     }
@@ -53,6 +55,7 @@ public class LightManager : MonoBehaviour
         {
             foreach (var lit in connectorLightQueue[0].GetComponent<ConnectorRoomInfo>().allLights)
             {
+                if (lit == null) continue;
                 lit.enabled = false;
             }
             connectorLightQueue.RemoveAt(0);
@@ -62,6 +65,7 @@ public class LightManager : MonoBehaviour
         {
             foreach (var lit in roomLightQueue[0].GetComponent<RoomInfo>().allLights)
             {
+                if (lit == null) continue;
                 lit.enabled = false;
             }
             roomLightQueue.RemoveAt(0);

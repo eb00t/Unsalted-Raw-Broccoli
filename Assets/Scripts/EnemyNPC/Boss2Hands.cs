@@ -63,7 +63,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private Image healthFillImage;
     [SerializeField] private TextMeshProUGUI bossNameTxt;
     [SerializeField] private Material defaultMaterial, hitMaterial;
-    private Slider _healthSlider;
+    [SerializeField] private Slider healthSlider;
     private Animator _animator;
     private Transform _target;
     private RoomScripting _roomScripting;
@@ -77,6 +77,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private TextMeshProUGUI bossTitle;
     private SettingManager _settingManager;
     private LockOnController _lockOnController;
+    private DialogueTrigger[] _dialogueTriggers;
     private GameObject dialogueGui;
     
     [Header("Sound")]
@@ -98,12 +99,14 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
         _impulseSource = GetComponent<CinemachineImpulseSource>();
+        _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
         _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
-        _healthSlider = GetComponentInChildren<Slider>();
-        _healthSlider.maxValue = maxHealth;
-        _healthSlider.value = maxHealth;
+        healthSlider = GetComponentInChildren<Slider>();
+        healthSlider.maxValue = maxHealth;
+        healthSlider.value = maxHealth;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
+        dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         _health = maxHealth;
         _leftHandInitialPos = leftHand.position;
         _rightHandInitialPos = rightHand.position;
@@ -111,7 +114,6 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         bossTitle.text = bossName;
         _lineRenderer = GetComponentInChildren<LineRenderer>();
         _lockOnController = _target.GetComponent<LockOnController>();
-        dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         _armMovementL = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
         _armMovementR = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
         _healthDefault = healthFillImage.color;
@@ -119,6 +121,17 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        foreach (var trigger in _dialogueTriggers)
+        {
+            if (trigger.triggered)
+            {
+                break;
+            }
+            
+            healthSlider.gameObject.SetActive(false);
+            return;
+        }
+
         if (dialogueGui.activeSelf)
         {
             StopAllCoroutines();
@@ -126,7 +139,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             _canAttack = true;
             return;
         }
-        
+
         _attackCdCounter -= Time.deltaTime;
 
         if (_isFrozen)
@@ -142,7 +155,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             }
             else
             {
-                _healthSlider.gameObject.SetActive(false);
+                healthSlider.gameObject.SetActive(false);
                 _lockOnController.isNearBoss = false;
                 if (_state == States.Idle) return;
                 {
@@ -161,7 +174,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
                 break;
             case States.Attack:
-                _healthSlider.gameObject.SetActive(true);
+                healthSlider.gameObject.SetActive(true);
                 if (!_canAttack || _attackCdCounter > 0) return;
                 StartCoroutine(Attack());
                 break;
@@ -573,7 +586,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         if (_health - damage > 0)
         {
             _health -= damage;
-            _healthSlider.value = _health;
+            healthSlider.value = _health;
             if (_health <= maxHealth / 2)
             {
                 AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
@@ -582,7 +595,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         else
         {
             _health = 0;
-            _healthSlider.value = 0;
+            healthSlider.value = 0;
             Die();
         }
     }

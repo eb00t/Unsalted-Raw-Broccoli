@@ -14,6 +14,7 @@ public class CharacterMovement : MonoBehaviour
     private Coroutine _dashCoroutine;
     private CharacterAttack _characterAttack;
     private CinemachineImpulseSource _impulseSource;
+    [SerializeField] private PhysicMaterial characterPhysicMaterial;
 
     [Header("Player Properties")] 
     public bool doesAttackStopFlip;
@@ -91,7 +92,7 @@ public class CharacterMovement : MonoBehaviour
     public void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        GetComponent<BoxCollider>();
+        GetComponent<CapsuleCollider>().material = characterPhysicMaterial;
         _playerAnimator = GetComponentInChildren<Animator>();
         _characterAttack = GetComponentInChildren<CharacterAttack>();
         _impulseSource = GetComponent<CinemachineImpulseSource>();
@@ -400,6 +401,7 @@ private void stopWallJump()
         }
         
         // at the apex of a jump this basically gives the player a split second where they don't immediately fall back down
+        /*
         if (!grounded && !_isHanging && !isInUpThrust)
         {
             if (Mathf.Abs(_rb.velocity.y) <= hangThreshold)
@@ -418,6 +420,8 @@ private void stopWallJump()
             _rb.useGravity = true;
             _isHanging = false;
         }
+        
+        */
         
         if (_jumpBuffered && !isInUpThrust)
         {

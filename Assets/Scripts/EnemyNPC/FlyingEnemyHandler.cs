@@ -141,6 +141,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         DisablePlatformCollisions();
         _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.FlyingEnemyLaser);
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject);
+        _targetTime = attackCooldown;
     }
 
     private void Update()

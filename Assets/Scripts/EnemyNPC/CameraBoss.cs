@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using FMOD.Studio;
 using Pathfinding;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Serialization;
@@ -94,6 +95,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private Rigidbody _rigidbody;
     private AIPath _aiPath;
     private GameObject dialogueGui;
+    private DialogueTrigger[] _dialogueTriggers;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -150,22 +152,24 @@ public class CameraBoss : MonoBehaviour, IDamageable
         DisablePlatformCollisions();
         _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.FlyingEnemyLaser);
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject);
+        _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
     }
 
     private void Update()
     {
         if (_animator.GetBool("isDead")) return;
-        
-        /*
-        if (dialogueGui.activeSelf)
+
+        foreach (var trigger in _dialogueTriggers)
         {
-            StopAllCoroutines();
-            _targetTime = 0;
-            _canAttack = true;
+            if (trigger.triggered)
+            {
+                break;
+            }
             
             return;
         }
-        */
+        
+        if (dialogueGui.activeSelf) return;
         
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;
