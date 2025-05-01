@@ -618,7 +618,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
             StartCoroutine(WallHitCheck(3f));
         }
 
-        if (_poiseBuildup >= poise)
+        if (_poiseBuildup >= poise && !_isAttacking)
         {
             StartCoroutine(StunTimer(.5f));
             _poiseBuildup = 0;

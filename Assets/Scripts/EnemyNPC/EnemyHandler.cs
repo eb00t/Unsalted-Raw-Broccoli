@@ -169,7 +169,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
         AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject);
-        _targetTime = attackCooldown;
+        _targetTime = attackCooldown / 3;
     }
 
     private void Update()

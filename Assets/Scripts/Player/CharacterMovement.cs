@@ -123,7 +123,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext ctx)
     {
-        if (uiOpen || !canMove || isInUpThrust) return;
+        if (uiOpen || !canMove || isInUpThrust || isCrouching) return;
 
         if (ctx.started)
         {
@@ -221,7 +221,6 @@ private void stopWallJump()
                 case < 0:
                     facingImpulse = -0.25f;
                     break;
-                
             }
             _impulseSource.GenerateImpulseWithVelocity(new Vector3(facingImpulse, 0, 0));
             StartCoroutine(DashRoutine());
@@ -283,20 +282,21 @@ private void stopWallJump()
         
         //wallJump();
         
-        if (!uiOpen && !LockedOn && Mathf.Abs(velocity.x) >= 0.1f && Mathf.Sign(transform.localScale.x) != Mathf.Sign(velocity.x)) // this has a check if the player is locked on to prevent them flipping
+        // if the player is moving or crouching while not locked on this updates the players local scale based on vel/input
+        if (!uiOpen && !LockedOn && (Mathf.Abs(velocity.x) >= 0.1f) || (isCrouching && Mathf.Abs(_input) > 0))
         {
-            if (doesAttackStopFlip && !isAttacking)
+            var localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            var dir = Mathf.Abs(velocity.x) >= 0.1f ? Mathf.Sign(velocity.x) : Mathf.Sign(_input);
+            
+            if ((doesAttackStopFlip && !isAttacking) || !doesAttackStopFlip)
             {
-                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-            }
-            else if (!doesAttackStopFlip)
-            {
-                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                transform.localScale = new Vector3(dir * localScale.x, localScale.y, localScale.z);
             }
         }
+
         /*
         if (!uiOpen && !LockedOn && _playerAnimator.GetBool(WallCling) && Mathf.Sign(transform.localScale.x) != Mathf.Sign(_input)) // if wallcling is true and player isn't facing direction of input, flip the player
-        { 
+        {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
         */
@@ -316,6 +316,7 @@ private void stopWallJump()
         if (!canMove)
         {
             _rb.useGravity = true;
+            isCrouching = false;
         }
 
         /*if (startSlideTimer)

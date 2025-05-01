@@ -13,6 +13,9 @@ using Random = UnityEngine.Random;
 
 public class CameraBoss : MonoBehaviour, IDamageable
 {
+    private static readonly int IsDead = Animator.StringToHash("isDead");
+    private static readonly int Projectile = Animator.StringToHash("Projectile");
+
     [Header("Defensive Stats")]
     [SerializeField] private int maxHealth;
     private int _health;
@@ -66,6 +69,8 @@ public class CameraBoss : MonoBehaviour, IDamageable
     [SerializeField] private float moveSpeed;
     [SerializeField] private bool doesHaveLaserAttack;
     [SerializeField] private bool doesHaveProjectileAttack;
+    private Color _healthDefault;
+    private bool _isFreezing;
     private Vector3 _knockbackForce;
     private bool _isShieldUp;
     private bool _isRepositioning;
@@ -145,6 +150,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
+        _healthDefault = healthFillImage.color;
         //_lineRenderer = GetComponentInChildren<LineRenderer>();
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
@@ -157,7 +163,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        if (_animator.GetBool("isDead")) return;
+        if (_animator.GetBool(IsDead)) return;
 
         foreach (var trigger in _dialogueTriggers)
         {
@@ -208,7 +214,12 @@ public class CameraBoss : MonoBehaviour, IDamageable
                 Attack();
                 break;
             case States.Frozen:
-                Frozen();
+                if (!_isFreezing && canBeFrozen)
+                {
+                    StopAllCoroutines();
+                    _canAttack = true;
+                    StartCoroutine(BeginFreeze());
+                }
                 break;
         }
     }
@@ -318,7 +329,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
             return;
         }
 
-        _animator.SetTrigger("Projectile");
+        _animator.SetTrigger(Projectile);
     }
 
     private void ProjectileAttack()
@@ -480,19 +491,21 @@ public class CameraBoss : MonoBehaviour, IDamageable
         }
     }
     
-    private void Frozen()
-    {
-        if (!canBeFrozen) return;
-        StartCoroutine(BeginFreeze());
-    }
-    
     private IEnumerator BeginFreeze()
     {
-        StartCoroutine(StartCooldown());
+        _isFrozen = true;
+        _isFreezing = true;
+        canBeFrozen = false;
         healthFillImage.color = Color.cyan;
-        yield return new WaitForSecondsRealtime(freezeDuration);
-        healthFillImage.color = new Color(1f, .48f, .48f, 1);
+
+        yield return new WaitForSeconds(freezeDuration);
+
+        healthFillImage.color = _healthDefault;
         _isFrozen = false;
+        _state = States.Attack;
+
+        StartCoroutine(StartCooldown());
+        _isFreezing = false;
     }
 
     private IEnumerator StartCooldown()
