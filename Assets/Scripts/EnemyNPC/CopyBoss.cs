@@ -284,11 +284,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private void FallThroughPlatform()
     {
-        _isFallingThrough = true;
         var platform = FindPlatform(Vector3.down); 
 
         if (platform != null)
         {
+            _isFallingThrough = true;
+            _animator.SetBool("isCrouching", true);
             StartCoroutine(DisableCollision(platform));
         }
     }
@@ -381,7 +382,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
     private IEnumerator DisableCollision(GameObject platform)
     {
-        if (_bossCollider == null || platform == null) yield break;
+        if (_bossCollider == null || platform == null)
+        {
+            _animator.SetBool("isCrouching", false);
+            _isFallingThrough = false;
+            yield break;
+        }
 
         var verticalDistance = Mathf.Abs(platform.transform.position.y - transform.position.y);
         var est = verticalDistance * 0.11f; // estimate time to disable collision based on how far the platform is
@@ -397,6 +403,9 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             Physics.IgnoreCollision(_bossCollider, col, false);
         }
+        
+        _animator.SetBool("isCrouching", false);
+        _isFallingThrough = false;
     }
     
     private void Chase()
