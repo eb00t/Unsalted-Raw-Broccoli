@@ -81,11 +81,11 @@ public class InitialDialogue : MonoBehaviour
           case LevelBuilder.LevelMode.FinalBoss:
             if (bossOrIntro == BossOrIntro.Intro)
             {
-              _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor4Intro;
+              _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor5Intro;
             }
             else if (bossOrIntro == BossOrIntro.Boss)
             {
-              _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor4Boss;
+              _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor5Boss;
             } 
             break;
         }
