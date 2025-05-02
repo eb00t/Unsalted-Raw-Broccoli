@@ -110,6 +110,8 @@ public class CameraBoss : MonoBehaviour, IDamageable
     //private LineRenderer _lineRenderer;
     [SerializeField] private Transform bossEyePosition;
     private SpriteRenderer _spriteRenderer;
+    private HitboxHandler _hitboxHandler;
+    private Collider _collider1;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -130,6 +132,8 @@ public class CameraBoss : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        _collider1 = shieldObject.GetComponent<Collider>();
+        _hitboxHandler = shieldObject.GetComponent<HitboxHandler>();
         _spriteRenderer = shieldObject.GetComponent<SpriteRenderer>();
         RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         RoomScripting.enemies.Add(gameObject);
@@ -361,7 +365,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         
         if (_wavesLeft > 0)
         {
-            Invoke(nameof(FireWave), 1f); 
+            Invoke(nameof(FireWave), .5f); 
         }
         else
         {
@@ -376,8 +380,11 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _isShieldUp = true;
 
         shieldObject.SetActive(true);
-        yield return StartCoroutine(FadeInShield(1.2f));
-        shieldObject.GetComponent<HitboxHandler>().enabled = true;
+        _hitboxHandler.enabled = false;
+        _collider1.enabled = false;
+        yield return StartCoroutine(FadeInShield(2.5f));
+        _hitboxHandler.enabled = true;
+        _collider1.enabled = true;
         
         var elapsed = 0f;
         while (elapsed < shieldDur)
@@ -389,7 +396,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         }
         
         shieldObject.SetActive(false);
-        shieldObject.GetComponent<HitboxHandler>().enabled = false;
+        _hitboxHandler.enabled = false;
         shieldObject.transform.rotation = Quaternion.identity;
         _isShieldUp = false;
         _canAttack = true;
