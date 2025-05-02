@@ -64,6 +64,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private TextMeshProUGUI bossNameTxt;
     [SerializeField] private Material defaultMaterial, hitMaterial;
     [SerializeField] private Slider healthSlider;
+    [SerializeField] private GameObject platform;
     private Animator _animator;
     private Transform _target;
     private RoomScripting _roomScripting;
@@ -703,6 +704,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         //_characterMovement.lockedOn = false;
         //_lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);
+        platform.SetActive(true);
         gameObject.SetActive(false);
     }
     
