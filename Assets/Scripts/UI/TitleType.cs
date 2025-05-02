@@ -1,21 +1,23 @@
+using System;
 using TMPro;
 using UnityEngine;
 using System.Collections;
 
 public class TitleType : MonoBehaviour
 {
-    private TextMeshProUGUI _text;
+    [SerializeField] TextMeshProUGUI _text;
     [SerializeField] private float typeDelay;
     [SerializeField] private float blinkRate;
 
     private string _title = "  Blank\nConstruct";
     private string _visibleText = "";
     private bool _showCursor = true;
+    private Coroutine _coroutine;
 
-    private void Start()
+    private void OnEnable()
     {
-        _text = GetComponent<TextMeshProUGUI>();
-        StartCoroutine(TypeText());
+        Time.timeScale = 1;
+        _coroutine = StartCoroutine(TypeText());
         InvokeRepeating(nameof(BlinkCursor), blinkRate, blinkRate);
     }
 
@@ -25,7 +27,7 @@ public class TitleType : MonoBehaviour
         {
             _visibleText = _title[..i];
             UpdateDisplay();
-            yield return new WaitForSeconds(typeDelay);
+            yield return new WaitForSecondsRealtime(typeDelay);
         }
     }
 
@@ -39,5 +41,11 @@ public class TitleType : MonoBehaviour
     {
         var cursor = _showCursor ? "_" : " ";
         _text.text = _visibleText + cursor;
+    }
+    
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+        CancelInvoke(nameof(BlinkCursor));
     }
 }

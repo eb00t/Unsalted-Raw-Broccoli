@@ -446,6 +446,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: TitleType, Assembly-CSharp
+        m_MethodName: ResetTitle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1257497787}
         m_TargetAssemblyTypeName: SaveData, Assembly-CSharp
         m_MethodName: EraseData
@@ -1175,6 +1187,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: TitleType, Assembly-CSharp
+        m_MethodName: ResetTitle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1257497787}
         m_TargetAssemblyTypeName: SaveData, Assembly-CSharp
         m_MethodName: LoadSave
@@ -2155,8 +2179,9 @@ MonoBehaviour:
   dPadRight: {fileID: 21300000, guid: ecc1e300be58bfe499fce3db807c55f1, type: 3}
   lThumbstick: {fileID: 21300000, guid: 9511f66b6a23c4d4da6c335fa610efaa, type: 3}
   rThumbstick: {fileID: 21300000, guid: eb5b53cb36b127542b1aaea27844f634, type: 3}
+  lThumbstickPress: {fileID: 0}
+  rThumbstickPress: {fileID: 0}
   lThumbstickDown: {fileID: 21300000, guid: 4186548c4af276b4eadeb0d1f79b9199, type: 3}
-  rThumbstickDown: {fileID: 21300000, guid: 6ed2e45ea9a40ea48a1913756baf78c9, type: 3}
 --- !u!1001 &1187512402
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2311,6 +2336,7 @@ GameObject:
   - component: {fileID: 1257497783}
   - component: {fileID: 1257497782}
   - component: {fileID: 1257497787}
+  - component: {fileID: 1257497788}
   m_Layer: 5
   m_Name: StartMenu
   m_TagString: Untagged
@@ -2442,6 +2468,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
+--- !u!114 &1257497788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257497781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23772cc0a98ae34cb8d9e3068892557, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _text: {fileID: 2046195095}
+  typeDelay: 0.1
+  blinkRate: 0.4
 --- !u!1 &1294250092
 GameObject:
   m_ObjectHideFlags: 0
@@ -3911,7 +3952,6 @@ GameObject:
   - component: {fileID: 2046195095}
   - component: {fileID: 2046195094}
   - component: {fileID: 2046195098}
-  - component: {fileID: 2046195097}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -4058,20 +4098,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2046195092}
   m_CullTransparentMesh: 1
---- !u!114 &2046195097
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2046195092}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a23772cc0a98ae34cb8d9e3068892557, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  typeDelay: 0.1
-  blinkRate: 0.4
 --- !u!95 &2046195098
 Animator:
   serializedVersion: 5
