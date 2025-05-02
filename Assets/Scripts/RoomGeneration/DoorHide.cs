@@ -1,27 +1,52 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DoorHide : MonoBehaviour
 {
-    private static readonly int Vanish = Animator.StringToHash("vanish");
     private Animator _animator;
-    void Start()
+    [SerializeField] private bool isEnemySpawner;
+    public bool isDoorOpen;
+    
+    private static readonly int Vanish = Animator.StringToHash("Vanish");
+    private static readonly int Door = Animator.StringToHash("OpenDoor");
+
+    private void Awake()
     {
         _animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        if (BlackoutManager.Instance.blackoutComplete)
+        if (isEnemySpawner)
         {
-            _animator.SetBool(Vanish, true);
+            _animator.SetTrigger(Vanish);
         }
+    }
+    
+    private void Update()
+    {
+        if (!isEnemySpawner && BlackoutManager.Instance.blackoutComplete)
+        {
+            _animator.SetTrigger(Vanish);
+        }
+    }
+
+    public void SetDoorBool()
+    {
+        isDoorOpen = true;
+    }
+
+    public void OpenDoor()
+    {
+        _animator.SetTrigger(Door);
     }
 
     public void HideDoor()
     {
+        if (isEnemySpawner) return;
+
         gameObject.SetActive(false);
     }
 }

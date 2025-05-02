@@ -10,6 +10,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [field: Header("Configuration")]
     private int _waves, _waveCount = 1;
+    private DoorHide _doorHide;
     public enum HowToSpawn
     {
         Random,
@@ -26,6 +27,7 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
+        _doorHide = GetComponentInChildren<DoorHide>();
         roomScripting = transform.root.GetComponent<RoomScripting>();
         _waves = RandomiseNumber(100);
         for (int i = 0; i < _waveCount; i++)
@@ -34,16 +36,16 @@ public class EnemySpawner : MonoBehaviour
         }
         switch (_waves)
         {
-            case 0:
+            case < 10: // 10% chance to not spawn
                 _waveCount = 0;
                 break;
-            case > 0 and < 74:
+            case < 60: // 50% chance to spawn 1
                 _waveCount = 1;
                 break;
-            case > 74 and < 98:
+            case < 95: // 35 % chance to spawn 2
                 _waveCount = 2;
                 break;
-            case 99:
+            case < 100: // 5% chance to spawn 3
                 _waveCount = 3;
                 break;
         }
@@ -108,24 +110,33 @@ public class EnemySpawner : MonoBehaviour
         {
             if (!disabled && spawnedEnemy == null)
             {
-                GameObject enemyToSpawn = spawnQueue[0];
-                enemyToSpawn = Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
-                enemyToSpawn.GetComponent<IDamageable>().RoomScripting = roomScripting;
-                enemyToSpawn.GetComponent<IDamageable>().EnemySpawner = this;
-                enemyToSpawn.transform.parent = gameObject.transform;
-                spawnedEnemy = enemyToSpawn;
-                spawnedEnemies.Add(enemyToSpawn);
-                spawnQueue.Remove(spawnQueue[0]);
-                if (spawnQueue.Count == 0)
-                {
-                    DisableSpawner();
-                }
+                _doorHide.OpenDoor();
+                StartCoroutine(WaitForDoor());
             }
         }
         else
         {
             DisableSpawner();
             Debug.Log("Wave count is 0");
+        }
+    }
+
+    private IEnumerator WaitForDoor()
+    {
+        yield return new WaitUntil(() => _doorHide.isDoorOpen);
+        GameObject enemyToSpawn = spawnQueue[0];
+        enemyToSpawn = Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+        enemyToSpawn.GetComponent<IDamageable>().RoomScripting = roomScripting;
+        enemyToSpawn.GetComponent<IDamageable>().EnemySpawner = this;
+        enemyToSpawn.transform.parent = gameObject.transform;
+        spawnedEnemy = enemyToSpawn;
+        spawnedEnemies.Add(enemyToSpawn);
+        spawnQueue.Remove(spawnQueue[0]);
+        _doorHide.isDoorOpen = false;
+        
+        if (spawnQueue.Count == 0)
+        {
+            DisableSpawner();
         }
     }
 
