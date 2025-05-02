@@ -29,8 +29,6 @@ public class LightManager : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
-        
-       
     }
 
     void Start()
@@ -53,22 +51,30 @@ public class LightManager : MonoBehaviour
     {
         if (connectorLightQueue.Count > 4)
         {
-            foreach (var lit in connectorLightQueue[0].GetComponent<ConnectorRoomInfo>().allLights)
+            if (connectorLightQueue[0] != null && connectorLightQueue[0].GetComponent<ConnectorRoomInfo>() != null)
             {
-                if (lit == null) continue;
-                lit.enabled = false;
+                foreach (var lit in connectorLightQueue[0].GetComponent<ConnectorRoomInfo>().allLights)
+                {
+                    if (lit == null) continue;
+                    lit.enabled = false;
+                }
+
+                connectorLightQueue.RemoveAt(0);
             }
-            connectorLightQueue.RemoveAt(0);
         }
 
         if (roomLightQueue.Count > 2)
         {
-            foreach (var lit in roomLightQueue[0].GetComponent<RoomInfo>().allLights)
+            if (roomLightQueue[0] != null && roomLightQueue[0].GetComponent<RoomInfo>() != null)
             {
-                if (lit == null) continue;
-                lit.enabled = false;
+                foreach (var lit in roomLightQueue[0].GetComponent<RoomInfo>().allLights)
+                {
+                    if (lit == null) continue;
+                    lit.enabled = false;
+                }
+
+                roomLightQueue.RemoveAt(0);
             }
-            roomLightQueue.RemoveAt(0);
         }
     }
 }

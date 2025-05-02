@@ -22,6 +22,8 @@ public class LaserObjectHandler : MonoBehaviour
     [SerializeField] private Transform bossEyePosition;
     private RoomScripting _roomScripting;
     private Collider _roomBounds;
+    private GameObject dialogueGui;
+    private DialogueTrigger[] _dialogueTriggers;
 
     private void Start()
     {
@@ -30,10 +32,24 @@ public class LaserObjectHandler : MonoBehaviour
         _roomBounds = _roomScripting.GetComponent<Collider>();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
         _timer = attackCooldown / 2;
+        _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
+        dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
     }
 
     private void Update()
     {
+        foreach (var trigger in _dialogueTriggers)
+        {
+            if (trigger.triggered)
+            {
+                break;
+            }
+            
+            return;
+        }
+        
+        if (dialogueGui.activeSelf) return;
+        
         if (IsPlayerInRoom() && !LevelBuilder.Instance.bossDead)
         {
             _timer -= Time.deltaTime;
