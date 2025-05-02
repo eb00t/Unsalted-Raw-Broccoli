@@ -47,11 +47,11 @@ GameObject:
   - component: {fileID: 8810324875042115482}
   - component: {fileID: 3755830582083018366}
   - component: {fileID: 8040960076720273050}
-  - component: {fileID: 5829437419276728552}
   - component: {fileID: 1730301689728780009}
   - component: {fileID: 2675612646004166142}
   - component: {fileID: 5756939950031232541}
   - component: {fileID: 6843074302455370846}
+  - component: {fileID: 4168698673530017058}
   m_Layer: 8
   m_Name: LaserEnemy
   m_TagString: Enemy
@@ -160,27 +160,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 120
   m_CollisionDetection: 1
---- !u!65 &5829437419276728552
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2069409593576255661}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.647962, y: 1.7273042, z: 1}
-  m_Center: {x: 0.07273036, y: 0.9983903, z: 0}
 --- !u!95 &1730301689728780009
 Animator:
   serializedVersion: 5
@@ -286,6 +265,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   target: {fileID: 0}
+--- !u!135 &4168698673530017058
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069409593576255661}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.3
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2708710774018837593
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,6 +701,7 @@ MonoBehaviour:
   _canDamage: 1
   doesSelfDestruct: 0
   isConstantDamage: 0
+  damageDelay: 0.25
 --- !u!1 &4743669556847839616
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,8 +1102,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.6823738, y: 8.304972, z: 1}
-  m_Center: {x: -0.21036208, y: -0.5749883, z: 0}
+  m_Size: {x: 3.2411778, y: 5.8984275, z: 1}
+  m_Center: {x: -0.13682961, y: 0.0043549314, z: 0}
 --- !u!54 &65011561542228298
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1581,6 +1582,7 @@ MonoBehaviour:
   _canDamage: 1
   doesSelfDestruct: 1
   isConstantDamage: 0
+  damageDelay: 0.25
 --- !u!54 &2162322399734670511
 Rigidbody:
   m_ObjectHideFlags: 0

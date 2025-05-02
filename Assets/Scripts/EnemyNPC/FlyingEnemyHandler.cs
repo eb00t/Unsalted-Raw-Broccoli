@@ -83,7 +83,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private CharacterAttack _characterAttack;
     private SpriteRenderer _spriteRenderer;
     private Transform _spriteTransform;
-    private BoxCollider _collider;
+    private SphereCollider _collider;
     private Rigidbody _rigidbody;
     private AIPath _aiPath;
     
@@ -133,7 +133,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _aiPath.maxSpeed = moveSpeed;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _rigidbody = GetComponent<Rigidbody>();
-        _collider = GetComponent<BoxCollider>();
+        _collider = GetComponent<SphereCollider>();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
@@ -141,7 +141,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         DisablePlatformCollisions();
         _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.FlyingEnemyLaser);
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject);
-        _targetTime = attackCooldown / 3;
+        _targetTime = attackCooldown / 2;
     }
 
     private void Update()
@@ -577,7 +577,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         StopAllCoroutines();
 
-        foreach (var hb in GetComponentsInChildren<BoxCollider>()) // stops player being able to hit enemy on death
+        foreach (var hb in GetComponentsInChildren<Collider>()) // stops player being able to hit enemy on death
         {
             hb.gameObject.SetActive(false);
         }

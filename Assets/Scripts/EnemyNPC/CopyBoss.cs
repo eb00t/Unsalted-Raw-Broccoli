@@ -338,6 +338,25 @@ public class CopyBoss : MonoBehaviour, IDamageable
         }
 
         TriggerJump(targetPos);
+
+        if (Random.Range(0f, 1f) < 0.5f)
+        {
+            StartCoroutine(JumpAttack());
+        }
+        else
+        {
+            _currentState = States.Chase;
+        }
+    }
+
+    private IEnumerator JumpAttack()
+    {
+        _isAttacking = true;
+        _animator.SetTrigger("jumpAttack");
+
+        yield return new WaitUntil(() => IsGrounded() || isDead);
+
+        _isAttacking = false;
         _currentState = States.Chase;
     }
 
