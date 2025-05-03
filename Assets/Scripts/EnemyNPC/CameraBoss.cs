@@ -41,7 +41,6 @@ public class CameraBoss : MonoBehaviour, IDamageable
     [SerializeField] private int maxProjectileWaves;
     [SerializeField] private float projectileSpawnRadius;
     private int _wavesLeft;
-    private bool _isWindingUp;
 
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
@@ -318,7 +317,6 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private void InitiateProjectileAttack()
     {
         _canAttack = false;
-        _isWindingUp = true;
         _wavesLeft = Random.Range(2, maxProjectileWaves + 1);
 
         FireWave();
@@ -328,7 +326,6 @@ public class CameraBoss : MonoBehaviour, IDamageable
     {
         if (_wavesLeft <= 0)
         {
-            _isWindingUp = false;
             _canAttack = true;
             return;
         }
@@ -368,7 +365,6 @@ public class CameraBoss : MonoBehaviour, IDamageable
         }
         else
         {
-            _isWindingUp = false;
             _canAttack = true;
         }
     }
@@ -376,7 +372,10 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private IEnumerator DelayForce(Rigidbody rb, Vector3 dir)
     {
         yield return new WaitForSeconds(0.25f);
-        rb.velocity = dir.normalized * projectileSpeed;
+        if (rb != null)
+        {
+            rb.velocity = dir.normalized * projectileSpeed;
+        }
     }
 
     private IEnumerator LaserShield()
@@ -387,7 +386,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         shieldObject.SetActive(true);
         _hitboxHandler.enabled = false;
         _collider1.enabled = false;
-        yield return StartCoroutine(FadeInShield(2.5f));
+        yield return StartCoroutine(FadeInShield(1.75f));
         _hitboxHandler.enabled = true;
         _collider1.enabled = true;
         

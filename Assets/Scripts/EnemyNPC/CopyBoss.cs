@@ -34,7 +34,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
     private enum States { Idle, Chase, Attack, Frozen, Jumping, Crouching }
     private States _currentState = States.Idle;
-    private int _jumpCount;
+    //private int _jumpCount;
     private Collider _roomBounds;
     
     [Header("Timing")]
@@ -145,12 +145,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
         var heightDiffAbove = _player.position.y - transform.position.y;
         var heightDiffBelow = transform.position.y - _player.position.y;
         _playerDir = _player.position - transform.position;
-        
-        if (IsGrounded())
-        {
-            _jumpCount = 0;
-        }
-        
         _jumpTimer -= Time.deltaTime;
 
         switch (IsPlayerInRoom())
