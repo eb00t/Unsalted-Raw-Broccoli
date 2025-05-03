@@ -353,10 +353,9 @@ public class CameraBoss : MonoBehaviour, IDamageable
             newProjectile.SetActive(true);
 
             var rb = newProjectile.GetComponent<Rigidbody>();
-            rb.velocity = direction * projectileSpeed;
-
             var projectileRotation = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             rb.rotation = Quaternion.Euler(0, 0, projectileRotation);
+            StartCoroutine(DelayForce(rb, direction));
         }
 
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.FlyingEnemyShoot, transform.position);
@@ -365,13 +364,19 @@ public class CameraBoss : MonoBehaviour, IDamageable
         
         if (_wavesLeft > 0)
         {
-            Invoke(nameof(FireWave), .5f); 
+            Invoke(nameof(FireWave), .25f); 
         }
         else
         {
             _isWindingUp = false;
             _canAttack = true;
         }
+    }
+
+    private IEnumerator DelayForce(Rigidbody rb, Vector3 dir)
+    {
+        yield return new WaitForSeconds(0.25f);
+        rb.velocity = dir.normalized * projectileSpeed;
     }
 
     private IEnumerator LaserShield()

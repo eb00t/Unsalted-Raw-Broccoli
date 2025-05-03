@@ -17,6 +17,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private int poise;
     [SerializeField] private int defense;
     [SerializeField] private int poisonResistance;
+    private int _hitCount;
     
     [Header("Offensive Stats")] 
     [SerializeField] private int attack;
@@ -596,6 +597,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
             if (knockback.HasValue)
             {
+                _hitCount++;
                 ApplyKnockback(knockback.Value);
             }
         }
@@ -630,11 +632,12 @@ public class CopyBoss : MonoBehaviour, IDamageable
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 4 : 2; 
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
-        if (!_isAttacking)
+        if (!_isAttacking || _hitCount >= 20)
         {
             StartCoroutine(TriggerKnockback(knockbackForce, 0.1f));
-            StartCoroutine(StunTimer(0.005f));
+            StartCoroutine(StunTimer(0.1f));
             StartCoroutine(WallHitCheck(3f));
+            _hitCount = 0;
         }
 
         if (_poiseBuildup >= poise && !_isAttacking)
@@ -651,6 +654,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.AddForce(force, ForceMode.Impulse);
         yield return new WaitForSeconds(duration);
+        //_isAttacking = false;
         _aiPath.canMove = false;
         _rigidbody.velocity = Vector3.zero;
         _isKnockedBack = false;
@@ -699,6 +703,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _isStunned = true;
         yield return new WaitForSecondsRealtime(stunTime);
         _isStunned = false;
+        //_isAttacking = false;
         _animator.SetBool("isStaggered", false);
     }
 
