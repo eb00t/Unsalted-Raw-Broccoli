@@ -84,6 +84,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private Image healthFillImage;
     [SerializeField] private Material defaultMaterial, hitMaterial, invisMaterial;
     [SerializeField] private GameObject gibs;
+    [SerializeField] private Transform explosionVFX;
     private Slider _healthSlider;
     private Animator _animator;
     private Transform _target;
@@ -754,6 +755,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 }
                 break;
         }
+    }
+    
+    private void TriggerExplodeVFX()
+    {
+        var newExplosion = Instantiate(explosionVFX, transform.position, Quaternion.identity);
+        var handler = newExplosion.gameObject.GetComponent<ExplosionHandler>();
+        handler.StartCoroutine(handler.Detonate(0f, 4.5f, true));
     }
 
     private void Die()

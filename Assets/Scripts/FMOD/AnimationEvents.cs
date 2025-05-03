@@ -23,6 +23,7 @@ public class AnimationEvents : MonoBehaviour
     private SettingManager _settingManager;
     [SerializeField] private Animator blackoutCircle;
     [SerializeField] private GameObject deathScreen;
+    [SerializeField] private Transform explosionVFX;
 
     private void Start()
     {
