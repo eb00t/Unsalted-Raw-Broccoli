@@ -139,7 +139,7 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Move left and right with", ControlsManager.ButtonType.Move, "", null);
                 break;
             case TutorialStep.Jump:
-                ShowMessage("Jump by pressing", ControlsManager.ButtonType.Jump, "", null);
+                ShowMessage("Jump height is determined by how long jump is held, jump by pressing", ControlsManager.ButtonType.Jump, "", null);
                 break;
             case TutorialStep.DoubleJump:
                 ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.Jump, " + ", ControlsManager.ButtonType.Jump);

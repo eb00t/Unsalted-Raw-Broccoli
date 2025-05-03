@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,6 +17,9 @@ public class NextLevelTrigger : MonoBehaviour
     [SerializeField] private bool doesUseTrigger;
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private string promptText;
+    [SerializeField] private bool doesDoorOpen;
+    [SerializeField] private Sprite defaultSprite, openSprite;
+    private SpriteRenderer _spriteRenderer;
 
     public enum SceneToLoad
     {
@@ -38,6 +42,7 @@ public class NextLevelTrigger : MonoBehaviour
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
         _menuHandler.nextLevelTrigger = gameObject;
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
@@ -53,11 +58,19 @@ public class NextLevelTrigger : MonoBehaviour
                     _itemPickupHandler.isPlrNearEnd = true;
                     _itemPickupHandler.TogglePrompt(promptText, true, ControlsManager.ButtonType.Interact, "", null);
                     _menuHandler.nearestLevelTrigger = this;
+                    if (doesDoorOpen)
+                    {
+                        _spriteRenderer.sprite = openSprite;
+                    }
                 }
                 else if (dist > range)
                 {
                     if (_itemPickupHandler.itemCount > 0) return;
                     if (_menuHandler.nearestLevelTrigger != this) return;
+                    if (doesDoorOpen)
+                    {
+                        _spriteRenderer.sprite = defaultSprite;
+                    }
                     _itemPickupHandler.isPlrNearEnd = false;
                     _menuHandler.nearestLevelTrigger = null;
                     //_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
