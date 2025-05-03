@@ -222,6 +222,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c07c84293544b6f49ab7132e66fcb687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEnemySpawner: 0
+  isDoorOpen: 0
 --- !u!95 &51100157
 Animator:
   serializedVersion: 5
@@ -2474,6 +2476,21 @@ PrefabInstance:
       propertyPath: blackoutCircle
       value: 
       objectReference: {fileID: 951689847}
+    - target: {fileID: 6931550250588402113, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: snapDist
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6931550250588402113, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: forwardCheckDist
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6931550250588402113, guid: 4bd14efd408c3b943816001b9eeae0eb,
+        type: 3}
+      propertyPath: platformCheckDist
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 6931550250588402113, guid: 4bd14efd408c3b943816001b9eeae0eb,
         type: 3}
       propertyPath: _playerGroundPosition
