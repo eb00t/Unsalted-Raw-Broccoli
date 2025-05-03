@@ -7,10 +7,13 @@ using Random = UnityEngine.Random;
 public class LootManager : MonoBehaviour
 {    
     public static LootManager Instance { get; private set; }
-    public List<GameObject> minorLoot, majorLoot, lore, permaLoot;
+    public List<GameObject> minorLoot, majorLoot, lore, spawnablePermaLoot;
+    public List<int> permaLoot;
     private readonly int _willLootSpawn = 2; //It has a 50% chance to spawn by default
     private int _willMajorLootSpawn = 10;
     private int _willPermaLootSpawn = 20;
+    public PassiveDataBase _passiveData;
+    public DataHolder _playerData;
     private void Awake()
     {
         foreach (var item in Resources.LoadAll<GameObject>("ItemPrefabs/Minor Items"))
@@ -21,10 +24,22 @@ public class LootManager : MonoBehaviour
         {
             majorLoot.Add(item);
         }
-        foreach (var item in Resources.LoadAll<GameObject>("ItemPrefabs/Permanent Items"))
+        
+        foreach (var item in _passiveData.allPassives)
         {
-            permaLoot.Add(item);
+            permaLoot.Add(item.itemID);
         }
+
+        foreach (var equip in _playerData.permanentPassiveItems)
+        {
+            permaLoot.Remove(equip);
+        }
+
+        foreach (var item in permaLoot)
+        {
+            spawnablePermaLoot.Add(_passiveData.allPassives[item - 1].gameObject);
+        }
+        
         foreach (var item in Resources.LoadAll<GameObject>("ItemPrefabs/Lore"))
         {
             lore.Add(item);
@@ -82,7 +97,7 @@ public class LootManager : MonoBehaviour
             }
             else 
             {
-                lootToSpawn = Instantiate(permaLoot[chosenLoot], realSpawnPos, Quaternion.identity);
+                lootToSpawn = Instantiate(spawnablePermaLoot[chosenLoot], realSpawnPos, Quaternion.identity);
             }
 
             lootToSpawn.SetActive(true);
@@ -107,7 +122,7 @@ public class LootManager : MonoBehaviour
                 break;
             default:
                  chosenLoot = RandomiseNumber(permaLoot.Count);
-                 lootToSpawn = Instantiate(permaLoot[chosenLoot], here.position, Quaternion.identity);
+                 lootToSpawn = Instantiate(spawnablePermaLoot[chosenLoot], here.position, Quaternion.identity);
                  permaLoot.Remove(permaLoot[chosenLoot]);
                  break;
         }
