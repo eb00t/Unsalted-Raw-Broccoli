@@ -140,9 +140,10 @@ MonoBehaviour:
   poiseDamage: 15
   numberOfAttacks: 1
   knockbackPower: {x: 15, y: 2.5, z: 0}
-  floor2Multiplier: 1.1
-  floor3Multiplier: 1.15
-  floor4Multiplier: 1.2
+  floor2Multiplier: 0.1
+  floor3Multiplier: 0.15
+  floor4Multiplier: 0.2
+  hardcoreMultiplier: 1.05
   attackRange: 3
   patrolRange: 10
   _roomBounds: {fileID: 0}
@@ -174,6 +175,8 @@ MonoBehaviour:
   hitMaterial: {fileID: 2100000, guid: 9bdeb67dd695bdb488b98aceb7ed95f6, type: 2}
   invisMaterial: {fileID: 2100000, guid: 6115b33a7a78d484aaf52fa1b3f881d0, type: 2}
   gibs: {fileID: 9027320270935330735, guid: 05fd193d6278f3643be81a9c21353ee3, type: 3}
+  explosionVFX: {fileID: 0}
+  dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
 --- !u!95 &1007004536666698315
 Animator:
   serializedVersion: 5
@@ -343,6 +346,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blackoutCircle: {fileID: 0}
   deathScreen: {fileID: 0}
+  explosionVFX: {fileID: 0}
 --- !u!1 &2464476070265717929
 GameObject:
   m_ObjectHideFlags: 0

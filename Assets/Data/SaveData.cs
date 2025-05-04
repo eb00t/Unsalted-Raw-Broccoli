@@ -133,6 +133,14 @@ public class SaveData : MonoBehaviour
     public void EraseData()
     {
         File.Delete(Application.persistentDataPath + "/saveData.json");
+        dataHolder.currencyHeld = 0;
+        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
+        dataHolder.highestFloorCleared = 0;
+        dataHolder.savedItems.Clear();
+        dataHolder.savedItemCounts.Clear();
+        dataHolder.equippedConsumables = new int[5];
+        dataHolder.currencyHeld = 0;
+        dataHolder.permanentPassiveItems = new int[4];
     }
 
     private void OnApplicationQuit()

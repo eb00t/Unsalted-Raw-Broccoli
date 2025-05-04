@@ -75,6 +75,7 @@ public class CharacterAttack : MonoBehaviour
     private PassiveItemHandler _passiveItemHandler;
     [SerializeField] private DataHolder dataHolder;
     private Coroutine _knockbackRoutine;
+    [SerializeField] private Animator evilAnimator;
     
     [Header("Animation")]
     private Animator _playerAnimator;
@@ -468,6 +469,11 @@ public class CharacterAttack : MonoBehaviour
         if (hitColor == Color.red)
         {
             StartCoroutine(HitFlash());
+            if (dataHolder.hardcoreMode)
+            {
+                evilAnimator.SetTrigger("Laugh");
+            }
+
             if (dataHolder.playerHealth > 0f && _characterMovement.grounded)
             {
                 ApplyKnockback(knockback);

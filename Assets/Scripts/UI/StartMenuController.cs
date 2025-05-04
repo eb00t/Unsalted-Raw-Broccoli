@@ -39,6 +39,11 @@ public class StartMenuController : MonoBehaviour
 		SwitchSelected(playBtn);
 	}
 
+	public void ToggleHardcoreMode(bool isOn)
+	{
+		dataHolder.hardcoreMode = isOn;
+	}
+
 	public void QuitGame()
 	{
 		Application.Quit();

@@ -24,6 +24,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private int poiseDamage;
     [SerializeField] private float comboChance;
     [SerializeField] private Vector3 knockbackPower;
+    [SerializeField] private float hardcoreMultiplier;
     
     [Header("Tracking")] 
     [SerializeField] private float attackRange;
@@ -92,6 +93,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private CharacterAttack _characterAttack;
     private Coroutine _atkCD;
     private DialogueTrigger[] _dialogueTriggers;
+    [SerializeField] private DataHolder dataHolder;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -123,6 +125,16 @@ public class CopyBoss : MonoBehaviour, IDamageable
         healthSlider.value = maxHealth;
         healthSlider.gameObject.SetActive(false);
         _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
+
+        if (dataHolder.hardcoreMode)
+        {
+            maxHealth = (int)(maxHealth * hardcoreMultiplier);
+            poise = (int)(poise * hardcoreMultiplier);
+            poisonResistance = (int)(poisonResistance * hardcoreMultiplier);
+            attack = (int)(attack * hardcoreMultiplier);
+            attackCooldown /= hardcoreMultiplier;
+            knockbackPower = new Vector3(knockbackPower.x * hardcoreMultiplier, knockbackPower.y * hardcoreMultiplier, 0);
+        }
     }
 
     private void Update()

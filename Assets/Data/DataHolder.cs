@@ -30,6 +30,7 @@ public class DataHolder : ScriptableObject
     public bool isAutoLockOnEnabled;
     public bool forceControlScheme;
     public bool isGamepad;
+    public bool hardcoreMode;
     
     [Header("Volume")]
     [Range(0, 1)] 

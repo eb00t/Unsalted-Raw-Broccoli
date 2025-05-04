@@ -23,7 +23,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private int numberOfAttacks;
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float multiProjectileOffset;
-    [SerializeField] private float floor2Multiplier, floor3Multiplier, floor4Multiplier;
+    [SerializeField] private float floor2Multiplier, floor3Multiplier, floor4Multiplier, hardcoreMultiplier;
     
     [Header("Laser Stats")]
     [SerializeField] private float chargeTime;
@@ -76,6 +76,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private Transform projectileOrigin;
     [SerializeField] private Material defaultMaterial, hitMaterial;
     [SerializeField] private GameObject gibs;
+    [SerializeField] private DataHolder dataHolder;
     private Collider _roomBounds;
     private Slider _healthSlider;
     private Animator _animator;
@@ -192,30 +193,26 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     
     private void ScaleStats()
     {
+        var multiplier = dataHolder.hardcoreMode ? hardcoreMultiplier : 1f;
+
         switch (LevelBuilder.Instance.currentFloor)
         {
             case LevelBuilder.LevelMode.Floor2:
-                maxHealth = (int)(maxHealth * floor2Multiplier);
-                poise = (int)(poise * floor2Multiplier);
-                poisonResistance = (int)(poisonResistance * floor2Multiplier);
-                attack = (int)(attack * floor2Multiplier);
-                knockbackPower = new Vector3(knockbackPower.x * floor2Multiplier, knockbackPower.y * floor2Multiplier, 0);
+                multiplier += floor2Multiplier;
                 break;
             case LevelBuilder.LevelMode.Floor3:
-                maxHealth = (int)(maxHealth * floor3Multiplier);
-                poise = (int)(poise * floor3Multiplier);
-                poisonResistance = (int)(poisonResistance * floor3Multiplier);
-                attack = (int)(attack * floor3Multiplier);
-                knockbackPower = new Vector3(knockbackPower.x * floor3Multiplier, knockbackPower.y * floor3Multiplier, 0);
+                multiplier += floor3Multiplier;
                 break;
             case LevelBuilder.LevelMode.Floor4:
-                maxHealth = (int)(maxHealth * floor4Multiplier);
-                poise = (int)(poise * floor4Multiplier);
-                poisonResistance = (int)(poisonResistance * floor4Multiplier);
-                attack = (int)(attack * floor4Multiplier);
-                knockbackPower = new Vector3(knockbackPower.x * floor4Multiplier, knockbackPower.y * floor4Multiplier, 0);
+                multiplier += floor4Multiplier;
                 break;
         }
+
+        maxHealth = (int)(maxHealth * multiplier);
+        poise = (int)(poise * multiplier);
+        poisonResistance = (int)(poisonResistance * multiplier);
+        attack = (int)(attack * multiplier);
+        knockbackPower = new Vector3(knockbackPower.x * multiplier, knockbackPower.y * multiplier, 0);
     }
     
     private bool IsPlayerInRoom()

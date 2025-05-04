@@ -610,6 +610,7 @@ MonoBehaviour:
   poiseDamage: 15
   comboChance: 1
   knockbackPower: {x: 5, y: 1, z: 0}
+  hardcoreMultiplier: 1.1
   attackRange: 3
   attackCooldown: 2.75
   chaseDuration: 5
@@ -632,6 +633,7 @@ MonoBehaviour:
   fallThroughTime: 0.75
   defaultMaterial: {fileID: 2100000, guid: 16d089847e6535845ab5aa3676ecbd93, type: 2}
   hitMaterial: {fileID: 2100000, guid: 29d47fc1e05a0b344a3d0f8c7d226841, type: 2}
+  dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
 --- !u!54 &6103851270667772436
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -717,6 +719,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blackoutCircle: {fileID: 0}
   deathScreen: {fileID: 0}
+  explosionVFX: {fileID: 0}
 --- !u!114 &1299688431869215202
 MonoBehaviour:
   m_ObjectHideFlags: 0

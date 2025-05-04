@@ -24,6 +24,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private int attack;
     [SerializeField] private int poiseDamage;
     [SerializeField] private Vector3 knockbackPower;
+    [SerializeField] private float hardcoreMultiplier;
 
     [Header("Tracking")] 
     private Vector3 _leftHandInitialPos, _rightHandInitialPos;
@@ -65,6 +66,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private Material defaultMaterial, hitMaterial;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private GameObject platform;
+    [SerializeField] private DataHolder dataHolder;
     private Animator _animator;
     private Transform _target;
     private RoomScripting _roomScripting;
@@ -118,6 +120,15 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _armMovementL = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
         _armMovementR = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
         _healthDefault = healthFillImage.color;
+        
+        if (dataHolder.hardcoreMode)
+        {
+            maxHealth = (int)(maxHealth * hardcoreMultiplier);
+            poisonResistance = (int)(poisonResistance * hardcoreMultiplier);
+            attack = (int)(attack * hardcoreMultiplier);
+            attackCooldown /= hardcoreMultiplier;
+            knockbackPower = new Vector3(knockbackPower.x * hardcoreMultiplier, knockbackPower.y * hardcoreMultiplier, 0);
+        }
     }
 
     private void Update()

@@ -28,6 +28,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     [SerializeField] private int poiseDamage;
     [SerializeField] private Vector3 knockbackPower;
     [SerializeField] private int numberOfAttacks;
+    [SerializeField] private float hardcoreMultiplier;
 
     [Header("Laser Shield")] 
     [SerializeField] private GameObject shieldObject;
@@ -87,6 +88,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     [SerializeField] private GameObject lightProjectile;
     [SerializeField] private Transform projectileOrigin;
     [SerializeField] private Material defaultMaterial, hitMaterial;
+    [SerializeField] private DataHolder dataHolder;
     [SerializeField] private GameObject gibs;
     private Collider _roomBounds;
     private Slider _healthSlider;
@@ -162,6 +164,15 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.FlyingEnemyLaser);
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject);
         _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
+        if (dataHolder.hardcoreMode)
+        {
+            maxHealth = (int)(maxHealth * hardcoreMultiplier);
+            poise = (int)(poise * hardcoreMultiplier);
+            poisonResistance = (int)(poisonResistance * hardcoreMultiplier);
+            attack = (int)(attack * hardcoreMultiplier);
+            attackCooldown /= hardcoreMultiplier;
+            knockbackPower = new Vector3(knockbackPower.x * hardcoreMultiplier, knockbackPower.y * hardcoreMultiplier, 0);
+        }
     }
 
     private void Update()

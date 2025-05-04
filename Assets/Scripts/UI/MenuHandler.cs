@@ -47,6 +47,7 @@ public class MenuHandler : MonoBehaviour
 	[NonSerialized] public dialogueControllerScript dialogueController;
 	private bool _distanceBasedDialogue;
 	private CurrencyManager _currencyManager;
+	[SerializeField] private GameObject hardcoreIndicator;
 
 	private void Start()
 	{
@@ -57,6 +58,7 @@ public class MenuHandler : MonoBehaviour
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
 		_characterAttack = _player.GetComponentInChildren<CharacterAttack>();
 		_blackoutManager = GameObject.Find("Game Manager").GetComponentInChildren<BlackoutManager>();
+		hardcoreIndicator.SetActive(dataHolder.hardcoreMode);
 	}
 
 	private void Update()
@@ -282,6 +284,12 @@ public class MenuHandler : MonoBehaviour
 
 		if (diedScreen.activeSelf)
 		{
+			if (dataHolder.hardcoreMode)
+			{
+				SaveData.Instance.EraseData();
+				SaveData.Instance.LoadSave();
+			}
+
 			SceneReload();
 		}
 	}
