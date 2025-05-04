@@ -51,6 +51,8 @@ public class DialogueHandler : MonoBehaviour
       _player.GetComponent<ItemPickupHandler>();
       _uiManager = GameObject.FindGameObjectWithTag("UIManager");
       _menuHandler = _uiManager.GetComponent<MenuHandler>();
+      _speakerText = _dialogueCanvas.transform.Find("Text box").transform.Find("SpeakerHolder").transform.Find("SpeakerText").GetComponent<TextMeshProUGUI>();
+      _dialogueText = _dialogueCanvas.transform.Find("Text box").transform.Find("Normal Text").GetComponent<TextMeshProUGUI>();
       
       if (dataHolder.eraseViewedLore)
       {
@@ -69,8 +71,6 @@ public class DialogueHandler : MonoBehaviour
          }
       }
       
-      _speakerText = _dialogueCanvas.transform.Find("Text box").transform.Find("SpeakerHolder").transform.Find("SpeakerText").GetComponent<TextMeshProUGUI>();
-      _dialogueText = _dialogueCanvas.transform.Find("Text box").transform.Find("Normal Text").GetComponent<TextMeshProUGUI>();
    }
 
    public void NextSentence(InputAction.CallbackContext context) // when space/A is pressed
