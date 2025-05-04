@@ -21,9 +21,10 @@ public class Upthrust : MonoBehaviour
    {
       if (other.CompareTag("Player"))
       {
-         if (_playerRb.velocity.y >= 0f && !_characterMovement.isInUpThrust)
+         var dir = other.transform.position - transform.position;
+         if (dir.y < 0 && !_characterMovement.isInUpThrust)
          {
-            _playerRb.AddForce(Vector3.up * forceMultiplier, ForceMode.Impulse);
+            _playerRb.velocity = new Vector3(0f, 1f * forceMultiplier, 0f);
             _characterMovement.doubleJumpPerformed = true;
             _characterMovement.isInUpThrust = true;
             AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Upthrust, transform.position);
