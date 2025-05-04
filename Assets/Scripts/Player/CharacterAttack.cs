@@ -103,11 +103,17 @@ public class CharacterAttack : MonoBehaviour
         _rigidbody = GetComponentInParent<Rigidbody>();
         _spriteRenderer = _rigidbody.gameObject.GetComponentInChildren<SpriteRenderer>();
         _passiveItemHandler = _uiManager.GetComponent<PassiveItemHandler>();
+        
+        if (!dataHolder.hardcoreMode)
+        {
+            dataHolder.playerHealth = dataHolder.playerMaxHealth;
+        }
+        
         healthSlider.maxValue = dataHolder.playerMaxHealth;
         energySlider.maxValue = maxEnergy;
         energySlider.value = currentEnergy;
-        healthSlider.value = dataHolder.playerMaxHealth;
-        dataHolder.playerHealth = dataHolder.playerMaxHealth;
+        healthSlider.value = dataHolder.playerHealth;
+        
         charAtk = dataHolder.playerBaseAttack;
         hitFlash = GameObject.FindWithTag("Hit Flash");
         hitFlash.SetActive(false);

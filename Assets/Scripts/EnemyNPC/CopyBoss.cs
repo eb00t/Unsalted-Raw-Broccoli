@@ -221,7 +221,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 if (!_isAttacking)
                 {
                     _aiPath.canMove = true;
-                    UpdateSpriteDirection(_playerDir.x < 0);
                     StartCoroutine(Attack());
                 }
                 else
@@ -470,16 +469,19 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             case < 2: // 20% chance for heavy
                 _animator.SetTrigger("HeavyAttack0");
+                UpdateSpriteDirection(_playerDir.x < 0);
                 break;
             case < 4: // 30% chance for medium
                 _attackType = 1;
                 _comboNumber = Random.Range(0, 2);
                 _animator.SetTrigger("MediumAttack0");
+                UpdateSpriteDirection(_playerDir.x < 0);
                 break;
             case >= 4: // 50% chance for light
                 _attackType = 2;
                 _comboNumber = Random.Range(0, 3);
                 _animator.SetTrigger("LightAttack0");
+                UpdateSpriteDirection(_playerDir.x < 0);
                 break;
         }
         
@@ -535,6 +537,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
 
         healthFillImage.color = _healthDefault;
         _isFrozen = false;
+        _isAttacking = false;
+        _aiPath.canMove = true;
         _currentState = States.Chase;
 
         StartCoroutine(StartFreezeCooldown());
