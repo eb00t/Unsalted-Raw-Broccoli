@@ -196,7 +196,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         
         if (_isStunned) return;
 
-        if (_isFrozen)
+        if (_isFrozen && !_isFreezing)
         {
             _state = States.Frozen;
         }
@@ -230,7 +230,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
             case States.Frozen:
                 if (!_isFreezing && canBeFrozen)
                 {
-                    StopAllCoroutines();
+                    //StopAllCoroutines();
                     _canAttack = true;
                     StartCoroutine(BeginFreeze());
                 }
@@ -523,11 +523,14 @@ public class CameraBoss : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(freezeDuration);
 
         healthFillImage.color = _healthDefault;
+        _aiPath.canMove = true;
         _isFrozen = false;
+        _canAttack = true;
+        _isShieldUp = false;
+        _isFreezing = false;
         _state = States.Attack;
 
         StartCoroutine(StartCooldown());
-        _isFreezing = false;
     }
 
     private IEnumerator StartCooldown()
@@ -563,7 +566,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         switch (effect)
         {
             case ConsumableEffect.Ice:
-                if (!canBeFrozen) return;
+                if (!canBeFrozen || _isFreezing) return;
                 _isFrozen = true;
                 break;
             case ConsumableEffect.Poison:
@@ -641,7 +644,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
         StartCoroutine(TriggerKnockback(_knockbackForce, 0.2f));
-        StartCoroutine(StunTimer(0.1f));
+        //StartCoroutine(StunTimer(0.1f));
 
         if (_poiseBuildup >= poise)
         {
@@ -667,6 +670,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _isStunned = true;
         yield return new WaitForSecondsRealtime(stunTime);
         _isStunned = false;
+        _canAttack = true;
         _animator.SetBool("isStaggered", false);
     }
     
