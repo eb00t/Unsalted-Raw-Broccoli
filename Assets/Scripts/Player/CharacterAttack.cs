@@ -104,7 +104,7 @@ public class CharacterAttack : MonoBehaviour
         _spriteRenderer = _rigidbody.gameObject.GetComponentInChildren<SpriteRenderer>();
         _passiveItemHandler = _uiManager.GetComponent<PassiveItemHandler>();
         
-        if (!dataHolder.hardcoreMode)
+        if (!dataHolder.hardcoreMode || dataHolder.currentLevel == LevelBuilder.LevelMode.Floor1)
         {
             dataHolder.playerHealth = dataHolder.playerMaxHealth;
         }
