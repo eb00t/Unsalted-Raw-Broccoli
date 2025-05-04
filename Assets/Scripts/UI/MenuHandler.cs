@@ -410,7 +410,7 @@ public class MenuHandler : MonoBehaviour
 		}
 		else
 		{
-			_inventoryStore.TriggerNotification(null, "Not enough currency held.", false);
+			_inventoryStore.TriggerNotification(null, "Not enough copper coils held.", false);
 		}
 	}
 

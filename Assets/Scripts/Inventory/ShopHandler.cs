@@ -162,7 +162,7 @@ public class ShopHandler : MonoBehaviour
 		if (dataHolder.currencyHeld - indexHolder.price < 0)
 		{
 			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseFailed, transform.position);
-			_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Not enough currency held.", false);
+			_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Not enough robot coils held.", false);
 			return;
 		}
 		if (indexHolder.numHeld <= 0)
