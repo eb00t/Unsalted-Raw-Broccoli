@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(RoomInfo))]
 public class RoomScripting : MonoBehaviour
@@ -113,6 +114,7 @@ public class RoomScripting : MonoBehaviour
 
     void CloseAllRoomDoors()
     {
+        int rng = Random.Range(0, 3);
         AudioManager.Instance.SetMusicParameter("Combat Weight", 0);
         foreach (var door in _roomInfo.usableDoors)
         {
@@ -122,10 +124,15 @@ public class RoomScripting : MonoBehaviour
         if (allDoorsClosed == false && _roomInfo.bossRoom == false)
         {
             AudioManager.Instance.SetGlobalEventParameter("Music Track", 1);
+            AudioManager.Instance.SetMusicParameter("Music Type", rng);
         }
         else if (allDoorsClosed == false && _roomInfo.bossRoom)
         {
             AudioManager.Instance.SetGlobalEventParameter("Music Track", 2);
+            if (LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.FinalBoss)
+            {
+                AudioManager.Instance.SetMusicParameter("Boss Phase", 2);
+            }
         }
         allDoorsClosed = true;
         foreach (var spawner in spawners)

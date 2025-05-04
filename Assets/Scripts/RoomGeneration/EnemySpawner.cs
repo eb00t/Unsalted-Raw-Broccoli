@@ -111,6 +111,7 @@ public class EnemySpawner : MonoBehaviour
             if (!disabled && spawnedEnemy == null)
             {
                 _doorHide.OpenDoor();
+                
                 StartCoroutine(WaitForDoor());
             }
         }

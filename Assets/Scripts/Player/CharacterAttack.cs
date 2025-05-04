@@ -479,6 +479,7 @@ public class CharacterAttack : MonoBehaviour
         if (hitColor == Color.red)
         {
             StartCoroutine(HitFlash());
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PlayerDamage, transform.position);
             if (dataHolder.hardcoreMode)
             {
                 evilAnimator.SetTrigger("Laugh");
@@ -489,7 +490,6 @@ public class CharacterAttack : MonoBehaviour
                 ApplyKnockback(knockback);
             }
         }
-        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PlayerDamage, transform.position);
         healthSlider.value = dataHolder.playerHealth;
         _poiseBuildup += poiseDmg;
     }
