@@ -72,6 +72,5 @@ public class LoreReference : MonoBehaviour
     [field: SerializeField] public LoreItemHandler Breadcrumbs { get; private set; }
     [field: SerializeField] public LoreItemHandler Fortunes { get; private set; }
     [field: SerializeField] public LoreItemHandler OldFriend { get; private set; }
-    [field: SerializeField] public LoreItemHandler  { get; private set; }
 
 }
