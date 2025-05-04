@@ -140,6 +140,11 @@ public class AnimationEvents : MonoBehaviour
         gameObject.GetComponent<CinemachineImpulseSource>().GenerateImpulseWithVelocity(new Vector3(Random.Range(-1f, 1f), 3f, 0f) * _settingManager.screenShakeMultiplier);
     }
 
+    public void DestroyObject()
+    {
+        Destroy(gameObject);
+    }
+
     //COPY BOSS
     public void PlayCopyBossFootstepSound()
     {
