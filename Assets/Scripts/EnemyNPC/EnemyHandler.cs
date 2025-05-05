@@ -391,7 +391,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
         yield return new WaitForSeconds(delay);
         _aiPath.canMove = true;
-        //_aiPath.SearchPath();
     }
     
     private bool IsGrounded()

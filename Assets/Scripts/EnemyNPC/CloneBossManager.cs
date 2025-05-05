@@ -114,7 +114,7 @@ public class CloneBossManager : MonoBehaviour
             UpdateCollectiveHealth();
         }
 
-        spawnCooldown += 0.25f;
+        spawnCooldown += 0.2f;
     }
 
     public void UpdateCollectiveHealth()
