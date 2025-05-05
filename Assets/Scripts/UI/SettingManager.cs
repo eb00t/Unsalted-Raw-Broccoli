@@ -9,7 +9,7 @@ public class SettingManager : MonoBehaviour
     private InventoryStore _inventoryStore;
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private Slider masterSlider, musicSlider, sfxSlider, screenShakeSlider;
-    [SerializeField] private TMP_Dropdown controlSchemeDropdown;
+    [SerializeField] private TMP_Dropdown controlSchemeDropdown, fpsDropdown, resolutionDropdown;
     [SerializeField] private Toggle autoEquipToggle, autoLockOnToggle, autoSwitchToggle;
     [Range(0, 1)]
     public float screenShakeMultiplier = 1;
@@ -17,6 +17,29 @@ public class SettingManager : MonoBehaviour
     private float _currentSliderValue;
     private AudioManager _audioManager;
     private GameObject _lastSelected;
+    
+    private readonly Vector2Int[] _resolutions = {
+        // 16:9
+        new (1280, 720),
+        new (1920, 1080),
+        new (2560, 1440),
+        new (3840, 2160),
+        // 16:10
+        new (1920, 1200),
+        new (2560, 1600),
+        new (3840, 2400)
+    };
+    
+    private readonly int[] _fps = {
+        -1, // uncapped
+        30,
+        60,
+        90,
+        120,
+        144,
+        165,
+        240
+    };
     
     private void Start()
     {
@@ -67,14 +90,14 @@ public class SettingManager : MonoBehaviour
         masterSlider.value = dataHolder.masterVolume;
         musicSlider.value = dataHolder.musicVolume;
         sfxSlider.value = dataHolder.sfxVolume;
-        
+
         screenShakeSlider.value = dataHolder.screenShakeMultiplier;
-        
+
         // toggles
         autoEquipToggle.isOn = dataHolder.isAutoEquipEnabled;
         autoSwitchToggle.isOn = dataHolder.isAutoSwitchEnabled;
         autoLockOnToggle.isOn = dataHolder.isAutoLockOnEnabled;
-        
+
         // dropdowns
         if (dataHolder.forceControlScheme)
         {
@@ -91,6 +114,37 @@ public class SettingManager : MonoBehaviour
                     break;
             }
         }
+        
+        SetResolution(dataHolder.resolutionIndex);
+        resolutionDropdown.value = dataHolder.resolutionIndex;
+        SetFPS(dataHolder.fpsIndex);
+        fpsDropdown.value = dataHolder.fpsIndex;
+    }
+
+    public void SetFPS(int index)
+    {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = _fps[index];
+        dataHolder.fpsIndex = index;
+        SaveData.Instance.UpdateSave();
+    }
+    
+    public void SetResolution(int index)
+    {
+        if (index == 0)
+        {
+            var res = Screen.currentResolution;
+            Screen.SetResolution(res.width, res.height, FullScreenMode.ExclusiveFullScreen, Application.targetFrameRate);
+            resolutionDropdown.options[0].text = res.width + " x " + res.height;
+        }
+        else
+        {
+           var resolution = _resolutions[index];
+           Screen.SetResolution(resolution.x, resolution.y, Screen.fullScreen);
+           dataHolder.resolutionIndex = index; 
+        }
+        
+        SaveData.Instance.UpdateSave();
     }
 
     public void UpdateScreenShake()

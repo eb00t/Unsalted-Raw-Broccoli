@@ -31,6 +31,8 @@ public class DataHolder : ScriptableObject
     public bool forceControlScheme;
     public bool isGamepad;
     public bool hardcoreMode;
+    public int fpsIndex;
+    public int resolutionIndex;
     
     [Header("Volume")]
     [Range(0, 1)] 

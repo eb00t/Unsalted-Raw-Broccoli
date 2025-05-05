@@ -66,6 +66,8 @@ public class SaveData : MonoBehaviour
             isAutoLockOnEnabled = dataHolder.isAutoLockOnEnabled,
             forceControlScheme = dataHolder.forceControlScheme,
             isGamepad = dataHolder.isGamepad,
+            fpsIndex = dataHolder.fpsIndex,
+            resolutionIndex = dataHolder.resolutionIndex,
 
             masterVolume = dataHolder.masterVolume,
             musicVolume = dataHolder.musicVolume,
@@ -118,6 +120,8 @@ public class SaveData : MonoBehaviour
         dataHolder.isAutoLockOnEnabled = loadedData.isAutoLockOnEnabled;
         dataHolder.forceControlScheme = loadedData.forceControlScheme;
         dataHolder.isGamepad = loadedData.isGamepad;
+        dataHolder.fpsIndex = loadedData.fpsIndex;
+        dataHolder.resolutionIndex = loadedData.resolutionIndex;
 
         dataHolder.masterVolume = loadedData.masterVolume;
         dataHolder.musicVolume = loadedData.musicVolume;
@@ -174,6 +178,8 @@ public class DataHolderSaveData
     public bool isAutoLockOnEnabled;
     public bool forceControlScheme;
     public bool isGamepad;
+    public int fpsIndex;
+    public int resolutionIndex;
 
     public float masterVolume;
     public float musicVolume;
