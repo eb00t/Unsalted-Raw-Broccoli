@@ -454,7 +454,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         StartCoroutine(HitFlash());
         
-        if (Random.Range(0, 10) < 1) // 10 percent chance on hit for enemy to drop energy
+        if (Random.value <= 0.15f) // 15 percent chance on hit for enemy to drop energy
         {
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
         }

@@ -10,6 +10,7 @@ public class HitboxHandler : MonoBehaviour
     [SerializeField] private float damageDelay = 0.25f;
     [SerializeField] private GameObject impactVFX;
     [SerializeField] private Transform impactOrigin;
+    [SerializeField] private float impactScale = 1f;
 
     private void Start()
     {
@@ -40,9 +41,9 @@ public class HitboxHandler : MonoBehaviour
                 else if (!isConstantDamage)
                 {
                     var sign = Mathf.Sign(GetComponentInParent<Animator>().transform.localScale.x);
-                    var rot = sign == 1 ? 90f : -90f;
+                    var rot = sign == 1 ? 0f : 180f;
                     var vfx = Instantiate(impactVFX, impactOrigin.position, Quaternion.Euler(0f, 0f, rot));
-                    vfx.transform.localScale = new Vector3(Mathf.Abs(vfx.transform.localScale.x) * sign * 0.5f, vfx.transform.localScale.y * 0.5f, vfx.transform.localScale.z);
+                    vfx.transform.localScale = new Vector3(Mathf.Abs(vfx.transform.localScale.x) * sign * impactScale, vfx.transform.localScale.y * impactScale, vfx.transform.localScale.z);
                 }
             }
         }
