@@ -31,7 +31,7 @@ public class LootSpawner : MonoBehaviour
         {
             if (whatToSpawn == WhatToSpawn.Loot)
             {
-                LootManager.Instance.SpawnRandomLootHere(transform);
+                LootManager.Instance.SpawnRandomLootHere(transform, new Vector3(transform.position.x, transform.position.y, 0.05f));
             }
             else if (whatToSpawn == WhatToSpawn.Lore)
             {

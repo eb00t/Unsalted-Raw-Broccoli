@@ -108,7 +108,7 @@ public class LootManager : MonoBehaviour
         }
     }
 
-    public void SpawnRandomLootHere(Transform here)
+    public void SpawnRandomLootHere(Transform spawner, Vector3 position)
     {
         GameObject lootToSpawn;
         int chosenLoot;
@@ -117,17 +117,17 @@ public class LootManager : MonoBehaviour
         {
             case 0 or 1:
                 chosenLoot = RandomiseNumber(majorLoot.Count);
-                lootToSpawn = Instantiate(majorLoot[chosenLoot], here.position, Quaternion.identity);
+                lootToSpawn = Instantiate(majorLoot[chosenLoot], position, Quaternion.identity);
                 majorLoot.Remove(majorLoot[chosenLoot]);
                 break;
             default:
                  chosenLoot = RandomiseNumber(permaLoot.Count);
-                 lootToSpawn = Instantiate(spawnablePermaLoot[chosenLoot], here.position, Quaternion.identity);
+                 lootToSpawn = Instantiate(spawnablePermaLoot[chosenLoot], position, Quaternion.identity);
                  permaLoot.Remove(permaLoot[chosenLoot]);
                  break;
         }
         lootToSpawn.SetActive(true);
-        lootToSpawn.transform.parent = here.transform; 
+        lootToSpawn.transform.parent = spawner.transform.root; 
     }
 
     public void SpawnSpecificLootHere(Transform here, string path)

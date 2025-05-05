@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 169769841124891387}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -46.01, y: -0.054, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -72,6 +72,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 3
   canPickup: 0
+  isPermanentPassive: 0
   outLineSprite: {fileID: 8623576210324362209}
 --- !u!114 &3843640139126399565
 MonoBehaviour:
@@ -91,8 +92,10 @@ MonoBehaviour:
   title: Emergency Rock
   uiIcon: {fileID: 21300000, guid: 745e3512e1128774e8d262b2c03cdee9, type: 3}
   statusIcon: {fileID: 21300000, guid: 265457b46161c204999d7f3b331dd029, type: 3}
+  statusIcon2: {fileID: 0}
   statusColor: {r: 0.6895526, g: 0.41037738, b: 1, a: 0}
   statusText: 
+  statusText2: 
   isInstantUse: 0
   maximumHold: 2
   itemID: 2
@@ -123,7 +126,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!65 &-1493125176984446067
 BoxCollider:
