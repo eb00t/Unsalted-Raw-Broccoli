@@ -28,9 +28,10 @@ public class HitboxHandler : MonoBehaviour
         {
             if (_canDamage)
             {
+                _canDamage = false;
                 var characterAttack = other.GetComponentInChildren<CharacterAttack>();
-
                 characterAttack.TakeDamagePlayer(damageable.Attack, damageable.PoiseDamage, damageable.KnockbackPower);
+                StartCoroutine(AtkCooldown());
                 
                 if (doesSelfDestruct)
                 {
@@ -43,8 +44,6 @@ public class HitboxHandler : MonoBehaviour
                     var vfx = Instantiate(impactVFX, impactOrigin.position, Quaternion.Euler(0f, 0f, rot));
                     vfx.transform.localScale = new Vector3(Mathf.Abs(vfx.transform.localScale.x) * sign * 0.5f, vfx.transform.localScale.y * 0.5f, vfx.transform.localScale.z);
                 }
-
-                StartCoroutine(AtkCooldown());
             }
         }
 
