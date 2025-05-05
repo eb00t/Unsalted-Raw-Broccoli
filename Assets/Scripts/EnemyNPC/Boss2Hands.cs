@@ -82,6 +82,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private LockOnController _lockOnController;
     private DialogueTrigger[] _dialogueTriggers;
     private GameObject dialogueGui;
+    [SerializeField] private Transform clapLeftTarget, clapRightTarget, downTarget;
+    [SerializeField] private Transform downVFX, upVFXLeft, upVFXRight;
     
     [Header("Sound")]
     private EventInstance _armMovementL, _armMovementR;
@@ -313,25 +315,36 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
         yield return StartCoroutine(MoveHands(leftTargetPos, rightTargetPos, 2f));
         _impulseVector = new Vector3(0, 1, 0);
+        var target1 = new Vector3(leftTargetPos.x, downTarget.position.y, 0f);
+        var target2 = new Vector3(rightTargetPos.x, downTarget.position.y, 0f);
+        var lvfx = Instantiate(downVFX, target1, downVFX.rotation, transform);
+        var rvfx = Instantiate(downVFX, target2, downVFX.rotation, transform);
+        lvfx.gameObject.SetActive(true);
+        rvfx.gameObject.SetActive(true);
         OneHandAttackSoundFinish(true, true);
         OneHandAttackSoundFinish(false, true);
         
         UpdateColliders(false, false, false, false); // give player opening to attack
         defense = 0;
         
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(1f);
 
         defense = 50;
         UpdateColliders(false, false, true, true);
         UpdateHandImg(false, false, true, true);
         
-        var lungeTarget = new Vector3(_target.position.x, groundPosition.position.y, groundPosition.position.z);
+        var lungeTarget = new Vector3(groundPosition.position.x, groundPosition.position.y, groundPosition.position.z);
         
-        yield return StartCoroutine(MoveHands(lungeTarget, lungeTarget, 1f));
+        yield return StartCoroutine(MoveHands(lungeTarget + Vector3.left, lungeTarget + Vector3.right, 1f));
         _impulseVector = new Vector3(0, 2, 0);
+        var leftPos = new Vector3(clapLeftTarget.position.x + 0.25f, clapLeftTarget.position.y, clapLeftTarget.position.z);
+        var vfxLeft = Instantiate(upVFXLeft, leftPos, upVFXLeft.rotation, transform);
+        var vfxRight = Instantiate(upVFXRight, clapRightTarget.position, upVFXRight.rotation, transform);
+        vfxLeft.gameObject.SetActive(true);
+        vfxRight.gameObject.SetActive(true);
         TwoHandAttackSoundFinish(lungeTarget, true);
 
-        yield return new WaitForSecondsRealtime(0.1f);
+        yield return new WaitForSecondsRealtime(1f);
         
         UpdateColliders(false, false, false, false);
         
@@ -372,11 +385,14 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         if (!isLeft) //  slam down
         {
             yield return StartCoroutine(MoveHands(null, slamPosition, 0.5f));
+            var target = new Vector3(hoverPosition.x, downTarget.position.y, 0f);
+            var vfx = Instantiate(downVFX, target, downVFX.rotation, transform);
+            vfx.gameObject.SetActive(true);
             _impulseVector = new Vector3(0, 2, 0);
             defense = 0;
             OneHandAttackSoundFinish(isLeft, true);
             UpdateColliders(false, false, false, false);
-            yield return new WaitForSecondsRealtime(2f);
+            yield return new WaitForSecondsRealtime(1.5f);
             defense = 50;
             yield return StartCoroutine(MoveHands(null, hoverPosition, 0.5f));
             OneHandAttackSoundFinish(isLeft, false);
@@ -384,11 +400,14 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         else
         {
             yield return StartCoroutine(MoveHands(slamPosition, null, 0.5f));
+            var target = new Vector3(hoverPosition.x, downTarget.position.y, 0f);
+            var vfx = Instantiate(downVFX, target, downVFX.rotation, transform);
+            vfx.gameObject.SetActive(true);
             _impulseVector = new Vector3(0, 2, 0);
             UpdateColliders(false, false, false, false);
             defense = 0;
             OneHandAttackSoundFinish(isLeft, true);
-            yield return new WaitForSecondsRealtime(2f);
+            yield return new WaitForSecondsRealtime(1.5f);
             defense = 50;
             yield return StartCoroutine(MoveHands(hoverPosition, null, 0.5f));
             OneHandAttackSoundFinish(isLeft, false);
@@ -414,7 +433,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         var leftWidePos = _target.position + Vector3.left * 5;
         var rightWidePos = _target.position + Vector3.right * 5;
         var clapCount = Random.Range(1, 4);
-        var clapTarget = _target.position;
+        var clapTargetLeft = _target.position + Vector3.left;
+        var clapTargetRight = _target.position + Vector3.right;
 
         defense = 0;
 
@@ -424,16 +444,20 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             yield return new WaitForSeconds(0.1f);
             TwoHandAttackSoundFinish(transform.position, false);
             UpdateColliders(false, false, true, true);
-            yield return StartCoroutine(MoveHands(clapTarget, clapTarget, .5f));
+            yield return StartCoroutine(MoveHands(clapTargetLeft, clapTargetRight, .5f));
+            var vfxLeft = Instantiate(upVFXLeft, clapLeftTarget.position, upVFXLeft.rotation, transform);
+            var vfxRight = Instantiate(upVFXRight, clapRightTarget.position, upVFXRight.rotation, transform);
+            vfxLeft.gameObject.SetActive(true);
+            vfxRight.gameObject.SetActive(true);
             _impulseVector = new Vector3(4, 0, 0);
-            TwoHandAttackSoundFinish(clapTarget, true);
+            TwoHandAttackSoundFinish(clapTargetLeft, true);
             
             yield return new WaitForSecondsRealtime(0.1f);
 
             UpdateColliders(false, false, false, false);
         }
 
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(1.25f);
 
         defense = 50;
         _canAttack = true;
