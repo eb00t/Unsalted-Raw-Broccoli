@@ -65,6 +65,7 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference CycleItem { get; private set; }
     [field: SerializeField] public EventReference PurchaseMade { get; private set; }
     [field: SerializeField] public EventReference PurchaseFailed { get; private set; }
+    [field: SerializeField] public EventReference Heal { get; private set; }
     
     
     

@@ -475,6 +475,11 @@ public class CharacterAttack : MonoBehaviour
             hitFlash.SetActive(true);
             dataHolder.playerHealth -= damage;
         }
+
+        if (hitColor == Color.green)
+        {
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Heal, transform.position);
+        }
         
         if (hitColor == Color.red)
         {
