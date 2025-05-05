@@ -38,14 +38,29 @@ public class DoorHide : MonoBehaviour
         }
     }
 
-    public void SetDoorBool()
+    public void SetDoorBool(int doorState)
     {
-        isDoorOpen = true;
+        switch (doorState)
+        {
+            case 0:
+                isDoorOpen = false;
+                break;
+            case 1:
+                isDoorOpen = true;
+                break;
+        }
     }
 
     public void OpenDoor()
     {
+        _animator.ResetTrigger(Vanish);
         _animator.SetTrigger(Door);
+    }
+
+    public void CloseDoor()
+    {
+        _animator.ResetTrigger(Door);
+        _animator.SetTrigger(Vanish);
     }
 
     public void PlayDoorSound(int direction)

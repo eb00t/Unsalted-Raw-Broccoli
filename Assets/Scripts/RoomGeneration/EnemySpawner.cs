@@ -36,16 +36,16 @@ public class EnemySpawner : MonoBehaviour
         }
         switch (_waves)
         {
-            case < 10: // 10% chance to not spawn
+            case < 9: // 10% chance to not spawn
                 _waveCount = 0;
                 break;
-            case < 60: // 50% chance to spawn 1
+            case < 59: // 50% chance to spawn 1
                 _waveCount = 1;
                 break;
-            case < 95: // 35 % chance to spawn 2
+            case < 94: // 35 % chance to spawn 2
                 _waveCount = 2;
                 break;
-            case < 100: // 5% chance to spawn 3
+            case < 99: // 5% chance to spawn 3
                 _waveCount = 3;
                 break;
         }
@@ -111,12 +111,12 @@ public class EnemySpawner : MonoBehaviour
             if (!disabled && spawnedEnemy == null)
             {
                 _doorHide.OpenDoor();
-                
                 StartCoroutine(WaitForDoor());
             }
         }
         else
         {
+            _doorHide.CloseDoor();
             DisableSpawner();
             Debug.Log("Wave count is 0");
         }
@@ -133,7 +133,7 @@ public class EnemySpawner : MonoBehaviour
         spawnedEnemy = enemyToSpawn;
         spawnedEnemies.Add(enemyToSpawn);
         spawnQueue.Remove(spawnQueue[0]);
-        _doorHide.isDoorOpen = false;
+        _doorHide.CloseDoor();
         
         if (spawnQueue.Count == 0)
         {

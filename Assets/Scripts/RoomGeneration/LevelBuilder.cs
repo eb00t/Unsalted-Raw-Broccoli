@@ -358,8 +358,12 @@ public class LevelBuilder : MonoBehaviour
                     }
                     break;
             }
-            otherConnectorSideRoomInfo = otherConnectorSide.GetComponent<RoomInfo>(); // Getting the roomInfo components;
-            
+
+            if (otherConnectorSide != null)
+            {
+                otherConnectorSideRoomInfo = otherConnectorSide.GetComponent<RoomInfo>(); // Getting the roomInfo components;
+            }
+
             switch (doorTag) // Get the tag of the randomly generated spawn point.
             {
                 case "Left Door":
