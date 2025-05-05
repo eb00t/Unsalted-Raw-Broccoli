@@ -67,6 +67,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private Slider healthSlider;
     [SerializeField] private GameObject platform;
     [SerializeField] private DataHolder dataHolder;
+    [SerializeField] private Sprite brokenHandSprite;
+    [SerializeField] private Transform explosionVFX;
     private Animator _animator;
     private Transform _target;
     private RoomScripting _roomScripting;
@@ -135,6 +137,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        if (isDead) return;
+        
         foreach (var trigger in _dialogueTriggers)
         {
             if (trigger.triggered)
@@ -610,6 +614,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
+        if (isDead) return;
+
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
@@ -708,7 +714,30 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private void Die()
     {
         isDead = true;
-        LevelBuilder.Instance.bossDead = true;
+        StopAllCoroutines();
+        _lineRenderer.enabled = false;
+        healthSlider.gameObject.SetActive(false);
+        StartCoroutine(DeathAnimation());
+    }
+
+    private IEnumerator DeathAnimation() // TODO: tidy this up
+    {
+        yield return StartCoroutine(ResetHands());
+        
+        var newExplosion = Instantiate(explosionVFX, leftHand.position, Quaternion.identity);
+        newExplosion.gameObject.SetActive(true);
+        var handler = newExplosion.gameObject.GetComponent<ExplosionHandler>();
+        handler.StartCoroutine(handler.Detonate(0f, 10f, true));
+        
+        var newExplosion1 = Instantiate(explosionVFX, rightHand.position, Quaternion.identity);
+        newExplosion1.gameObject.SetActive(true);
+        var handler1 = newExplosion1.gameObject.GetComponent<ExplosionHandler>();
+        handler1.StartCoroutine(handler.Detonate(0f, 10f, true));
+
+        yield return new WaitForSeconds(.4f);
+        handUpL.GetComponent<SpriteRenderer>().sprite = brokenHandSprite;
+        handUpR.GetComponent<SpriteRenderer>().sprite = brokenHandSprite;
+        
         _characterAttack.ChanceHeal();
         _armMovementL.stop(STOP_MODE.IMMEDIATE);
         _armMovementL.release();
@@ -716,14 +745,28 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _armMovementR.release();
         _laserEvent.stop(STOP_MODE.IMMEDIATE);
         _laserEvent.release();
+        AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
+        
+        var leftTarget = new Vector3(leftHand.position.x, groundPosition.position.y, leftHand.position.z);
+        var rightTarget = new Vector3(rightHand.position.x, groundPosition.position.y, rightHand.position.z);
+        
+        yield return StartCoroutine(MoveHands(leftTarget, rightTarget, 1f));
+        
         _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
         _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
         _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
-        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
-        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, leftHand.position);
-        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, rightHand.position);
-        AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, rightHand.position);
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.BossHandSlam, leftHand.position);
         
+        _armMovementL.stop(STOP_MODE.IMMEDIATE);
+        _armMovementL.release();
+        _armMovementR.stop(STOP_MODE.IMMEDIATE);
+        _armMovementR.release();
+
+        yield return new WaitForSeconds(2f);
+        
+        LevelBuilder.Instance.bossDead = true;
+            
         var currencyToDrop = Random.Range(5, 20);
         for (var i = 0; i < currencyToDrop; i++)
         {
@@ -735,15 +778,12 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         {
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
         }
-        
-        //_characterMovement.lockedOn = false;
-        //_lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);
         platform.SetActive(true);
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
     }
-    
-    
+
+
     private void OneHandAttackSoundFinish(bool isLeft, bool slam)
     {
         switch (isLeft)

@@ -45,7 +45,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private float freezeCooldown; // how long until the enemy can be frozen again
     [SerializeField] private float maxTimeToReachTarget; // how long will the enemy try to get to the target before switching
     [SerializeField] private float bombTimeVariability;
-    [SerializeField] private float lungeCooldown;
     [SerializeField] private float blockDuration;
     [SerializeField] private float jumpCooldown;
     //[SerializeField] private float jumpThroughTime;
@@ -62,7 +61,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool doesEnemyPatrol;
     [SerializeField] private bool isPassive;
-    [SerializeField] private float lungeForce;
     [SerializeField] private float jumpTriggerDistance;
     [SerializeField] private float maxJumpHeight;
     [SerializeField] private float reboundForce;
@@ -74,7 +72,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private bool _isStuck;
     private int _poisonBuildup;
     private int _poiseBuildup;
-    private bool _canLunge = true;
     private bool _isBlocking;
     private bool _wasLastAttackBlock;
 
@@ -533,30 +530,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             {
                 _healthSlider.gameObject.SetActive(true);
             }
-
-            if (isBomb && _canLunge) StartCoroutine(BeginLunge());
         }
-    }
-
-    private IEnumerator BeginLunge()
-    {
-        _canLunge = false;
-        var chance = Random.Range(0f, 1f);
-        if (chance > 0.8f)
-        {
-            Lunge();
-        }
-
-        yield return new WaitForSecondsRealtime(lungeCooldown);
-        _canLunge = true;
-    }
-
-    private void Lunge()
-    {
-        _aiPath.canMove = false;
-        _healthSlider.gameObject.SetActive(true);
-
-        _rigidbody.velocity = new Vector3(_playerDir.x * lungeForce, 0f, 0f);
     }
 
     private void Passive()
