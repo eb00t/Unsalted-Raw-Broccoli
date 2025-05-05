@@ -36,17 +36,20 @@ public class EnemySpawner : MonoBehaviour
         }
         switch (_waves)
         {
-            case < 9: // 10% chance to not spawn
+            case <= 9: // 10% chance to not spawn
                 _waveCount = 0;
                 break;
-            case < 59: // 50% chance to spawn 1
+            case <= 59: // 50% chance to spawn 1
                 _waveCount = 1;
                 break;
-            case < 94: // 35 % chance to spawn 2
+            case <= 94: // 35 % chance to spawn 2
                 _waveCount = 2;
                 break;
-            case < 99: // 5% chance to spawn 3
+            case <= 99: // 5% chance to spawn 3
                 _waveCount = 3;
+                break;
+            default:
+                _waveCount = 1;
                 break;
         }
 
