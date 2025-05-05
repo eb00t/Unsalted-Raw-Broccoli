@@ -11,6 +11,7 @@ public class HitboxHandler : MonoBehaviour
     [SerializeField] private GameObject impactVFX;
     [SerializeField] private Transform impactOrigin;
     [SerializeField] private float impactScale = 1f;
+    [SerializeField] private bool isBomb;
 
     private void Start()
     {
@@ -38,7 +39,7 @@ public class HitboxHandler : MonoBehaviour
                 {
                     Destroy(gameObject);
                 }
-                else if (!isConstantDamage)
+                else if (!isConstantDamage && !isBomb)
                 {
                     var sign = Mathf.Sign(GetComponentInParent<Animator>().transform.localScale.x);
                     var rot = sign == 1 ? 0f : 180f;

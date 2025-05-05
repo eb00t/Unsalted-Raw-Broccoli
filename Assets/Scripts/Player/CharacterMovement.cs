@@ -313,7 +313,7 @@ private void stopWallJump()
             _playerAnimator.SetBool(IsWalkingBackwards, false);
         }
 
-        if (!canMove)
+        if (!canMove || uiOpen)
         {
             _rb.useGravity = true;
             isCrouching = false;
