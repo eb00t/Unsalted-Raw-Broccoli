@@ -613,6 +613,9 @@ MonoBehaviour:
   doesSelfDestruct: 0
   isConstantDamage: 0
   damageDelay: 0.25
+  impactVFX: {fileID: 7928026785300572418, guid: 7e8c525ab2ffc6441a3d4b1352833476,
+    type: 3}
+  impactOrigin: {fileID: 8279490823146541062}
 --- !u!114 &2673932411865042494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -704,6 +707,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8330098170485406479}
+  - {fileID: 8279490823146541062}
   m_Father: {fileID: 8810324875042115482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7165738288154503518
@@ -1115,6 +1119,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &7057984070057761506
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8279490823146541062}
+  m_Layer: 8
+  m_Name: impactOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8279490823146541062
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7057984070057761506}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.766, y: -0.879, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4382428416641600022}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7750576981664870259
 GameObject:
   m_ObjectHideFlags: 0
