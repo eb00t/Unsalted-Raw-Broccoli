@@ -631,7 +631,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             healthSlider.value = _health;
             if (_health <= maxHealth / 2)
             {
-                AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
+                AudioManager.Instance.SetMusicParameter("Boss Phase", 2);
             }
         }
         else

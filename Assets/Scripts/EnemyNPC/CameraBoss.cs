@@ -586,7 +586,9 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _animator.SetBool("isDead", true);
         isDead = true;
         RoomScripting.enemies.Remove(gameObject);
-        
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
+        AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
+        LevelBuilder.Instance.bossDead = true;
         _characterAttack.ChanceHeal();
         
         StopAllCoroutines();

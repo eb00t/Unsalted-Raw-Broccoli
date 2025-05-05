@@ -131,7 +131,7 @@ public class RoomScripting : MonoBehaviour
             AudioManager.Instance.SetGlobalEventParameter("Music Track", 2);
             if (LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.FinalBoss)
             {
-                AudioManager.Instance.SetMusicParameter("Boss Phase", 2);
+                AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
             }
         }
         allDoorsClosed = true;
