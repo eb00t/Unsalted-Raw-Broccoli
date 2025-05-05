@@ -36,21 +36,21 @@ public class HealthBehaviour : MonoBehaviour
             case < 25:
                 healthSize = HealthSize.Small;
                 //_spriteRenderer.color = new Color(0.43137254902f, 0.30196078431f, 0.14509803921f);
-                healthAmount = 25f;
+                healthAmount = 50f;
                 break;
             case < 50:
                 healthSize = HealthSize.Medium;
                 //_spriteRenderer.color = new Color(0.64705882352f, 0.66274509803f, 0.70588235294f);
-                healthAmount = 35f;
+                healthAmount = 60f;
                 break;
             case < 80:
                 healthSize = HealthSize.Large;
-                healthAmount = 50f;
+                healthAmount = 75f;
                 break;
             case < 100:
                 healthSize = HealthSize.VeryLarge;
                 //_spriteRenderer.color = new Color(0.22352941176f, 0.50588235294f, 0.44705882352f);
-                healthAmount = 75f;
+                healthAmount = 100f;
                 break;
         }
 
@@ -67,12 +67,7 @@ public class HealthBehaviour : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _boxCollider.enabled = true;
         _rigidbody.AddForce(launchPower, ForceMode.Impulse);
-        StartCoroutine(GoToPlayer());
-    }
-
-    private IEnumerator GoToPlayer()
-    {
-        yield return new WaitForSeconds(1.5f);
+        
         if (collected == false)
         {
             if (dataHolder.playerHealth + (int)healthAmount <= dataHolder.playerMaxHealth)
