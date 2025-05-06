@@ -134,13 +134,13 @@ public class SettingManager : MonoBehaviour
         if (index == 0)
         {
             var res = Screen.currentResolution;
-            Screen.SetResolution(res.width, res.height, FullScreenMode.ExclusiveFullScreen);
+            Screen.SetResolution(res.width, res.height, FullScreenMode.ExclusiveFullScreen, Screen.currentResolution.refreshRateRatio);
             resolutionDropdown.options[0].text = res.width + " x " + res.height;
         }
         else
         {
            var resolution = _resolutions[index];
-           Screen.SetResolution(resolution.x, resolution.y, FullScreenMode.ExclusiveFullScreen);
+           Screen.SetResolution(resolution.x, resolution.y, FullScreenMode.ExclusiveFullScreen, Screen.currentResolution.refreshRateRatio);
            dataHolder.resolutionIndex = index; 
         }
         

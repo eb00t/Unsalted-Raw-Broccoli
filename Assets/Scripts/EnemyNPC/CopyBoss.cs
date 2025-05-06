@@ -447,11 +447,15 @@ public class CopyBoss : MonoBehaviour, IDamageable
     
     private void Chase()
     {
-        if (_isKnockedBack || _isAttacking || _aiPath == null) return;
+        if (_isKnockedBack || _isAttacking || _aiPath == null)
+        {
+            _aiPath.destination = new Vector3(_aiPath.destination.x, transform.position.y, _aiPath.destination.z);
+            return;
+        }
 
         _aiPath.canMove = true;
         _aiPath.maxSpeed = movementSpeed;
-        if (transform.position.y - _player.position.y > 0.1f)
+        if (transform.position.y - _player.position.y > 0.25f)
         {
             _aiPath.destination = new Vector3(_player.position.x, _player.position.y, transform.position.z);
         }
@@ -723,10 +727,24 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private void Die()
     {
         isDead = true; 
-        LevelBuilder.Instance.bossDead = true;
         _animator.SetBool("isDead", true);
         StopAllCoroutines();
+        _spriteRenderer.material = defaultMaterial;
         _characterAttack.ChanceHeal();
+        _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
+        _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
+        _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
+    }
+
+    private void DisableBoss()
+    {
+        var energyToDrop = Random.Range(1, 10);
+        for (var i = 0; i < energyToDrop; i++)
+        {
+            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
+        }
+        
         int currencyToDrop = 0;
         switch (_tookDamage)
         {
@@ -737,31 +755,15 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 currencyToDrop = Random.Range(0, 5);
                 break;
         }
-        
-        var energyToDrop = Random.Range(1, 10);
-        for (var i = 0; i < energyToDrop; i++)
-        {
-            Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
-        }
        
         for (int i = 0; i < currencyToDrop; i++)
         {
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Currency Prefab"), transform.position, Quaternion.identity);
         }
-        _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
-        _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
-        _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
-        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
+        
         AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
-        //_characterMovement.lockedOn = false;
-        //_lockOnController.lockedTarget = null;
+        LevelBuilder.Instance.bossDead = true;
         _roomScripting.enemies.Remove(gameObject);
-        StartCoroutine(WaitToDisable());
-    }
-
-    private IEnumerator WaitToDisable()
-    {
-        yield return new WaitForSecondsRealtime(1.5f);
         gameObject.SetActive(false);
     }
 
