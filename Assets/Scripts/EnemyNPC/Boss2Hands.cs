@@ -73,6 +73,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private Sprite brokenHandSprite;
     [SerializeField] private Transform explosionVFX;
     [SerializeField] private Transform leftReset, rightReset;
+    [SerializeField] private GameObject bodySprite;
+    [SerializeField] private Transform gibs;
     private GameObject canvas;
     private Animator _animator;
     private Transform _target;
@@ -760,19 +762,20 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         StartCoroutine(DeathAnimation());
     }
 
+    private void TriggerExplosion(float size, Vector3 position)
+    {
+        var newExplosion = Instantiate(explosionVFX, position, Quaternion.identity);
+        newExplosion.gameObject.SetActive(true);
+        var handler = newExplosion.gameObject.GetComponent<ExplosionHandler>();
+        handler.StartCoroutine(handler.Detonate(0f, size, true));
+    }
+
     private IEnumerator DeathAnimation() // TODO: tidy this up
     {
         yield return StartCoroutine(ResetHands());
         
-        var newExplosion = Instantiate(explosionVFX, leftHand.position, Quaternion.identity);
-        newExplosion.gameObject.SetActive(true);
-        var handler = newExplosion.gameObject.GetComponent<ExplosionHandler>();
-        handler.StartCoroutine(handler.Detonate(0f, 10f, true));
-        
-        var newExplosion1 = Instantiate(explosionVFX, rightHand.position, Quaternion.identity);
-        newExplosion1.gameObject.SetActive(true);
-        var handler1 = newExplosion1.gameObject.GetComponent<ExplosionHandler>();
-        handler1.StartCoroutine(handler.Detonate(0f, 10f, true));
+        TriggerExplosion(10f, leftHand.position);
+        TriggerExplosion(10f, rightHand.position);
 
         yield return new WaitForSeconds(.4f);
         handUpL.GetComponent<SpriteRenderer>().sprite = brokenHandSprite;
@@ -803,6 +806,20 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _armMovementR.stop(STOP_MODE.IMMEDIATE);
         _armMovementR.release();
 
+        yield return new WaitForSeconds(0.25f);
+        
+        TriggerExplosion(50f, transform.position);
+        bodySprite.SetActive(false);
+        gibs.gameObject.SetActive(true);
+
+        foreach (var gib in gibs.GetComponentsInChildren<Rigidbody>())
+        {
+            var dir = Random.onUnitSphere;
+            dir.z = 0;
+            gib.AddForce(dir.normalized * Random.Range(20, 40), ForceMode.Impulse);
+            gib.AddTorque(Random.insideUnitSphere * 20f, ForceMode.Impulse);
+        }
+
         yield return new WaitForSeconds(2f);
         
         LevelBuilder.Instance.bossDead = true;
@@ -822,7 +839,6 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         platform.SetActive(true);
         //gameObject.SetActive(false);
     }
-
 
     private void OneHandAttackSoundFinish(bool isLeft, bool slam)
     {
