@@ -100,14 +100,18 @@ public class RoomScripting : MonoBehaviour
             door.GetComponent<DoorInfo>().OpenDoor();
             door.GetComponent<DoorInfo>().closed = false;
         }
-        switch (LevelBuilder.Instance.bossDead && !_roomInfo.bossRoom)
+
+        if (!_roomInfo.bossRoom)
         {
-            case true:
-                AudioManager.Instance.SetGlobalEventParameter("Music Track", 4);
-                break;
-            default:
-                AudioManager.Instance.SetGlobalEventParameter("Music Track", 0);
-                break;
+            switch (LevelBuilder.Instance.bossDead)
+            {
+                case true:
+                    AudioManager.Instance.SetGlobalEventParameter("Music Track", 4);
+                    break;
+                default:
+                    AudioManager.Instance.SetGlobalEventParameter("Music Track", 0);
+                    break;
+            }
         }
         allDoorsClosed = false;
     }
@@ -129,10 +133,6 @@ public class RoomScripting : MonoBehaviour
         else if (allDoorsClosed == false && _roomInfo.bossRoom)
         {
             AudioManager.Instance.SetGlobalEventParameter("Music Track", 2);
-            if (LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.FinalBoss)
-            {
-                AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
-            }
         }
         allDoorsClosed = true;
         foreach (var spawner in spawners)

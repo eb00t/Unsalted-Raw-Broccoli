@@ -170,6 +170,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         if (!hasWokenUp && !_wokenUpTriggered && _isPlayerInRange)
         {
             _wokenUpTriggered = true;
+            AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
             _animator.SetTrigger("WakeUp");
             return;
         }

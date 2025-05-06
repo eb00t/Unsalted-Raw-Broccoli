@@ -108,6 +108,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private EventInstance _alarmEvent;
     private EventInstance _deathEvent;
     private EventInstance _laserEvent;
+    private EventInstance _shieldEvent;
     private bool _canAttack = true;
     //private LineRenderer _lineRenderer;
     [SerializeField] private Transform bossEyePosition;
@@ -161,6 +162,8 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
         AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject);
+        _shieldEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.CameraBossShield);
+        AudioManager.Instance.AttachInstanceToGameObject(_shieldEvent, gameObject);;
         DisablePlatformCollisions();
         _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.FlyingEnemyLaser);
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject);
@@ -191,7 +194,6 @@ public class CameraBoss : MonoBehaviour, IDamageable
                 }
             }
         }
-        
         if (!_hasDialogueTriggered || (dialogueGui != null && dialogueGui.activeSelf)) return;
         
         var distance = Vector3.Distance(transform.position, _target.position);
@@ -416,6 +418,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         shieldObject.SetActive(false);
         _hitboxHandler.enabled = false;
         shieldObject.transform.rotation = Quaternion.identity;
+        AudioManager.Instance.SetEventParameter(_shieldEvent, "Shield Up", 1);
         _isShieldUp = false;
         _canAttack = true;
     }
@@ -426,6 +429,8 @@ public class CameraBoss : MonoBehaviour, IDamageable
         var color = _spriteRenderer.color;
         color.a = 0f;
         _spriteRenderer.color = color;
+        AudioManager.Instance.SetEventParameter(_shieldEvent, "Shield Up", 0);
+        _shieldEvent.start();
 
         while (elapsedTime < fadeDuration)
         {
@@ -476,7 +481,6 @@ public class CameraBoss : MonoBehaviour, IDamageable
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
-        
         StartCoroutine(HitFlash());
         
         if (Random.Range(0, 10) < 4) // 40 percent chance on hit for enemy to drop energy
@@ -488,6 +492,10 @@ public class CameraBoss : MonoBehaviour, IDamageable
         {
             _health -= damage;
             _healthSlider.value = _health;
+            if (_health <= maxHealth / 2)
+            {
+                AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
+            }
         }
         else
         {
@@ -499,11 +507,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
             }
             Die();
         }
-        if (_health <= maxHealth / 3 && _lowHealth == false)
-        {
-            PlayAlarmSound();
-            _lowHealth = true;
-        }
+        
         
         if (poiseDmg.HasValue)
         {
@@ -590,7 +594,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         isDead = true;
         RoomScripting.enemies.Remove(gameObject);
         AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
-        AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
+        AudioManager.Instance.SetMusicParameter("Boss Phase", 3);
         LevelBuilder.Instance.bossDead = true;
         _characterAttack.ChanceHeal();
         
