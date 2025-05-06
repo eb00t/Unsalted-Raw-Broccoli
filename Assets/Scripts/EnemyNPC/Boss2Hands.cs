@@ -48,6 +48,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private bool canBeFrozen;
     [SerializeField] private bool canBeStunned;
     [SerializeField] private bool isIdle;
+    [SerializeField] private bool hasWokenUp;
+    private bool _wokenUpTriggered;
     private Color _healthDefault;
     private Vector3 _impulseVector;
     private bool _isPoisoned;
@@ -59,6 +61,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private bool _isFrozen;
     private bool _isFreezing;
     private bool _isIdling;
+    private bool _hasDialogueTriggered;
 
     [Header("References")] 
     [SerializeField] private Image healthFillImage;
@@ -69,6 +72,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private Sprite brokenHandSprite;
     [SerializeField] private Transform explosionVFX;
+    [SerializeField] private Transform leftReset, rightReset;
+    private GameObject canvas;
     private Animator _animator;
     private Transform _target;
     private RoomScripting _roomScripting;
@@ -108,15 +113,15 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
         _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
-        healthSlider = GetComponentInChildren<Slider>();
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
+        canvas = healthSlider.GetComponentInParent<Canvas>(true).gameObject;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         _health = maxHealth;
-        _leftHandInitialPos = leftHand.position;
-        _rightHandInitialPos = rightHand.position;
+        _leftHandInitialPos = leftReset.position;
+        _rightHandInitialPos = rightReset.position;
         _canAttack = true;
         bossTitle.text = bossName;
         _lineRenderer = GetComponentInChildren<LineRenderer>();
@@ -124,6 +129,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _armMovementL = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
         _armMovementR = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandMove);
         _healthDefault = healthFillImage.color;
+        _animator = GetComponent<Animator>();
         
         if (dataHolder.hardcoreMode)
         {
@@ -139,22 +145,35 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         if (isDead) return;
         
-        foreach (var trigger in _dialogueTriggers)
+        if (!_hasDialogueTriggered)
         {
-            if (trigger.triggered)
+            foreach (var trigger in _dialogueTriggers)
             {
-                break;
+                if (trigger.triggered && dialogueGui.activeSelf)
+                {
+                    _hasDialogueTriggered = true;
+                    break;
+                }
             }
-            
-            healthSlider.gameObject.SetActive(false);
-            return;
         }
 
-        if (dialogueGui.activeSelf)
+        if (!_hasDialogueTriggered || (dialogueGui != null && dialogueGui.activeSelf))
         {
             StopAllCoroutines();
             _attackCdCounter = 0;
             _canAttack = true;
+            return;
+        }
+        
+        if (!hasWokenUp && !_wokenUpTriggered && _isPlayerInRange)
+        {
+            _wokenUpTriggered = true;
+            _animator.SetTrigger("WakeUp");
+            return;
+        }
+
+        if (_isPlayerInRange && !hasWokenUp)
+        {
             return;
         }
 
@@ -170,10 +189,11 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             {
                 _state = States.Attack;
                 _lockOnController.isNearBoss = true;
+                canvas.SetActive(true);
             }
             else
             {
-                healthSlider.gameObject.SetActive(false);
+                canvas.SetActive(false);
                 _lockOnController.isNearBoss = false;
                 if (_state == States.Idle) return;
                 {
@@ -192,7 +212,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
 
                 break;
             case States.Attack:
-                healthSlider.gameObject.SetActive(true);
+                canvas.SetActive(true);
                 if (!_canAttack || _attackCdCounter > 0) return;
                 StartCoroutine(Attack());
                 break;
@@ -209,7 +229,19 @@ public class Boss2Hands : MonoBehaviour, IDamageable
                 throw new ArgumentOutOfRangeException();
         }
     }
-    
+
+    private void TurnOnHands(int hand)
+    {
+        if (hand == 0)
+        {
+            leftHand.gameObject.SetActive(true);
+        }
+        else if (hand == 1)
+        {
+            rightHand.gameObject.SetActive(true);
+        }
+    }
+
     private IEnumerator BeginFreeze()
     {
         _isFrozen = true;
@@ -611,10 +643,18 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             yield return null;
         }
     }
-    
+
+    private void SetWokenUp()
+    {
+        leftHand.gameObject.SetActive(true);
+        rightHand.gameObject.SetActive(true);
+        StartCoroutine(ResetHands());
+        hasWokenUp = true;
+    }
+
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
-        if (isDead) return;
+        if (isDead || !hasWokenUp) return;
 
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
@@ -716,7 +756,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         isDead = true;
         StopAllCoroutines();
         _lineRenderer.enabled = false;
-        healthSlider.gameObject.SetActive(false);
+        canvas.SetActive(false);
         StartCoroutine(DeathAnimation());
     }
 
