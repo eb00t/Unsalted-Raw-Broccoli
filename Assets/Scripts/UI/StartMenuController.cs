@@ -1,9 +1,9 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class StartMenuController : MonoBehaviour
 {
@@ -19,16 +19,45 @@ public class StartMenuController : MonoBehaviour
 		SwitchSelected(playBtn);
 		_controlsManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<ControlsManager>();
 
+		if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard)
+		{
+			var interactable = GetInteractable();
+			if (interactable != null)
+			{
+				SwitchSelected(interactable);
+			}
+		}
+
 		if (dataHolder.isGamepad == false)
 		{
 			Cursor.visible = true;
 			Cursor.lockState = CursorLockMode.None;
 		}
 	}
+	
+	private static GameObject GetInteractable()
+	{
+		var pointerData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
+
+		var raycastResults = new List<RaycastResult>();
+		EventSystem.current.RaycastAll(pointerData, raycastResults);
+
+		foreach (var result in raycastResults)
+		{
+			var go = result.gameObject;
+			
+			if (go.TryGetComponent<Selectable>(out var selectable) && selectable.interactable)
+			{
+				return selectable.gameObject;
+			}
+		}
+
+		return null;
+	}
 
 	private void FixedUpdate()
 	{
-		if (SceneManager.GetActiveScene().name == "EndScreen" || SceneManager.GetActiveScene().name == "creditsScene") return;
+		if (SceneManager.GetActiveScene().name == "EndScreen") return;
 		
 		_controlsManager.CheckControl();
 	}

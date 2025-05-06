@@ -48,7 +48,7 @@ public class ControlsManager : MonoBehaviour
 
     private void Start()
     {
-        if (SceneManager.GetActiveScene().name == "StartScreen") return;
+        if (SceneManager.GetActiveScene().name == "StartScreen" || SceneManager.GetActiveScene().name == "creditsScene") return;
         _player = GameObject.Find("PlayerCharacter");
         _characterMovement = _player.GetComponent<CharacterMovement>();
     }

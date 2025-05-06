@@ -672,7 +672,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _rigidbody.AddForce(force, ForceMode.Impulse);
         yield return new WaitForSeconds(duration);
         //_isAttacking = false;
-        _aiPath.canMove = false;
+        _aiPath.canMove = true;
         _rigidbody.velocity = Vector3.zero;
         _isKnockedBack = false;
     }

@@ -278,6 +278,13 @@ private void stopWallJump()
         _playerAnimator.SetFloat(YVelocity, _rb.velocity.y);
         _playerAnimator.SetBool(Grounded, grounded);
         
+        if (!canMove || uiOpen)
+        {
+            _rb.useGravity = true;
+            isCrouching = false;
+            _playerAnimator.SetBool(IsCrouching, false);
+        }
+        
         if (uiOpen) return;
         
         //wallJump();
@@ -311,12 +318,6 @@ private void stopWallJump()
         else
         {
             _playerAnimator.SetBool(IsWalkingBackwards, false);
-        }
-
-        if (!canMove || uiOpen)
-        {
-            _rb.useGravity = true;
-            isCrouching = false;
         }
 
         /*if (startSlideTimer)
