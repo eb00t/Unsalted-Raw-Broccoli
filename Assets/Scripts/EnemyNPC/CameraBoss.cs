@@ -80,6 +80,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private bool _lowHealth;
     private int _poisonBuildup;
     private int _poiseBuildup;
+    private bool _hasDialogueTriggered;
     
     [Header("References")] 
     [SerializeField] private BoxCollider attackHitbox;
@@ -179,17 +180,19 @@ public class CameraBoss : MonoBehaviour, IDamageable
     {
         if (_animator.GetBool(IsDead)) return;
 
-        foreach (var trigger in _dialogueTriggers)
+        if (!_hasDialogueTriggered)
         {
-            if (trigger.triggered)
+            foreach (var trigger in _dialogueTriggers)
             {
-                break;
+                if (trigger.triggered && dialogueGui.activeSelf)
+                {
+                    _hasDialogueTriggered = true;
+                    break;
+                }
             }
-            
-            return;
         }
         
-        if (dialogueGui.activeSelf) return;
+        if (!_hasDialogueTriggered || (dialogueGui != null && dialogueGui.activeSelf)) return;
         
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;

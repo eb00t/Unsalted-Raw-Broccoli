@@ -61,7 +61,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private bool _isFrozen;
     private bool _isFreezing;
     private bool _isIdling;
-    private bool _hasDialogueTriggered;
+    public bool _hasDialogueTriggered;
 
     [Header("References")] 
     [SerializeField] private Image healthFillImage;

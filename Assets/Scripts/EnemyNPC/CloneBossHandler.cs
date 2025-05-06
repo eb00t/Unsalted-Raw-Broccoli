@@ -59,6 +59,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     private bool _isStuck;
     private int _poisonBuildup;
     private int _poiseBuildup;
+    public bool _hasDialogueTriggered;
 
     [Header("References")] 
     [SerializeField] private BoxCollider attackHitbox;
@@ -127,17 +128,19 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        foreach (var trigger in _dialogueTriggers)
+        if (!_hasDialogueTriggered)
         {
-            if (trigger.triggered)
+            foreach (var trigger in _dialogueTriggers)
             {
-                break;
+                if (trigger.triggered && dialogue.activeSelf)
+                {
+                    _hasDialogueTriggered = true;
+                    break;
+                }
             }
-            
-            return;
         }
         
-        if (dialogue.activeSelf) return;
+        if (!_hasDialogueTriggered || (dialogue != null && dialogue.activeSelf)) return;
         
         var velocity = _aiPath.velocity;
         _playerDir = _target.position - transform.position;
@@ -439,6 +442,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
+        if (!_hasDialogueTriggered) return;
+        
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);

@@ -71,6 +71,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private bool _isFallingThrough;
     private bool _isStunned;
     private bool _isAttacking, _isDead, _isJumping, _isKnockedBack;
+    private bool _hasDialogueTriggered;
     
     [Header("References")] 
     [SerializeField] private Transform atkHitbox;
@@ -141,17 +142,19 @@ public class CopyBoss : MonoBehaviour, IDamageable
     {
         if (_isDead) return;
 
-        foreach (var trigger in _dialogueTriggers)
+        if (!_hasDialogueTriggered)
         {
-            if (trigger.triggered)
+            foreach (var trigger in _dialogueTriggers)
             {
-                break;
+                if (trigger.triggered && dialogueGui.activeSelf)
+                {
+                    _hasDialogueTriggered = true;
+                    break;
+                }
             }
-            
-            return;
         }
         
-        if (dialogueGui.activeSelf) return;
+        if (!_hasDialogueTriggered || (dialogueGui != null && dialogueGui.activeSelf)) return;
 
         var distance = Vector3.Distance(transform.position, _player.position);
         var heightDiffAbove = _player.position.y - transform.position.y;

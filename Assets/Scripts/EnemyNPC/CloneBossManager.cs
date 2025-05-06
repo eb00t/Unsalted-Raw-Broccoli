@@ -25,6 +25,7 @@ public class CloneBossManager : MonoBehaviour
     private bool _isPlayerInRange;
     private int _attackingCount;
     private bool _isChecking;
+    private bool _hasDialogueTriggered;
     
     [Header("References")]
     [SerializeField] private Canvas canvas;
@@ -34,6 +35,7 @@ public class CloneBossManager : MonoBehaviour
     [SerializeField] private GameObject bossPrefab;
     private RoomScripting _roomScripting;
     private GameObject _dialogueGui;
+    private DialogueTrigger[] _dialogueTriggers;
     private GameObject _player;
     private CharacterAttack _characterAttack;
 
@@ -44,7 +46,8 @@ public class CloneBossManager : MonoBehaviour
         _player = GameObject.FindGameObjectWithTag("Player");
         _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
         _dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
-        InstantiateBoss(6);
+        _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
+        InstantiateBoss(8);
         _maxHealth = maxNumberOfBosses * individualHealth;
         healthSlider.maxValue = _maxHealth;
         UpdateCollectiveHealth();
@@ -52,10 +55,16 @@ public class CloneBossManager : MonoBehaviour
 
     private void Update()
     {
-        if (_dialogueGui.activeSelf)
+        if (!_hasDialogueTriggered)
         {
-            _targetTime = 0;
-            return;
+            foreach (var trigger in _dialogueTriggers)
+            {
+                if (trigger.triggered && _dialogueGui.activeSelf)
+                {
+                    _hasDialogueTriggered = true;
+                    break;
+                }
+            }
         }
 
         // implement spawning a new boss at a delay, the less bosses the faster it spawns them
@@ -109,6 +118,7 @@ public class CloneBossManager : MonoBehaviour
             handler.cloneBossManager = this;
             handler.dialogue = _dialogueGui;
             newBoss.SetActive(true);
+            handler._hasDialogueTriggered = _hasDialogueTriggered;
 
             cloneBossHandlers.Add(handler);
             UpdateCollectiveHealth();
