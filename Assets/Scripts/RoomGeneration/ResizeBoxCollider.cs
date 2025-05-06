@@ -56,6 +56,7 @@ public class ResizeBoxCollider : MonoBehaviour
             if (_collider.bounds.Contains(_player.transform.position) && !_plrEnteredRoom)
             {
                 _roomScripting.EnterSpecialRoom();
+                _plrEnteredRoom = true;
             }
 
             if (doorsCanClose && _collider.bounds.Contains(_player.transform.position))
@@ -70,6 +71,7 @@ public class ResizeBoxCollider : MonoBehaviour
             if (!_collider.bounds.Contains(_player.transform.position) && _plrEnteredRoom)
             {
                 _roomScripting.ExitSpecialRoom();
+                _plrEnteredRoom = false;
             }
         }
     }
