@@ -133,15 +133,14 @@ public class SettingManager : MonoBehaviour
     {
         if (index == 0)
         {
-            var res = Screen.currentResolution;
-            Screen.SetResolution(res.width, res.height, FullScreenMode.ExclusiveFullScreen, Screen.currentResolution.refreshRateRatio);
-            resolutionDropdown.options[0].text = res.width + " x " + res.height;
+            Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, true);
+            //resolutionDropdown.options[0].text = Display.main.systemWidth + " x " + Display.main.systemHeight;
         }
         else
         {
-           var resolution = _resolutions[index];
-           Screen.SetResolution(resolution.x, resolution.y, FullScreenMode.ExclusiveFullScreen, Screen.currentResolution.refreshRateRatio);
-           dataHolder.resolutionIndex = index; 
+           var resolution = _resolutions[index - 1];
+           Screen.SetResolution(resolution.x, resolution.y, true);
+           dataHolder.resolutionIndex = index - 1; 
         }
         
         SaveData.Instance.UpdateSave();

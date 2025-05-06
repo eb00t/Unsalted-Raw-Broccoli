@@ -24,6 +24,7 @@ public class NextLevelTrigger : MonoBehaviour
         TitleScreen,
         Credits,
         EndScreen,
+        TheEnd,
         SecretScreen,
         Tutorial
     }
@@ -139,6 +140,10 @@ public class NextLevelTrigger : MonoBehaviour
                 break;
             case SceneToLoad.Credits:
                 scene = "creditsScene";
+                SaveData.Instance.EraseData();
+                break;
+            case SceneToLoad.TheEnd:
+                scene = "The End";
                 SaveData.Instance.EraseData();
                 break;
             case SceneToLoad.EndScreen:
