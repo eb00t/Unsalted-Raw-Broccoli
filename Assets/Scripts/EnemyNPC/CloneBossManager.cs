@@ -141,6 +141,11 @@ public class CloneBossManager : MonoBehaviour
         _collectiveHealth = healthCount;
         healthSlider.value = healthCount;
 
+        if (cloneBossHandlers.Count <= 3)
+        {
+            AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
+        }
+
         if (_collectiveHealth <= 0 || cloneBossHandlers.Count == 0)
         {
             LevelBuilder.Instance.bossDead = true;

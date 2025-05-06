@@ -458,10 +458,6 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         {
             health -= damage;
             _healthSlider.value = health;
-            if (health <= maxHealth / 2)
-            {
-                AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
-            }
         }
         else
         {
@@ -517,7 +513,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     {
         isDead = true;
         StopAllCoroutines();
-        LevelBuilder.Instance.bossDead = true;
+        //LevelBuilder.Instance.bossDead = true;
         var newGibs = Instantiate(gibs, transform.position, Quaternion.identity);
 
         foreach (var gib in newGibs.GetComponentsInChildren<Rigidbody>())
