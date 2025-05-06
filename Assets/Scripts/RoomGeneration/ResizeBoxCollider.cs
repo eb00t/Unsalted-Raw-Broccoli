@@ -12,6 +12,8 @@ public class ResizeBoxCollider : MonoBehaviour
     private RoomScripting _roomScripting;
     private ConnectorRoomInfo _connectorRoomInfo;
     public bool doorsCanClose;
+    private bool _plrEnteredRoom;
+    private GameObject _player;
     public enum RoomType
     {
         Room,
@@ -44,34 +46,31 @@ public class ResizeBoxCollider : MonoBehaviour
     void Start()
     { 
         _roomScripting = GetComponent<RoomScripting>();
+        _player = GameObject.FindWithTag("Player");
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void Update()
     {
-        if (other.CompareTag("Player") && roomType == RoomType.Room)
+        if (_player != null && roomType == RoomType.Room)
         {
-            _roomScripting.EnterSpecialRoom();
-        }
-    }
-    
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.CompareTag("Player") && roomType == RoomType.Room && doorsCanClose)
-        {
-            _roomScripting.playerIsInRoom = true;
-        }
-    }
+            if (_collider.bounds.Contains(_player.transform.position) && !_plrEnteredRoom)
+            {
+                _roomScripting.EnterSpecialRoom();
+            }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player") && roomType == RoomType.Room && doorsCanClose)
-        {
-            _roomScripting.playerIsInRoom = false;
-        }
+            if (doorsCanClose && _collider.bounds.Contains(_player.transform.position))
+            {
+                _roomScripting.playerIsInRoom = true;
+            }
+            else if (doorsCanClose && !_collider.bounds.Contains(_player.transform.position))
+            {
+                _roomScripting.playerIsInRoom = false;
+            }
 
-        if (other.CompareTag("Player") && roomType == RoomType.Room)
-        {
-            _roomScripting.ExitSpecialRoom();
+            if (!_collider.bounds.Contains(_player.transform.position) && _plrEnteredRoom)
+            {
+                _roomScripting.ExitSpecialRoom();
+            }
         }
     }
 }
