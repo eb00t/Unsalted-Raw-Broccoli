@@ -173,7 +173,7 @@ public class AudioManager : MonoBehaviour
                     SetGlobalEventParameter("Music Track", 5);
                     break;
                 case LevelBuilder.LevelMode.EndScreen:
-                    SetGlobalEventParameter("Music Track", -1);
+                    SetGlobalEventParameter("Music Track", 9);
                     break;
                 default:
                     SetGlobalEventParameter("Music Track", 0);
