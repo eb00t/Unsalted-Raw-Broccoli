@@ -352,7 +352,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private void ProjectileAttack()
     {
         var angleOffset = 360f / numberOfProjectiles;
-        var startAngle = Random.Range(0f, 360f);
+        var startAngle = _wavesLeft % 2 == 0 ? 0f : angleOffset / 2f;
 
         for (var i = 0; i < numberOfProjectiles; i++)
         {
