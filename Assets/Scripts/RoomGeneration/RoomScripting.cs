@@ -215,18 +215,7 @@ public class RoomScripting : MonoBehaviour
 
         if (allDoorsClosed && playerIsInRoom == false)
         {
-            _failsafeTeleport -= Time.deltaTime;
-            if (_failsafeTeleport <= 0)
-            {
-                _roomCam.Priority = 999;
-                _player.transform.position = gameObject.transform.position;
-                _failsafeTeleport = 3.5f;
-            }
-        }
-        else if (allDoorsClosed && playerIsInRoom)
-        {
-            _failsafeTeleport = 3.5f;
+                OpenAllRoomDoors();
         }
     }
-    
 }
