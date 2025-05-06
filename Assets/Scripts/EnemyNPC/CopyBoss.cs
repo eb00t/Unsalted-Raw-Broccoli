@@ -151,9 +151,9 @@ public class CopyBoss : MonoBehaviour, IDamageable
                     _hasDialogueTriggered = true;
                     break;
                 }
+
             }
         }
-        
         if (!_hasDialogueTriggered || (dialogueGui != null && dialogueGui.activeSelf)) return;
 
         var distance = Vector3.Distance(transform.position, _player.position);
@@ -763,6 +763,13 @@ public class CopyBoss : MonoBehaviour, IDamageable
         
         AudioManager.Instance.SetMusicParameter("Boss Phase", 4);
         LevelBuilder.Instance.bossDead = true;
+        _impulseVector = new Vector3(Random.Range(-1, 1), 5, 0);
+        _impulseSource.m_ImpulseDefinition.m_ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion;
+        _impulseSource.GenerateImpulseWithVelocity(_impulseVector * _settingManager.screenShakeMultiplier);
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Explosion, transform.position);
+        AudioManager.Instance.SetMusicParameter("Boss Phase", 3);
+        //_characterMovement.lockedOn = false;
+        //_lockOnController.lockedTarget = null;
         _roomScripting.enemies.Remove(gameObject);
         gameObject.SetActive(false);
     }

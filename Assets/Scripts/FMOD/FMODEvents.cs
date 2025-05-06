@@ -54,6 +54,8 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference CopyBossLightAttack { get; private set; }
     [field: SerializeField] public EventReference CopyBossMediumAttack { get; private set;}
     [field: SerializeField] public EventReference CopyBossHeavyAttack { get; private set; }
+    [field: Header("Camera Boss SFX")]
+    [field: SerializeField] public EventReference CameraBossShield { get; private set; }
     [field:Header("UI")]
     [field: SerializeField] public EventReference UINavigate { get; private set; }
     [field: SerializeField] public EventReference UISelect { get; private set; }
