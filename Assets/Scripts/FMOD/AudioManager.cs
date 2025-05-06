@@ -172,6 +172,9 @@ public class AudioManager : MonoBehaviour
                 case LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial:
                     SetGlobalEventParameter("Music Track", 5);
                     break;
+                case LevelBuilder.LevelMode.EndScreen:
+                    SetGlobalEventParameter("Music Track", -1);
+                    break;
                 default:
                     SetGlobalEventParameter("Music Track", 0);
                     break;

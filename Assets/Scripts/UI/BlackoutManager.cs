@@ -89,14 +89,14 @@ public class BlackoutManager : MonoBehaviour
 
     private void Update()
     {
-        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen))
+        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen or LevelBuilder.LevelMode.EndScreen))
         {
             _fadedOut = true;
             ResizeGraph(FindRoomBounds());
             AstarPath.active.Scan();
             LowerOpacity();
         } 
-        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen) && _fadedOut == false)
+        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen or LevelBuilder.LevelMode.EndScreen) && _fadedOut == false)
         {
             _timer -= Time.deltaTime;
             if (_timer <= 0)

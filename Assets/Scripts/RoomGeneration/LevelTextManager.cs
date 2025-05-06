@@ -69,6 +69,9 @@ public class LevelTextManager : MonoBehaviour
             case LevelBuilder.LevelMode.TitleScreen:
                 titleText.text = ("");
                 break;
+            case LevelBuilder.LevelMode.EndScreen:
+                titleText.text = ("...");
+                break;
             default:
                 titleText.text = ("what are you doing here, man?");
                 break;
@@ -108,6 +111,9 @@ public class LevelTextManager : MonoBehaviour
             case LevelBuilder.LevelMode.TitleScreen:
                 subtitleText.text = ("");
                 break;
+            case LevelBuilder.LevelMode.EndScreen:
+                subtitleText.text = ("...");
+                break;
             default:
                 subtitleText.text = ("no, seriously. something went wrong.");
                 break;
@@ -117,7 +123,7 @@ public class LevelTextManager : MonoBehaviour
     IEnumerator WaitToLowerTextOpacity()
     {
         if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Tutorial
-            or LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.TitleScreen))
+            or LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.TitleScreen or LevelBuilder.LevelMode.EndScreen))
         {
             yield return new WaitForSecondsRealtime(3f);
         }
@@ -142,12 +148,12 @@ public class LevelTextManager : MonoBehaviour
     
     private void Update()
     {
-        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial))
+        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.EndScreen))
         {
             _fadedOut = true;
             StartCoroutine(WaitToLowerTextOpacity());
         }
-        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen) && _fadedOut == false)
+        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen or LevelBuilder.LevelMode.EndScreen) && _fadedOut == false)
         {
             _fadedOut = true;
             StartCoroutine(WaitToLowerTextOpacity());

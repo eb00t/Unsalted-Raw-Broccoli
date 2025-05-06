@@ -24,7 +24,8 @@ public class LevelBuilder : MonoBehaviour
         Tutorial,
         FinalBoss,
         TitleScreen,
-        Floor4
+        Floor4,
+        EndScreen
     }
 
     [field: Header("Configuration")] 
@@ -107,7 +108,7 @@ public class LevelBuilder : MonoBehaviour
         }
 
         Instance = this;
-        if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission" && SceneManager.GetActiveScene().name != "StartScreen")
+        if (SceneManager.GetActiveScene().name != "Tutorial" && SceneManager.GetActiveScene().name != "Intermission" && SceneManager.GetActiveScene().name != "StartScreen" && SceneManager.GetActiveScene().name != "The End")
         {
             currentFloor = dataHolder.currentLevel;
         }
@@ -176,7 +177,7 @@ public class LevelBuilder : MonoBehaviour
 
     IEnumerator DelayStart()
     {
-        if (currentFloor is not (LevelMode.Intermission or LevelMode.Tutorial or LevelMode.TitleScreen))
+        if (currentFloor is not (LevelMode.Intermission or LevelMode.Tutorial or LevelMode.TitleScreen or LevelMode.EndScreen))
         {
             yield return new WaitForSecondsRealtime(.5f);
             roomsRemaining = _numberOfRoomsToSpawn;

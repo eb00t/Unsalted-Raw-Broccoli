@@ -27,6 +27,8 @@ public class DialogueReference : MonoBehaviour
     [field: SerializeField] public DialogueObjectHandler Floor4Boss { get; private set; }
     [field: SerializeField] public DialogueObjectHandler Floor5Intro { get; private set; }
     [field: SerializeField] public DialogueObjectHandler Floor5Boss { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler EndNormal { get; private set; }
+    [field: SerializeField] public DialogueObjectHandler EndHard { get; private set; }
     [field: Header("Tutorial NPC")]
     [field: SerializeField] public DialogueObjectHandler TutorialIntro { get; private set; }
     [field: SerializeField] public DialogueObjectHandler TutorialFloor1 { get; private set; }
