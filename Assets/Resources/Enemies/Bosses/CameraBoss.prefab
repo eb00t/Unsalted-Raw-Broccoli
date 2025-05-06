@@ -229,7 +229,7 @@ MonoBehaviour:
   shieldRotSpeed: 45
   shieldDur: 4
   projectileSpeed: 13
-  waveOffset: 90
+  waveOffset: 0
   numberOfProjectiles: 7
   maxProjectileWaves: 3
   projectileSpawnRadius: 3.5
@@ -961,6 +961,10 @@ MonoBehaviour:
   doesSelfDestruct: 0
   isConstantDamage: 0
   damageDelay: 0.25
+  impactVFX: {fileID: 0}
+  impactOrigin: {fileID: 0}
+  impactScale: 1
+  isBomb: 0
 --- !u!1 &4810268734969390951
 GameObject:
   m_ObjectHideFlags: 0
@@ -1204,6 +1208,10 @@ MonoBehaviour:
   doesSelfDestruct: 0
   isConstantDamage: 1
   damageDelay: 0.75
+  impactVFX: {fileID: 0}
+  impactOrigin: {fileID: 0}
+  impactScale: 1
+  isBomb: 0
 --- !u!212 &2422184600147461831
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1716,6 +1724,10 @@ MonoBehaviour:
   doesSelfDestruct: 1
   isConstantDamage: 0
   damageDelay: 0.25
+  impactVFX: {fileID: 0}
+  impactOrigin: {fileID: 0}
+  impactScale: 1
+  isBomb: 0
 --- !u!54 &2162322399734670511
 Rigidbody:
   m_ObjectHideFlags: 0
