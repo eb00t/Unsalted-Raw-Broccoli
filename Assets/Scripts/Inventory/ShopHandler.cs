@@ -18,6 +18,9 @@ public class ShopHandler : MonoBehaviour
 	[SerializeField] private Transform block;
 	public Transform grid;
 	[SerializeField] private float range;
+	[SerializeField] private float floor2CostMultiplier, floor3CostMultiplier, floor4CostMultiplier;
+	[SerializeField] private float hardCoreBaseMultiplier;
+	private float _activeFloorMultiplier;
 
 	private GameObject _player, _uiManager, _lastSelected;
 	private GameObject _shopGUI;
@@ -39,8 +42,44 @@ public class ShopHandler : MonoBehaviour
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
 		_currencyManager = _uiManager.GetComponent<CurrencyManager>();
 
+		if (dataHolder.hardcoreMode)
+		{
+			_activeFloorMultiplier = hardCoreBaseMultiplier;
+		}
+		else
+		{
+			_activeFloorMultiplier = 1;
+		}
+
+		switch (LevelBuilder.Instance.currentFloor)
+		{
+			case LevelBuilder.LevelMode.Floor2:
+				_activeFloorMultiplier += floor2CostMultiplier;
+				break;
+			case LevelBuilder.LevelMode.Floor3:
+				_activeFloorMultiplier += floor3CostMultiplier;
+				break;
+			case LevelBuilder.LevelMode.Floor4:
+				_activeFloorMultiplier += floor4CostMultiplier;
+				break;
+		}
+		
+		ScalePrices();
 		RandomiseStock();
 		RefreshShop();
+	}
+
+	private void ScalePrices()
+	{
+		for (var i = 0; i < minItemCost.Count; i++)
+		{
+			minItemCost[i] = (int)(minItemCost[i] * _activeFloorMultiplier);
+		}
+		
+		for (var i = 0; i < maxItemCost.Count; i++)
+		{
+			maxItemCost[i] = (int)(maxItemCost[i] * _activeFloorMultiplier);
+		}
 	}
 
 	private void Update()
