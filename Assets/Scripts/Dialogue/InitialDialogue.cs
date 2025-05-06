@@ -104,7 +104,8 @@ public class InitialDialogue : MonoBehaviour
         if (BlackoutManager.Instance.blackoutComplete && !dataHolder.hardcoreMode)
         {
           _dialogueController.dialogueToLoad = DialogueReference.Instance.EndNormal;
-        } else if (BlackoutManager.Instance.blackoutComplete && dataHolder.hardcoreMode)
+        } 
+        else if (BlackoutManager.Instance.blackoutComplete && dataHolder.hardcoreMode)
         {
           _dialogueController.dialogueToLoad = DialogueReference.Instance.EndHard;
         }
