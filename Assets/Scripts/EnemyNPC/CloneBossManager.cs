@@ -141,7 +141,7 @@ public class CloneBossManager : MonoBehaviour
         _collectiveHealth = healthCount;
         healthSlider.value = healthCount;
 
-        if (cloneBossHandlers.Count <= 3)
+        if (cloneBossHandlers.Count >= 3)
         {
             AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
         }
@@ -149,6 +149,7 @@ public class CloneBossManager : MonoBehaviour
         if (_collectiveHealth <= 0 || cloneBossHandlers.Count == 0)
         {
             LevelBuilder.Instance.bossDead = true;
+            AudioManager.Instance.SetMusicParameter("Boss Phase", 3);
             _roomScripting.enemies.Remove(gameObject);
             var currencyToDrop = Random.Range(5, 20);
             for (var i = 0; i < currencyToDrop; i++)

@@ -55,9 +55,9 @@ public class AudioManager : MonoBehaviour
         _eventEmitters = new List<StudioEventEmitter>();
 
         _masterBus = RuntimeManager.GetBus("bus:/");
-        _ambienceBus = RuntimeManager.GetBus("bus:/Not Music or UI/Ambience");
-        _musicBus = RuntimeManager.GetBus("bus:/Music");
-        _sfxBus = RuntimeManager.GetBus("bus:/Not Music or UI/SFX");
+        _ambienceBus = RuntimeManager.GetBus("bus:/Not UI/Not Music or UI/Ambience");
+        _musicBus = RuntimeManager.GetBus("bus:/Not UI/Music");
+        _sfxBus = RuntimeManager.GetBus("bus:/Not UI/Not Music or UI/SFX");
         _uiSfxBus = RuntimeManager.GetBus("bus:/UI SFX");
 
         playerIsDead = 0;

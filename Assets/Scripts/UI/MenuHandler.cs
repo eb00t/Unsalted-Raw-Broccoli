@@ -77,10 +77,22 @@ public class MenuHandler : MonoBehaviour
 		{
 			characterMovement.uiOpen = pauseGuisOpen || noPauseGuisOpen;
 			Time.timeScale = pauseGuisOpen ? 0 : 1;
+			
 		}
 		else
 		{
 			characterMovement.uiOpen = true;
+		}
+
+		if (Time.timeScale == 0 && !_characterAttack.isDead)
+		{
+			AudioManager.Instance.SetGlobalEventParameter("NoMusicUIVolume", 0.1f);
+			AudioManager.Instance.SetGlobalEventParameter("NotUI", 0.5f);
+		}
+		else if (Time.timeScale != 0 && !_characterAttack.isDead)
+		{
+			AudioManager.Instance.SetGlobalEventParameter("NoMusicUIVolume", 1f);
+			AudioManager.Instance.SetGlobalEventParameter("NotUI", 1f);
 		}
 
 		if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard)
@@ -339,6 +351,7 @@ public class MenuHandler : MonoBehaviour
 		
 		if (menuGui.activeSelf)
 		{
+			
 			SwitchSelected(selectedMenu);
 			statsGui.SetActive(false);
 			toolbarGui.SetActive(false);

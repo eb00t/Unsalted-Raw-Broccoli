@@ -513,7 +513,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     {
         isDead = true;
         StopAllCoroutines();
-        //LevelBuilder.Instance.bossDead = true;
+        _deathEvent.start();
         var newGibs = Instantiate(gibs, transform.position, Quaternion.identity);
 
         foreach (var gib in newGibs.GetComponentsInChildren<Rigidbody>())
