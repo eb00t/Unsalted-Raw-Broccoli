@@ -138,11 +138,14 @@ public class DialogueHandler : MonoBehaviour
 
    public void StartSentence(dialogueControllerScript dialogueController)
    {
-      _dialogueController = dialogueController;
-      index = 0;
-      _speakerText.text = "";
-      _dialogueText.text = "";
-      StartCoroutine(TypeSentence());
+      if (_speakerText != null && _dialogueText != null && dialogueController != null)
+      {
+         _dialogueController = dialogueController;
+         index = 0;
+         _speakerText.text = "";
+         _dialogueText.text = "";
+         StartCoroutine(TypeSentence());
+      }
    }
 
    IEnumerator TypeSentence()
