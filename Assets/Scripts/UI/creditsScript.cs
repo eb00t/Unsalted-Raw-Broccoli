@@ -1,23 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class creditsScript : MonoBehaviour
 {
-    public bool isDone;
-
-    // Update is called once per frame
-    void Update()
+    [SerializeField] private Button mainButton, quitButton;
+    [SerializeField] private StartMenuController startMenuController;
+    
+    private void SetButtonsInteractable()
     {
-        /*
-        if (gameObject.)
-        {
-            isDone = true;
-        }
-        else
-        {
-            isDone = false;
-        }
-        */
+        mainButton.interactable = true;
+        quitButton.interactable = true;
+        startMenuController.SwitchSelected(mainButton.gameObject);
     }
 }
