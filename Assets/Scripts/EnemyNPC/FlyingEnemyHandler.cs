@@ -1,10 +1,11 @@
 using System.Collections;
 using FMOD.Studio;
+using FMODUnity;
 using Pathfinding;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 
 public class FlyingEnemyHandler : MonoBehaviour, IDamageable
@@ -120,8 +121,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _roomBounds = RoomScripting.GetComponent<Collider>();
         ScaleStats();
         gameObject.transform.parent = gameObject.transform.root;
-        _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
-        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject);
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -143,6 +142,9 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.FlyingEnemyLaser);
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject);
         _targetTime = attackCooldown / 2;
+        _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
+        _deathEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject);
     }
 
     private void Update()
@@ -581,7 +583,6 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         
         EnemySpawner.spawnedEnemy = null;
         EnemySpawner.SpawnEnemies();
-        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject);
         int currencyToDrop = Random.Range(0, 5);
         for (int i = 0; i < currencyToDrop; i++)
         {

@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using FMOD.Studio;
+using FMODUnity;
 using Pathfinding;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 
 // Adapted from https://github.com/Chaker-Gamra/2.5D-Platformer-Game/blob/master/Assets/Scripts/Enemy/Enemy.cs
@@ -126,7 +128,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         
         ScaleStats();
         _jumpEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyJump);
-        AudioManager.Instance.AttachInstanceToGameObject(_jumpEvent, gameObject);;
+        _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
+        _deathEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
+        AudioManager.Instance.AttachInstanceToGameObject(_jumpEvent, gameObject);
+        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject);;
         _healthSlider = GetComponentInChildren<Slider>();
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
@@ -158,8 +163,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             newCooldown = Mathf.Clamp(newCooldown, 0.1f, attackCooldown + bombTimeVariability);
             _targetTime = newCooldown;
         }
-
-        _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
 
         if (isPassive)
         {
@@ -770,7 +773,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
         if (!isBomb)
         {
-            AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject);
             _deathEvent.start();
             _deathEvent.release();
         }
