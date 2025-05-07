@@ -1636,8 +1636,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4059042828215423937}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -12.85}
+  m_LocalRotation: {x: -0, y: 0.000000119209275, z: -0, w: 1}
+  m_LocalPosition: {x: 0.000000375509, y: 0, z: -12.850001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5879,6 +5879,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4739110626640804365, guid: 21be78786bf23cf4ea33c52e98f0d652,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: f474b6a6e7fab02438ff7f9d835794e2, type: 2}
     - target: {fileID: 4842159155864005819, guid: 21be78786bf23cf4ea33c52e98f0d652,
         type: 3}
       propertyPath: m_IsActive
@@ -11136,8 +11141,39 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6763027054158731640, guid: 6a65e672cdf063c4c8de08d6951aa5be,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4297715344065717480}
   m_SourcePrefab: {fileID: 100100000, guid: 6a65e672cdf063c4c8de08d6951aa5be, type: 3}
+--- !u!1 &3159603545810729347 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6763027054158731640, guid: 6a65e672cdf063c4c8de08d6951aa5be,
+    type: 3}
+  m_PrefabInstance: {fileID: 8503416123631345915}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &4297715344065717480
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3159603545810729347}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 15609b779ad69d544845be120f298dd8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &3413713199600696165 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6439516316614450078, guid: 6a65e672cdf063c4c8de08d6951aa5be,
