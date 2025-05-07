@@ -151,13 +151,13 @@ public class DialogueHandler : MonoBehaviour
    IEnumerator TypeSentence()
    {
       _speakerText.text = loadedSpeakerText[index];
-      int letterCount = 2;
+      int letterCount = 0;
       foreach (char Character in loadedBodyText[index].ToCharArray())
       {
          _dialogueText.text += Character;
          if (_dialogueText.gameObject.activeSelf)
          {
-            if (letterCount >= 2)
+            if (letterCount >= 5)
             {
                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DialogueScroll, transform.position);
                letterCount = 0;
