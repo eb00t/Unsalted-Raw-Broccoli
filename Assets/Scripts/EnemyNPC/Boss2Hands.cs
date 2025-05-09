@@ -363,10 +363,10 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         OneHandAttackSoundFinish(true, true);
         OneHandAttackSoundFinish(false, true);
         
-        UpdateColliders(false, false, false, false); // give player opening to attack
+        UpdateColliders(false, false, false, false); 
         defense = 0;
         
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(1f); // give player opening to attack
 
         defense = 50;
         UpdateColliders(false, false, true, true);
