@@ -100,7 +100,6 @@ public class AudioManager : MonoBehaviour
 
     public EventInstance CreateEventInstance(EventReference eventReference)
     {
-        //This is used in the event a sound needs to be stopped or started at anytime other than the beginning.
         EventInstance eventInstance = RuntimeManager.CreateInstance(eventReference);
         _eventInstances.Add(eventInstance);
         return eventInstance;
