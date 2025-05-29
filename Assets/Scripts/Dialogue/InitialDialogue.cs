@@ -16,11 +16,16 @@ public class InitialDialogue : MonoBehaviour
       Boss,
     }
     public BossOrIntro bossOrIntro;
-  
+
+    private void Awake()
+    {
+      _dialogueController = GetComponent<dialogueControllerScript>();
+    }
+
     private void Start()
     {
       currentFloor = LevelBuilder.Instance.currentFloor;
-      _dialogueController = GetComponent<dialogueControllerScript>();
+      
       if (dataHolder.demoMode && bossOrIntro == BossOrIntro.Intro)
       {
         gameObject.SetActive(false);

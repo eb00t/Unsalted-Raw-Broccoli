@@ -115,10 +115,12 @@ public class SettingManager : MonoBehaviour
             }
         }
         
+        /*
         SetResolution(dataHolder.resolutionIndex);
         resolutionDropdown.value = dataHolder.resolutionIndex;
         SetFPS(dataHolder.fpsIndex);
         fpsDropdown.value = dataHolder.fpsIndex;
+        */
     }
 
     public void SetFPS(int index)
