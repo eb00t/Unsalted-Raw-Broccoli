@@ -115,10 +115,6 @@ public class NextLevelTrigger : MonoBehaviour
                 {
                     case 0:
                         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
-                        if (SceneManager.GetActiveScene().name == "Tutorial")
-                        {
-                            SaveData.Instance.EraseData();
-                        }
                         break;
                     case 1:
                         dataHolder.currentLevel = LevelBuilder.LevelMode.Floor2;

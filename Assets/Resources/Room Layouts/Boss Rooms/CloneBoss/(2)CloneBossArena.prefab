@@ -5302,22 +5302,22 @@ PrefabInstance:
     - target: {fileID: 2405283271396705097, guid: 6b60648b21787bd41819983e6cbaedfd,
         type: 3}
       propertyPath: attack
-      value: 8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2405283271396705097, guid: 6b60648b21787bd41819983e6cbaedfd,
         type: 3}
       propertyPath: fireTime
-      value: 2
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2405283271396705097, guid: 6b60648b21787bd41819983e6cbaedfd,
         type: 3}
       propertyPath: chargeTime
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2405283271396705097, guid: 6b60648b21787bd41819983e6cbaedfd,
         type: 3}
       propertyPath: attackCooldown
-      value: 8
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5856,12 +5856,12 @@ PrefabInstance:
     - target: {fileID: 2405283271396705097, guid: 6b60648b21787bd41819983e6cbaedfd,
         type: 3}
       propertyPath: attack
-      value: 8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2405283271396705097, guid: 6b60648b21787bd41819983e6cbaedfd,
         type: 3}
       propertyPath: fireTime
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2405283271396705097, guid: 6b60648b21787bd41819983e6cbaedfd,
         type: 3}
@@ -5871,7 +5871,7 @@ PrefabInstance:
     - target: {fileID: 2405283271396705097, guid: 6b60648b21787bd41819983e6cbaedfd,
         type: 3}
       propertyPath: attackCooldown
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9899,6 +9899,11 @@ PrefabInstance:
       objectReference: {fileID: 7574501724204535804}
     - target: {fileID: 8695376605375295690, guid: 88a2f2a1f9bcd0146be40f332e451bfc,
         type: 3}
+      propertyPath: totalSpawn
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8695376605375295690, guid: 88a2f2a1f9bcd0146be40f332e451bfc,
+        type: 3}
       propertyPath: spawnPoint1
       value: 
       objectReference: {fileID: 7574501724204535804}
@@ -9917,6 +9922,16 @@ PrefabInstance:
       propertyPath: healthSlider
       value: 
       objectReference: {fileID: 1228656919644835211}
+    - target: {fileID: 8695376605375295690, guid: 88a2f2a1f9bcd0146be40f332e451bfc,
+        type: 3}
+      propertyPath: individualHealth
+      value: 190
+      objectReference: {fileID: 0}
+    - target: {fileID: 8695376605375295690, guid: 88a2f2a1f9bcd0146be40f332e451bfc,
+        type: 3}
+      propertyPath: maxConcurrentIndividuals
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8695376605375295690, guid: 88a2f2a1f9bcd0146be40f332e451bfc,
         type: 3}
       propertyPath: cloneBossHandlers.Array.size

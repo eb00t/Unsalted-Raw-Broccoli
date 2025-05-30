@@ -139,13 +139,13 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Move left and right with", ControlsManager.ButtonType.Move, "", null);
                 break;
             case TutorialStep.Jump:
-                ShowMessage("Jump height is determined by how long jump is held, jump by pressing", ControlsManager.ButtonType.Jump, "", null);
+                ShowMessage("Jump by holding or pressing", ControlsManager.ButtonType.Jump, "", null);
                 break;
             case TutorialStep.DoubleJump:
-                ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.Jump, " + ", ControlsManager.ButtonType.Jump);
+                ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.Jump, " -> ", ControlsManager.ButtonType.Jump);
                 break;
             case TutorialStep.Dash:
-                ShowMessage("Dash on the ground or in the air", ControlsManager.ButtonType.Dash, "", null);
+                ShowMessage("To dash and gain brief invincibility press", ControlsManager.ButtonType.Dash, "", null);
                 break;
             case TutorialStep.Crouch:
                 ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchC, " or ",ControlsManager.ButtonType.CrouchR);
@@ -154,7 +154,7 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.Interact, "", null);
                 break;
             case TutorialStep.UseUpThrust:
-                ShowMessage("Jump into vertical hallways to get a lift to rooms above", ControlsManager.ButtonType.Jump, "", null);
+                ShowMessage("Jump into vertical hallways to go to rooms above you", ControlsManager.ButtonType.Jump, "", null);
                 break;
             case TutorialStep.SwitchItem:
                 ShowMessage("Switch between items by pressing", ControlsManager.ButtonType.CycleToolbarLeft, " or ",ControlsManager.ButtonType.CycleToolbarRight);
@@ -181,13 +181,13 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.HeavyAttack, "", null);
                 break;
             case TutorialStep.JumpAttack:
-                ShowMessage("To perform a jump attack, jump and perform a light attack", ControlsManager.ButtonType.Jump, " + ",ControlsManager.ButtonType.LightAttack);
+                ShowMessage("Do an attack while in the air by pressing", ControlsManager.ButtonType.Jump, " -> ",ControlsManager.ButtonType.LightAttack);
                 break;
             case TutorialStep.DefeatEnemy:
                 ShowMessage("Defeat the enemy", ControlsManager.ButtonType.LightAttack, "", null);
                 break;
             case TutorialStep.Complete:
-                ShowMessage("Tutorial complete! You may now continue to the game", ControlsManager.ButtonType.Move,"", null);
+                ShowMessage("Tutorial complete! You may now continue ahead", ControlsManager.ButtonType.Move,"", null);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
