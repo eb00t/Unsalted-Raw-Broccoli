@@ -15,6 +15,8 @@ public class CharacterMovement : MonoBehaviour
     private CharacterAttack _characterAttack;
     private CinemachineImpulseSource _impulseSource;
     [SerializeField] private PhysicMaterial characterPhysicMaterial;
+    private MenuHandler _menuHandler;
+    private GameObject _uiManager;
 
     [Header("Player Properties")] 
     public bool doesAttackStopFlip;
@@ -96,6 +98,8 @@ public class CharacterMovement : MonoBehaviour
         _playerAnimator = GetComponentInChildren<Animator>();
         _characterAttack = GetComponentInChildren<CharacterAttack>();
         _impulseSource = GetComponent<CinemachineImpulseSource>();
+        _uiManager = GameObject.FindGameObjectWithTag("UIManager");
+        _menuHandler = _uiManager.GetComponent<MenuHandler>();
     }
 
     public void Crouch(InputAction.CallbackContext ctx)
@@ -119,6 +123,10 @@ public class CharacterMovement : MonoBehaviour
         if (uiOpen) return;
         _input = ctx.ReadValue<float>();
         _playerAnimator.SetFloat(Input1, Mathf.Abs(_input));
+        if (Mathf.Abs(_input) > 0)
+        {
+            _menuHandler.ResetIdleTime();
+        }
     }
 
     public void Jump(InputAction.CallbackContext ctx)

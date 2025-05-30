@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 
 public class MenuHandler : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class MenuHandler : MonoBehaviour
 	private ToolbarHandler _toolbarHandler;
 	private GameObject _player;
 	private BlackoutManager _blackoutManager;
+	private IDisposable _mEventListener;
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
@@ -50,6 +52,9 @@ public class MenuHandler : MonoBehaviour
 	private CurrencyManager _currencyManager;
 	[SerializeField] private GameObject hardcoreIndicator;
 
+	[SerializeField] private float idleResetTime;
+	private float _idleTimer;
+
 	private void Start()
 	{
 		_inventoryStore = GetComponent<InventoryStore>();
@@ -60,6 +65,7 @@ public class MenuHandler : MonoBehaviour
 		_characterAttack = _player.GetComponentInChildren<CharacterAttack>();
 		_blackoutManager = GameObject.Find("Game Manager").GetComponentInChildren<BlackoutManager>();
 		hardcoreIndicator.SetActive(dataHolder.hardcoreMode);
+		_idleTimer = idleResetTime;
 	}
 
 	private void Update()
@@ -83,6 +89,14 @@ public class MenuHandler : MonoBehaviour
 		else
 		{
 			characterMovement.uiOpen = true;
+		}
+		
+		// resets to main menu if no inputs are made during idle reset time
+		_idleTimer -= Time.deltaTime;
+
+		if (_idleTimer <= 0)
+		{
+			SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
 		}
 
 		if (Time.timeScale == 0 && !_characterAttack.isDead)
@@ -209,6 +223,33 @@ public class MenuHandler : MonoBehaviour
 		if (nearestLevelTrigger == null) return;
 		
 		nearestLevelTrigger.GetComponent<NextLevelTrigger>().LoadNextLevel();
+	}
+	
+	void OnEnable()
+	{
+		_mEventListener = InputSystem.onAnyButtonPress.Call(ResetIdleTimer);
+	}
+
+	private void ResetIdleTimer(InputControl button)
+	{
+		ResetIdleTime();
+	}
+
+	public void ResetIdleTime()
+	{
+		_idleTimer = idleResetTime;
+	}
+
+	// When disabled, we remove our button press listener.
+	void OnDisable()
+	{
+		_mEventListener.Dispose();
+	}
+
+	public void CancelDialogue(InputAction.CallbackContext context)
+	{
+		if (!context.performed && dialogueGUI.activeSelf) return;
+		dialogueGUI.SetActive(false);
 	}
 
 	// when Button East/Esc is pressed close current menu and open previous menus
