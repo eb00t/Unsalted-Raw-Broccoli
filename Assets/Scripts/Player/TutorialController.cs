@@ -57,7 +57,7 @@ public class TutorialController : MonoBehaviour
             return;
         }
         
-        WipeData();
+        //WipeData();
 
         _player = gameObject;
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
