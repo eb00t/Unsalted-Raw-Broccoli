@@ -128,10 +128,9 @@ public class MenuHandler : MonoBehaviour
 			_lastSelected = eventSystem.currentSelectedGameObject;
 		}
 
-		if (Input.GetKeyDown(KeyCode.F) && Input.GetKeyDown(KeyCode.L))
+		if (Input.GetKeyDown(KeyCode.F) && Input.GetKeyDown(KeyCode.L) && Input.GetKeyDown(KeyCode.Alpha1))
 		{
-			dataHolder.currentLevel = LevelBuilder.LevelMode.FinalBoss;
-			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+			SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
 		}
 	}
 	
