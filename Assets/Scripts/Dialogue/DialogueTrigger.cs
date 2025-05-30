@@ -49,7 +49,7 @@ public class DialogueTrigger : MonoBehaviour
             
             foreach (var dt in gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>())
             {
-                if (dt == this) continue;
+                if (dt != null && dt == this) continue;
                 dt.hasDialogueOpened = true;
                 dt.triggered = true;
             }

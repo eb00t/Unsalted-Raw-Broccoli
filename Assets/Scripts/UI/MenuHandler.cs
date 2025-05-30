@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class MenuHandler : MonoBehaviour
 {
@@ -125,6 +126,12 @@ public class MenuHandler : MonoBehaviour
 			if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard) return;
 			ButtonHandler.Instance.PlayNavigateSound();
 			_lastSelected = eventSystem.currentSelectedGameObject;
+		}
+
+		if (Input.GetKeyDown(KeyCode.F) && Input.GetKeyDown(KeyCode.L))
+		{
+			dataHolder.currentLevel = LevelBuilder.LevelMode.FinalBoss;
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		}
 	}
 	
