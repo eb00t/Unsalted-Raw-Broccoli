@@ -111,23 +111,26 @@ public class NextLevelTrigger : MonoBehaviour
                 }
                 break;
             case SceneToLoad.NextFloor:
-                switch (dataHolder.highestFloorCleared)
+                if (SceneManager.GetActiveScene().name != "Tutorial")
                 {
-                    case 0:
-                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
-                        break;
-                    case 1:
-                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor2;
-                        break;
-                    case 2:
-                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor3;
-                        break;
-                    case 3:
-                        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor4;
-                        break;
-                    case 4:
-                        dataHolder.currentLevel = LevelBuilder.LevelMode.FinalBoss;
-                        break;
+                    switch (dataHolder.highestFloorCleared)
+                    {
+                        case 0:
+                            dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
+                            break;
+                        case 1:
+                            dataHolder.currentLevel = LevelBuilder.LevelMode.Floor2;
+                            break;
+                        case 2:
+                            dataHolder.currentLevel = LevelBuilder.LevelMode.Floor3;
+                            break;
+                        case 3:
+                            dataHolder.currentLevel = LevelBuilder.LevelMode.Floor4;
+                            break;
+                        case 4:
+                            dataHolder.currentLevel = LevelBuilder.LevelMode.FinalBoss;
+                            break;
+                    }
                 }
                 scene = "MainScene";
                 break;
