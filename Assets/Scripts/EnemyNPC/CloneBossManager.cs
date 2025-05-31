@@ -41,6 +41,7 @@ public class CloneBossManager : MonoBehaviour
     private DialogueTrigger[] _dialogueTriggers;
     private GameObject _player;
     private CharacterAttack _characterAttack;
+    public int numKilled;
 
     private void Start()
     {
@@ -51,7 +52,8 @@ public class CloneBossManager : MonoBehaviour
         _dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
         InstantiateBoss(6);
-        _maxHealth = maxConcurrentIndividuals * individualHealth;
+        _maxHealth = totalSpawn * individualHealth;
+        healthSlider.value = _maxHealth;
         healthSlider.maxValue = _maxHealth;
         UpdateCollectiveHealth();
     }
@@ -139,24 +141,15 @@ public class CloneBossManager : MonoBehaviour
 
     public void UpdateCollectiveHealth()
     {
-        var healthCount = 0;
-        healthSlider.maxValue = 0;
-        
-        foreach (var clone in cloneBossHandlers)
-        {
-            healthCount += clone.health;
-            healthSlider.maxValue += individualHealth;
-        }
-        
-        _collectiveHealth = healthCount;
-        healthSlider.value = healthCount;
+        _collectiveHealth = (totalSpawn - numKilled) * individualHealth;
+        healthSlider.value = _collectiveHealth;
 
-        if (cloneBossHandlers.Count >= 3)
+        if (cloneBossHandlers.Count <= 3)
         {
             AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
         }
 
-        if (_collectiveHealth <= 0 || cloneBossHandlers.Count == 0)
+        if (_numSpawned >= totalSpawn)
         {
             LevelBuilder.Instance.bossDead = true;
             AudioManager.Instance.SetMusicParameter("Boss Phase", 3);
