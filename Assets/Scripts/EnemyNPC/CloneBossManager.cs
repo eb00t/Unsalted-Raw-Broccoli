@@ -42,6 +42,7 @@ public class CloneBossManager : MonoBehaviour
     private GameObject _player;
     private CharacterAttack _characterAttack;
     public int numKilled;
+    [SerializeField] private Animator spawn1Animator, spawn2Animator, spawn3Animator;
 
     private void Start()
     {
@@ -112,12 +113,18 @@ public class CloneBossManager : MonoBehaviour
             {
                 case 0:
                     spawn = spawnPoint1.position;
+                    spawn1Animator.SetTrigger("OpenDoor");
+                    StartCoroutine(WaitForDoor(spawn1Animator.gameObject.GetComponent<DoorHide>()));
                     break;
                 case 1:
                     spawn = spawnPoint2.position;
+                    spawn2Animator.SetTrigger("OpenDoor");
+                    StartCoroutine(WaitForDoor(spawn2Animator.gameObject.GetComponent<DoorHide>()));
                     break;
                 case 2:
                     spawn = spawnPoint3.position;
+                    spawn3Animator.SetTrigger("OpenDoor");
+                    StartCoroutine(WaitForDoor(spawn3Animator.gameObject.GetComponent<DoorHide>()));
                     break;
             }
             
@@ -137,6 +144,12 @@ public class CloneBossManager : MonoBehaviour
         }
 
         //spawnCooldown += 0.3f;
+    }
+
+    private IEnumerator WaitForDoor(DoorHide doorHide)
+    {
+        yield return new WaitUntil(() => doorHide.isDoorOpen);
+        doorHide.CloseDoor();
     }
 
     public void UpdateCollectiveHealth()
