@@ -142,7 +142,7 @@ public class MenuHandler : MonoBehaviour
 			_lastSelected = eventSystem.currentSelectedGameObject;
 		}
 
-		if (Input.GetKeyDown(KeyCode.F) && Input.GetKeyDown(KeyCode.L) && Input.GetKeyDown(KeyCode.Alpha1))
+		if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.L) && Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
 		}

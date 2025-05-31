@@ -136,7 +136,7 @@ public class CloneBossManager : MonoBehaviour
             UpdateCollectiveHealth();
         }
 
-        spawnCooldown += 0.3f;
+        //spawnCooldown += 0.3f;
     }
 
     public void UpdateCollectiveHealth()
@@ -144,12 +144,12 @@ public class CloneBossManager : MonoBehaviour
         _collectiveHealth = (totalSpawn - numKilled) * individualHealth;
         healthSlider.value = _collectiveHealth;
 
-        if (cloneBossHandlers.Count <= 3)
+        if (numKilled >= totalSpawn / 2)
         {
             AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
         }
 
-        if (_numSpawned >= totalSpawn)
+        if (_numSpawned >= totalSpawn && numKilled == totalSpawn && cloneBossHandlers.Count <= 0)
         {
             LevelBuilder.Instance.bossDead = true;
             AudioManager.Instance.SetMusicParameter("Boss Phase", 3);
