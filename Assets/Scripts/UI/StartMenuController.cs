@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,6 +14,8 @@ public class StartMenuController : MonoBehaviour
 	[SerializeField] private DataHolder dataHolder;
 	
 	private ControlsManager _controlsManager;
+	[SerializeField] private bool isCredits;
+	public bool creditsFinished;
 
 	private void Start()
 	{
@@ -32,6 +35,11 @@ public class StartMenuController : MonoBehaviour
 		{
 			Cursor.visible = true;
 			Cursor.lockState = CursorLockMode.None;
+		}
+
+		if (isCredits)
+		{
+			StartCoroutine(ResetAfterDelay());
 		}
 	}
 	
@@ -53,6 +61,14 @@ public class StartMenuController : MonoBehaviour
 		}
 
 		return null;
+	}
+
+	private IEnumerator ResetAfterDelay()
+	{
+		yield return new WaitUntil(() => creditsFinished);
+		yield return new WaitForSeconds(5f);
+
+		SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
 	}
 
 	private void FixedUpdate()
