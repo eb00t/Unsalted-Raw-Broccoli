@@ -442,11 +442,14 @@ public class CharacterAttack : MonoBehaviour
             _playerStatus.UpdateStatuses(isInvincible);
             return;
         }
-        
-        dataHolder.playerDefense = Mathf.Clamp(dataHolder.playerDefense, 0, 100);
-        var dmgReduction = (100 - dataHolder.playerDefense) / 100f;
-        damage = Mathf.RoundToInt(damage * dmgReduction);
-        
+
+        if (damage > 0)
+        {
+            dataHolder.playerDefense = Mathf.Clamp(dataHolder.playerDefense, 0, 100);
+            var dmgReduction = (100 - dataHolder.playerDefense) / 100f;
+            damage = Mathf.RoundToInt(damage * dmgReduction);
+        }
+
         var hitColor = (dataHolder.playerHealth - damage < dataHolder.playerHealth) ? Color.red : Color.green;
 
         if (dataHolder.playerHealth <= damage)

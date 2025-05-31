@@ -303,8 +303,20 @@ public class ToolbarHandler : MonoBehaviour
 
         for (var i = 0; i < 5; i++)
         {
-            _characterAttack.TakeDamagePlayer((int)-consumable.effectAmount, 0, Vector3.zero);
-            _characterAttack.UseEnergy((int)(-consumable.effectAmount / 4));
+            if (_characterAttack.currentEnergy >= _characterAttack.maxEnergy)
+            {
+                _characterAttack.TakeDamagePlayer((int)-consumable.effectAmount * 2, 0, Vector3.zero);
+            }
+            else if (dataHolder.playerHealth >= dataHolder.playerMaxHealth)
+            {
+                _characterAttack.UseEnergy((int)(-consumable.effectAmount / 2));
+            }
+            else
+            {
+                _characterAttack.TakeDamagePlayer((int)-consumable.effectAmount, 0, Vector3.zero);
+                _characterAttack.UseEnergy((int)(-consumable.effectAmount / 4));
+            }
+            
             yield return new WaitForSecondsRealtime(healInterval);
         }
 
