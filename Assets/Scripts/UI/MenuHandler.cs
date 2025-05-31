@@ -250,6 +250,7 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (!context.performed && dialogueGUI.activeSelf) return;
 		dialogueGUI.SetActive(false);
+		
 	}
 
 	// when Button East/Esc is pressed close current menu and open previous menus
