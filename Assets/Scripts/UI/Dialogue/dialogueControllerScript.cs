@@ -21,7 +21,6 @@ public class dialogueControllerScript : MonoBehaviour
     private MenuHandler _menuHandler;
     public bool randomLore; // Usually true, false if the lore is spawned directly.
     
-    
     public enum DialogueOrLore
     {
         Dialogue,
