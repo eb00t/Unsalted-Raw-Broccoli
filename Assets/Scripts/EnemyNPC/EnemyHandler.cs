@@ -540,6 +540,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _aiPath.canMove = true;
         _aiPath.destination = new Vector3(passiveTarget.position.x, transform.position.y, passiveTarget.position.z);
         _healthSlider.gameObject.SetActive(true);
+        UpdateSpriteDirection(_playerDir.x < 0);
     }
 
     private void Attack()

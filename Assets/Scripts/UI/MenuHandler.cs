@@ -240,8 +240,7 @@ public class MenuHandler : MonoBehaviour
 	{
 		_idleTimer = idleResetTime;
 	}
-
-	// When disabled, we remove our button press listener.
+	
 	void OnDisable()
 	{
 		_mEventListener.Dispose();
@@ -250,8 +249,8 @@ public class MenuHandler : MonoBehaviour
 	public void CancelDialogue(InputAction.CallbackContext context)
 	{
 		if (!context.performed && dialogueGUI.activeSelf) return;
-		dialogueGUI.SetActive(false);
 		
+		dialogueGUI.SetActive(false);
 	}
 
 	// when Button East/Esc is pressed close current menu and open previous menus
@@ -399,7 +398,6 @@ public class MenuHandler : MonoBehaviour
 		
 		if (menuGui.activeSelf)
 		{
-			
 			SwitchSelected(selectedMenu);
 			statsGui.SetActive(false);
 			toolbarGui.SetActive(false);
