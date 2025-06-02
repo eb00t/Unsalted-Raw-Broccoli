@@ -20,6 +20,7 @@ public class dialogueControllerScript : MonoBehaviour
     private GameObject _player, _dialogueCanvas, _uiManager;
     private MenuHandler _menuHandler;
     public bool randomLore; // Usually true, false if the lore is spawned directly.
+    [SerializeField] private bool dontShowInteract;
     
     public enum DialogueOrLore
     {
@@ -87,7 +88,7 @@ public class dialogueControllerScript : MonoBehaviour
     {
         var dist = Vector3.Distance(transform.position, _player.transform.position);
 
-        if (dist <= range)
+        if (dist <= range || dontShowInteract)
         {
             switch (dialogueOrLore)
             {
@@ -103,7 +104,7 @@ public class dialogueControllerScript : MonoBehaviour
             {
                 _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
             }
-            else
+            else if (!dontShowInteract && !_dialogueCanvas.activeSelf)
             {
                 if (!isShop)
                 {
