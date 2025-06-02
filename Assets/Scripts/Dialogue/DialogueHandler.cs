@@ -32,7 +32,6 @@ public class DialogueHandler : MonoBehaviour
 
    private ItemPickupHandler _itemPickupHandler;
    private dialogueControllerScript _dialogueController;
-   public bool finishedSentence = false;
 
    private void Awake()
    {
@@ -218,18 +217,6 @@ public class DialogueHandler : MonoBehaviour
       {
          _speakerText.transform.parent.gameObject.SetActive(false);
          _speakerText.gameObject.SetActive(false);
-      }
-   }
-
-   void Update()
-   {
-      if (_dialogueText.text == loadedBodyText[index])
-      {
-         finishedSentence = true;
-      }
-      else
-      {
-         finishedSentence = false;
       }
    }
 }
