@@ -381,7 +381,6 @@ public class MenuHandler : MonoBehaviour
 		
 		if (_itemPickupHandler.isPlrNearLore && nearestLore.gameObject.activeSelf && !nearestLore.hasBeenRead)
 		{
-			nearestLore.hasBeenRead = true;
 			dialogueGUI.SetActive(true);
 			dialogueController.LoadLore(nearestLore.whatLore);
 			Debug.Log(nearestLore.loreType);

@@ -126,6 +126,12 @@ public class DialogueHandler : MonoBehaviour
                trigger.SetActive(false);
                _itemPickupHandler.isPlrNearDialogue = false;
             }
+
+            if (currentLoreItem != null)
+            {
+               currentLoreItem.discoveredByPlayer = true;
+               
+            }
          }
       }
       else
@@ -197,7 +203,6 @@ public class DialogueHandler : MonoBehaviour
          currentDialogueObject = null;
       }
       currentLoreItem = loreItem;
-      loreItem.discoveredByPlayer = true;
       loadedTitleText = currentLoreItem.loreTitle;
       loadedSpeakerText = new List<string>(currentLoreItem.whoWroteThis);
       loadedBodyText = new List<string>(currentLoreItem.loreBodyText);
