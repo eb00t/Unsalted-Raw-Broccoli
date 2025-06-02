@@ -70,6 +70,14 @@ public class MenuHandler : MonoBehaviour
 
 	private void Update()
 	{
+		// resets to main menu if no inputs are made during idle reset time
+		_idleTimer -= Time.unscaledDeltaTime;
+
+		if (_idleTimer <= 0)
+		{
+			SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
+		}
+		
 		// update if ui is open or not in player movement script
 		var pauseGuisOpen = invGui.activeSelf || 
 		                    menuGui.activeSelf || 
@@ -84,19 +92,10 @@ public class MenuHandler : MonoBehaviour
 		{
 			characterMovement.uiOpen = pauseGuisOpen || noPauseGuisOpen;
 			Time.timeScale = pauseGuisOpen ? 0 : 1;
-			
 		}
 		else
 		{
 			characterMovement.uiOpen = true;
-		}
-		
-		// resets to main menu if no inputs are made during idle reset time
-		_idleTimer -= Time.deltaTime;
-
-		if (_idleTimer <= 0)
-		{
-			SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
 		}
 
 		if (Time.timeScale == 0 && !_characterAttack.isDead)
@@ -172,6 +171,8 @@ public class MenuHandler : MonoBehaviour
 	// opens equip menu (with inventory), hides other menus and resets interaction bool to prevent unwanted ui navigation
 	public void ToggleEquip()
 	{
+		if (!_blackoutManager.blackoutComplete) return;
+		
 		ButtonHandler.Instance.PlayConfirmSound();
 		foreach (var s in slots.GetComponentsInChildren<Button>())
 		{
@@ -356,7 +357,7 @@ public class MenuHandler : MonoBehaviour
 	
 	public void EnableDialogueBox(InputAction.CallbackContext context)
 	{
-		if (!context.performed) return;
+		if (!context.performed || characterMovement.uiOpen) return;
 		TriggerDialogue(true, dialogueController);
 	}
 

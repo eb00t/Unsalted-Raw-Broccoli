@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,27 +23,35 @@ public class StartMenuController : MonoBehaviour
 		SwitchSelected(playBtn);
 		_controlsManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<ControlsManager>();
 
-		if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard)
+		if (isCredits)
+		{
+			StartCoroutine(ResetAfterDelay());
+		}
+	}
+
+	private void Update()
+	{
+		if (!dataHolder.isGamepad)
 		{
 			var interactable = GetInteractable();
 			if (interactable != null)
 			{
 				SwitchSelected(interactable);
 			}
-		}
 
-		if (dataHolder.isGamepad == false)
-		{
-			Cursor.visible = true;
-			Cursor.lockState = CursorLockMode.None;
+			if (!Cursor.visible || Cursor.lockState == CursorLockMode.Locked)
+			{
+				Cursor.visible = true;
+				Cursor.lockState = CursorLockMode.None;
+			}
 		}
-
-		if (isCredits)
+		else if (dataHolder.isGamepad && Cursor.visible || Cursor.lockState == CursorLockMode.None)
 		{
-			StartCoroutine(ResetAfterDelay());
+			Cursor.visible = false;
+			Cursor.lockState = CursorLockMode.Locked;
 		}
 	}
-	
+
 	private static GameObject GetInteractable()
 	{
 		var pointerData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };

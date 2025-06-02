@@ -369,8 +369,6 @@ private void stopWallJump()
 
     public void FixedUpdate()
     {
-        if (uiOpen) return;
-        
         var lRayStart = playerGround.position - new Vector3(groundCheckSpacing, 0, 0);
         var rRayStart = playerGround.position + new Vector3(groundCheckSpacing, 0, 0);
 
@@ -379,6 +377,8 @@ private void stopWallJump()
 
         grounded = leftGrounded || rightGrounded;
         _playerAnimator.SetBool(Grounded, grounded);
+        
+        if (uiOpen) return;
 
         if (grounded)
         {
