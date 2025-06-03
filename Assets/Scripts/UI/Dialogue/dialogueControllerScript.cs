@@ -93,7 +93,7 @@ public class dialogueControllerScript : MonoBehaviour
             _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
         }
 
-        if (dist <= range)
+        if (dist <= range && !dontShowInteract)
         {
             switch (dialogueOrLore)
             {
@@ -105,7 +105,11 @@ public class dialogueControllerScript : MonoBehaviour
                     break;
             }
             
-            if (!isShop)
+            if (_dialogueCanvas.activeSelf)
+            {
+                _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
+            }
+            else if (!isShop)
             {
                 _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null);
                 _menuHandler.dialogueController = this;

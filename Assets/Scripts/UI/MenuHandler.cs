@@ -20,6 +20,7 @@ public class MenuHandler : MonoBehaviour
 	private GameObject _player;
 	private BlackoutManager _blackoutManager;
 	private IDisposable _mEventListener;
+	private DialogueHandler _dialogueHandler;
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
@@ -64,6 +65,7 @@ public class MenuHandler : MonoBehaviour
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
 		_characterAttack = _player.GetComponentInChildren<CharacterAttack>();
 		_blackoutManager = GameObject.Find("Game Manager").GetComponentInChildren<BlackoutManager>();
+		_dialogueHandler = GameObject.Find("Game Manager").GetComponent<DialogueHandler>();
 		hardcoreIndicator.SetActive(dataHolder.hardcoreMode);
 		_idleTimer = idleResetTime;
 	}
@@ -249,7 +251,10 @@ public class MenuHandler : MonoBehaviour
 	public void CancelDialogue(InputAction.CallbackContext context)
 	{
 		if (!context.performed && dialogueGUI.activeSelf) return;
-		
+
+		_dialogueHandler.index = 0;
+		_dialogueHandler.loadedBodyText.Clear();
+		_dialogueHandler.loadedSpeakerText.Clear();
 		dialogueGUI.SetActive(false);
 	}
 
