@@ -18,8 +18,8 @@ public class DialogueHandler : MonoBehaviour
    public float dialogueSpeed;
    
    [field: Header("References")]
-   private TextMeshProUGUI _dialogueText; //Dialogue text object
-   private TextMeshProUGUI _speakerText; // Speaker text object
+   public TextMeshProUGUI _dialogueText; //Dialogue text object
+   public TextMeshProUGUI _speakerText; // Speaker text object
    private GameObject _player, _dialogueCanvas, _uiManager;
    private MenuHandler _menuHandler;
    public GameObject trigger;
@@ -141,7 +141,7 @@ public class DialogueHandler : MonoBehaviour
          _speakerText.text = loadedSpeakerText[index];
       }
    }
-
+   
    public void StartSentence(dialogueControllerScript dialogueController)
    {
       if (_speakerText != null && _dialogueText != null && dialogueController != null)

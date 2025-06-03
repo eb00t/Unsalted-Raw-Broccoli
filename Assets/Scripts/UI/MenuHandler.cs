@@ -250,11 +250,15 @@ public class MenuHandler : MonoBehaviour
 
 	public void CancelDialogue(InputAction.CallbackContext context)
 	{
-		if (!context.performed && dialogueGUI.activeSelf) return;
+		if (!context.performed || !dialogueGUI.activeSelf) return;
 
+		_dialogueHandler.StopAllCoroutines();
 		_dialogueHandler.index = 0;
 		_dialogueHandler.loadedBodyText.Clear();
 		_dialogueHandler.loadedSpeakerText.Clear();
+		_dialogueHandler._speakerText.text = "";
+		_dialogueHandler._dialogueText.text = "";
+		
 		dialogueGUI.SetActive(false);
 	}
 
