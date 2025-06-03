@@ -87,8 +87,13 @@ public class dialogueControllerScript : MonoBehaviour
     private void Update()
     {
         var dist = Vector3.Distance(transform.position, _player.transform.position);
+        
+        if (_dialogueCanvas.activeSelf && dontShowInteract)
+        {
+            _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
+        }
 
-        if (dist <= range || dontShowInteract)
+        if (dist <= range)
         {
             switch (dialogueOrLore)
             {
@@ -100,28 +105,21 @@ public class dialogueControllerScript : MonoBehaviour
                     break;
             }
             
-            if (_dialogueCanvas.activeSelf)
+            if (!isShop)
             {
-                _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
+                _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null);
+                _menuHandler.dialogueController = this;
             }
-            else if (!dontShowInteract && !_dialogueCanvas.activeSelf)
+            else if (isShop && shopCanvas.activeSelf)
             {
-                if (!isShop)
-                {
-                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null);
-                    _menuHandler.dialogueController = this;
-                }
-                else if (isShop && shopCanvas.activeSelf)
-                {
-                    _itemPickupHandler.TogglePrompt("Close Shop", true, ControlsManager.ButtonType.Back, "", null);
-                    _itemPickupHandler.isPlrNearShop = true;
-                    _menuHandler.dialogueController = this;
-                }
-                else
-                {
-                    _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null);
-                    _menuHandler.dialogueController = this;
-                }
+                _itemPickupHandler.TogglePrompt("Close Shop", true, ControlsManager.ButtonType.Back, "", null);
+                _itemPickupHandler.isPlrNearShop = true;
+                _menuHandler.dialogueController = this;
+            }
+            else
+            {
+                _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null);
+                _menuHandler.dialogueController = this;
             }
         }
         else if (dist > range)
