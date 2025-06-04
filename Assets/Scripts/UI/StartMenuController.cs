@@ -60,7 +60,7 @@ public class StartMenuController : MonoBehaviour
 
 		if (blackout.activeSelf)
 		{
-			_lerpTime += 0.005f;
+			_lerpTime += Time.deltaTime;
 			blackoutImg.color = Color.Lerp(transparentColor, blackoutColor, _lerpTime);
 			vignette.color = Color.Lerp(transparentColor, vignetteColor, _lerpTime);
 			loadingImg1.color = Color.Lerp(transparentColor, loadImgColor, _lerpTime);
