@@ -649,7 +649,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 4 : 2; 
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
-        if (!_isAttacking || _hitCount >= 20)
+        if (!_isAttacking)
         {
             StartCoroutine(TriggerKnockback(knockbackForce, 0.1f));
             StartCoroutine(StunTimer(0.1f));
