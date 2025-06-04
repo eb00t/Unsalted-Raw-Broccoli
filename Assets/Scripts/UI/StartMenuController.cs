@@ -11,12 +11,19 @@ public class StartMenuController : MonoBehaviour
 {
 	[SerializeField] private EventSystem eventSystem;
 	[SerializeField] private GameObject playBtn, controlsBtn, settingsBtn, quitBtn;
-	[SerializeField] private GameObject controlGui, settingGui, menuGui;
+
+	[SerializeField] private GameObject controlGui, settingGui, menuGui, blackout, load;
+	[SerializeField] private Image blackoutImg, loadingImg1, loadingImg2, vignette;
 	[SerializeField] private DataHolder dataHolder;
+
+	public Color blackoutColor, loadImgColor, loadImg2Color;
+	public Color vignetteColor;
+	public Color transparentColor;
 	
 	private ControlsManager _controlsManager;
 	[SerializeField] private bool isCredits;
 	public bool creditsFinished;
+	private float _lerpTime = 0f;
 
 	private void Start()
 	{
@@ -49,6 +56,15 @@ public class StartMenuController : MonoBehaviour
 		{
 			Cursor.visible = false;
 			Cursor.lockState = CursorLockMode.Locked;
+		}
+
+		if (blackout.activeSelf)
+		{
+			_lerpTime += 0.005f;
+			blackoutImg.color = Color.Lerp(transparentColor, blackoutColor, _lerpTime);
+			vignette.color = Color.Lerp(transparentColor, vignetteColor, _lerpTime);
+			loadingImg1.color = Color.Lerp(transparentColor, loadImgColor, _lerpTime);
+			loadingImg2.color = Color.Lerp(transparentColor, loadImg2Color, _lerpTime);
 		}
 	}
 
@@ -112,6 +128,19 @@ public class StartMenuController : MonoBehaviour
 
 	public void LoadScene(string sceneName)
 	{
+		if (SceneManager.GetActiveScene().name == "StartScreen")
+		{
+			StartCoroutine(WaitToLoad(sceneName));
+			return;
+		}
+
+		ButtonHandler.Instance.PlayConfirmSound();
+		SceneManager.LoadScene(sceneName);
+	}
+
+	private IEnumerator WaitToLoad(string sceneName)
+	{
+		yield return new WaitForSeconds(3f);
 		ButtonHandler.Instance.PlayConfirmSound();
 		SceneManager.LoadScene(sceneName);
 	}
@@ -132,6 +161,12 @@ public class StartMenuController : MonoBehaviour
 			menuGui.SetActive(true);
 			SwitchSelected(controlsBtn);
 		}
+	}
+
+	public void FadeInLoadingScreen()
+	{
+		blackout.SetActive(true);
+		load.SetActive(true);
 	}
 
 	public void WipeData()
