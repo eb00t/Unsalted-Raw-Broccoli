@@ -14,4 +14,9 @@ public class creditsScript : MonoBehaviour
         quitButton.interactable = true;
         startMenuController.SwitchSelected(mainButton.gameObject);
     }
+
+    private void TriggerFinished()
+    {
+        startMenuController.creditsFinished = true;
+    }
 }

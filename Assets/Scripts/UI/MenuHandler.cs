@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 
 public class MenuHandler : MonoBehaviour
 {
@@ -17,6 +19,8 @@ public class MenuHandler : MonoBehaviour
 	private ToolbarHandler _toolbarHandler;
 	private GameObject _player;
 	private BlackoutManager _blackoutManager;
+	private IDisposable _mEventListener;
+	private DialogueHandler _dialogueHandler;
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
@@ -49,6 +53,9 @@ public class MenuHandler : MonoBehaviour
 	private CurrencyManager _currencyManager;
 	[SerializeField] private GameObject hardcoreIndicator;
 
+	[SerializeField] private float idleResetTime;
+	private float _idleTimer;
+
 	private void Start()
 	{
 		_inventoryStore = GetComponent<InventoryStore>();
@@ -58,11 +65,30 @@ public class MenuHandler : MonoBehaviour
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
 		_characterAttack = _player.GetComponentInChildren<CharacterAttack>();
 		_blackoutManager = GameObject.Find("Game Manager").GetComponentInChildren<BlackoutManager>();
+		_dialogueHandler = GameObject.Find("Game Manager").GetComponent<DialogueHandler>();
 		hardcoreIndicator.SetActive(dataHolder.hardcoreMode);
+		_idleTimer = idleResetTime;
 	}
 
 	private void Update()
 	{
+		// resets to main menu if no inputs are made during idle reset time
+		if (dataHolder.demoMode)
+		{
+			_idleTimer -= Time.unscaledDeltaTime;
+			
+			if (_idleTimer <= 0)
+			{
+				SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
+			}
+			
+			// quick reset keybind for events
+			if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.L) && Input.GetKeyDown(KeyCode.Alpha1))
+			{
+				SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
+			}
+		}
+		
 		// update if ui is open or not in player movement script
 		var pauseGuisOpen = invGui.activeSelf || 
 		                    menuGui.activeSelf || 
@@ -77,7 +103,6 @@ public class MenuHandler : MonoBehaviour
 		{
 			characterMovement.uiOpen = pauseGuisOpen || noPauseGuisOpen;
 			Time.timeScale = pauseGuisOpen ? 0 : 1;
-			
 		}
 		else
 		{
@@ -152,6 +177,8 @@ public class MenuHandler : MonoBehaviour
 	// opens equip menu (with inventory), hides other menus and resets interaction bool to prevent unwanted ui navigation
 	public void ToggleEquip()
 	{
+		if (!_blackoutManager.blackoutComplete) return;
+		
 		ButtonHandler.Instance.PlayConfirmSound();
 		foreach (var s in slots.GetComponentsInChildren<Button>())
 		{
@@ -203,6 +230,40 @@ public class MenuHandler : MonoBehaviour
 		if (nearestLevelTrigger == null) return;
 		
 		nearestLevelTrigger.GetComponent<NextLevelTrigger>().LoadNextLevel();
+	}
+	
+	void OnEnable()
+	{
+		_mEventListener = InputSystem.onAnyButtonPress.Call(ResetIdleTimer);
+	}
+
+	private void ResetIdleTimer(InputControl button)
+	{
+		ResetIdleTime();
+	}
+
+	public void ResetIdleTime()
+	{
+		_idleTimer = idleResetTime;
+	}
+	
+	void OnDisable()
+	{
+		_mEventListener.Dispose();
+	}
+
+	public void CancelDialogue(InputAction.CallbackContext context)
+	{
+		if (!context.performed || !dialogueGUI.activeSelf) return;
+
+		_dialogueHandler.StopAllCoroutines();
+		_dialogueHandler.index = 0;
+		_dialogueHandler.loadedBodyText.Clear();
+		_dialogueHandler.loadedSpeakerText.Clear();
+		_dialogueHandler._speakerText.text = "";
+		_dialogueHandler._dialogueText.text = "";
+		
+		dialogueGUI.SetActive(false);
 	}
 
 	// when Button East/Esc is pressed close current menu and open previous menus
@@ -308,7 +369,7 @@ public class MenuHandler : MonoBehaviour
 	
 	public void EnableDialogueBox(InputAction.CallbackContext context)
 	{
-		if (!context.performed) return;
+		if (!context.performed || characterMovement.uiOpen) return;
 		TriggerDialogue(true, dialogueController);
 	}
 
@@ -333,7 +394,6 @@ public class MenuHandler : MonoBehaviour
 		
 		if (_itemPickupHandler.isPlrNearLore && nearestLore.gameObject.activeSelf && !nearestLore.hasBeenRead)
 		{
-			nearestLore.hasBeenRead = true;
 			dialogueGUI.SetActive(true);
 			dialogueController.LoadLore(nearestLore.whatLore);
 			Debug.Log(nearestLore.loreType);
@@ -351,7 +411,6 @@ public class MenuHandler : MonoBehaviour
 		
 		if (menuGui.activeSelf)
 		{
-			
 			SwitchSelected(selectedMenu);
 			statsGui.SetActive(false);
 			toolbarGui.SetActive(false);

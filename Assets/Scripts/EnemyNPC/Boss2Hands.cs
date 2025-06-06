@@ -290,7 +290,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private IEnumerator Attack() // randomly pick an attack
     {
         _attackCdCounter = attackCooldown;
-        attack = 50;
+        attack = 60;
         
         var attackType = Random.Range(0, 5);
 
@@ -343,7 +343,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private IEnumerator GroundPoundAndLunge()
     {
         yield return StartCoroutine(ResetHands());
-        attack = 20;
+        attack = 35;
         _canAttack = false;
         
         UpdateColliders(true, true, false, false);
@@ -366,7 +366,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         UpdateColliders(false, false, false, false); 
         defense = 0;
         
-        yield return new WaitForSecondsRealtime(1f); // give player opening to attack
+        yield return new WaitForSecondsRealtime(1.75f); // give player opening to attack
 
         defense = 50;
         UpdateColliders(false, false, true, true);
@@ -383,7 +383,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         vfxRight.gameObject.SetActive(true);
         TwoHandAttackSoundFinish(lungeTarget, true);
 
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(1.5f);
         
         UpdateColliders(false, false, false, false);
         
@@ -395,7 +395,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         yield return StartCoroutine(ResetHands());
         _canAttack = false;
-        attack = 60;
+        attack = 80;
         
         var hoverPosition = _target.position + Vector3.up * handHoverHeight;
         
@@ -431,7 +431,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             defense = 0;
             OneHandAttackSoundFinish(isLeft, true);
             UpdateColliders(false, false, false, false);
-            yield return new WaitForSecondsRealtime(1.5f);
+            yield return new WaitForSecondsRealtime(1.75f);
             defense = 50;
             yield return StartCoroutine(MoveHands(null, hoverPosition, 0.5f));
             OneHandAttackSoundFinish(isLeft, false);
@@ -446,7 +446,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             UpdateColliders(false, false, false, false);
             defense = 0;
             OneHandAttackSoundFinish(isLeft, true);
-            yield return new WaitForSecondsRealtime(1.5f);
+            yield return new WaitForSecondsRealtime(1.75f);
             defense = 50;
             yield return StartCoroutine(MoveHands(hoverPosition, null, 0.5f));
             OneHandAttackSoundFinish(isLeft, false);
@@ -464,7 +464,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private IEnumerator ClapAttack()
     {
         yield return StartCoroutine(ResetHands());
-        attack = 20;
+        attack = 40;
         _canAttack = false;
         
         UpdateHandImg(false, false, true, true);
@@ -496,7 +496,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
             UpdateColliders(false, false, false, false);
         }
 
-        yield return new WaitForSecondsRealtime(1.25f);
+        yield return new WaitForSecondsRealtime(1.5f);
 
         defense = 50;
         _canAttack = true;
@@ -505,7 +505,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private IEnumerator LaserAttack() // aims laser at player that tracks, then it stops and starts doing damage
     {
         yield return StartCoroutine(ResetHands());
-        attack = 10;
+        attack = 20;
         _laserEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BossHandLaser);
         _canAttack = false;
         _lineRenderer.enabled = true;

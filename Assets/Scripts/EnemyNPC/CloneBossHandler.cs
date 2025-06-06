@@ -528,6 +528,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
         }
 
+        cloneBossManager.numKilled++;
         cloneBossManager.cloneBossHandlers.Remove(this);
         cloneBossManager.UpdateCollectiveHealth();
         

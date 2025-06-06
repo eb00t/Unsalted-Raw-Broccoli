@@ -27,6 +27,7 @@ public class ToolbarHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI toolbarTxt, toolbarTitle, infoTxt, numHeldTxt, infoTitle;
     [SerializeField] private GameObject highlightImg;
     [SerializeField] private GameObject resetFlash;
+    [SerializeField] private GameObject dpadIcon;
 
     private InventoryStore _inventoryStore;
     private GameObject _player;
@@ -181,7 +182,10 @@ public class ToolbarHandler : MonoBehaviour
                 CycleToolbar(1);
                 break;
             case (0, -1): // down (2)
-                _menuHandler.ToggleEquip();
+                if (!_characterMovement.uiOpen)
+                {
+                    _menuHandler.ToggleEquip();
+                }
                 break;
             case (-1, 0): // left (3)
                 CycleToolbar(-1);
@@ -303,8 +307,20 @@ public class ToolbarHandler : MonoBehaviour
 
         for (var i = 0; i < 5; i++)
         {
-            _characterAttack.TakeDamagePlayer((int)-consumable.effectAmount, 0, Vector3.zero);
-            _characterAttack.UseEnergy((int)(-consumable.effectAmount / 4));
+            if (_characterAttack.currentEnergy >= _characterAttack.maxEnergy)
+            {
+                _characterAttack.TakeDamagePlayer((int)-consumable.effectAmount * 2, 0, Vector3.zero);
+            }
+            else if (dataHolder.playerHealth >= dataHolder.playerMaxHealth)
+            {
+                _characterAttack.UseEnergy((int)(-consumable.effectAmount / 2));
+            }
+            else
+            {
+                _characterAttack.TakeDamagePlayer((int)-consumable.effectAmount, 0, Vector3.zero);
+                _characterAttack.UseEnergy((int)(-consumable.effectAmount / 4));
+            }
+            
             yield return new WaitForSecondsRealtime(healInterval);
         }
 
@@ -475,6 +491,15 @@ public class ToolbarHandler : MonoBehaviour
     // the information to match currently selected item by checking index holder
     private void Update()
     {
+        if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard && dpadIcon.activeSelf)
+        {
+            dpadIcon.SetActive(false);
+        }
+        else if (dataHolder.currentControl != ControlsManager.ControlScheme.Keyboard && !dpadIcon.activeSelf)
+        {
+            dpadIcon.SetActive(true);
+        }
+
         if (!isInfoOpen) return;
 
         var selected = EventSystem.current.currentSelectedGameObject;

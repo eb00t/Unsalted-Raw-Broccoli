@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -11,7 +12,8 @@ public class CloneBossManager : MonoBehaviour
     [Header("Stats")]
     private int _collectiveHealth;
     private int _maxHealth;
-    [SerializeField] private int maxNumberOfBosses;
+    [FormerlySerializedAs("maxNumberOfBosses")] [SerializeField] private int maxConcurrentIndividuals;
+    [SerializeField] private int totalSpawn;
     [SerializeField] private int maxAttackingCount;
     [SerializeField] private int individualHealth;
     [SerializeField] private float spawnCooldown;
@@ -26,6 +28,7 @@ public class CloneBossManager : MonoBehaviour
     private int _attackingCount;
     private bool _isChecking;
     private bool _hasDialogueTriggered;
+    private int _numSpawned;
     
     [Header("References")]
     [SerializeField] private Canvas canvas;
@@ -38,6 +41,8 @@ public class CloneBossManager : MonoBehaviour
     private DialogueTrigger[] _dialogueTriggers;
     private GameObject _player;
     private CharacterAttack _characterAttack;
+    public int numKilled;
+    [SerializeField] private Animator spawn1Animator, spawn2Animator, spawn3Animator;
 
     private void Start()
     {
@@ -47,8 +52,9 @@ public class CloneBossManager : MonoBehaviour
         _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
         _dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
-        InstantiateBoss(8);
-        _maxHealth = maxNumberOfBosses * individualHealth;
+        InstantiateBoss(6);
+        _maxHealth = totalSpawn * individualHealth;
+        healthSlider.value = _maxHealth;
         healthSlider.maxValue = _maxHealth;
         UpdateCollectiveHealth();
     }
@@ -82,7 +88,7 @@ public class CloneBossManager : MonoBehaviour
             return;
         }
 
-        if (cloneBossHandlers.Count >= maxNumberOfBosses) return;
+        if (cloneBossHandlers.Count >= maxConcurrentIndividuals) return;
 
         _targetTime -= Time.deltaTime;
         if (!(_targetTime <= 0.0f)) return;
@@ -93,6 +99,11 @@ public class CloneBossManager : MonoBehaviour
 
     private void InstantiateBoss(int numberToSpawn)
     {
+        if (_numSpawned >= totalSpawn)
+        {
+            return;
+        }
+
         for (var i = 0; i < numberToSpawn; i++)
         {
             var ran = Random.Range(0, 3);
@@ -102,12 +113,18 @@ public class CloneBossManager : MonoBehaviour
             {
                 case 0:
                     spawn = spawnPoint1.position;
+                    spawn1Animator.SetTrigger("OpenDoor");
+                    StartCoroutine(WaitForDoor(spawn1Animator.gameObject.GetComponent<DoorHide>()));
                     break;
                 case 1:
                     spawn = spawnPoint2.position;
+                    spawn2Animator.SetTrigger("OpenDoor");
+                    StartCoroutine(WaitForDoor(spawn2Animator.gameObject.GetComponent<DoorHide>()));
                     break;
                 case 2:
                     spawn = spawnPoint3.position;
+                    spawn3Animator.SetTrigger("OpenDoor");
+                    StartCoroutine(WaitForDoor(spawn3Animator.gameObject.GetComponent<DoorHide>()));
                     break;
             }
             
@@ -121,32 +138,31 @@ public class CloneBossManager : MonoBehaviour
             handler._hasDialogueTriggered = _hasDialogueTriggered;
 
             cloneBossHandlers.Add(handler);
+            _numSpawned++;
+            Debug.Log(_numSpawned);
             UpdateCollectiveHealth();
         }
 
-        spawnCooldown += 0.2f;
+        //spawnCooldown += 0.3f;
+    }
+
+    private IEnumerator WaitForDoor(DoorHide doorHide)
+    {
+        yield return new WaitUntil(() => doorHide.isDoorOpen);
+        doorHide.CloseDoor();
     }
 
     public void UpdateCollectiveHealth()
     {
-        var healthCount = 0;
-        healthSlider.maxValue = 0;
-        
-        foreach (var clone in cloneBossHandlers)
-        {
-            healthCount += clone.health;
-            healthSlider.maxValue += individualHealth;
-        }
-        
-        _collectiveHealth = healthCount;
-        healthSlider.value = healthCount;
+        _collectiveHealth = (totalSpawn - numKilled) * individualHealth;
+        healthSlider.value = _collectiveHealth;
 
-        if (cloneBossHandlers.Count >= 3)
+        if (numKilled >= totalSpawn / 2)
         {
             AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
         }
 
-        if (_collectiveHealth <= 0 || cloneBossHandlers.Count == 0)
+        if (_numSpawned >= totalSpawn && numKilled == totalSpawn && cloneBossHandlers.Count <= 0)
         {
             LevelBuilder.Instance.bossDead = true;
             AudioManager.Instance.SetMusicParameter("Boss Phase", 3);

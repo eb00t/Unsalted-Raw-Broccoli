@@ -70,6 +70,7 @@ public class BlackoutManager : MonoBehaviour
 
     public void LowerOpacity()
     {
+        if (_lerpDirection == LerpDirection.FadeOut) return;
         _loading = false;
         blackoutImage.gameObject.SetActive(true);
         vignetteImage.gameObject.SetActive(true);
@@ -80,6 +81,7 @@ public class BlackoutManager : MonoBehaviour
 
     public void RaiseOpacity()
     {
+        if (_lerpDirection == LerpDirection.FadeIn) return;
         blackoutComplete = false;
         blackoutImage.gameObject.SetActive(true);
         vignetteImage.gameObject.SetActive(true);

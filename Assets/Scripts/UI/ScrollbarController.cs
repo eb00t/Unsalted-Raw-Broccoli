@@ -11,9 +11,11 @@ public class ScrollbarController : MonoBehaviour
     [SerializeField] private RectTransform viewportRectTransform;
     [SerializeField] private RectTransform contentRectTransform;
     private RectTransform _selectedRectTransform;
+    [SerializeField] private DataHolder dataHolder;
 
-    private void Update() 
+    private void Update()
     {
+        if (dataHolder.isGamepad == false) return;
         var selected = EventSystem.current.currentSelectedGameObject;
         if (selected == null || !selected.transform.IsChildOf(contentRectTransform)) return;
 

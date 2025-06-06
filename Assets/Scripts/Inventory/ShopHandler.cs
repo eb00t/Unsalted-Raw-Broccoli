@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -123,11 +123,12 @@ public class ShopHandler : MonoBehaviour
 		// randomise how much of each item is held, and how much they cost
 		for (var i = 0; i < itemsHeld.Count; i++)
 		{
-			var item = itemsHeld[i];
+			var item = possibleItems.FirstOrDefault(item => item.GetComponent<Consumable>() == itemsHeld[i].GetComponent<Consumable>());
+			var itemIndex = possibleItems.IndexOf(item);
 			var roll = Random.Range(1, 4); // 1-3
 			itemStock.Add(roll);
 
-			var priceRoll = Random.Range(minItemCost[i], maxItemCost[i]);
+			var priceRoll = Random.Range(minItemCost[itemIndex], maxItemCost[itemIndex]);
 			itemPrice.Add(priceRoll);
 		}
 	}

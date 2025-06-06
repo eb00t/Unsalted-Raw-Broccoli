@@ -18,8 +18,8 @@ public class DialogueHandler : MonoBehaviour
    public float dialogueSpeed;
    
    [field: Header("References")]
-   private TextMeshProUGUI _dialogueText; //Dialogue text object
-   private TextMeshProUGUI _speakerText; // Speaker text object
+   public TextMeshProUGUI _dialogueText; //Dialogue text object
+   public TextMeshProUGUI _speakerText; // Speaker text object
    private GameObject _player, _dialogueCanvas, _uiManager;
    private MenuHandler _menuHandler;
    public GameObject trigger;
@@ -126,6 +126,12 @@ public class DialogueHandler : MonoBehaviour
                trigger.SetActive(false);
                _itemPickupHandler.isPlrNearDialogue = false;
             }
+
+            if (currentLoreItem != null)
+            {
+               currentLoreItem.discoveredByPlayer = true;
+               
+            }
          }
       }
       else
@@ -135,7 +141,7 @@ public class DialogueHandler : MonoBehaviour
          _speakerText.text = loadedSpeakerText[index];
       }
    }
-
+   
    public void StartSentence(dialogueControllerScript dialogueController)
    {
       if (_speakerText != null && _dialogueText != null && dialogueController != null)
@@ -164,7 +170,7 @@ public class DialogueHandler : MonoBehaviour
             }
             letterCount++;
          }
-
+         
          yield return new WaitForSeconds(dialogueSpeed);
       }
    }
@@ -197,7 +203,6 @@ public class DialogueHandler : MonoBehaviour
          currentDialogueObject = null;
       }
       currentLoreItem = loreItem;
-      loreItem.discoveredByPlayer = true;
       loadedTitleText = currentLoreItem.loreTitle;
       loadedSpeakerText = new List<string>(currentLoreItem.whoWroteThis);
       loadedBodyText = new List<string>(currentLoreItem.loreBodyText);
