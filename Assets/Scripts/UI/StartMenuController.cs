@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class StartMenuController : MonoBehaviour
 {
 	[SerializeField] private EventSystem eventSystem;
-	[SerializeField] private GameObject playBtn, controlsBtn, settingsBtn, quitBtn;
+	[SerializeField] private GameObject playBtn, demoPlayButton, defaultPlayButton, controlsBtn, settingsBtn, quitBtn;
 
 	[SerializeField] private GameObject controlGui, settingGui, menuGui, blackout, load;
 	[SerializeField] private Image blackoutImg, loadingImg1, loadingImg2, vignette;
@@ -27,10 +27,19 @@ public class StartMenuController : MonoBehaviour
 
 	private void Start()
 	{
+		if (dataHolder.demoMode)
+		{
+			playBtn = demoPlayButton;
+		}
+		else
+		{
+			playBtn = defaultPlayButton;
+		}
+		
 		SwitchSelected(playBtn);
 		_controlsManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<ControlsManager>();
 
-		if (isCredits)
+		if (isCredits && dataHolder.demoMode)
 		{
 			StartCoroutine(ResetAfterDelay());
 		}

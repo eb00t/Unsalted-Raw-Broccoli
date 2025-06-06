@@ -73,11 +73,20 @@ public class MenuHandler : MonoBehaviour
 	private void Update()
 	{
 		// resets to main menu if no inputs are made during idle reset time
-		_idleTimer -= Time.unscaledDeltaTime;
-
-		if (_idleTimer <= 0)
+		if (dataHolder.demoMode)
 		{
-			SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
+			_idleTimer -= Time.unscaledDeltaTime;
+			
+			if (_idleTimer <= 0)
+			{
+				SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
+			}
+			
+			// quick reset keybind for events
+			if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.L) && Input.GetKeyDown(KeyCode.Alpha1))
+			{
+				SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
+			}
 		}
 		
 		// update if ui is open or not in player movement script
@@ -141,11 +150,6 @@ public class MenuHandler : MonoBehaviour
 			if (dataHolder.currentControl == ControlsManager.ControlScheme.Keyboard) return;
 			ButtonHandler.Instance.PlayNavigateSound();
 			_lastSelected = eventSystem.currentSelectedGameObject;
-		}
-
-		if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.L) && Input.GetKeyDown(KeyCode.Alpha1))
-		{
-			SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
 		}
 	}
 	

@@ -141,7 +141,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1250056
 RectTransform:
   m_ObjectHideFlags: 0
@@ -158,10 +158,10 @@ RectTransform:
   - {fileID: 703753736}
   m_Father: {fileID: 1308481576}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 627, y: 0}
-  m_SizeDelta: {x: 160, y: 120}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1250057
 MonoBehaviour:
@@ -211,7 +211,7 @@ MonoBehaviour:
     m_SelectOnUp: {fileID: 1250058}
     m_SelectOnDown: {fileID: 1250058}
     m_SelectOnLeft: {fileID: 2045311516}
-    m_SelectOnRight: {fileID: 301860341}
+    m_SelectOnRight: {fileID: 693254069}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 0.5372549, g: 0.50980395, b: 0.48627454, a: 1}
@@ -593,7 +593,7 @@ MonoBehaviour:
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 301860341}
     m_SelectOnDown: {fileID: 301860341}
-    m_SelectOnLeft: {fileID: 2045311516}
+    m_SelectOnLeft: {fileID: 693254069}
     m_SelectOnRight: {fileID: 1726349877}
   m_Transition: 1
   m_Colors:
@@ -1352,7 +1352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &693254067
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1369,10 +1369,10 @@ RectTransform:
   - {fileID: 2018562782}
   m_Father: {fileID: 1308481576}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -138, y: 0}
-  m_SizeDelta: {x: 160, y: 120}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &693254068
 MonoBehaviour:
@@ -1448,6 +1448,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1257497782}
+        m_TargetAssemblyTypeName: StartMenuController, Assembly-CSharp
+        m_MethodName: FadeInLoadingScreen
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1257497782}
         m_TargetAssemblyTypeName: StartMenuController, Assembly-CSharp
         m_MethodName: ToggleHardcoreMode
@@ -1855,7 +1867,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Play
+  m_text: New Game
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d0c1f21115285e049b41e6138d765a93, type: 2}
   m_sharedMaterial: {fileID: -2424018178582840717, guid: d0c1f21115285e049b41e6138d765a93,
@@ -2714,7 +2726,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eventSystem: {fileID: 1294250093}
-  playBtn: {fileID: 301860338}
+  playBtn: {fileID: 693254066}
+  demoPlayButton: {fileID: 301860338}
+  defaultPlayButton: {fileID: 693254066}
   controlsBtn: {fileID: 2109610283}
   settingsBtn: {fileID: 2045311513}
   quitBtn: {fileID: 1250055}
@@ -3814,7 +3828,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b8ff0990f82eeac4ea77e605c15813e5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 87db6004253f63d4288277175d39a6c4, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -4662,7 +4676,7 @@ MonoBehaviour:
     m_SelectOnUp: {fileID: 2045311516}
     m_SelectOnDown: {fileID: 2045311516}
     m_SelectOnLeft: {fileID: 2109610286}
-    m_SelectOnRight: {fileID: 301860341}
+    m_SelectOnRight: {fileID: 1250058}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 0.5372549, g: 0.50980395, b: 0.48627454, a: 1}
