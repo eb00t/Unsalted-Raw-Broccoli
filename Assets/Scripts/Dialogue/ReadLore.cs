@@ -50,6 +50,9 @@ public class ReadLore : MonoBehaviour
             case LoreType.ScrapOfPaper:
                 _loreObject = "Scrap Of Paper Lore";
                 break;
+            case LoreType.Other:
+                _loreObject = "Document";
+                break;
         }
 
         _lorePath = "Lore";
