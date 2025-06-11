@@ -42,13 +42,13 @@ public class ReadLore : MonoBehaviour
         switch (loreType)
         {
             case LoreType.Book:
-                _loreObject = "Book Lore";
+                _loreObject = "Book";
                 break;
             case LoreType.Data:
-                _loreObject = "Data Lore";
+                _loreObject = "Datapad";
                 break;
             case LoreType.ScrapOfPaper:
-                _loreObject = "Scrap Of Paper Lore";
+                _loreObject = "Scrap Of Paper";
                 break;
             case LoreType.Other:
                 _loreObject = "Document";
