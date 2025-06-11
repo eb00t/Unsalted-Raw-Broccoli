@@ -33,6 +33,8 @@ public class DialogueHandler : MonoBehaviour
    private ItemPickupHandler _itemPickupHandler;
    private dialogueControllerScript _dialogueController;
 
+   public bool flipped;
+
    private void Awake()
    {
       if (Instance != null)
@@ -132,6 +134,12 @@ public class DialogueHandler : MonoBehaviour
                currentLoreItem.discoveredByPlayer = true;
                
             }
+
+            if (flipped) // Checks if the player has been turned by an NPC and returns them to normal.
+            {
+               flipped = false;
+               _player.GetComponentInChildren<SpriteRenderer>().flipX = false;
+            }
          }
       }
       else
@@ -144,6 +152,19 @@ public class DialogueHandler : MonoBehaviour
    
    public void StartSentence(dialogueControllerScript dialogueController)
    {
+      if (currentNPC != null)
+      {
+         if ((_player.transform.position.x > currentNPC.transform.position.x && _player.transform.localScale.x > 0) ||_player.transform.position.x < currentNPC.transform.position.x &&
+             _player.transform.localScale.x < 0) // Flips the player if they are facing away from an NPC
+         {
+            _player.GetComponentInChildren<SpriteRenderer>().flipX = true;
+            flipped = true;
+         }
+      }
+      else
+      {
+         _player.GetComponentInChildren<SpriteRenderer>().flipX = false;
+      }
       if (_speakerText != null && _dialogueText != null && dialogueController != null)
       {
          _dialogueController = dialogueController;

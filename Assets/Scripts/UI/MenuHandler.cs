@@ -262,6 +262,11 @@ public class MenuHandler : MonoBehaviour
 		_dialogueHandler.loadedSpeakerText.Clear();
 		_dialogueHandler._speakerText.text = "";
 		_dialogueHandler._dialogueText.text = "";
+		if (_dialogueHandler.flipped)
+		{
+			_dialogueHandler.flipped = false;
+			_player.GetComponentInChildren<SpriteRenderer>().flipX = false;
+		}
 		
 		dialogueGUI.SetActive(false);
 	}

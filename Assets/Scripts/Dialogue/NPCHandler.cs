@@ -63,7 +63,7 @@ public class NPCHandler : MonoBehaviour
         SpawnNPC();
     }
 
-    void LoadSpecificNPCDialogue()
+    void LoadSpecificNPCDialogue() // Loads dialogue based on highest floor cleared
     {
         switch (dataHolder.highestFloorCleared)
         {
