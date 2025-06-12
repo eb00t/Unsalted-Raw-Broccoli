@@ -70,9 +70,11 @@ public class DialogueTrigger : MonoBehaviour
             }
         }
         
+        /*
         if (hasDialogueOpened)
         {
             _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
         }
+        */
     }
 }
