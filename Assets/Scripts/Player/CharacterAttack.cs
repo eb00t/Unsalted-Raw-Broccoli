@@ -76,6 +76,7 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private DataHolder dataHolder;
     private Coroutine _knockbackRoutine;
     [SerializeField] private Animator evilAnimator;
+    private Coroutine _vibration;
     
     [Header("Animation")]
     private Animator _playerAnimator;
@@ -448,6 +449,7 @@ public class CharacterAttack : MonoBehaviour
             dataHolder.playerDefense = Mathf.Clamp(dataHolder.playerDefense, 0, 100);
             var dmgReduction = (100 - dataHolder.playerDefense) / 100f;
             damage = Mathf.RoundToInt(damage * dmgReduction);
+            StartCoroutine(TimedVibration(0.25f, 0.75f, .5f));
         }
 
         var hitColor = (dataHolder.playerHealth - damage < dataHolder.playerHealth) ? Color.red : Color.green;
@@ -501,7 +503,14 @@ public class CharacterAttack : MonoBehaviour
         healthSlider.value = dataHolder.playerHealth;
         _poiseBuildup += poiseDmg;
     }
-    
+
+    public IEnumerator TimedVibration(float lSpeed, float hSpeed, float duration)
+    {
+        Gamepad.current.SetMotorSpeeds(lSpeed, hSpeed);
+        yield return new WaitForSecondsRealtime(duration);
+        InputSystem.ResetHaptics();
+    }
+
     public void ApplyKnockback(Vector2 knockbackPower)
     {
         if (isDead) return;
@@ -619,6 +628,7 @@ public class CharacterAttack : MonoBehaviour
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
             _enemyDamageEvent.release();
+            StartCoroutine(TimedVibration(0.25f, 0.5f, .25f));
             
             if (_impulseSource != null)
             {
@@ -638,6 +648,7 @@ public class CharacterAttack : MonoBehaviour
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
             _enemyDamageEvent.release();
+            StartCoroutine(TimedVibration(0.5f, 0.75f, .4f));
             
             if (_impulseSource != null)
             {
@@ -657,6 +668,7 @@ public class CharacterAttack : MonoBehaviour
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
             _enemyDamageEvent.release();
+            StartCoroutine(TimedVibration(0.75f, 1f, .6f));
             if (_impulseSource != null)
             {
                 _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;
