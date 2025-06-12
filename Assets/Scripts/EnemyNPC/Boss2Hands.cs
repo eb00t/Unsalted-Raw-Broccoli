@@ -883,6 +883,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     
     private IEnumerator TimedVibration(float lSpeed, float hSpeed, float duration)
     {
+        if (!dataHolder.isGamepad) yield break;
+
         Gamepad.current.SetMotorSpeeds(lSpeed, hSpeed);
         yield return new WaitForSecondsRealtime(duration);
         InputSystem.ResetHaptics();

@@ -34,7 +34,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private Vector3 _playerDir;
     private Vector3 _patrolTarget, _patrolPoint1, _patrolPoint2;
     private enum States { Idle, Chase, Attack, Frozen, Jumping, Crouching }
-    private States _currentState = States.Idle;
+    [SerializeField] private States _currentState = States.Idle;
     //private int _jumpCount;
     private Collider _roomBounds;
     
@@ -189,7 +189,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 _jumpTimer = jumpCooldown;
                 _currentState = States.Jumping;
             }
-            else if (heightDiffBelow > jumpTriggerDistance)
+            else if (heightDiffBelow > jumpTriggerDistance && FindPlatform(Vector3.down))
             {
                 _currentState = States.Crouching;
             }

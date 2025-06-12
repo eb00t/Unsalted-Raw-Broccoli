@@ -12,6 +12,7 @@ public class ExplosionHandler : MonoBehaviour
     private bool _destruct;
     private CharacterAttack _characterAttack;
     private GameObject _player;
+    [SerializeField] private DataHolder dataHolder;
 
     private void Awake()
     {
@@ -39,6 +40,7 @@ public class ExplosionHandler : MonoBehaviour
     
     private IEnumerator TimedVibration(float lSpeed, float hSpeed, float duration)
     {
+        if (!dataHolder.isGamepad) yield break;
         Gamepad.current.SetMotorSpeeds(lSpeed, hSpeed);
         yield return new WaitForSecondsRealtime(duration);
         InputSystem.ResetHaptics();
