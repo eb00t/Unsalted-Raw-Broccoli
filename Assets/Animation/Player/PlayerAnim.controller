@@ -395,6 +395,32 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1102 &-7145885220317561506
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: HitFlash
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 842ce942f4c29b543a520a148513e1c8, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1101 &-7141989131743784612
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -744,6 +770,9 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 8581504665113913601}
     m_Position: {x: -550, y: -520, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -7145885220317561506}
+    m_Position: {x: -515, y: -455, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 7171792243607865331}

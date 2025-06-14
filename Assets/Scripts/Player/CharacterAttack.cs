@@ -4,6 +4,7 @@ using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -28,6 +29,8 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private float jumpAttackDrag;
     public int jumpAttackCount;
     private int _poiseBuildup;
+    [SerializeField] private float hitIframeDur;
+    private bool _hasHitIframes;
     
     [Header("Combo Variables")]
     [SerializeField] private bool doCombosLoop;
@@ -61,7 +64,7 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private Slider healthSlider, energySlider;
     [SerializeField] private Material defaultMaterial, hitMaterial;
     private SpriteRenderer _spriteRenderer;
-    private CinemachineCollisionImpulseSource _impulseSource;
+    private CinemachineImpulseSource _impulseSource;
     private InventoryStore _inventoryStore;
     private Rigidbody _rigidbody;
     private GameObject _uiManager;
@@ -122,7 +125,7 @@ public class CharacterAttack : MonoBehaviour
         charAtk = dataHolder.playerBaseAttack;
         hitFlash = GameObject.FindWithTag("Hit Flash");
         hitFlash.SetActive(false);
-        _impulseSource = GetComponent<CinemachineCollisionImpulseSource>();
+        _impulseSource = _characterMovement.GetComponent<CinemachineImpulseSource>();
     }
     
     public void LightAttack(InputAction.CallbackContext ctx)
@@ -435,7 +438,7 @@ public class CharacterAttack : MonoBehaviour
     public void TakeDamagePlayer(int damage, int poiseDmg, Vector3 knockback)
     {
         if (isDead || _characterMovement.uiOpen) return;
-        if (isInvulnerable) return;
+        if (isInvulnerable || _hasHitIframes) return;
         
         if (isInvincible > 0)
         {
@@ -450,6 +453,7 @@ public class CharacterAttack : MonoBehaviour
             var dmgReduction = (100 - dataHolder.playerDefense) / 100f;
             damage = Mathf.RoundToInt(damage * dmgReduction);
             StartCoroutine(TimedVibration(0.25f, 0.75f, .5f));
+            _impulseSource.GenerateImpulseWithForce(1f);
         }
 
         var hitColor = (dataHolder.playerHealth - damage < dataHolder.playerHealth) ? Color.red : Color.green;
@@ -555,9 +559,42 @@ public class CharacterAttack : MonoBehaviour
     
     private IEnumerator HitFlash()
     {
+        _hasHitIframes = true;
         _spriteRenderer.material = hitMaterial;
-        yield return new WaitForSeconds(0.1f);
+        var defaultColor = Color.black;
+        var flashColor = new Color(0.2641509f, 0.2641509f, 0.2641509f);
+        var flashSpeed = 0.2f;
+        var fadeIn = true;
+
+        var timer = 0f;
+
+        while (timer < hitIframeDur)
+        {
+            var t = 0f;
+
+            while (t < flashSpeed)
+            {
+                t += Time.deltaTime;
+                
+                if (fadeIn)
+                {
+                    hitMaterial.SetColor("_EmissionColor", Color.Lerp(defaultColor, flashColor, t / flashSpeed));
+                }
+                else
+                {
+                    hitMaterial.SetColor("_EmissionColor", Color.Lerp(flashColor, defaultColor, t / flashSpeed));
+                }
+                
+                yield return null;
+            }
+            
+            fadeIn = !fadeIn;
+            timer += flashSpeed;
+        }
+        
+        hitMaterial.SetColor("_EmissionColor", defaultColor);
         _spriteRenderer.material = defaultMaterial;
+        _hasHitIframes = false;
     }
     
     public void UseEnergy(float amount)
