@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ToolbarHandler : MonoBehaviour
@@ -495,7 +496,7 @@ public class ToolbarHandler : MonoBehaviour
         {
             dpadIcon.SetActive(false);
         }
-        else if (dataHolder.currentControl != ControlsManager.ControlScheme.Keyboard && !dpadIcon.activeSelf)
+        else if (dataHolder.currentControl != ControlsManager.ControlScheme.Keyboard && !dpadIcon.activeSelf && SceneManager.GetActiveScene().name != "The End")
         {
             dpadIcon.SetActive(true);
         }

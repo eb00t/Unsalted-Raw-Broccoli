@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
+using UnityEngine.Serialization;
 
 public class CurrencyManager : MonoBehaviour
 {
@@ -14,6 +16,9 @@ public class CurrencyManager : MonoBehaviour
     private Coroutine _currencyCounting;
     private Queue<int> _currencyQueue;
     private bool _isCounting;
+    [SerializeField] private GameObject currency;
+    public CanvasGroup canvasGroup;
+    private MenuHandler _menuHandler;
 
     private void Start()
     {
@@ -21,6 +26,8 @@ public class CurrencyManager : MonoBehaviour
         _animator = newCurrencyObj.GetComponent<Animator>();
         _newCurrencyTxt = newCurrencyObj.GetComponent<TextMeshProUGUI>();
         _currencyQueue = new Queue<int>();
+        canvasGroup = currency.GetComponent<CanvasGroup>();
+        _menuHandler = GetComponent<MenuHandler>();
     }
 
     public void UpdateCurrency(int amount)
@@ -38,6 +45,10 @@ public class CurrencyManager : MonoBehaviour
     private IEnumerator Counting()
     {
         _isCounting = true;
+        if (!_menuHandler.shopGUI.activeSelf)
+        {
+            canvasGroup.DOFade(1, 0.5f);
+        }
 
         while (_currencyQueue.Count > 0)
         {
@@ -51,6 +62,12 @@ public class CurrencyManager : MonoBehaviour
             _animator.SetTrigger("currencyChanged");
 
             yield return StartCoroutine(UpdateOverTime(oldValue, newValue));
+        }
+        
+        yield return new WaitForSeconds(1f);
+        if (!_menuHandler.shopGUI.activeSelf)
+        {
+            canvasGroup.DOFade(0, 0.5f);
         }
 
         _isCounting = false;

@@ -438,7 +438,6 @@ public class CharacterAttack : MonoBehaviour
     public void TakeDamagePlayer(int damage, int poiseDmg, Vector3 knockback)
     {
         if (isDead || _characterMovement.uiOpen) return;
-        if (isInvulnerable || _hasHitIframes) return;
         
         if (isInvincible > 0)
         {
@@ -452,6 +451,7 @@ public class CharacterAttack : MonoBehaviour
             dataHolder.playerDefense = Mathf.Clamp(dataHolder.playerDefense, 0, 100);
             var dmgReduction = (100 - dataHolder.playerDefense) / 100f;
             damage = Mathf.RoundToInt(damage * dmgReduction);
+            if (isInvulnerable || _hasHitIframes) return;
             StartCoroutine(TimedVibration(0.25f, 0.75f, .5f));
             _impulseSource.GenerateImpulseWithForce(1f);
         }
@@ -666,7 +666,7 @@ public class CharacterAttack : MonoBehaviour
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
             _enemyDamageEvent.release();
-            StartCoroutine(TimedVibration(0.25f, 0.5f, .25f));
+            StartCoroutine(TimedVibration(0.1f, 0.25f, .25f));
             
             if (_impulseSource != null)
             {
@@ -686,7 +686,7 @@ public class CharacterAttack : MonoBehaviour
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
             _enemyDamageEvent.release();
-            StartCoroutine(TimedVibration(0.5f, 0.75f, .4f));
+            StartCoroutine(TimedVibration(0.25f, 0.5f, .3f));
             
             if (_impulseSource != null)
             {
@@ -706,7 +706,7 @@ public class CharacterAttack : MonoBehaviour
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
             _enemyDamageEvent.release();
-            StartCoroutine(TimedVibration(0.75f, 1f, .6f));
+            StartCoroutine(TimedVibration(0.35f, .75f, .5f));
             if (_impulseSource != null)
             {
                 _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -206,7 +207,8 @@ public class MenuHandler : MonoBehaviour
 		//if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
 		
 		ButtonHandler.Instance.PlayConfirmSound();
-		
+
+		_currencyManager.canvasGroup.DOFade(1, 0.5f);
 		shopGUI.SetActive(true);
 
 		if (shopHandler.itemsHeld.Count > 0)
@@ -324,6 +326,7 @@ public class MenuHandler : MonoBehaviour
 		else if (shopGUI != null  && shopGUI.activeSelf)
 		{
 			shopGUI.SetActive(false);
+			_currencyManager.canvasGroup.DOFade(0, 0.5f);
 			dialogueGUI.SetActive(true);
 			dialogueController.isEndText = true;
 			dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
