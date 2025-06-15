@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -11,9 +12,10 @@ public class StartMenuController : MonoBehaviour
 {
 	[SerializeField] private EventSystem eventSystem;
 	[SerializeField] private GameObject playBtn, demoPlayButton, defaultPlayButton, controlsBtn, settingsBtn, quitBtn;
+	[SerializeField] private TextMeshProUGUI newGameText;
 
 	[SerializeField] private GameObject controlGui, settingGui, menuGui, blackout, load;
-	[SerializeField] private Image blackoutImg, loadingImg1, loadingImg2, vignette;
+	[SerializeField] private Image blackoutImg, loadingImg1, loadingImg2, vignette, newIconImg;
 	[SerializeField] private DataHolder dataHolder;
 
 	public Color blackoutColor, loadImgColor, loadImg2Color;
@@ -24,12 +26,21 @@ public class StartMenuController : MonoBehaviour
 	[SerializeField] private bool isCredits;
 	public bool creditsFinished;
 	private float _lerpTime = 0f;
+	[SerializeField] private Sprite playSprite;
 
 	private void Start()
 	{
-		if (dataHolder.demoMode)
+		if (dataHolder.demoMode && SceneManager.GetActiveScene().name == "StartScreen")
 		{
 			playBtn = demoPlayButton;
+			defaultPlayButton.SetActive(false);
+			quitBtn.SetActive(false);
+			newIconImg.sprite = playSprite;
+			newGameText.text = "Play";
+		}
+		else if (dataHolder.demoMode && SceneManager.GetActiveScene().name == "creditsScene")
+		{
+			quitBtn.SetActive(false);
 		}
 		else
 		{
@@ -67,7 +78,7 @@ public class StartMenuController : MonoBehaviour
 			Cursor.lockState = CursorLockMode.Locked;
 		}
 
-		if (blackout.activeSelf)
+		if (blackout != null && blackout.activeSelf)
 		{
 			_lerpTime += Time.deltaTime;
 			blackoutImg.color = Color.Lerp(transparentColor, blackoutColor, _lerpTime);

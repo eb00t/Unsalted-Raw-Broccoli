@@ -25,11 +25,6 @@ public class InitialDialogue : MonoBehaviour
     private void Start()
     {
       currentFloor = LevelBuilder.Instance.currentFloor;
-      
-      if (dataHolder.demoMode && bossOrIntro == BossOrIntro.Intro)
-      {
-        gameObject.SetActive(false);
-      }
     }
 
     private void Update()
@@ -58,7 +53,6 @@ public class InitialDialogue : MonoBehaviour
               {
                 case BossOrIntro.Intro:
                   _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor2Intro;
-                  dataHolder.demoMode = false;
                   break;
                 case BossOrIntro.Boss:
                   _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor2Boss;
@@ -70,7 +64,6 @@ public class InitialDialogue : MonoBehaviour
               if (bossOrIntro == BossOrIntro.Intro)
               {
                 _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor3Intro;
-                dataHolder.demoMode = false;
               }
               else if (bossOrIntro == BossOrIntro.Boss)
               {
@@ -82,7 +75,6 @@ public class InitialDialogue : MonoBehaviour
               if (bossOrIntro == BossOrIntro.Intro)
               {
                 _dialogueController.dialogueToLoad = DialogueReference.Instance.Floor4Intro;
-                dataHolder.demoMode = false;
               }
               else if (bossOrIntro == BossOrIntro.Boss)
               {

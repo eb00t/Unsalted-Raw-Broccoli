@@ -34,11 +34,20 @@ public class NextLevelTrigger : MonoBehaviour
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
-        _characterMovement = _player.GetComponent<CharacterMovement>();
-        _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+        if (_player != null)
+        {
+            _characterMovement = _player.GetComponent<CharacterMovement>();
+            _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
+        }
+
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
-        _menuHandler.nextLevelTrigger = gameObject;
+
+        if (_menuHandler != null)
+        {
+            _menuHandler.nextLevelTrigger = gameObject;
+        }
+
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 

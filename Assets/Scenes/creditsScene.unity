@@ -1837,7 +1837,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 1
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 1230989201}
     m_SelectOnDown: {fileID: 1230989201}
@@ -1979,6 +1979,7 @@ MonoBehaviour:
   controlsBtn: {fileID: 0}
   settingsBtn: {fileID: 0}
   quitBtn: {fileID: 1371088059}
+  newGameText: {fileID: 0}
   controlGui: {fileID: 0}
   settingGui: {fileID: 0}
   menuGui: {fileID: 0}
@@ -1988,6 +1989,7 @@ MonoBehaviour:
   loadingImg1: {fileID: 0}
   loadingImg2: {fileID: 0}
   vignette: {fileID: 0}
+  newIconImg: {fileID: 0}
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
   blackoutColor: {r: 0, g: 0, b: 0, a: 0}
   loadImgColor: {r: 0, g: 0, b: 0, a: 0}
@@ -1996,6 +1998,7 @@ MonoBehaviour:
   transparentColor: {r: 0, g: 0, b: 0, a: 0}
   isCredits: 1
   creditsFinished: 0
+  playSprite: {fileID: 0}
 --- !u!114 &1349690018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2112,7 +2115,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1371088060
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2129,10 +2132,10 @@ RectTransform:
   - {fileID: 427918945}
   m_Father: {fileID: 1642331948}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 196.832, y: 0}
-  m_SizeDelta: {x: 160, y: 120}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1371088061
 MonoBehaviour:
@@ -2177,7 +2180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 1
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 1371088062}
     m_SelectOnDown: {fileID: 1371088062}
