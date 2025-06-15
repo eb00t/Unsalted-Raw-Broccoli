@@ -25,13 +25,13 @@ public class MenuHandler : MonoBehaviour
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
-	[SerializeField] private GameObject invGui;
+	[SerializeField] private GameObject invGui, invBck;
 	[SerializeField] private GameObject toolbarGui;
 	[SerializeField] private GameObject menuGui;
 	[SerializeField] private GameObject quitPopupGui;
 	[SerializeField] private GameObject statsGui;
 	[SerializeField] private GameObject infoGui;
-	[SerializeField] private GameObject settingGui;
+	[SerializeField] private GameObject settingGui, settingBck;
 	[SerializeField] private GameObject controlGui;
 	[SerializeField] private GameObject diedScreen;
 	[SerializeField] private GameObject infoPopup;
@@ -194,6 +194,8 @@ public class MenuHandler : MonoBehaviour
 		slotsTooltip.SetActive(true);
 		inventoryTooltip.SetActive(false);
 		invGui.SetActive(true);
+		invBck.transform.localScale = new Vector3(0, 1, 1);
+		invBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutExpo).SetUpdate(true);
 		infoGui.SetActive(false);
 		_toolbarHandler.isInfoOpen = false;
 		menuGui.SetActive(false);
@@ -281,39 +283,45 @@ public class MenuHandler : MonoBehaviour
 
 		if (invGui.activeSelf && !_toolbarHandler.isInfoOpen)
 		{
-			ButtonHandler.Instance.PlayBackSound();
-			foreach (var b in grid.GetComponentsInChildren<Button>())
+			invBck.transform.DOScale(new Vector3(0, 1, 1), 0.25f).SetEase(Ease.OutExpo).SetUpdate(true).OnComplete(() =>
 			{
-				b.interactable = false;
-			}
-			
-			foreach (var s in slots.GetComponentsInChildren<Button>())
-			{
-				s.interactable = true;
-			}
-			
-			invGui.SetActive(false);
-			menuGui.SetActive(true);
-			SwitchSelected(selectedMenu);
+				ButtonHandler.Instance.PlayBackSound();
+				foreach (var b in grid.GetComponentsInChildren<Button>())
+				{
+					b.interactable = false;
+				}
+				
+				foreach (var s in slots.GetComponentsInChildren<Button>())
+				{
+					s.interactable = true;
+				}
+				
+				invGui.SetActive(false);
+				menuGui.SetActive(true);
+				SwitchSelected(selectedMenu);
+			});
 		}
 		else if (invGui.activeSelf && _toolbarHandler.isInfoOpen)
 		{
-			ButtonHandler.Instance.PlayBackSound();
-			foreach (var b in grid.GetComponentsInChildren<Button>())
+			infoGui.transform.DOScale(new Vector3(0, 1, 1), 0.25f).SetEase(Ease.OutExpo).SetUpdate(true).OnComplete(() =>
 			{
-				b.interactable = false;
-			}
-			
-			foreach (var s in slots.GetComponentsInChildren<Button>())
-			{
-				s.interactable = true;
-			}
-			
-			slotsTooltip.SetActive(true);
-			inventoryTooltip.SetActive(false);
-			SwitchSelected(_toolbarHandler.slots[_toolbarHandler.slotNo]);
-			infoGui.SetActive(false);
-			_toolbarHandler.isInfoOpen = false;
+				ButtonHandler.Instance.PlayBackSound();
+				foreach (var b in grid.GetComponentsInChildren<Button>())
+				{
+					b.interactable = false;
+				}
+				
+				foreach (var s in slots.GetComponentsInChildren<Button>())
+				{
+					s.interactable = true;
+				}
+				
+				slotsTooltip.SetActive(true);
+				inventoryTooltip.SetActive(false);
+				SwitchSelected(_toolbarHandler.slots[_toolbarHandler.slotNo]);
+				infoGui.SetActive(false);
+				_toolbarHandler.isInfoOpen = false;
+			});
 		}
 		else if (menuGui.activeSelf)
 		{
@@ -333,10 +341,13 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (settingGui.activeSelf)
 		{
-			ButtonHandler.Instance.PlayBackSound();
-			settingGui.SetActive(false);
-			menuGui.SetActive(true);
-			SwitchSelected(settingsBtn);
+			settingBck.transform.DOScale(new Vector3(0, 1, 1), 0.25f).SetEase(Ease.OutExpo).SetUpdate(true).OnComplete(() =>
+			{
+				ButtonHandler.Instance.PlayBackSound();
+				settingGui.SetActive(false);
+				menuGui.SetActive(true);
+				SwitchSelected(settingsBtn);
+			});
 		}
 		else if (quitPopupGui.activeSelf)
 		{
@@ -467,6 +478,8 @@ public class MenuHandler : MonoBehaviour
 			slotsTooltip.SetActive(false);
 			inventoryTooltip.SetActive(true);
 			infoGui.SetActive(true);
+			infoGui.transform.localScale = new Vector3(0, 1, 1);
+			infoGui.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutExpo).SetUpdate(true);
 			_toolbarHandler.isInfoOpen = true;
 		}
 		else
@@ -492,6 +505,13 @@ public class MenuHandler : MonoBehaviour
 		{
 			_inventoryStore.TriggerNotification(null, "Not enough robot coils held.", false);
 		}
+	}
+
+	public void OpenSettings()
+	{
+		settingGui.SetActive(true);
+		settingBck.transform.localScale = new Vector3(0, 1, 1);
+		settingBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutExpo).SetUpdate(true);
 	}
 
 	public void SceneReload() // reloads scene
