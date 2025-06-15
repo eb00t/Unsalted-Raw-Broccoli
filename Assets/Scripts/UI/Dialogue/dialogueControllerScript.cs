@@ -112,7 +112,7 @@ public class dialogueControllerScript : MonoBehaviour
                 _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
             }
             else */
-            if (!isShop)
+            if (!isShop && !_dialogueCanvas.activeSelf) 
             {
                 _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null);
                 _menuHandler.dialogueController = this;
@@ -123,9 +123,14 @@ public class dialogueControllerScript : MonoBehaviour
                 _itemPickupHandler.isPlrNearShop = true;
                 _menuHandler.dialogueController = this;
             }
-            else
+            else if (!_dialogueCanvas.activeSelf)
             {
                 _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null);
+                _menuHandler.dialogueController = this;
+            }
+            else
+            {
+                _itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null);
                 _menuHandler.dialogueController = this;
             }
         }
