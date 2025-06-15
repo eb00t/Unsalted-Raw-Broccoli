@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,15 +19,14 @@ public class StartMenuController : MonoBehaviour
 	[SerializeField] private Image blackoutImg, loadingImg1, loadingImg2, vignette, newIconImg;
 	[SerializeField] private DataHolder dataHolder;
 
-	public Color blackoutColor, loadImgColor, loadImg2Color;
-	public Color vignetteColor;
-	public Color transparentColor;
+	private string _sceneToLoad;
 	
 	private ControlsManager _controlsManager;
 	[SerializeField] private bool isCredits;
 	public bool creditsFinished;
-	private float _lerpTime = 0f;
 	[SerializeField] private Sprite playSprite;
+	[SerializeField] private CanvasGroup loadingGroup;
+	private Tween _loadTween;
 
 	private void Start()
 	{
@@ -76,15 +76,6 @@ public class StartMenuController : MonoBehaviour
 		{
 			Cursor.visible = false;
 			Cursor.lockState = CursorLockMode.Locked;
-		}
-
-		if (blackout != null && blackout.activeSelf)
-		{
-			_lerpTime += Time.deltaTime;
-			blackoutImg.color = Color.Lerp(transparentColor, blackoutColor, _lerpTime);
-			vignette.color = Color.Lerp(transparentColor, vignetteColor, _lerpTime);
-			loadingImg1.color = Color.Lerp(transparentColor, loadImgColor, _lerpTime);
-			loadingImg2.color = Color.Lerp(transparentColor, loadImg2Color, _lerpTime);
 		}
 	}
 
@@ -150,17 +141,10 @@ public class StartMenuController : MonoBehaviour
 	{
 		if (SceneManager.GetActiveScene().name == "StartScreen")
 		{
-			StartCoroutine(WaitToLoad(sceneName));
+			_sceneToLoad = sceneName;
 			return;
 		}
 
-		ButtonHandler.Instance.PlayConfirmSound();
-		SceneManager.LoadScene(sceneName);
-	}
-
-	private IEnumerator WaitToLoad(string sceneName)
-	{
-		yield return new WaitForSeconds(3f);
 		ButtonHandler.Instance.PlayConfirmSound();
 		SceneManager.LoadScene(sceneName);
 	}
@@ -182,11 +166,24 @@ public class StartMenuController : MonoBehaviour
 			SwitchSelected(controlsBtn);
 		}
 	}
-
+	
 	public void FadeInLoadingScreen()
 	{
+		if (!blackout || !load || !loadingGroup) return;
+
 		blackout.SetActive(true);
 		load.SetActive(true);
+		
+		loadingGroup.alpha = 0f;
+		loadingGroup.gameObject.SetActive(true);
+
+		_loadTween?.Kill();
+		_loadTween = loadingGroup.DOFade(1f, 3f).OnComplete(() =>
+		{
+			load.SetActive(false);
+			ButtonHandler.Instance.PlayConfirmSound();
+			SceneManager.LoadScene(_sceneToLoad);
+		});
 	}
 
 	public void WipeData()

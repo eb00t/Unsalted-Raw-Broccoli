@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7122198433968870008}
   - component: {fileID: 3102520569419928037}
   - component: {fileID: 8871816948806583947}
+  - component: {fileID: 1352104988652564443}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -105,6 +106,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &1352104988652564443
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084686956885274711}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2047076334035680968
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,13 +706,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87ddb7949e484dc4998b57316b5b6670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blackoutImage: {fileID: 8280652906272484090}
-  vignetteImage: {fileID: 1346949858651768646}
-  loadBck: {fileID: 6786465946000226950}
-  blackoutColor: {r: 0, g: 0.047058824, b: 0.13333334, a: 1}
-  vignetteColor: {r: 0, g: 0.047058824, b: 0.13333334, a: 1}
-  transparentColor: {r: 0, g: 0.047058824, b: 0.13333334, a: 0}
   blackoutComplete: 0
+  canvasGroup: {fileID: 1352104988652564443}
 --- !u!1 &5617660318742304912
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,12 +856,15 @@ MonoBehaviour:
   currentDialogueObject: {fileID: 0}
   currentLoreItem: {fileID: 0}
   dialogueSpeed: 0
+  _dialogueText: {fileID: 0}
+  _speakerText: {fileID: 0}
   trigger: {fileID: 0}
   currentNPC: {fileID: 0}
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
   loadedTitleText: 
   loadedBodyText: []
   loadedSpeakerText: []
+  flipped: 0
 --- !u!114 &5950445449513212928
 MonoBehaviour:
   m_ObjectHideFlags: 0
