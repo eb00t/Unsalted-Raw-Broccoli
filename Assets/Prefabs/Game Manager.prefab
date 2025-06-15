@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7122198433968870008}
   - component: {fileID: 3102520569419928037}
   - component: {fileID: 8871816948806583947}
-  - component: {fileID: 1352104988652564443}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -106,18 +105,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!225 &1352104988652564443
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1084686956885274711}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &2047076334035680968
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,6 +287,7 @@ GameObject:
   - component: {fileID: 3241507727417915991}
   - component: {fileID: 8320845997100758243}
   - component: {fileID: 8280652906272484090}
+  - component: {fileID: 6892746051318811325}
   m_Layer: 5
   m_Name: Blackout
   m_TagString: Untagged
@@ -365,6 +353,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 5
+--- !u!225 &6892746051318811325
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3137231497595294052}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &4503167324332319360
 GameObject:
   m_ObjectHideFlags: 0
@@ -515,6 +515,7 @@ GameObject:
   - component: {fileID: 1956413357542801956}
   - component: {fileID: 9094480757975270123}
   - component: {fileID: 4370832714333441697}
+  - component: {fileID: 7755064859160399604}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -640,6 +641,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!225 &7755064859160399604
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5210555664225447184}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &5514645319998457514
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,12 +701,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   titleText: {fileID: 4370832714333441697}
   subtitleText: {fileID: 7811771508559026602}
-  textColor: {r: 0.5647059, g: 0.72156864, b: 1, a: 1}
-  transparentColor: {r: 0, g: 0, b: 0, a: 0}
-  loadBckColor: {r: 0.5647059, g: 0.72156864, b: 1, a: 1}
-  loadSqrColor: {r: 0.23529412, g: 0.34901962, b: 0.56078434, a: 1}
   loadBck: {fileID: 6786465946000226950}
   loadSqr: {fileID: 4913554609882825270}
+  textGroup: {fileID: 7755064859160399604}
 --- !u!114 &95564149214478597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,7 +717,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blackoutComplete: 0
-  canvasGroup: {fileID: 1352104988652564443}
+  canvasGroup: {fileID: 6892746051318811325}
+  loadingGroup: {fileID: 1191423266405760116}
 --- !u!1 &5617660318742304912
 GameObject:
   m_ObjectHideFlags: 0
@@ -1268,6 +1279,7 @@ GameObject:
   - component: {fileID: 8666204720209157568}
   - component: {fileID: 6786465946000226950}
   - component: {fileID: 820320914581036663}
+  - component: {fileID: 1191423266405760116}
   m_Layer: 5
   m_Name: Loading
   m_TagString: Untagged
@@ -1354,3 +1366,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!225 &1191423266405760116
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8378481286563960337}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0

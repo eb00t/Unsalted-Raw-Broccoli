@@ -19,7 +19,7 @@ public class BlackoutManager : MonoBehaviour
     private bool _loading = true;
     private float _timer = 2;
 
-    [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private CanvasGroup canvasGroup, loadingGroup;
     private Tween _fadeTween;
 
     private void Start()
@@ -34,7 +34,7 @@ public class BlackoutManager : MonoBehaviour
         }
     }
 
-    void Awake()
+    private void Awake()
     {
         gameObject.SetActive(true);
 
@@ -51,6 +51,7 @@ public class BlackoutManager : MonoBehaviour
         if (_fadeTween != null && _fadeTween.IsActive()) _fadeTween.Kill();
         _loading = false;
         canvasGroup.gameObject.SetActive(true);
+        loadingGroup.gameObject.SetActive(false);
         _fadeTween = canvasGroup.DOFade(0f, 2f).OnComplete(() =>
         {
             canvasGroup.gameObject.SetActive(false);

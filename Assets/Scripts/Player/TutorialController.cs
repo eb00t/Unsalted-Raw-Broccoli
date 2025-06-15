@@ -236,6 +236,8 @@ public class TutorialController : MonoBehaviour
 
     public void HasPlayerMoved(InputAction.CallbackContext context)
     {
+        if (!BlackoutManager.Instance.blackoutComplete) return;
+        
         if (context.ReadValue<float>() > 0.1f && _currentStep == TutorialStep.Move)
         {
             AdvanceStep();

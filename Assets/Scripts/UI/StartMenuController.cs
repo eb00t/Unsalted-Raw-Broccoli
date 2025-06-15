@@ -178,7 +178,7 @@ public class StartMenuController : MonoBehaviour
 		loadingGroup.gameObject.SetActive(true);
 
 		_loadTween?.Kill();
-		_loadTween = loadingGroup.DOFade(1f, 3f).OnComplete(() =>
+		_loadTween = loadingGroup.DOFade(1f, 1.5f).OnComplete(() =>
 		{
 			load.SetActive(false);
 			ButtonHandler.Instance.PlayConfirmSound();

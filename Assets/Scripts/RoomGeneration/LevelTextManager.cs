@@ -11,36 +11,20 @@ public class LevelTextManager : MonoBehaviour
     public TMP_Text titleText;
     public TMP_Text subtitleText;
     private bool _doneWaiting;
-    public Color textColor;
-    public Color transparentColor;
     private float _lerpTime;
     private bool _fadedOut;
-    private Color _startColor;
-    //private float _timer = 2;
-    
-    public Color loadBckColor, loadSqrColor;
     [SerializeField] private Image loadBck, loadSqr;
-    private enum LerpDirection
-    {
-        Neither,
-        FadeOut,
-        FadeIn,
-    }
-    private LerpDirection _lerpDirection;
+
+    [SerializeField] private CanvasGroup textGroup;
+    private Tween _textTween;
 
     private void Awake()
     {
-        _startColor = titleText.color;
         RaiseTextOpacity();
     }
 
-    void Start()
+    private void Start()
     {
-        if (titleText == null)
-        {
-            titleText = transform.Find("Title").GetComponent<TMP_Text>();
-        }
-
         switch (LevelBuilder.Instance.currentFloor)
         {
             case LevelBuilder.LevelMode.TEST:
@@ -121,7 +105,7 @@ public class LevelTextManager : MonoBehaviour
         }
     }
 
-    IEnumerator WaitToLowerTextOpacity()
+    private IEnumerator WaitToLowerTextOpacity()
     {
         if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Tutorial
             or LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.TitleScreen or LevelBuilder.LevelMode.EndScreen))
@@ -135,64 +119,36 @@ public class LevelTextManager : MonoBehaviour
         LowerTextOpacity();
     }
 
-    void LowerTextOpacity()
+    private void LowerTextOpacity()
     {
-        _lerpTime = 0;
-        _lerpDirection = LerpDirection.FadeOut;
+        _textTween?.Kill();
+        _textTween = textGroup.DOFade(0f, 2f);
     }
 
-    void RaiseTextOpacity()
+    private void RaiseTextOpacity()
     {
-        _lerpTime = 0;
-        _lerpDirection = LerpDirection.FadeIn;
+        titleText.gameObject.SetActive(true);
+        subtitleText.gameObject.SetActive(true);
+
+        _textTween = textGroup.DOFade(1, 1f);
     }
     
     private void Update()
     {
-        if (LevelBuilder.Instance.bossRoomGeneratingFinished && _fadedOut == false && LevelBuilder.Instance.currentFloor is not (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.EndScreen))
-        {
-            _fadedOut = true;
-            StartCoroutine(WaitToLowerTextOpacity());
-        }
-        else if (LevelBuilder.Instance.currentFloor is (LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen or LevelBuilder.LevelMode.EndScreen) && _fadedOut == false)
-        {
-            _fadedOut = true;
-            StartCoroutine(WaitToLowerTextOpacity());
-        }
-        if (titleText.color.a <= 0 && _lerpDirection == LerpDirection.FadeOut)
-        {
-            titleText.gameObject.SetActive(false);
-            subtitleText.gameObject.SetActive(false);
-        }
+        var level = LevelBuilder.Instance.currentFloor;
 
-        switch (_lerpDirection)
+        if (_fadedOut) return;
+
+        if (level is LevelBuilder.LevelMode.Intermission or LevelBuilder.LevelMode.Tutorial or LevelBuilder.LevelMode.TitleScreen or LevelBuilder.LevelMode.EndScreen)
         {
-            case LerpDirection.Neither:
-                textColor = _startColor;
-                titleText.color = textColor;
-                subtitleText.color = textColor;
-                break;
-            case LerpDirection.FadeOut:
-                _lerpTime += .002f; 
-                titleText.color = Color.Lerp(textColor, transparentColor, _lerpTime);
-                subtitleText.color = titleText.color;
-                if (titleText.color.a <= 0)
-                {
-                    titleText.gameObject.SetActive(false);
-                    subtitleText.gameObject.SetActive(false);
-                }
-                break;  
-            case LerpDirection.FadeIn:
-                _lerpTime += .006f; 
-                titleText.color = Color.Lerp(transparentColor, textColor, _lerpTime);
-                loadBck.color = Color.Lerp(transparentColor, loadBckColor, _lerpTime);
-                loadSqr.color = Color.Lerp(transparentColor, loadSqrColor, _lerpTime);
-                subtitleText.color = titleText.color;
-                break;
+            _fadedOut = true;
+            StartCoroutine(WaitToLowerTextOpacity());
         }
-        
-        _lerpTime += .01f; 
-        
+        else if (LevelBuilder.Instance.bossRoomGeneratingFinished)
+        {
+            _fadedOut = true;
+            StartCoroutine(WaitToLowerTextOpacity());
+        }
     }
 }
     
