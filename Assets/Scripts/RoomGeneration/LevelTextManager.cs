@@ -122,7 +122,7 @@ public class LevelTextManager : MonoBehaviour
     private void LowerTextOpacity()
     {
         _textTween?.Kill();
-        _textTween = textGroup.DOFade(0f, 2f);
+        _textTween = textGroup.DOFade(0f, 2f).SetUpdate(true);
     }
 
     private void RaiseTextOpacity()
@@ -130,7 +130,7 @@ public class LevelTextManager : MonoBehaviour
         titleText.gameObject.SetActive(true);
         subtitleText.gameObject.SetActive(true);
 
-        _textTween = textGroup.DOFade(1, 1f);
+        _textTween = textGroup.DOFade(1, 1f).SetUpdate(true);
     }
     
     private void Update()

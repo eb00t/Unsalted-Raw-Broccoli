@@ -25,7 +25,7 @@ public class MenuHandler : MonoBehaviour
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
-	[SerializeField] private GameObject invGui, invBck;
+	[SerializeField] private GameObject invGui, invBck, invTitleText;
 	[SerializeField] private GameObject toolbarGui;
 	[SerializeField] private GameObject menuGui;
 	[SerializeField] private GameObject quitPopupGui;
@@ -198,8 +198,24 @@ public class MenuHandler : MonoBehaviour
 		slotsTooltip.SetActive(true);
 		inventoryTooltip.SetActive(false);
 		invGui.SetActive(true);
-		invBck.transform.localScale = new Vector3(0, 1, 1);
-		invBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutExpo).SetUpdate(true);
+
+		if (!infoGui.activeSelf)
+		{
+			invBck.transform.localScale = new Vector3(0, 0.4f, 1);
+
+			var invOpenSeq = DOTween.Sequence().SetUpdate(true);
+			invOpenSeq.Append(invBck.transform.DOScale(new Vector3(1, 0, 1), 0.15f).SetEase(Ease.OutBack));
+			invOpenSeq.Append(invBck.transform.DOScale(new Vector3(1, 1, 1), 0.25f).SetEase(Ease.OutBack));
+			invTitleText.transform.localScale = new Vector3(1, 0, 1);
+			slots.transform.localScale  = new Vector3(0, 1, 1);
+
+			invOpenSeq.OnComplete(() =>
+			{
+				invTitleText.transform.DOScaleY(1f, 0.1f).SetUpdate(true);
+				slots.transform.DOScale(new Vector3(1, 1, 1), 0.1f).SetUpdate(true);
+			});
+		}
+
 		infoGui.SetActive(false);
 		_toolbarHandler.isInfoOpen = false;
 		menuGui.SetActive(false);
@@ -287,19 +303,26 @@ public class MenuHandler : MonoBehaviour
 
 		if (invGui.activeSelf && !_toolbarHandler.isInfoOpen)
 		{
-			invBck.transform.DOScale(new Vector3(0, 1, 1), 0.25f).SetEase(Ease.OutExpo).SetUpdate(true).OnComplete(() =>
+			var invCloseSeq = DOTween.Sequence().SetUpdate(true);
+			
+			invCloseSeq.Append(slots.transform.DOScale(new Vector3(0, 1, 1), 0.1f).SetEase(Ease.OutBack));
+			invCloseSeq.Append(invBck.transform.DOScale(new Vector3(1, 0.01f, 1), 0.1f).SetEase(Ease.OutBack));
+			invCloseSeq.Append(invBck.transform.DOScale(new Vector3(0.01f, 0.01f, 1), 0.1f).SetEase(Ease.OutBack));
+			invCloseSeq.Append(invBck.transform.DOScale(new Vector3(0, 0, 1), 0.1f).SetEase(Ease.OutBack));
+			
+			invCloseSeq.OnComplete(() =>
 			{
 				ButtonHandler.Instance.PlayBackSound();
 				foreach (var b in grid.GetComponentsInChildren<Button>())
 				{
 					b.interactable = false;
 				}
-				
+
 				foreach (var s in slots.GetComponentsInChildren<Button>())
 				{
 					s.interactable = true;
 				}
-				
+
 				invGui.SetActive(false);
 				menuGui.SetActive(true);
 				SwitchSelected(selectedMenu);
@@ -307,7 +330,7 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (invGui.activeSelf && _toolbarHandler.isInfoOpen)
 		{
-			infoGui.transform.DOScale(new Vector3(0, 1, 1), 0.25f).SetEase(Ease.OutExpo).SetUpdate(true).OnComplete(() =>
+			infoGui.transform.DOScale(new Vector3(1, 0, 1), 0.25f).SetEase(Ease.OutBack).SetUpdate(true).OnComplete(() =>
 			{
 				ButtonHandler.Instance.PlayBackSound();
 				foreach (var b in grid.GetComponentsInChildren<Button>())
@@ -345,7 +368,7 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (settingGui.activeSelf)
 		{
-			settingBck.transform.DOScale(new Vector3(0, 1, 1), 0.25f).SetEase(Ease.OutExpo).SetUpdate(true).OnComplete(() =>
+			settingBck.transform.DOScale(new Vector3(0, 1, 1), 0.25f).SetEase(Ease.OutBack).SetUpdate(true).OnComplete(() =>
 			{
 				ButtonHandler.Instance.PlayBackSound();
 				settingGui.SetActive(false);
@@ -482,8 +505,8 @@ public class MenuHandler : MonoBehaviour
 			slotsTooltip.SetActive(false);
 			inventoryTooltip.SetActive(true);
 			infoGui.SetActive(true);
-			infoGui.transform.localScale = new Vector3(0, 1, 1);
-			infoGui.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutExpo).SetUpdate(true);
+			infoGui.transform.localScale = new Vector3(1, 0, 1);
+			infoGui.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack).SetUpdate(true);
 			_toolbarHandler.isInfoOpen = true;
 		}
 		else
@@ -515,7 +538,7 @@ public class MenuHandler : MonoBehaviour
 	{
 		settingGui.SetActive(true);
 		settingBck.transform.localScale = new Vector3(0, 1, 1);
-		settingBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutExpo).SetUpdate(true);
+		settingBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack).SetUpdate(true);
 	}
 
 	public void HoldOpenMap(InputAction.CallbackContext context)
