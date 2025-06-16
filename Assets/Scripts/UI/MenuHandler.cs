@@ -38,6 +38,8 @@ public class MenuHandler : MonoBehaviour
 	public GameObject dialogueGUI;
 	[SerializeField] private GameObject settingsBtn, controlsBtn, quitBtn;
 	[SerializeField] private GameObject slotsTooltip, inventoryTooltip;
+
+	[SerializeField] private GameObject mapCamera;
 	
 	[Header("Navigation")]
 	[SerializeField] private EventSystem eventSystem;
@@ -56,6 +58,7 @@ public class MenuHandler : MonoBehaviour
 
 	[SerializeField] private float idleResetTime;
 	private float _idleTimer;
+	private CanvasGroup _hudCanvasGroup;
 
 	private void Start()
 	{
@@ -69,6 +72,7 @@ public class MenuHandler : MonoBehaviour
 		_dialogueHandler = GameObject.Find("Game Manager").GetComponent<DialogueHandler>();
 		hardcoreIndicator.SetActive(dataHolder.hardcoreMode);
 		_idleTimer = idleResetTime;
+		_hudCanvasGroup = GetComponentInParent<CanvasGroup>();
 	}
 
 	private void Update()
@@ -91,14 +95,14 @@ public class MenuHandler : MonoBehaviour
 		}
 		
 		// update if ui is open or not in player movement script
-		var pauseGuisOpen = invGui.activeSelf || 
-		                    menuGui.activeSelf || 
-		                    quitPopupGui.activeSelf || 
-		                    settingGui.activeSelf || 
-		                    controlGui.activeSelf || 
-		                    diedScreen.activeSelf || 
+		var pauseGuisOpen = invGui.activeSelf ||
+		                    menuGui.activeSelf ||
+		                    quitPopupGui.activeSelf ||
+		                    settingGui.activeSelf ||
+		                    controlGui.activeSelf ||
+		                    diedScreen.activeSelf ||
 		                    infoPopup.activeSelf;
-		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) || (dialogueGUI != null && dialogueGUI.activeSelf);
+		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) || (dialogueGUI != null && dialogueGUI.activeSelf) ||  (mapCamera != null && mapCamera.activeSelf);
 
 		if (!_characterAttack.isDead)
 		{
@@ -512,6 +516,23 @@ public class MenuHandler : MonoBehaviour
 		settingGui.SetActive(true);
 		settingBck.transform.localScale = new Vector3(0, 1, 1);
 		settingBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutExpo).SetUpdate(true);
+	}
+
+	public void HoldOpenMap(InputAction.CallbackContext context)
+	{
+		if (characterMovement.uiOpen && !mapCamera.activeSelf) return;
+		
+		if (context.started) // input started (i.e when the button is held)
+		{
+			mapCamera.SetActive(true);
+			_hudCanvasGroup.DOFade(0, 0.2f);
+		}
+		
+		if (context.canceled) // when input ends (i.e. when the button is let go)
+		{
+			mapCamera.SetActive(false);
+			_hudCanvasGroup.DOFade(1, 0.2f);
+		}
 	}
 
 	public void SceneReload() // reloads scene

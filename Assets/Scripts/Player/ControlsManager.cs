@@ -128,6 +128,7 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.SwitchLockOnTarget, rThumbstick },
             { ButtonType.ProgressDialogue, A },
             { ButtonType.UISelect, A },
+            { ButtonType.OpenMap, LB },
         };
 
         PlaystationSprites = new Dictionary<ButtonType, Sprite>
@@ -149,10 +150,11 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.RemoveItemFromToolbar, square },
             { ButtonType.QuickOpenInventory, create },
             { ButtonType.Interact, R2 },
-            { ButtonType.LockOn, L1 },
+            { ButtonType.LockOn, L2 },
             { ButtonType.SwitchLockOnTarget, rThumbstick },
             { ButtonType.ProgressDialogue, psX },
             { ButtonType.UISelect, psX },
+            { ButtonType.OpenMap, L1 },
         };
         
         KeyboardStrings = new Dictionary<ButtonType, string>
@@ -178,6 +180,7 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.SwitchLockOnTarget, "1/2" },
             { ButtonType.ProgressDialogue, "SPACE" },
             { ButtonType.UISelect, "Enter / Left Click" },
+            { ButtonType.OpenMap, "M" },
         };
     }
     
@@ -203,6 +206,7 @@ public class ControlsManager : MonoBehaviour
         LockOn,
         SwitchLockOnTarget,
         ProgressDialogue,
-        UISelect
+        UISelect,
+        OpenMap
     }
 }

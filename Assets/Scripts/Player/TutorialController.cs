@@ -181,7 +181,7 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.HeavyAttack, "", null);
                 break;
             case TutorialStep.JumpAttack:
-                ShowMessage("Do an attack while in the air by pressing", ControlsManager.ButtonType.Jump, " -> ",ControlsManager.ButtonType.LightAttack);
+                ShowMessage("Perform a jump attack", ControlsManager.ButtonType.Jump, " -> ",ControlsManager.ButtonType.LightAttack);
                 break;
             case TutorialStep.DefeatEnemy:
                 ShowMessage("Defeat the enemy", ControlsManager.ButtonType.LightAttack, "", null);

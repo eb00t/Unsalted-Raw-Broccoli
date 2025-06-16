@@ -121,6 +121,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "HoldOpenMap",
+                    "type": "Button",
+                    "id": "1731cd84-1e9b-46d6-8899-62fb298a79ed",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -622,7 +631,7 @@
                 {
                     "name": "",
                     "id": "b363dc08-0acd-4b18-bee9-a5b815bf931d",
-                    "path": "<Gamepad>/leftShoulder",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -715,6 +724,28 @@
                     "processors": "",
                     "groups": "Basic",
                     "action": "Medium Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ec10bfc2-5790-48b7-bb60-55e9a57da267",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HoldOpenMap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f98134c-cfdc-40e2-9575-527d05784e96",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HoldOpenMap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
