@@ -17,12 +17,14 @@ public class DoorInfo : MonoBehaviour
     private bool horiz;
     private bool pos;
     private Animator _doorAnimator;
-private void Awake()
+    public SpriteRenderer doorIcon;
+    private void Awake()
     {
         _renderer = GetComponent<Renderer>();
         _roomInfo = transform.root.GetComponent<RoomInfo>();
         _initialPosition = transform.position;
         _doorAnimator = gameObject.GetComponent<Animator>();
+        doorIcon = GetComponentInChildren<SpriteRenderer>();
     }
 
     public void CheckDoors() // Check if a connector or door (from another room) is nearby, and open it up. Also contains code to instantiate connectors to distant rooms.
@@ -178,14 +180,16 @@ private void Awake()
     public void OpenDoor()
    { 
        hasDoor = true;
+       doorIcon.color = Color.grey;
        Debug.Log("Opening door (" + gameObject.name + ") in " + transform.root.name);
       
    }
 
    public void CloseDoor()
    {
+       doorIcon.color = Color.white;
        hasDoor = false;
-      Debug.Log("Closing door (" + gameObject.name + ") in " + transform.root.name);
+       Debug.Log("Closing door (" + gameObject.name + ") in " + transform.root.name);
    }
    public void PlaySlamSound()
    {
