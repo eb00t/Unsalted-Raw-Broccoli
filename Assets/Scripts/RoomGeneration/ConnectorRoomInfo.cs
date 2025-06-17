@@ -33,8 +33,15 @@ public class ConnectorRoomInfo : MonoBehaviour
                 spawnWalls.Add(wallT.transform);
                 break;
         }
-        
-        mapIconParent = GameObject.FindGameObjectWithTag("Map Icon Parent");
+
+        foreach (var child in GetComponentsInChildren<Transform>())
+        {
+            if (child.CompareTag("Map Icon Parent"))
+            {
+                mapIconParent = child.gameObject;
+            }
+        }
+
         mapIconParent.SetActive(false);
     }
 
@@ -48,14 +55,6 @@ public class ConnectorRoomInfo : MonoBehaviour
         foreach (var lit in allLights)
         {
             lit.enabled = false;
-        }
-
-        foreach (var room in attachedRooms)
-        {
-            if (room.CompareTag("StartingRoom"))
-            {
-                mapIconParent.SetActive(true);
-            }
         }
         LevelBuilder.Instance.spawnedConnectors.Add(gameObject);
     }

@@ -76,7 +76,6 @@ public class CameraTrigger : MonoBehaviour
                     {
                         _resizeBoxCollider.doorsCanClose = false;
                     }
-
                     break;
                 case RoomOrConnector.Connector:
                     foreach (var cam in CameraManager.Instance.virtualCameras)

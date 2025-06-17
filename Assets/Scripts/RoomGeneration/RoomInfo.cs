@@ -91,7 +91,13 @@ public class RoomInfo : MonoBehaviour
             }
         }
 
-        mapIcons = GameObject.FindGameObjectWithTag("Map Icon Parent");
+        foreach (var child in GetComponentsInChildren<Transform>())
+        {
+           if (child.CompareTag("Map Icon Parent"))
+           {
+               mapIcons = child.gameObject;
+           }
+        }
         if (!gameObject.CompareTag("StartingRoom"))
         {
             mapIcons.SetActive(false);    
