@@ -43,6 +43,7 @@ public class ShopHandler : MonoBehaviour
 		_menuHandler.shopBck = shopBck;
 		_menuHandler.shopTitleText = shopTitle;
 		_menuHandler.shopInfo = shopInfo;
+		_menuHandler.shopContent = grid.gameObject;
 		_inventoryStore = _uiManager.GetComponent<InventoryStore>();
 		_characterMovement = _player.GetComponent<CharacterMovement>();
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();

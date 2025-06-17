@@ -106,7 +106,7 @@ public class DialogueHandler : MonoBehaviour
             loadedSpeakerText.Clear();
             _speakerText.text = "";
             _dialogueText.text = "";
-            _dialogueCanvas.SetActive(false);
+            _menuHandler.SetDialogueActive(false);
 
             if (_dialogueController.isShop && !_dialogueController.isEndText)
             {
@@ -210,8 +210,7 @@ public class DialogueHandler : MonoBehaviour
       loadedBodyText = new List<string>(currentDialogueObject.dialogueBodyText);
       if (currentDialogueObject.isAnyoneSpeaking == false)
       {
-         _speakerText.transform.parent.gameObject.SetActive(false);
-         _speakerText.gameObject.SetActive(false);
+         _menuHandler.SetDialogueActive(false);
       }
    }
    
@@ -236,8 +235,7 @@ public class DialogueHandler : MonoBehaviour
       }
       if (currentLoreItem.didAnyoneWriteThis == false)
       {
-         _speakerText.transform.parent.gameObject.SetActive(false);
-         _speakerText.gameObject.SetActive(false);
+         _menuHandler.SetDialogueActive(false);
       }
    }
 }

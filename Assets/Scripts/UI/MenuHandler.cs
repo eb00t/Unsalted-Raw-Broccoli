@@ -25,7 +25,7 @@ public class MenuHandler : MonoBehaviour
 	
 	[Header("UI References")]
 	[SerializeField] private GameObject grid;
-	[SerializeField] private GameObject invGui, invBck, invTitleText;
+	[SerializeField] private GameObject invGui, invBck, invTitleText, invContent;
 	[SerializeField] private GameObject toolbarGui;
 	[SerializeField] private GameObject menuGui;
 	[SerializeField] private GameObject quitPopupGui;
@@ -35,7 +35,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject controlGui;
 	[SerializeField] private GameObject diedScreen;
 	[SerializeField] private GameObject infoPopup;
-	public GameObject dialogueGUI;
+	public GameObject dialogueGUI, dialogueBck, dialogueTitleText;
 	[SerializeField] private GameObject settingsBtn, controlsBtn, quitBtn;
 	[SerializeField] private GameObject slotsTooltip, inventoryTooltip;
 
@@ -46,7 +46,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject selectedMenu, selectedEquip, slots;
 	private GameObject _lastSelected;
 
-	public GameObject shopGUI, shopBck, shopInfo, shopTitleText, nextLevelTrigger;
+	public GameObject shopGUI, shopBck, shopInfo, shopTitleText, nextLevelTrigger, shopContent;
 	[SerializeField] private DataHolder dataHolder;
 	public ReadLore nearestLore;
 	public NextLevelTrigger nearestLevelTrigger;
@@ -73,6 +73,19 @@ public class MenuHandler : MonoBehaviour
 		hardcoreIndicator.SetActive(dataHolder.hardcoreMode);
 		_idleTimer = idleResetTime;
 		_hudCanvasGroup = GetComponentInParent<CanvasGroup>();
+
+		foreach (var t in dialogueGUI.GetComponentsInChildren<Transform>())
+		{
+			switch (t.name)
+			{
+				case "Text box":
+					dialogueBck = t.gameObject;
+					break;
+				case "SpeakerHolder":
+					dialogueTitleText = t.gameObject;
+					break;
+			}
+		}
 	}
 
 	private void Update()
@@ -205,14 +218,30 @@ public class MenuHandler : MonoBehaviour
 
 			var invOpenSeq = DOTween.Sequence().SetUpdate(true);
 			invOpenSeq.Append(invBck.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack));
-			invOpenSeq.Append(invBck.transform.DOScale(new Vector3(1, 1, 1), 0.25f).SetEase(Ease.OutBack));
+			invOpenSeq.Append(invBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack));
 			invTitleText.transform.localScale = new Vector3(1, 0, 1);
 			slots.transform.localScale  = new Vector3(0, 1, 1);
+			
+			foreach (var t in invContent.GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					t.localScale = new Vector3(1, 0, 1);
+				}
+			}
 
 			invOpenSeq.OnComplete(() =>
 			{
 				invTitleText.transform.DOScaleY(1f, 0.1f).SetUpdate(true);
-				slots.transform.DOScale(new Vector3(1, 1, 1), 0.1f).SetUpdate(true);
+				slots.transform.DOScale(Vector3.one, 0.1f).SetUpdate(true);
+				
+				foreach (var t in invContent.GetComponentsInChildren<Transform>())
+				{
+					if (t.CompareTag("Animate"))
+					{
+						t.DOScale(Vector3.one, 0.1f).SetUpdate(true);
+					}
+				}
 			});
 		}
 
@@ -238,14 +267,31 @@ public class MenuHandler : MonoBehaviour
 		
 		var shopOpenSeq = DOTween.Sequence().SetUpdate(true);
 		shopOpenSeq.Append(shopBck.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack));
-		shopOpenSeq.Append(shopBck.transform.DOScale(new Vector3(1, 1, 1), 0.25f).SetEase(Ease.OutBack));
+		shopOpenSeq.Append(shopBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack));
 		shopTitleText.transform.localScale = new Vector3(1, 0, 1);
 		shopInfo.transform.localScale = new Vector3(1, 0, 1);
+		
+		foreach (var t in shopContent.GetComponentsInChildren<Transform>())
+		{
+			if (t.CompareTag("Animate"))
+			{
+				t.localScale = new Vector3(1, 0, 1);
+			}
+		}
 		
 		shopOpenSeq.OnComplete(() =>
 		{
 			shopTitleText.transform.DOScaleY(1f, 0.1f).SetUpdate(true);
 			shopInfo.transform.DOScale(Vector3.one, 0.1f).SetUpdate(true);
+			
+			foreach (var t in shopContent.GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					t.DOScale(Vector3.one, 0.1f).SetUpdate(true);
+				}
+			}
+			
 			StartCoroutine(DelayShopSwitch(shopHandler));
 		});
 	}
@@ -302,7 +348,7 @@ public class MenuHandler : MonoBehaviour
 			_player.GetComponentInChildren<SpriteRenderer>().flipX = false;
 		}
 		
-		dialogueGUI.SetActive(false);
+		SetDialogueActive(false);
 	}
 
 	// when Button East/Esc is pressed close current menu and open previous menus
@@ -313,28 +359,42 @@ public class MenuHandler : MonoBehaviour
 
 		if (invGui.activeSelf && !_toolbarHandler.isInfoOpen)
 		{
-			var invCloseSeq = DOTween.Sequence().SetUpdate(true);
 			
-			invCloseSeq.Append(slots.transform.DOScale(new Vector3(0, 1, 1), 0.1f));
-			invCloseSeq.Append(invTitleText.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
-			invCloseSeq.Append(invBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
+			var invContentSeq = DOTween.Sequence().SetUpdate(true);
 			
-			invCloseSeq.OnComplete(() =>
+			foreach (var t in invContent.GetComponentsInChildren<Transform>())
 			{
-				ButtonHandler.Instance.PlayBackSound();
-				foreach (var b in grid.GetComponentsInChildren<Button>())
+				if (t.CompareTag("Animate"))
 				{
-					b.interactable = false;
+					invContentSeq.Join(t.DOScale(new Vector3(1, 0, 1), 0.1f));
 				}
+			}
 
-				foreach (var s in slots.GetComponentsInChildren<Button>())
+			invContentSeq.OnComplete(() =>
+			{
+				var invCloseSeq = DOTween.Sequence().SetUpdate(true);
+			
+				invCloseSeq.Append(slots.transform.DOScale(new Vector3(0, 1, 1), 0.1f));
+				invCloseSeq.Append(invTitleText.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
+				invCloseSeq.Append(invBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
+			
+				invCloseSeq.OnComplete(() =>
 				{
-					s.interactable = true;
-				}
+					ButtonHandler.Instance.PlayBackSound();
+					foreach (var b in grid.GetComponentsInChildren<Button>())
+					{
+						b.interactable = false;
+					}
 
-				invGui.SetActive(false);
-				menuGui.SetActive(true);
-				SwitchSelected(selectedMenu);
+					foreach (var s in slots.GetComponentsInChildren<Button>())
+					{
+						s.interactable = true;
+					}
+
+					invGui.SetActive(false);
+					menuGui.SetActive(true);
+					SwitchSelected(selectedMenu);
+				});
 			});
 		}
 		else if (invGui.activeSelf && _toolbarHandler.isInfoOpen)
@@ -369,19 +429,31 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (shopGUI != null  && shopGUI.activeSelf)
 		{
-			var shopCloseSeq = DOTween.Sequence().SetUpdate(true);
+			var shopContentSeq = DOTween.Sequence().SetUpdate(true);
 			
-			shopCloseSeq.Append(shopTitleText.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
-			shopCloseSeq.Append(shopInfo.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
-			shopCloseSeq.Append(shopBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
-
-			shopCloseSeq.OnComplete(() =>
+			foreach (var t in shopContent.GetComponentsInChildren<Transform>())
 			{
-				shopGUI.SetActive(false);
-				_currencyManager.canvasGroup.DOFade(0, 0.5f);
-				dialogueGUI.SetActive(true);
-				dialogueController.isEndText = true;
-				dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
+				if (t.CompareTag("Animate"))
+				{
+					shopContentSeq.Join(t.DOScale(new Vector3(1, 0, 1), 0.1f));
+				}
+			}
+
+			shopContentSeq.OnComplete(() =>
+			{
+				var shopCloseSeq = DOTween.Sequence().SetUpdate(true);
+				shopCloseSeq.Append(shopTitleText.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
+				shopCloseSeq.Append(shopInfo.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
+				shopCloseSeq.Append(shopBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
+				
+				shopCloseSeq.OnComplete(() =>
+				{
+					shopGUI.SetActive(false);
+					_currencyManager.canvasGroup.DOFade(0, 0.5f);
+					SetDialogueActive(true);
+					dialogueController.isEndText = true;
+					dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
+				});
 			});
 		}
 		else if (settingGui.activeSelf)
@@ -392,7 +464,7 @@ public class MenuHandler : MonoBehaviour
 			{
 				if (t.CompareTag("Animate"))
 				{
-					settingsSequence.Join(t.DOScale(new Vector3(0, 1, 1), 0.1f));
+					settingsSequence.Join(t.DOScale(new Vector3(1, 0, 1), 0.1f));
 				}
 			}
 			
@@ -459,12 +531,12 @@ public class MenuHandler : MonoBehaviour
 		if (characterMovement.uiOpen || (mapCamera != null && mapCamera.activeSelf)) return;
 		if (_itemPickupHandler.isPlrNearDialogue && isDistanceBased)
 		{
-			dialogueGUI.SetActive(true);
+			SetDialogueActive(true);
 			controller.LoadDialogue(controller.dialogueToLoad);
 		}
 		else if (!isDistanceBased)
 		{
-			dialogueGUI.SetActive(true);
+			SetDialogueActive(true);
 			controller.LoadDialogue(controller.dialogueToLoad);
 		}
 	}
@@ -475,9 +547,39 @@ public class MenuHandler : MonoBehaviour
 		
 		if (_itemPickupHandler.isPlrNearLore && nearestLore.gameObject.activeSelf && !nearestLore.hasBeenRead)
 		{
-			dialogueGUI.SetActive(true);
+			SetDialogueActive(true);
 			dialogueController.LoadLore(nearestLore.whatLore);
 			Debug.Log(nearestLore.loreType);
+		}
+	}
+
+	public void SetDialogueActive(bool isActive)
+	{
+		if (isActive)
+		{
+			dialogueGUI.SetActive(true);
+			dialogueBck.transform.localScale = new Vector3(0, 0.1f, 1);
+			dialogueTitleText.transform.localScale = new Vector3(1, 0, 1);
+			
+			var dialogueSeq = DOTween.Sequence().SetUpdate(true);
+			dialogueSeq.Append(dialogueBck.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack));
+			dialogueSeq.Append(dialogueBck.transform.DOScale(new Vector3(1, 1, 1), 0.25f).SetEase(Ease.OutBack));
+
+			dialogueSeq.OnComplete(() =>
+			{
+				dialogueTitleText.transform.DOScaleY(1f, 0.1f).SetUpdate(true);
+			});
+		}
+		else
+		{
+			var dialogueCloseSeq = DOTween.Sequence().SetUpdate(true);
+			dialogueCloseSeq.Append(dialogueTitleText.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
+			dialogueCloseSeq.Append(dialogueBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
+				
+			dialogueCloseSeq.OnComplete(() =>
+			{
+				dialogueGUI.SetActive(false);
+			});
 		}
 	}
 
@@ -578,13 +680,13 @@ public class MenuHandler : MonoBehaviour
 		{
 			if (t.CompareTag("Animate"))
 			{
-				t.localScale = new Vector3(0, 1, 1);
+				t.localScale = new Vector3(1, 0, 1);
 			}
 		}
 
 		var settingSequence = DOTween.Sequence().SetUpdate(true);
 		settingSequence.Append(settingBck.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack).SetUpdate(true));
-		settingSequence.Append(settingBck.transform.DOScale(new Vector3(1, 1, 1), 0.25f).SetEase(Ease.OutBack));
+		settingSequence.Append(settingBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack));
 		settingTitleText.transform.localScale = new Vector3(1, 0, 1);
 		
 		settingSequence.OnComplete(() =>
@@ -595,7 +697,7 @@ public class MenuHandler : MonoBehaviour
 			{
 				if (t.CompareTag("Animate"))
 				{
-					t.DOScale(new Vector3(1, 1, 1), 0.1f).SetUpdate(true);
+					t.DOScale(Vector3.one, 0.1f).SetUpdate(true);
 				}
 			}
 		});
