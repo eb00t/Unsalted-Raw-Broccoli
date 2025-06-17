@@ -6,17 +6,19 @@ using UnityEngine.Serialization;
 
 public class ConnectorRoomInfo : MonoBehaviour
 {
-    public bool horizontal;
-    public List<Transform> spawnWalls;
+    public List<Transform> spawnWalls; // The walls of the connector that rooms can spawn on.
+    public List<GameObject> attachedDoors; 
     public List<GameObject> attachedRooms;
+    public List<Light> allLights;
     public Transform wallL, wallR, wallT, wallB;
+    public GameObject mapIconParent;
+    public GameObject questionMark;
     public string spawnedOnSide;
     public float connectorLength;
     public float connectorHeight; // The smaller side (should typically be the same for each connector)
-    public GameObject mapIconParent;
-    public List<Light> allLights;
     public bool markedForDiscard;
-    public List<GameObject> attachedDoors;
+    public bool horizontal;
+    
 
     private void Awake()
     {
@@ -34,11 +36,16 @@ public class ConnectorRoomInfo : MonoBehaviour
                 break;
         }
 
-        foreach (var child in GetComponentsInChildren<Transform>())
+        foreach (var child in GetComponentsInChildren<Transform>()) // Assigning map icons
         {
             if (child.CompareTag("Map Icon Parent"))
             {
                 mapIconParent = child.gameObject;
+            }
+
+            if (child.name == "QuestionMark")
+            {
+                questionMark = child.gameObject;
             }
         }
 
@@ -58,6 +65,30 @@ public class ConnectorRoomInfo : MonoBehaviour
         }
         LevelBuilder.Instance.spawnedConnectors.Add(gameObject);
     }
+
+    void Update()
+    {
+        if (!mapIconParent.activeSelf && LevelBuilder.Instance.bossRoomGeneratingFinished)
+        {
+            foreach (var room in attachedRooms)
+            {
+                if (room.CompareTag("StartingRoom"))
+                {
+                    mapIconParent.SetActive(true);
+                }
+            }
+        }
+        if (questionMark.activeSelf && LevelBuilder.Instance.bossRoomGeneratingFinished) // Check to see if the question mark is active and level is built
+        {
+            if (attachedRooms[0].GetComponent<RoomScripting>().playerHasEnteredRoom &&
+                attachedRooms[1].GetComponent<RoomScripting>().playerHasEnteredRoom) // Has the player entered both attached rooms?
+            {
+                questionMark.SetActive(false);
+            }
+            
+        }
+    }
+
 
     void OnDestroy()
     {

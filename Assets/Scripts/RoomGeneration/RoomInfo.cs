@@ -19,7 +19,6 @@ public class RoomInfo : MonoBehaviour
     public bool lootRoom = false;
     public bool loreRoom = false;
     public bool bigRoom = false;
-    public GameObject mapIcons;
     [field: Header("Door Config (MAKE ABSOLUTELY SURE YOU SET THESE PROPERLY)")] 
     [field: Tooltip("SERIOUSLY! MAKE SURE THESE ARE ACCURATE TO THE DESIGN OF THE ROOM")]
     public bool missingLeftDoor;
@@ -37,17 +36,18 @@ public class RoomInfo : MonoBehaviour
     public List<GameObject> usableDoors;
     public List<GameObject> allDoors;
     public List<GameObject> allWalls;
+    public List<Light> allLights;
+    public List<GameObject> attachedConnectors;
     public Transform doorL, doorR, doorB, doorT;
     public Transform wallL, wallR, wallB, wallT;
-    public List<GameObject> attachedConnectors;
     public GameObject connectorSpawnedOff;
-    public bool markedForDiscard = false; 
+    public GameObject mapIcons;
+    private GameObject _playerRenderer;
     public CinemachineVirtualCamera roomCam;
     public bool canBeDiscarded = true;
-    public string roomPath;
-    private GameObject _playerRenderer;
-    public List<Light> allLights;
+    public bool markedForDiscard = false;
     public bool coveredUp;
+    public string roomPath;
     void Awake()
     {
         if (doorT == null)
@@ -67,7 +67,7 @@ public class RoomInfo : MonoBehaviour
             missingRightDoor = true;
         }
        
-        if (specialRoom)
+        if (specialRoom) // Get the path so it can be re-added to the special rooms list if discarded.
         {
             string roomPath1 = "Room Layouts/Special Rooms/" + gameObject.name;
             string roomPath2 = "(Clone)";
@@ -91,7 +91,7 @@ public class RoomInfo : MonoBehaviour
             }
         }
 
-        foreach (var child in GetComponentsInChildren<Transform>())
+        foreach (var child in GetComponentsInChildren<Transform>()) // Assigning map icons
         {
            if (child.CompareTag("Map Icon Parent"))
            {
