@@ -24,6 +24,7 @@ public class ShopHandler : MonoBehaviour
 
 	private GameObject _player, _uiManager, _lastSelected;
 	private GameObject _shopGUI;
+	[SerializeField] private GameObject shopBck;
 	private CharacterMovement _characterMovement;
 	private ItemPickupHandler _itemPickupHandler;
 	private CurrencyManager _currencyManager;
@@ -37,6 +38,7 @@ public class ShopHandler : MonoBehaviour
 		_uiManager = GameObject.FindGameObjectWithTag("UIManager");
 		_shopGUI = GetComponentInChildren<Canvas>(true).gameObject;
 		_uiManager.GetComponent<MenuHandler>().shopGUI = _shopGUI;
+		_uiManager.GetComponent<MenuHandler>().shopBck = shopBck;
 		_inventoryStore = _uiManager.GetComponent<InventoryStore>();
 		_characterMovement = _player.GetComponent<CharacterMovement>();
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
