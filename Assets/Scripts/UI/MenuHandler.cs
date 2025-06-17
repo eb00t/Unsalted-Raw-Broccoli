@@ -39,7 +39,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject settingsBtn, controlsBtn, quitBtn;
 	[SerializeField] private GameObject slotsTooltip, inventoryTooltip;
 
-	[SerializeField] private GameObject mapCamera;
+	public GameObject mapCamera;
 	
 	[Header("Navigation")]
 	[SerializeField] private EventSystem eventSystem;
@@ -431,13 +431,13 @@ public class MenuHandler : MonoBehaviour
 	
 	public void EnableDialogueBox(InputAction.CallbackContext context)
 	{
-		if (!context.performed || characterMovement.uiOpen) return;
+		if (!context.performed || characterMovement.uiOpen || mapCamera.activeSelf) return;
 		TriggerDialogue(true, dialogueController);
 	}
 
 	public void TriggerDialogue(bool isDistanceBased, dialogueControllerScript controller)
 	{
-		if (characterMovement.uiOpen) return;
+		if (characterMovement.uiOpen || mapCamera.activeSelf) return;
 		if (_itemPickupHandler.isPlrNearDialogue && isDistanceBased)
 		{
 			dialogueGUI.SetActive(true);
