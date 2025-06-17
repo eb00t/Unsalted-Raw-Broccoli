@@ -559,11 +559,12 @@ public class CharacterAttack : MonoBehaviour
     
     private IEnumerator HitFlash()
     {
+        yield return new WaitForSeconds(0.2f);
         _hasHitIframes = true;
         _spriteRenderer.material = hitMaterial;
         var defaultColor = Color.black;
         var flashColor = new Color(0.2641509f, 0.2641509f, 0.2641509f);
-        var flashSpeed = 0.2f;
+        var flashSpeed = 0.1f;
         var fadeIn = true;
 
         var timer = 0f;

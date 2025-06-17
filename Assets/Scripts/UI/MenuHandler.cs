@@ -237,8 +237,8 @@ public class MenuHandler : MonoBehaviour
 		shopBck.transform.localScale = new Vector3(0, 0.1f, 1);
 		
 		var shopOpenSeq = DOTween.Sequence().SetUpdate(true);
-		shopOpenSeq.Append(invBck.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack));
-		shopOpenSeq.Append(invBck.transform.DOScale(new Vector3(1, 1, 1), 0.25f).SetEase(Ease.OutBack));
+		shopOpenSeq.Append(shopBck.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack));
+		shopOpenSeq.Append(shopBck.transform.DOScale(new Vector3(1, 1, 1), 0.25f).SetEase(Ease.OutBack));
 
 		shopOpenSeq.OnComplete(() =>
 		{
@@ -329,7 +329,7 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (invGui.activeSelf && _toolbarHandler.isInfoOpen)
 		{
-			infoGui.transform.DOScale(new Vector3(1, 0, 1), 0.25f).SetEase(Ease.OutBack).SetUpdate(true).OnComplete(() =>
+			infoGui.transform.DOScale(new Vector3(1, 0, 1), 0.1f).SetUpdate(true).OnComplete(() =>
 			{
 				ButtonHandler.Instance.PlayBackSound();
 				foreach (var b in grid.GetComponentsInChildren<Button>())
