@@ -13,6 +13,7 @@ public class ConnectorRoomInfo : MonoBehaviour
     public string spawnedOnSide;
     public float connectorLength;
     public float connectorHeight; // The smaller side (should typically be the same for each connector)
+    public GameObject mapIconParent;
     public List<Light> allLights;
     public bool markedForDiscard;
     public List<GameObject> attachedDoors;
@@ -32,6 +33,9 @@ public class ConnectorRoomInfo : MonoBehaviour
                 spawnWalls.Add(wallT.transform);
                 break;
         }
+        
+        mapIconParent = GameObject.FindGameObjectWithTag("Map Icon Parent");
+        mapIconParent.SetActive(false);
     }
 
     void Start()
@@ -44,6 +48,14 @@ public class ConnectorRoomInfo : MonoBehaviour
         foreach (var lit in allLights)
         {
             lit.enabled = false;
+        }
+
+        foreach (var room in attachedRooms)
+        {
+            if (room.CompareTag("StartingRoom"))
+            {
+                mapIconParent.SetActive(true);
+            }
         }
         LevelBuilder.Instance.spawnedConnectors.Add(gameObject);
     }

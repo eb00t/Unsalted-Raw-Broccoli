@@ -19,6 +19,7 @@ public class RoomInfo : MonoBehaviour
     public bool lootRoom = false;
     public bool loreRoom = false;
     public bool bigRoom = false;
+    public GameObject mapIcons;
     [field: Header("Door Config (MAKE ABSOLUTELY SURE YOU SET THESE PROPERLY)")] 
     [field: Tooltip("SERIOUSLY! MAKE SURE THESE ARE ACCURATE TO THE DESIGN OF THE ROOM")]
     public bool missingLeftDoor;
@@ -89,6 +90,13 @@ public class RoomInfo : MonoBehaviour
                 allWalls.Add(door.gameObject);
             }
         }
+
+        mapIcons = GameObject.FindGameObjectWithTag("Map Icon Parent");
+        if (!gameObject.CompareTag("StartingRoom"))
+        {
+            mapIcons.SetActive(false);    
+        }
+        
     }
 
     void Start()

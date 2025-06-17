@@ -10,6 +10,7 @@ public class DoorInfo : MonoBehaviour
     public bool hasDoor = false;
     private RoomInfo _roomInfo;
     private ConnectorRoomInfo _connectorRoomInfo;
+    private RoomScripting _roomScripting;
     private Vector3 _initialPosition;
     public bool closed;
     private float _lerpTime;
@@ -22,9 +23,11 @@ public class DoorInfo : MonoBehaviour
     {
         _renderer = GetComponent<Renderer>();
         _roomInfo = transform.root.GetComponent<RoomInfo>();
+        _roomScripting =  transform.root.GetComponent<RoomScripting>();
         _initialPosition = transform.position;
         _doorAnimator = gameObject.GetComponent<Animator>();
         doorIcon = GetComponentInChildren<SpriteRenderer>();
+        doorIcon.enabled = false;
     }
 
     public void CheckDoors() // Check if a connector or door (from another room) is nearby, and open it up. Also contains code to instantiate connectors to distant rooms.
@@ -199,5 +202,9 @@ public class DoorInfo : MonoBehaviour
    private void Update()
    {
        _doorAnimator.SetBool(CloseDoors, !hasDoor);
+       if (_roomScripting.playerHasEnteredRoom)
+       {
+           doorIcon.enabled = true;
+       }
    }
 }

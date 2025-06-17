@@ -186,6 +186,14 @@ public class RoomScripting : MonoBehaviour
         if (playerIsInRoom)
         {
             playerHasEnteredRoom = true;
+            if (!_roomInfo.mapIcons.activeSelf)
+            {
+                _roomInfo.mapIcons.SetActive(true);
+                foreach (var connector in _roomInfo.attachedConnectors)
+                {
+                    connector.GetComponent<ConnectorRoomInfo>().mapIconParent.SetActive(true);
+                }
+            }
         }
         if (playerHasEnteredRoom)
         {
