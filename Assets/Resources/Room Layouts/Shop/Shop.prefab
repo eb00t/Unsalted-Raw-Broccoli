@@ -5058,7 +5058,6 @@ MonoBehaviour:
   lootRoom: 0
   loreRoom: 0
   bigRoom: 0
-  mapIcons: {fileID: 0}
   missingLeftDoor: 0
   missingRightDoor: 0
   missingTopDoor: 0
@@ -5068,6 +5067,8 @@ MonoBehaviour:
   usableDoors: []
   allDoors: []
   allWalls: []
+  allLights: []
+  attachedConnectors: []
   doorL: {fileID: 4956962053951353040}
   doorR: {fileID: 4576508421643954489}
   doorB: {fileID: 6348404296093968110}
@@ -5076,14 +5077,13 @@ MonoBehaviour:
   wallR: {fileID: 2848057392824190581}
   wallB: {fileID: 3958232281195574344}
   wallT: {fileID: 6740799011039072774}
-  attachedConnectors: []
   connectorSpawnedOff: {fileID: 0}
-  markedForDiscard: 0
+  mapIcons: {fileID: 0}
   roomCam: {fileID: 0}
   canBeDiscarded: 1
-  roomPath: 
-  allLights: []
+  markedForDiscard: 0
   coveredUp: 0
+  roomPath: 
 --- !u!114 &2577646143545009483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6527,6 +6527,8 @@ MonoBehaviour:
   floor4CostMultiplier: 0.3
   hardCoreBaseMultiplier: 2
   shopBck: {fileID: 5031338256273936120}
+  shopInfo: {fileID: 7225568687824635885}
+  shopTitle: {fileID: 3780048278860959272}
   infoTxt: {fileID: 8321108376336000099}
   numHeldTxt: {fileID: 8712904936922502982}
   infoTitle: {fileID: 2716129999629114935}

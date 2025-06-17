@@ -40,7 +40,7 @@ public class DialogueTrigger : MonoBehaviour
 
     private void Update()
     {
-        if (!triggered || _player == null || menuHandler.mapCamera.activeSelf) return;
+        if (!triggered || _player == null || (menuHandler.mapCamera != null && menuHandler.mapCamera.activeSelf)) return;
         
         if (_player.GetComponent<CharacterMovement>().grounded && !hasDialogueOpened)
         {

@@ -23,8 +23,9 @@ public class ShopHandler : MonoBehaviour
 	private float _activeFloorMultiplier;
 
 	private GameObject _player, _uiManager, _lastSelected;
+	private MenuHandler _menuHandler;
 	private GameObject _shopGUI;
-	[SerializeField] private GameObject shopBck;
+	[SerializeField] private GameObject shopBck, shopInfo, shopTitle;
 	private CharacterMovement _characterMovement;
 	private ItemPickupHandler _itemPickupHandler;
 	private CurrencyManager _currencyManager;
@@ -36,9 +37,12 @@ public class ShopHandler : MonoBehaviour
 	{
 		_player = GameObject.FindGameObjectWithTag("Player");
 		_uiManager = GameObject.FindGameObjectWithTag("UIManager");
+		_menuHandler = _uiManager.GetComponent<MenuHandler>();
 		_shopGUI = GetComponentInChildren<Canvas>(true).gameObject;
-		_uiManager.GetComponent<MenuHandler>().shopGUI = _shopGUI;
-		_uiManager.GetComponent<MenuHandler>().shopBck = shopBck;
+		_menuHandler.shopGUI = _shopGUI;
+		_menuHandler.shopBck = shopBck;
+		_menuHandler.shopTitleText = shopTitle;
+		_menuHandler.shopInfo = shopInfo;
 		_inventoryStore = _uiManager.GetComponent<InventoryStore>();
 		_characterMovement = _player.GetComponent<CharacterMovement>();
 		_itemPickupHandler = _player.GetComponent<ItemPickupHandler>();

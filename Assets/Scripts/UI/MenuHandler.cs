@@ -46,7 +46,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject selectedMenu, selectedEquip, slots;
 	private GameObject _lastSelected;
 
-	public GameObject shopGUI, shopBck, nextLevelTrigger;
+	public GameObject shopGUI, shopBck, shopInfo, shopTitleText, nextLevelTrigger;
 	[SerializeField] private DataHolder dataHolder;
 	public ReadLore nearestLore;
 	public NextLevelTrigger nearestLevelTrigger;
@@ -239,11 +239,21 @@ public class MenuHandler : MonoBehaviour
 		var shopOpenSeq = DOTween.Sequence().SetUpdate(true);
 		shopOpenSeq.Append(shopBck.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack));
 		shopOpenSeq.Append(shopBck.transform.DOScale(new Vector3(1, 1, 1), 0.25f).SetEase(Ease.OutBack));
-
+		shopTitleText.transform.localScale = new Vector3(1, 0, 1);
+		shopInfo.transform.localScale = new Vector3(1, 0, 1);
+		
 		shopOpenSeq.OnComplete(() =>
 		{
-			SwitchSelected(shopHandler.grid.GetComponentInChildren<Button>().gameObject);
+			shopTitleText.transform.DOScaleY(1f, 0.1f).SetUpdate(true);
+			shopInfo.transform.DOScale(Vector3.one, 0.1f).SetUpdate(true);
+			StartCoroutine(DelayShopSwitch(shopHandler));
 		});
+	}
+	
+	private IEnumerator DelayShopSwitch(ShopHandler shopHandler)
+	{
+		yield return new WaitForSecondsRealtime(.35f);
+		SwitchSelected(shopHandler.grid.GetComponentInChildren<Button>().gameObject);
 	}
 
 	public void NextLevelLoad(InputAction.CallbackContext context)
@@ -256,7 +266,7 @@ public class MenuHandler : MonoBehaviour
 		nearestLevelTrigger.GetComponent<NextLevelTrigger>().LoadNextLevel();
 	}
 	
-	void OnEnable()
+	private void OnEnable()
 	{
 		_mEventListener = InputSystem.onAnyButtonPress.Call(ResetIdleTimer);
 	}
@@ -271,7 +281,7 @@ public class MenuHandler : MonoBehaviour
 		_idleTimer = idleResetTime;
 	}
 	
-	void OnDisable()
+	private void OnDisable()
 	{
 		_mEventListener.Dispose();
 	}
@@ -305,7 +315,7 @@ public class MenuHandler : MonoBehaviour
 		{
 			var invCloseSeq = DOTween.Sequence().SetUpdate(true);
 			
-			invCloseSeq.Append(slots.transform.DOScale(new Vector3(0, 1, 1), 0.1f).SetEase(Ease.InBack));
+			invCloseSeq.Append(slots.transform.DOScale(new Vector3(0, 1, 1), 0.1f));
 			invCloseSeq.Append(invTitleText.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
 			invCloseSeq.Append(invBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
 			
@@ -359,11 +369,20 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (shopGUI != null  && shopGUI.activeSelf)
 		{
-			shopGUI.SetActive(false);
-			_currencyManager.canvasGroup.DOFade(0, 0.5f);
-			dialogueGUI.SetActive(true);
-			dialogueController.isEndText = true;
-			dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
+			var shopCloseSeq = DOTween.Sequence().SetUpdate(true);
+			
+			shopCloseSeq.Append(shopTitleText.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
+			shopCloseSeq.Append(shopInfo.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
+			shopCloseSeq.Append(shopBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
+
+			shopCloseSeq.OnComplete(() =>
+			{
+				shopGUI.SetActive(false);
+				_currencyManager.canvasGroup.DOFade(0, 0.5f);
+				dialogueGUI.SetActive(true);
+				dialogueController.isEndText = true;
+				dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
+			});
 		}
 		else if (settingGui.activeSelf)
 		{
@@ -431,13 +450,13 @@ public class MenuHandler : MonoBehaviour
 	
 	public void EnableDialogueBox(InputAction.CallbackContext context)
 	{
-		if (!context.performed || characterMovement.uiOpen || mapCamera.activeSelf) return;
+		if (!context.performed || characterMovement.uiOpen || (mapCamera != null && mapCamera.activeSelf)) return;
 		TriggerDialogue(true, dialogueController);
 	}
 
 	public void TriggerDialogue(bool isDistanceBased, dialogueControllerScript controller)
 	{
-		if (characterMovement.uiOpen || mapCamera.activeSelf) return;
+		if (characterMovement.uiOpen || (mapCamera != null && mapCamera.activeSelf)) return;
 		if (_itemPickupHandler.isPlrNearDialogue && isDistanceBased)
 		{
 			dialogueGUI.SetActive(true);
