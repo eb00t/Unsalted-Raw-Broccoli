@@ -15,7 +15,7 @@ public class BlackoutManager : MonoBehaviour
     public bool blackoutComplete;
     private float _lerpTime;
     private bool _fadedOut;
-    private float _failSafeTimer = 15;
+    public float failSafeTimer;
     private bool _loading = true;
     private float _timer = 2;
 
@@ -24,14 +24,7 @@ public class BlackoutManager : MonoBehaviour
 
     private void Start()
     {
-        if (LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.FinalBoss)
-        {
-            _failSafeTimer = 6;
-        }
-        else
-        {
-            _failSafeTimer = 10;
-        }
+        failSafeTimer = 5;
     }
 
     private void Awake()
@@ -72,8 +65,8 @@ public class BlackoutManager : MonoBehaviour
     {
         if (_loading)
         {
-            _failSafeTimer -= Time.deltaTime;
-            if (_failSafeTimer <= 0)
+            failSafeTimer -= Time.deltaTime;
+            if (failSafeTimer <= 0)
             {
                 Debug.LogError("Failsafe timer has expired, reloading scene to fix errors.");
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -100,6 +93,8 @@ public class BlackoutManager : MonoBehaviour
                     LowerOpacity();
                 }
             }
+            
+            Debug.Log("Time until reset: " + failSafeTimer);
         }
     }
     

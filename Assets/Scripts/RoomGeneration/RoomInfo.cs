@@ -108,6 +108,7 @@ public class RoomInfo : MonoBehaviour
     void Start()
     {
         LevelBuilder.Instance.spawnedRooms.Add(gameObject); //  Add to the list of rooms already in the level
+        BlackoutManager.Instance.failSafeTimer += 0.25f;
         foreach (var lit in gameObject.GetComponentsInChildren<Light>())
         {
             LightManager.Instance.allRoomLights.Add(lit);
