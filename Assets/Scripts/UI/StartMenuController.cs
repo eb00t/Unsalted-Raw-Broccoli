@@ -12,7 +12,7 @@ using UnityEngine.UI;
 public class StartMenuController : MonoBehaviour
 {
 	[SerializeField] private EventSystem eventSystem;
-	[SerializeField] private GameObject playBtn, demoPlayButton, defaultPlayButton, controlsBtn, settingsBtn, quitBtn;
+	[SerializeField] private GameObject playBtn, demoPlayButton, defaultPlayButton, controlsBtn, settingsBtn, quitBtn, settingBck, settingTitle;
 	[SerializeField] private TextMeshProUGUI newGameText;
 
 	[SerializeField] private GameObject controlGui, settingGui, menuGui, blackout, load;
@@ -155,16 +155,75 @@ public class StartMenuController : MonoBehaviour
 		
 		if (settingGui.activeSelf)
 		{
-			settingGui.SetActive(false);
-			menuGui.SetActive(true);
-			SwitchSelected(settingsBtn);
+			var settingsSequence = DOTween.Sequence().SetUpdate(true);
+
+			foreach (var t in settingBck.GetComponentInChildren<GridLayoutGroup>().GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					settingsSequence.Join(t.DOScale(new Vector3(1, 0, 1), 0.1f));
+				}
+			}
+			
+			settingsSequence.OnComplete(() =>
+			{
+				var settingCloseSeq = DOTween.Sequence().SetUpdate(true);
+				settingCloseSeq.Append(settingTitle.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
+				settingCloseSeq.Append(settingBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
+				
+				settingCloseSeq.OnComplete(() =>
+				{
+					ButtonHandler.Instance.PlayBackSound();
+					settingGui.SetActive(false);
+					menuGui.SetActive(true);
+					SwitchSelected(settingsBtn);
+				});
+			});
 		}
 		else if (controlGui.activeSelf)
 		{
-			controlGui.SetActive(false);
-			menuGui.SetActive(true);
-			SwitchSelected(controlsBtn);
+			controlGui.GetComponent<CheckControls>().CloseControls(null, this);
 		}
+	}
+	
+	public void OnControlsClosed()
+	{
+		ButtonHandler.Instance.PlayBackSound();
+		controlGui.SetActive(false);
+		menuGui.SetActive(true);
+		SwitchSelected(controlsBtn);
+	}
+	
+	public void OpenSettings()
+	{
+		settingGui.SetActive(true);
+		settingBck.transform.localScale = new Vector3(0, 0.1f, 1);
+
+		foreach (var t in settingBck.GetComponentInChildren<GridLayoutGroup>().GetComponentsInChildren<Transform>())
+		{
+			if (t.CompareTag("Animate"))
+			{
+				t.localScale = new Vector3(1, 0, 1);
+			}
+		}
+
+		var settingSequence = DOTween.Sequence().SetUpdate(true);
+		settingSequence.Append(settingBck.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack).SetUpdate(true));
+		settingSequence.Append(settingBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack));
+		settingTitle.transform.localScale = new Vector3(1, 0, 1);
+		
+		settingSequence.OnComplete(() =>
+		{
+			settingTitle.transform.DOScaleY(1f, 0.1f).SetUpdate(true);
+			
+			foreach (var t in settingBck.GetComponentInChildren<GridLayoutGroup>().GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					t.DOScale(Vector3.one, 0.1f).SetUpdate(true);
+				}
+			}
+		});
 	}
 	
 	public void FadeInLoadingScreen()

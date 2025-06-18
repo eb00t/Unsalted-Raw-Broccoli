@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
 public class MenuHandler : MonoBehaviour
@@ -27,7 +26,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject grid;
 	[SerializeField] private GameObject invGui, invBck, invTitleText, invContent;
 	[SerializeField] private GameObject toolbarGui;
-	[SerializeField] private GameObject menuGui;
+	[SerializeField] private GameObject menuGui, pauseTitle;
 	[SerializeField] private GameObject quitPopupGui, quitBck;
 	[SerializeField] private GameObject statsGui;
 	[SerializeField] private GameObject infoGui;
@@ -35,7 +34,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject controlGui;
 	[SerializeField] private GameObject diedScreen;
 	[SerializeField] private GameObject infoPopup;
-	public GameObject dialogueGUI, dialogueBck, dialogueTitleText;
+	public GameObject dialogueGUI, dialogueBck, dialogueTitleText, dialogueBodyText;
 	[SerializeField] private GameObject settingsBtn, controlsBtn, quitBtn;
 	[SerializeField] private GameObject slotsTooltip, inventoryTooltip;
 
@@ -83,6 +82,9 @@ public class MenuHandler : MonoBehaviour
 					break;
 				case "SpeakerHolder":
 					dialogueTitleText = t.gameObject;
+					break;
+				case "Normal Text":
+					dialogueBodyText = t.gameObject;
 					break;
 			}
 		}
@@ -336,6 +338,7 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (!context.performed || !dialogueGUI.activeSelf) return;
 
+		SetDialogueActive(false);
 		_dialogueHandler.StopAllCoroutines();
 		_dialogueHandler.index = 0;
 		_dialogueHandler.loadedBodyText.Clear();
@@ -347,8 +350,6 @@ public class MenuHandler : MonoBehaviour
 			_dialogueHandler.flipped = false;
 			_player.GetComponentInChildren<SpriteRenderer>().flipX = false;
 		}
-		
-		SetDialogueActive(false);
 	}
 
 	// when Button East/Esc is pressed close current menu and open previous menus
@@ -421,15 +422,33 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (menuGui.activeSelf)
 		{
-			ButtonHandler.Instance.PlayBackSound();
-			menuGui.SetActive(false);
-			toolbarGui.SetActive(true);
-			statsGui.SetActive(true);
 			SwitchSelected(null);
+
+			pauseTitle.transform.DOScale(new Vector3(1, 0, 1), 0.1f).SetUpdate(true).OnComplete(() =>
+			{
+				var pauseCloseSeq = DOTween.Sequence().SetUpdate(true);
+
+				foreach (var t in menuGui.GetComponentsInChildren<Transform>())
+				{
+					if (t.CompareTag("Animate"))
+					{
+						pauseCloseSeq.Join(t.DOScale(new Vector3(1, 0, 1), 0.1f));
+					}
+				}
+
+				pauseCloseSeq.OnComplete(() =>
+				{
+					ButtonHandler.Instance.PlayBackSound();
+					menuGui.SetActive(false);
+					statsGui.SetActive(true);
+					toolbarGui.SetActive(true);
+				});
+			});
 		}
 		else if (shopGUI != null  && shopGUI.activeSelf)
 		{
 			var shopContentSeq = DOTween.Sequence().SetUpdate(true);
+			SwitchSelected(null);
 			
 			foreach (var t in shopContent.GetComponentsInChildren<Transform>())
 			{
@@ -511,10 +530,7 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (controlGui.activeSelf)
 		{
-			ButtonHandler.Instance.PlayBackSound();
-			controlGui.SetActive(false);
-			menuGui.SetActive(true);
-			SwitchSelected(controlsBtn);
+			controlGui.GetComponent<CheckControls>().CloseControls(this, null);
 		}
 		else if (infoPopup.activeSelf)
 		{
@@ -540,6 +556,14 @@ public class MenuHandler : MonoBehaviour
 				});
 			});
 		}
+	}
+
+	public void OnControlsClosed()
+	{
+		ButtonHandler.Instance.PlayBackSound();
+		controlGui.SetActive(false);
+		menuGui.SetActive(true);
+		SwitchSelected(controlsBtn);
 	}
 
 	public void DeathReload(InputAction.CallbackContext context)
@@ -598,6 +622,7 @@ public class MenuHandler : MonoBehaviour
 			dialogueGUI.SetActive(true);
 			dialogueBck.transform.localScale = new Vector3(0, 0.1f, 1);
 			dialogueTitleText.transform.localScale = new Vector3(1, 0, 1);
+			dialogueBodyText.transform.localScale = new Vector3(1, 1, 1);
 			
 			var dialogueSeq = DOTween.Sequence().SetUpdate(true);
 			dialogueSeq.Append(dialogueBck.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack));
@@ -610,6 +635,7 @@ public class MenuHandler : MonoBehaviour
 		}
 		else
 		{
+			dialogueBodyText.transform.localScale = new Vector3(1, 0, 1);
 			var dialogueCloseSeq = DOTween.Sequence().SetUpdate(true);
 			dialogueCloseSeq.Append(dialogueTitleText.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
 			dialogueCloseSeq.Append(dialogueBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
@@ -628,19 +654,60 @@ public class MenuHandler : MonoBehaviour
 		if (characterMovement.uiOpen && !menuGui.activeSelf) return;
 		if (!_blackoutManager.blackoutComplete) return;
 		
-		menuGui.SetActive(!menuGui.activeSelf);
-		
-		if (menuGui.activeSelf)
+		if (!menuGui.activeSelf)
 		{
-			SwitchSelected(selectedMenu);
+			menuGui.SetActive(true);
+			var pauseOpenSeq = DOTween.Sequence().SetUpdate(true);
 			statsGui.SetActive(false);
 			toolbarGui.SetActive(false);
+			pauseTitle.transform.localScale = new Vector3(1, 0, 1);
+			
+			foreach (var t in menuGui.GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					t.localScale = new Vector3(1, 0, 1);
+				}
+			}
+			
+			foreach (var t in menuGui.GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					pauseOpenSeq.Join(t.DOScale(new Vector3(1, 1, 1), 0.1f));
+				}
+			}
+
+			pauseOpenSeq.OnComplete(() =>
+			{
+				pauseTitle.transform.DOScale(Vector3.one, 0.1f).SetUpdate(true);
+				SwitchSelected(selectedMenu);
+			});
 		}
-		else
+		else if (menuGui.activeSelf)
 		{
 			SwitchSelected(null);
-			statsGui.SetActive(true);
-			toolbarGui.SetActive(true);
+			
+			pauseTitle.transform.DOScale(new Vector3(1, 0, 1), 0.1f).SetUpdate(true).OnComplete(() =>
+			{
+				var pauseCloseSeq = DOTween.Sequence().SetUpdate(true);
+				
+				foreach (var t in menuGui.GetComponentsInChildren<Transform>())
+				{
+					if (t.CompareTag("Animate"))
+					{
+						pauseCloseSeq.Join(t.DOScale(new Vector3(1, 0, 1), 0.1f));
+					}
+				}
+
+				pauseCloseSeq.OnComplete(() =>
+				{
+					ButtonHandler.Instance.PlayBackSound();
+					menuGui.SetActive(false);
+					statsGui.SetActive(true);
+					toolbarGui.SetActive(true);
+				});
+			});
 		}
 	}
 
