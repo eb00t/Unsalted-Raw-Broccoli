@@ -1974,11 +1974,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventSystem: {fileID: 418954194}
   playBtn: {fileID: 1230989200}
-  demoPlayButton: {fileID: 0}
-  defaultPlayButton: {fileID: 0}
+  demoPlayButton: {fileID: 1230989200}
+  defaultPlayButton: {fileID: 1230989200}
   controlsBtn: {fileID: 0}
   settingsBtn: {fileID: 0}
   quitBtn: {fileID: 1371088059}
+  settingBck: {fileID: 0}
+  settingTitle: {fileID: 0}
   newGameText: {fileID: 0}
   controlGui: {fileID: 0}
   settingGui: {fileID: 0}
@@ -1991,14 +1993,10 @@ MonoBehaviour:
   vignette: {fileID: 0}
   newIconImg: {fileID: 0}
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
-  blackoutColor: {r: 0, g: 0, b: 0, a: 0}
-  loadImgColor: {r: 0, g: 0, b: 0, a: 0}
-  loadImg2Color: {r: 0, g: 0, b: 0, a: 0}
-  vignetteColor: {r: 0, g: 0, b: 0, a: 0}
-  transparentColor: {r: 0, g: 0, b: 0, a: 0}
   isCredits: 1
   creditsFinished: 0
   playSprite: {fileID: 0}
+  loadingGroup: {fileID: 0}
 --- !u!114 &1349690018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3210,7 +3208,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 63e2ae2ffee065b4c974dec91af3cd5d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d7d488b2974288747abcac8366656307, type: 3}
   m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3219,7 +3217,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 2
 --- !u!222 &2111123488
 CanvasRenderer:
   m_ObjectHideFlags: 0
