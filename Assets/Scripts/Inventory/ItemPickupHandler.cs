@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class ItemPickupHandler : MonoBehaviour
 {
@@ -51,20 +52,20 @@ public class ItemPickupHandler : MonoBehaviour
 
         if (isNearPassive)
         {
-            TogglePrompt("Pick up passive item", true,  ControlsManager.ButtonType.Interact, "", null);
+            TogglePrompt("Pick up passive item", true,  ControlsManager.ButtonType.Interact, "", null, false);
             return;
         }
         
         switch (itemCount)
         {
             case 0:
-                TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null);
+                TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
                 break;
             case 1:
-                TogglePrompt("Pick up consumable", true, ControlsManager.ButtonType.Interact, "",null);
+                TogglePrompt("Pick up consumable", true, ControlsManager.ButtonType.Interact, "",null, false);
                 break;
             default:
-                TogglePrompt("Pick up consumables", true, ControlsManager.ButtonType.Interact, "", null);
+                TogglePrompt("Pick up consumables", true, ControlsManager.ButtonType.Interact, "", null, false);
                 break;
         }
     }
@@ -82,11 +83,29 @@ public class ItemPickupHandler : MonoBehaviour
         }
     }
 
-    public void TogglePrompt(string promptText, bool toggle, ControlsManager.ButtonType button, string betweenText, ControlsManager.ButtonType? button2)
+    public void TogglePrompt(string promptText, bool toggle, ControlsManager.ButtonType button, string betweenText, ControlsManager.ButtonType? button2, bool forceTween)
     {
         if (toggle)
         {
-            rectTransform.anchoredPosition = new Vector3(0, 100, 0);
+            if (rectTransform.anchoredPosition.y < 0 || forceTween) // animate
+            {
+                if (forceTween)
+                {
+                    rectTransform.DOScale(new Vector3(0, 1, 1), .1f).SetUpdate(true).OnComplete(() =>
+                    {
+                        rectTransform.anchoredPosition = new Vector3(0, 100, 0);
+                        rectTransform.localScale = new Vector3(0, 1, 1);
+                        rectTransform.DOScale(new Vector3(1, 1, 1), .1f).SetUpdate(true);
+                    });
+                }
+                else
+                {
+                    rectTransform.anchoredPosition = new Vector3(0, 100, 0);
+                    rectTransform.localScale = new Vector3(0, 1, 1);
+                    rectTransform.DOScale(new Vector3(1, 1, 1), .1f).SetUpdate(true);
+                }
+            }
+            
             text.text = promptText;
             updateButton1.button = button;
 
@@ -109,8 +128,14 @@ public class ItemPickupHandler : MonoBehaviour
         }
         else
         {
-            rectTransform.anchoredPosition = new Vector3(0, -100, 0);
-            text.text = "";
+            if (rectTransform.anchoredPosition.y > 0 || forceTween) // animate
+            {
+                text.text = "";
+                rectTransform.DOScale(new Vector3(0, 1, 1), .1f).SetUpdate(true).OnComplete(() =>
+                {
+                    rectTransform.anchoredPosition = new Vector3(0, -100, 0);
+                });
+            }
         }
     }
 }

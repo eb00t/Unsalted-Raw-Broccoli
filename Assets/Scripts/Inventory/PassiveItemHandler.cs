@@ -3,6 +3,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class PassiveItemHandler : MonoBehaviour
 {
@@ -35,16 +36,42 @@ public class PassiveItemHandler : MonoBehaviour
     {
         if (infoPopup.activeSelf)
         {
-            _itemPickupHandler.TogglePrompt("Close", true, ControlsManager.ButtonType.Back, "", null);
+            _itemPickupHandler.TogglePrompt("Close", true, ControlsManager.ButtonType.Back, "", null, false);
         }
     }
 
     private void TriggerInfoPopup(PermanentPassiveItem passiveItem)
     {
+        
         infoPopup.SetActive(true);
+        infoPopup.transform.localScale = new Vector3(0, 0.1f, 1);
+		
+        foreach (var t in infoPopup.GetComponentsInChildren<Transform>())
+        {
+            if (t.CompareTag("Animate"))
+            {
+                t.localScale = new Vector3(1, 0, 1);
+            }
+        }
+		
+        var infoSeq = DOTween.Sequence().SetUpdate(true);
+        infoSeq.Append(infoPopup.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack).SetUpdate(true));
+        infoSeq.Append(infoPopup.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack));
+
+        infoSeq.OnComplete(() =>
+        {
+            foreach (var t in infoPopup.GetComponentsInChildren<Transform>())
+            {
+                if (t.CompareTag("Animate"))
+                {
+                    t.DOScale(Vector3.one, 0.1f).SetUpdate(true);
+                }
+            }
+        });
+        
         infoTitle.text = passiveItem.title;
         infoDesc.text = passiveItem.description;
-        _itemPickupHandler.TogglePrompt("Close", true, ControlsManager.ButtonType.Back, "", null);
+        _itemPickupHandler.TogglePrompt("Close", true, ControlsManager.ButtonType.Back, "", null, false);
     }
 
     // checks each slot of passive items, if a free slot is found then equip the new passive there

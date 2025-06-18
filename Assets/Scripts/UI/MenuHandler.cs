@@ -518,8 +518,27 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (infoPopup.activeSelf)
 		{
-			infoPopup.SetActive(false);
-			_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Back, "", null);
+			var infoSeq = DOTween.Sequence().SetUpdate(true);
+			
+			foreach (var t in infoPopup.GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					infoSeq.Join(t.DOScale(new Vector3(1, 0, 1), 0.1f));
+				}
+			}
+
+			infoSeq.OnComplete(() =>
+			{
+				var infoCloseSeq = DOTween.Sequence().SetUpdate(true);
+				infoCloseSeq.Append(infoPopup.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
+
+				infoCloseSeq.OnComplete(() =>
+				{
+					infoPopup.SetActive(false);
+					_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Back, "", null, false);
+				});
+			});
 		}
 	}
 

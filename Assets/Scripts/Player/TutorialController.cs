@@ -196,7 +196,7 @@ public class TutorialController : MonoBehaviour
 
     private void ShowMessage(string message, ControlsManager.ButtonType button, string betweenText,ControlsManager.ButtonType? button2)
     {
-        _itemPickupHandler.TogglePrompt(message, true, button, betweenText, button2);
+        _itemPickupHandler.TogglePrompt(message, true, button, betweenText, button2, true);
     }
 
     public void DashPerformed(InputAction.CallbackContext context)
