@@ -29,6 +29,7 @@ public class LevelBuilder : MonoBehaviour
     }
 
     [field: Header("Configuration")] 
+    [field: Tooltip("Replaces all normal rooms and special spawns with a single room.")]public bool specificRoomsMode;
     public bool manuallySetRoomAmount;
     public int howManyRoomsToSpawn;
     public int roomsDiscarded;
@@ -241,6 +242,15 @@ public class LevelBuilder : MonoBehaviour
             case LevelMode.FinalBoss:
                 _bossRoomPath = "Room Layouts/Boss Rooms/Hands Boss";
                 break;
+        }
+
+        if (specificRoomsMode)
+        {
+            _floorSpecificRoomPath = "Room Layouts/Other/Specific Rooms Mode";
+            _multiFloorRoomPath =  "Room Layouts/Other/Specific Rooms Mode";
+            _specialRoomPath = "Room Layouts/Other/Specific Rooms Mode";
+            loreRoomChance = false;
+            lootRoomsToSpawn = 0;
         }
 
         foreach (var room in Resources.LoadAll<GameObject>(_floorSpecificRoomPath))
@@ -504,7 +514,7 @@ public class LevelBuilder : MonoBehaviour
                 }
                 break;  
         }
-        if (spawningRoomInfo.specialRoom && !spawningRoomInfo.markedForDiscard) 
+        if (spawningRoomInfo.specialRoom && !spawningRoomInfo.markedForDiscard && !specificRoomsMode) 
         {
             possibleSpecialRooms.Remove(possibleSpecialRooms[roomRandomNumber]); // Remove the rare room from the list of rooms that can spawn
         }
