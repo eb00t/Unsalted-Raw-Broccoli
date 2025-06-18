@@ -19,18 +19,23 @@ public class DoorInfo : MonoBehaviour
     private bool pos;
     private Animator _doorAnimator;
     public SpriteRenderer doorIcon;
+
     private void Awake()
     {
         _renderer = GetComponent<Renderer>();
         _roomInfo = transform.root.GetComponent<RoomInfo>();
-        _roomScripting =  transform.root.GetComponent<RoomScripting>();
+        _roomScripting = transform.root.GetComponent<RoomScripting>();
         _initialPosition = transform.position;
         _doorAnimator = gameObject.GetComponent<Animator>();
         doorIcon = GetComponentInChildren<SpriteRenderer>();
-        doorIcon.enabled = false;
+        if (_roomScripting != null)
+        {
+            doorIcon.enabled = false;
+        }
     }
 
-    public void CheckDoors() // Check if a connector or door (from another room) is nearby, and open it up. Also contains code to instantiate connectors to distant rooms.
+    public void
+        CheckDoors() // Check if a connector or door (from another room) is nearby, and open it up. Also contains code to instantiate connectors to distant rooms.
     {
         Vector3 direction;
         switch (tag)
@@ -62,7 +67,8 @@ public class DoorInfo : MonoBehaviour
 
         if (Physics.Raycast(transform.position, direction, out RaycastHit hit, 1))
         {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Connector Intersection Checker") && !hit.transform.gameObject.tag.Contains("Door"))
+            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Connector Intersection Checker") &&
+                !hit.transform.gameObject.tag.Contains("Door"))
             {
                 Debug.Log(name + " hit a connector! " + "(" + hit.transform.gameObject.name + ")");
                 if (!_roomInfo.attachedConnectors.Contains(hit.transform.gameObject))
@@ -85,7 +91,8 @@ public class DoorInfo : MonoBehaviour
 
                 OpenDoor();
             }
-            else if (hit.transform.gameObject.tag.Contains("Door") && hit.transform.gameObject.layer != LayerMask.NameToLayer("Connector Intersection Checker"))
+            else if (hit.transform.gameObject.tag.Contains("Door") && hit.transform.gameObject.layer !=
+                     LayerMask.NameToLayer("Connector Intersection Checker"))
             {
                 var transformPosition = hit.transform.position;
                 if (transformPosition.y == gameObject.transform.position.y)
@@ -96,7 +103,8 @@ public class DoorInfo : MonoBehaviour
                     _roomInfo.usableDoors.Add(gameObject);
                 }
             }
-            else if (!hit.transform.gameObject.tag.Contains("Door") && hit.transform.gameObject.layer != LayerMask.NameToLayer("Connector Intersection Checker"))
+            else if (!hit.transform.gameObject.tag.Contains("Door") && hit.transform.gameObject.layer !=
+                     LayerMask.NameToLayer("Connector Intersection Checker"))
             {
                 CloseDoor();
             }
@@ -181,30 +189,34 @@ public class DoorInfo : MonoBehaviour
     }
 
     public void OpenDoor()
-   { 
-       hasDoor = true;
-       doorIcon.color = Color.grey;
-       Debug.Log("Opening door (" + gameObject.name + ") in " + transform.root.name);
-      
-   }
+    {
+        hasDoor = true;
+        doorIcon.color = Color.grey;
+        Debug.Log("Opening door (" + gameObject.name + ") in " + transform.root.name);
 
-   public void CloseDoor()
-   {
-       doorIcon.color = Color.white;
-       hasDoor = false;
-       Debug.Log("Closing door (" + gameObject.name + ") in " + transform.root.name);
-   }
-   public void PlaySlamSound()
-   {
-       AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DoorSlam, transform.position);
-   }
+    }
 
-   private void Update()
-   {
-       _doorAnimator.SetBool(CloseDoors, !hasDoor);
-       if (_roomScripting.playerHasEnteredRoom)
-       {
-           doorIcon.enabled = true;
-       }
-   }
+    public void CloseDoor()
+    {
+        doorIcon.color = Color.white;
+        hasDoor = false;
+        Debug.Log("Closing door (" + gameObject.name + ") in " + transform.root.name);
+    }
+
+    public void PlaySlamSound()
+    {
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.DoorSlam, transform.position);
+    }
+
+    private void Update()
+    {
+        _doorAnimator.SetBool(CloseDoors, !hasDoor);
+        if (_roomScripting != null)
+        {
+            if (_roomScripting.playerHasEnteredRoom && doorIcon.enabled == false)
+            {
+                doorIcon.enabled = true;
+            }
+        }
+    }
 }

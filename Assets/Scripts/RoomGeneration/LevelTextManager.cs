@@ -25,81 +25,55 @@ public class LevelTextManager : MonoBehaviour
 
     private void Start()
     {
-        switch (LevelBuilder.Instance.currentFloor)
-        {
-            case LevelBuilder.LevelMode.TEST:
-                titleText.text = ("TEST FLOOR");
-                break;
-            case LevelBuilder.LevelMode.Floor1:
-                titleText.text = ("FLOOR 1");
-                break;
-            case LevelBuilder.LevelMode.Floor2:
-                titleText.text = ("FLOOR 2");
-                break;
-            case LevelBuilder.LevelMode.Floor3:
-                titleText.text = ("FLOOR 3");
-                break;
-            case LevelBuilder.LevelMode.Floor4:
-                titleText.text = ("FLOOR 4");
-                break;
-            case LevelBuilder.LevelMode.FinalBoss:
-                titleText.text = ("FLOOR X");
-                break;
-            case LevelBuilder.LevelMode.Intermission:
-                titleText.text = ("INTERMISSION");
-                break;
-            case LevelBuilder.LevelMode.Tutorial:
-                titleText.text = ("TUTORIAL");
-                break;
-            case LevelBuilder.LevelMode.TitleScreen:
-                titleText.text = ("");
-                break;
-            case LevelBuilder.LevelMode.EndScreen:
-                titleText.text = ("...");
-                break;
-            default:
-                titleText.text = ("what are you doing here, man?");
-                break;
-        }
-
         if (subtitleText == null)
         {
             subtitleText = transform.Find("Subtitle").GetComponent<TMP_Text>();
         }
-
+        
         switch (LevelBuilder.Instance.currentFloor)
         {
             case LevelBuilder.LevelMode.TEST:
+                titleText.text = ("TEST FLOOR");
                 subtitleText.text = ("You probably shouldn't be here...");
                 break;
             case LevelBuilder.LevelMode.Floor1:
+                titleText.text = ("FLOOR 1");
                 subtitleText.text = ("And so it begins...");
                 break;
             case LevelBuilder.LevelMode.Floor2:
+                titleText.text = ("FLOOR 2");
                 subtitleText.text = ("Your journey continues...");
                 break;
             case LevelBuilder.LevelMode.Floor3:
+                titleText.text = ("FLOOR 3");
                 subtitleText.text = ("Welcome to the midpoint.");
                 break;
             case LevelBuilder.LevelMode.Floor4:
+                titleText.text = ("FLOOR 4");
                 subtitleText.text = ("...");
                 break;
             case LevelBuilder.LevelMode.FinalBoss:
+                titleText.text = ("FLOOR X");
                 subtitleText.text = ("The 'final' showdown...");
                 break;
             case LevelBuilder.LevelMode.Intermission:
-                subtitleText.text = ("A brief respite...");
+                titleText.text = ("CONSTRUCT LOBBY");
+                subtitleText.text = ("A place of beginnings and endings...");
                 break;
             case LevelBuilder.LevelMode.Tutorial:
-                subtitleText.text = ("");
+                titleText.text = ("TUTORIAL");
+                subtitleText.text = ("Blank Class-struct...");
                 break;
             case LevelBuilder.LevelMode.TitleScreen:
+                titleText.text = ("");
                 subtitleText.text = ("");
                 break;
             case LevelBuilder.LevelMode.EndScreen:
+                titleText.text = ("...");
                 subtitleText.text = ("...");
                 break;
             default:
+                titleText.text = ("what are you doing here, man?");
                 subtitleText.text = ("no, seriously. something went wrong.");
                 break;
         }

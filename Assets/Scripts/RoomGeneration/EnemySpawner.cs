@@ -32,7 +32,10 @@ public class EnemySpawner : MonoBehaviour
         _waves = RandomiseNumber(100);
         for (int i = 0; i < _waveCount; i++)
         {
-            roomScripting._enemyCount++;
+            if (roomScripting != null)
+            {
+                roomScripting._enemyCount++;
+            }
         }
         switch (_waves)
         {
@@ -147,7 +150,10 @@ public class EnemySpawner : MonoBehaviour
     void DisableSpawner()
     {
         disabled = true;
-        roomScripting.spawners.Remove(gameObject);
+        if (roomScripting != null)
+        {
+            roomScripting.spawners.Remove(gameObject);
+        }
     }
 
     private int RandomiseNumber(int setSize)
