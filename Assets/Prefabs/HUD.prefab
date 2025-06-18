@@ -258,6 +258,7 @@ MonoBehaviour:
   toolbarGui: {fileID: 2977901768140214780}
   menuGui: {fileID: 7648663368213562334}
   quitPopupGui: {fileID: 2160997670955851982}
+  quitBck: {fileID: 9038881051870523811}
   statsGui: {fileID: 4386170707488329187}
   infoGui: {fileID: 8972703540347450302}
   settingGui: {fileID: 5827763351393567098}
@@ -267,6 +268,8 @@ MonoBehaviour:
   diedScreen: {fileID: 1338302479806800677}
   infoPopup: {fileID: 2167424461864222420}
   dialogueGUI: {fileID: 0}
+  dialogueBck: {fileID: 0}
+  dialogueTitleText: {fileID: 0}
   settingsBtn: {fileID: 1580708610385819531}
   controlsBtn: {fileID: 4118285184992572567}
   quitBtn: {fileID: 3539846515323570109}
@@ -2855,7 +2858,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 1
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 2747959726039864593}
     m_SelectOnDown: {fileID: 2747959726039864593}
@@ -3138,7 +3141,7 @@ GameObject:
   - component: {fileID: 942665867727979236}
   m_Layer: 5
   m_Name: GoBack
-  m_TagString: Untagged
+  m_TagString: Animate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3160,9 +3163,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -2.5, y: 10}
+  m_AnchoredPosition: {x: -2.5000305, y: 30.000015}
   m_SizeDelta: {x: 110, y: 40}
-  m_Pivot: {x: 1, y: 0}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &3267498016457566832
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3814,7 +3817,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 1
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 5770622559261477446}
     m_SelectOnDown: {fileID: 5770622559261477446}
@@ -5158,7 +5161,7 @@ GameObject:
   - component: {fileID: 6843067626953575327}
   m_Layer: 5
   m_Name: Quit
-  m_TagString: Untagged
+  m_TagString: Animate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5180,9 +5183,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 2.5, y: 10}
+  m_AnchoredPosition: {x: 2.5000305, y: 30.000015}
   m_SizeDelta: {x: 110, y: 40}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &6399285071639736816
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6837,7 +6840,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 1
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 5044751103955632724}
     m_SelectOnDown: {fileID: 5044751103955632724}
@@ -6868,10 +6871,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2160997670955851982}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 4309984013583806159}
+        m_TargetAssemblyTypeName: MenuHandler, Assembly-CSharp
+        m_MethodName: OpenQuit
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -7583,7 +7586,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 1
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 8635110280975648429}
     m_SelectOnDown: {fileID: 8635110280975648429}
@@ -13314,7 +13317,7 @@ GameObject:
   - component: {fileID: 774956296922020947}
   m_Layer: 5
   m_Name: Txt
-  m_TagString: Untagged
+  m_TagString: Animate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18105,7 +18108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 1
     m_WrapAround: 1
     m_SelectOnUp: {fileID: 3295345833594119482}
     m_SelectOnDown: {fileID: 3295345833594119482}
@@ -19959,32 +19962,32 @@ PrefabInstance:
     - target: {fileID: 6000858653121267040, guid: 3e3d954567baa764f89ab13ae51ae07d,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6000858653121267040, guid: 3e3d954567baa764f89ab13ae51ae07d,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6000858653121267040, guid: 3e3d954567baa764f89ab13ae51ae07d,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6000858653121267040, guid: 3e3d954567baa764f89ab13ae51ae07d,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6000858653121267040, guid: 3e3d954567baa764f89ab13ae51ae07d,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 500
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6000858653121267040, guid: 3e3d954567baa764f89ab13ae51ae07d,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 600
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6000858653121267040, guid: 3e3d954567baa764f89ab13ae51ae07d,
         type: 3}

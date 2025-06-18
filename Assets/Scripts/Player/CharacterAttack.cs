@@ -667,7 +667,7 @@ public class CharacterAttack : MonoBehaviour
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
             _enemyDamageEvent.release();
-            StartCoroutine(TimedVibration(0.1f, 0.25f, .25f));
+            //StartCoroutine(TimedVibration(0.1f, 0.25f, .25f));
             
             if (_impulseSource != null)
             {
@@ -687,7 +687,7 @@ public class CharacterAttack : MonoBehaviour
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
             _enemyDamageEvent.release();
-            StartCoroutine(TimedVibration(0.25f, 0.5f, .3f));
+            //StartCoroutine(TimedVibration(0.25f, 0.5f, .3f));
             
             if (_impulseSource != null)
             {
@@ -707,7 +707,7 @@ public class CharacterAttack : MonoBehaviour
             _enemyDamageEvent.set3DAttributes(new Vector3(transform.position.x, transform.position.y, transform.position.z).To3DAttributes());
             _enemyDamageEvent.start();
             _enemyDamageEvent.release();
-            StartCoroutine(TimedVibration(0.35f, .75f, .5f));
+            //StartCoroutine(TimedVibration(0.35f, .75f, .5f));
             if (_impulseSource != null)
             {
                 _impulseSource.m_ImpulseDefinition.m_ImpulseDuration = 0.2f;

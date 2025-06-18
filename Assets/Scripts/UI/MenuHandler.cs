@@ -28,7 +28,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject invGui, invBck, invTitleText, invContent;
 	[SerializeField] private GameObject toolbarGui;
 	[SerializeField] private GameObject menuGui;
-	[SerializeField] private GameObject quitPopupGui;
+	[SerializeField] private GameObject quitPopupGui, quitBck;
 	[SerializeField] private GameObject statsGui;
 	[SerializeField] private GameObject infoGui;
 	[SerializeField] private GameObject settingGui, settingBck, settingTitleText;
@@ -485,10 +485,29 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (quitPopupGui.activeSelf)
 		{
-			ButtonHandler.Instance.PlayBackSound();
-			quitPopupGui.SetActive(false);
-			menuGui.SetActive(true);
-			SwitchSelected(quitBtn);
+			var quitCloseSeq = DOTween.Sequence().SetUpdate(true);
+			
+			foreach (var t in quitBck.GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					quitCloseSeq.Join(t.DOScale(new Vector3(1, 0, 1), 0.1f));
+				}
+			}
+
+			quitCloseSeq.OnComplete(() =>
+			{
+				var quitSeq = DOTween.Sequence().SetUpdate(true);
+				quitSeq.Append(quitBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
+
+				quitSeq.OnComplete(() =>
+				{
+					ButtonHandler.Instance.PlayBackSound();
+					quitPopupGui.SetActive(false);
+					menuGui.SetActive(true);
+					SwitchSelected(quitBtn);
+				});
+			});
 		}
 		else if (controlGui.activeSelf)
 		{
@@ -694,6 +713,35 @@ public class MenuHandler : MonoBehaviour
 			settingTitleText.transform.DOScaleY(1f, 0.1f).SetUpdate(true);
 			
 			foreach (var t in settingBck.GetComponentInChildren<GridLayoutGroup>().GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					t.DOScale(Vector3.one, 0.1f).SetUpdate(true);
+				}
+			}
+		});
+	}
+
+	public void OpenQuit()
+	{
+		quitPopupGui.SetActive(true);
+		quitBck.transform.localScale = new Vector3(0, 0.1f, 1);
+		
+		foreach (var t in quitBck.GetComponentsInChildren<Transform>())
+		{
+			if (t.CompareTag("Animate"))
+			{
+				t.localScale = new Vector3(1, 0, 1);
+			}
+		}
+		
+		var quitSeq = DOTween.Sequence().SetUpdate(true);
+		quitSeq.Append(quitBck.transform.DOScale(new Vector3(1, 0.1f, 1), 0.15f).SetEase(Ease.OutBack).SetUpdate(true));
+		quitSeq.Append(quitBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack));
+
+		quitSeq.OnComplete(() =>
+		{
+			foreach (var t in quitBck.GetComponentsInChildren<Transform>())
 			{
 				if (t.CompareTag("Animate"))
 				{
