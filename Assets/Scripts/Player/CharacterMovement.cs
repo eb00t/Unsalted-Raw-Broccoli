@@ -166,50 +166,6 @@ public class CharacterMovement : MonoBehaviour
             _jumpHeld = false;
         }
     }
-    
-    
-    /* ^ cut from Jump method for clarity
-     else if (!grounded && wallJumpingCounter > 0f && (startSlideTimer || sliding) && !isWallJumping)
-        {
-            slideAllowed = false;
-            startSlideTimer = false;
-            isWallJumping = true;
-
-            var direction = (input != 0) ? -Mathf.Sign(input) : -Mathf.Sign(transform.localScale.x);
-            //rb.velocity = new Vector3(direction * wallJumpForce.x, wallJumpForce.y, 0f);
-            Vector3 _wallJumpForce = new Vector3(direction * wallJumpForce.x, wallJumpForce.y, 0f);
-            rb.AddForce(_wallJumpForce);
-
-            wallJumpingCounter = 0f;
-
-            if (!lockedOn && Mathf.Abs(rb.velocity.x) > 0.1f)
-            {
-                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-            }
-
-            Invoke(nameof(stopWallJump), wallJumpingDuration);
-        }*/
-
-/*private void wallJump()
-{
-    if (uiOpen) return;
-    if (slideAllowed || startSlideTimer || grounded)
-    {
-        isWallJumping = false;
-        wallJumpingCounter = wallJumpingTime;
-        CancelInvoke(nameof(stopWallJump));
-    }
-    else
-    {
-        wallJumpingCounter -= Time.deltaTime;
-    }
-}
-
-private void stopWallJump()
-{
-    if (uiOpen) return;
-    isWallJumping = false;
-}*/
 
     public void Dash(InputAction.CallbackContext ctx)
     {
@@ -278,9 +234,7 @@ private void stopWallJump()
             _rb.velocity = new Vector3(0, _rb.velocity.y, 0);
             _playerAnimator.SetFloat(Input1, 0);
         }
-        //_groundTimer -= Time.deltaTime;
-        //_groundTimer = Mathf.Clamp(_groundTimer, 0, 1f);
-        //PlayerAnimator.SetBool("WallJump", isWallJumping);
+        
         velocity = _rb.velocity;
         _playerAnimator.SetFloat(XVelocity, _rb.velocity.x);
         _playerAnimator.SetFloat(YVelocity, _rb.velocity.y);
@@ -295,8 +249,6 @@ private void stopWallJump()
         
         if (uiOpen) return;
         
-        //wallJump();
-        
         // if the player is moving or crouching while not locked on this updates the players local scale based on vel/input
         if (!uiOpen && !LockedOn && (Mathf.Abs(velocity.x) >= 0.1f) || (isCrouching && Mathf.Abs(_input) > 0))
         {
@@ -308,13 +260,6 @@ private void stopWallJump()
                 transform.localScale = new Vector3(dir * localScale.x, localScale.y, localScale.z);
             }
         }
-
-        /*
-        if (!uiOpen && !LockedOn && _playerAnimator.GetBool(WallCling) && Mathf.Sign(transform.localScale.x) != Mathf.Sign(_input)) // if wallcling is true and player isn't facing direction of input, flip the player
-        {
-            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-        }
-        */
 
         var direction = Mathf.Sign(_input);
         var scaleDirection = Mathf.Sign(transform.localScale.x);
@@ -328,34 +273,9 @@ private void stopWallJump()
             _playerAnimator.SetBool(IsWalkingBackwards, false);
         }
 
-        /*if (startSlideTimer)
-        {
-            slideTimer += 10f * Time.deltaTime;
-            //Debug.Log(slideTimer);
-            if(slideTimer >= slideHoldTime)
-            {
-                startSlide = true;
-                slideTimer = 0f;
-                startSlideTimer = false;
-            }
-        }*/
-        
-        /*
-        if (startDashTimer)
-        {
-            dashTimer += Time.deltaTime;
-            if(dashTimer >= dashBreak)
-            {
-                dashAllowed = true;
-                dashTimer = 0f;
-                startDashTimer = false;
-            }
-        }
-        */
-
         if (BlackoutManager.Instance != null)
         {
-            //Stop player moving while game is loading
+            // Stop player moving while game is loading
             if (BlackoutManager.Instance.blackoutComplete == false)
             {
                 canMove = false;
@@ -463,118 +383,7 @@ private void stopWallJump()
         {
             _jumpBuffered = false;
         }
-
-        /*if (slideAllowed && !grounded)
-        {
-            Vector3 wallSlide = new Vector3(rb.velocity.x, -slideSpeed, 0f);
-            rb.velocity = wallSlide;
-            sliding = true;
-            Debug.Log("StartSlide");
-        }
-        else sliding = false;*/
     }
-
-    /*
-    private void OnTriggerStay(Collider other)
-    {
-        if (uiOpen) return;
-
-        if (other.gameObject.layer == 10 && _playerGroundPosition.transform.position.y > other.gameObject.transform.position.y)
-        {
-            if (Velocity.y <= 0)
-            {
-                grounded = true;
-                //startSlide = false;
-                doubleJumpPerformed = false;
-                _midAirDashCount = 0;
-                //slideAllowed = false;
-                PlayerAnimator.SetBool("Grounded", true);
-            }
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (fallingThrough)
-        {
-            groundTimer = 0f;
-        }
-        else 
-        {
-            groundTimer = 0.15f;
-        }
-        
-        if (other.gameObject.layer == 10 && groundTimer <= 0)
-        {
-            grounded = false;
-            fallingThrough = false;
-        }
-        else if (groundTimer >= 0)
-        {
-            StartCoroutine(CheckIfStillInAir());
-        }
-    }
-    
-
-    IEnumerator CheckIfStillInAir()
-    {
-        yield return new WaitForSecondsRealtime(groundTimer);
-        if (groundTimer == 0)
-        {
-            grounded = false;
-        }
-        else
-        {
-            grounded = true;
-        }
-    }
-    */
-    
-    /*private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag("Right Wall") || collision.collider.CompareTag("Left Wall"))
-        {
-            if (!grounded && input != 0)
-            {
-                rb.velocity = new Vector3(0f, Mathf.Min(rb.velocity.y, 0f), 0f);
-                rb.useGravity = false;
-                startSlideTimer = true;
-                PlayerAnimator.SetBool("WallCling", true);
-            }
-        }
-    }
-
-
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.collider.CompareTag("Right Wall") || collision.collider.CompareTag("Left Wall"))
-        {
-            if (!grounded && input != 0)
-            {
-                PlayerAnimator.SetBool("WallCling", true);
-                if (startSlide)
-                {
-                    slideAllowed = true;
-                    Debug.Log("slideAllowed");
-                }
-            }
-            else rb.useGravity = true; startSlide = false;
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.collider.CompareTag("Right Wall") || collision.collider.CompareTag("Left Wall"))
-        {
-            rb.useGravity = true;
-            startSlideTimer = false;
-            startSlide = false;
-            slideAllowed = false;
-            sliding = false;
-            slideTimer = 0f;
-            PlayerAnimator.SetBool("WallCling", false);
-        }
-    }*/
     
     private void OnDrawGizmosSelected()
     {

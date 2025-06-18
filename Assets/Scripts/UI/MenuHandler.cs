@@ -8,9 +8,12 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.InputSystem.Utilities;
+using UnityEngine.Serialization;
 
 public class MenuHandler : MonoBehaviour
 {
+	public static MenuHandler Instance { get; private set; }
+	
 	[Header("Code References")]
 	[SerializeField] private CharacterMovement characterMovement;
 	CharacterAttack _characterAttack;
@@ -58,6 +61,17 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private float idleResetTime;
 	private float _idleTimer;
 	private CanvasGroup _hudCanvasGroup;
+	[SerializeField] private CanvasGroup currencyCanvasGroup;
+
+	private void Awake()
+	{
+		if (Instance != null)
+		{
+			Debug.LogError("More than one MenuHandler script in the scene.");
+		}
+
+		Instance = this;
+	}
 
 	private void Start()
 	{
@@ -117,7 +131,7 @@ public class MenuHandler : MonoBehaviour
 		                    controlGui.activeSelf ||
 		                    diedScreen.activeSelf ||
 		                    infoPopup.activeSelf;
-		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) || (dialogueGUI != null && dialogueGUI.activeSelf) ||  (mapCamera != null && mapCamera.activeSelf);
+		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) || (dialogueGUI != null && dialogueGUI.activeSelf) ||  (mapCamera != null && mapCamera.activeSelf) || _blackoutManager != null && !_blackoutManager.blackoutComplete;
 
 		if (!_characterAttack.isDead)
 		{
@@ -236,6 +250,7 @@ public class MenuHandler : MonoBehaviour
 			{
 				invTitleText.transform.DOScaleY(1f, 0.1f).SetUpdate(true);
 				slots.transform.DOScale(Vector3.one, 0.1f).SetUpdate(true);
+				currencyCanvasGroup.DOFade(1f, 0.5f).SetUpdate(true);
 				
 				foreach (var t in invContent.GetComponentsInChildren<Transform>())
 				{
@@ -378,6 +393,7 @@ public class MenuHandler : MonoBehaviour
 				invCloseSeq.Append(slots.transform.DOScale(new Vector3(0, 1, 1), 0.1f));
 				invCloseSeq.Append(invTitleText.transform.DOScale(new Vector3(1, 0, 1), 0.1f));
 				invCloseSeq.Append(invBck.transform.DOScale(new Vector3(1, 0, 1), 0.2f).SetEase(Ease.InBack));
+				invCloseSeq.Append(currencyCanvasGroup.DOFade(0f, 0.1f).SetUpdate(true));
 			
 				invCloseSeq.OnComplete(() =>
 				{

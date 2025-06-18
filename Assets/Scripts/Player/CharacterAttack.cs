@@ -755,56 +755,6 @@ public class CharacterAttack : MonoBehaviour
                 _rechargeTime = 1f;
             }
         }
-
-        /*
-        if (lightCombo[0])
-        {
-            if (!lightCombo[1])
-            {
-                timer += 1f * Time.deltaTime;
-            }
-            if (lightCombo[1])
-            {
-                timer1 += 1f * Time.deltaTime;
-                if(timer1 >= maxInputDelay)
-                {
-                    lightCombo[0] = false;
-                    lightCombo[1] = false;
-                    timer = 0f;
-                    timer1 = 0f;
-                }
-            }
-            if(timer >= maxInputDelay && !lightCombo[1])
-            {
-                lightCombo[0] = false;
-                timer = 0f;
-            }
-        }
-
-        if (heavyCombo[0])
-        {
-            if (!heavyCombo[1])
-            {
-                heavyTimer += 1f * Time.deltaTime;
-            }
-            if (heavyCombo[1])
-            {
-                heavyTimer1 += 1f * Time.deltaTime;
-                if (heavyTimer1 >= maxInputDelay)
-                {
-                    heavyCombo[0] = false;
-                    heavyCombo[1] = false;
-                    heavyTimer = 0f;
-                    heavyTimer1 = 0f;
-                }
-            }
-            if (heavyTimer >= maxInputDelay && !heavyCombo[1])
-            {
-                heavyCombo[0] = false;
-                heavyTimer = 0f;
-            }
-        }
-        */
     }
 }
 
