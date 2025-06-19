@@ -35,7 +35,6 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float groundCheckSpacing;
     public bool uiOpen; // makes sure player doesnt move when ui is open
     [NonSerialized] public bool LockedOn = false;
-    //private float _groundTimer; // Timer to keep the grounded bool true if the player is off the ground for extremely brief periods of time.
     private float _hangTimer;
     private bool _canDash = true;
     
@@ -74,22 +73,6 @@ public class CharacterMovement : MonoBehaviour
     private static readonly int IsCrouching = Animator.StringToHash("isCrouching");
     private static readonly int Jump1 = Animator.StringToHash("Jump");
     private static readonly int DoubleJump = Animator.StringToHash("DoubleJump");
-    
-    /*
-    [Header("Wall Jump")]
-    public float slideSpeed = 1f;
-    public float slideHoldTime = 1f;
-    [SerializeField] private bool startSlide;
-    [SerializeField] private bool startSlideTimer;
-    [SerializeField] private bool sliding;
-    public bool slideAllowed;
-    [SerializeField] private float slideTimer;
-    [SerializeField] bool isWallJumping;
-    [SerializeField] private float wallJumpingCounter;
-    [SerializeField] private float wallJumpingTime;
-    [SerializeField] private Vector2 wallJumpForce;
-    [SerializeField] private float wallJumpingDuration;
-    */
 
     public void Awake()
     {
@@ -120,7 +103,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void XAxis(InputAction.CallbackContext ctx)
     {
-        if (uiOpen) return;
+        if (uiOpen && !_menuHandler.mapCamera.activeSelf) return;
         _input = ctx.ReadValue<float>();
         _playerAnimator.SetFloat(Input1, Mathf.Abs(_input));
         if (Mathf.Abs(_input) > 0)
@@ -230,9 +213,13 @@ public class CharacterMovement : MonoBehaviour
     {
         if (uiOpen)
         {
-            _input = 0;
+            if (!_menuHandler.mapCamera.activeSelf)
+            {
+                _input = 0;
+                _playerAnimator.SetFloat(Input1, 0);
+            }
+
             _rb.velocity = new Vector3(0, _rb.velocity.y, 0);
-            _playerAnimator.SetFloat(Input1, 0);
         }
         
         velocity = _rb.velocity;
@@ -250,7 +237,7 @@ public class CharacterMovement : MonoBehaviour
         if (uiOpen) return;
         
         // if the player is moving or crouching while not locked on this updates the players local scale based on vel/input
-        if (!uiOpen && !LockedOn && (Mathf.Abs(velocity.x) >= 0.1f) || (isCrouching && Mathf.Abs(_input) > 0))
+        if (!LockedOn && (Mathf.Abs(velocity.x) >= 0.1f) || (isCrouching && Mathf.Abs(_input) > 0))
         {
             var localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             var dir = Mathf.Abs(velocity.x) >= 0.1f ? Mathf.Sign(velocity.x) : Mathf.Sign(_input);
