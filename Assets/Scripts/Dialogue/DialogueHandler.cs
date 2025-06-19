@@ -31,7 +31,7 @@ public class DialogueHandler : MonoBehaviour
    public List<string> loadedSpeakerText; // All the speakers that need to be displayed (this should always be the same size as the loadedBodyText string)
 
    private ItemPickupHandler _itemPickupHandler;
-   private dialogueControllerScript _dialogueController;
+   public dialogueControllerScript _dialogueController;
 
    public bool flipped;
 

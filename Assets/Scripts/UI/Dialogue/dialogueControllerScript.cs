@@ -87,8 +87,8 @@ public class dialogueControllerScript : MonoBehaviour
     private void Update()
     {
         var dist = Vector3.Distance(transform.position, _player.transform.position);
-        
-        
+
+
         if (_dialogueCanvas.activeSelf && dontShowInteract)
         {
             _itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ProgressDialogue, "", null, false);
@@ -105,8 +105,8 @@ public class dialogueControllerScript : MonoBehaviour
                     _itemPickupHandler.isPlrNearLore = true;
                     break;
             }
-            
-            if (!isShop && !_dialogueCanvas.activeSelf) 
+
+            if (!isShop && !_dialogueCanvas.activeSelf)
             {
                 _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null, false);
                 _menuHandler.dialogueController = this;
@@ -141,48 +141,9 @@ public class dialogueControllerScript : MonoBehaviour
                     break;
             }
         }
-        
-        /*
-        //ANSWERS
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            //Answer is yes
-            answerY();
-        }
-        else if (Input.GetKeyDown(KeyCode.N))
-        {
-            //Answer is no
-            answerN();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            //Turn off text boxes
-            noText.SetActive(false);
-            yesText.SetActive(false);
-        }
-        */
     }
 
-    // move through sentences
-    
-    void answerY()
-    {
-        yesText.SetActive(true);
-        noText.SetActive(false);
-        _dialogueCanvas.SetActive(false);
-        //  Debug.Log("YES!");
-    }
-
-    void answerN()
-    {
-        noText.SetActive(true);
-        yesText.SetActive(false);
-        _dialogueCanvas.SetActive(false);
-        //    Debug.Log("NO");
-    }
-
-   public void LoadDialogue(DialogueObjectHandler dialogueHandler)
+    public void LoadDialogue(DialogueObjectHandler dialogueHandler)
    {
        dialogueToLoad = dialogueHandler;
        

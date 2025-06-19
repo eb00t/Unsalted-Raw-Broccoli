@@ -360,6 +360,13 @@ public class MenuHandler : MonoBehaviour
 		_dialogueHandler.loadedSpeakerText.Clear();
 		_dialogueHandler._speakerText.text = "";
 		_dialogueHandler._dialogueText.text = "";
+
+		if (_dialogueHandler._dialogueController != null && _dialogueHandler._dialogueController.isShop)
+		{
+			_dialogueHandler._dialogueController.isEndText = false;
+			_dialogueHandler._dialogueController.LoadDialogue(_dialogueHandler._dialogueController.dialogueToLoad);
+		}
+
 		if (_dialogueHandler.flipped)
 		{
 			_dialogueHandler.flipped = false;
