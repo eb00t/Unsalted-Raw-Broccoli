@@ -36,8 +36,12 @@ public class ItemPickupHandler : MonoBehaviour
     private void Update()
     {
         var isNearOtherObject = isPlrNearEnd || isPlrNearDialogue || isPlrNearLore || isPlrNearShop || isPlayerNearRecharge;
-        if (SceneManager.GetActiveScene().name == "Tutorial" || characterMovement.uiOpen || isNearOtherObject) return;
-        
+        if (SceneManager.GetActiveScene().name == "Tutorial" || characterMovement.uiOpen || isNearOtherObject)
+        {
+            itemCount = 0;
+            return;
+        }
+
         itemCount = 0;
         var nearbyItems = GameObject.FindGameObjectsWithTag("Item");
         var isNearPassive = false;
@@ -46,6 +50,7 @@ public class ItemPickupHandler : MonoBehaviour
         {
             var itemPickup = item.GetComponent<ItemPickup>();
             if (itemPickup == null || !itemPickup.canPickup) continue;
+            Debug.Log(itemPickup.name);
             isNearPassive = itemPickup.isPermanentPassive;
             itemCount++;
         }

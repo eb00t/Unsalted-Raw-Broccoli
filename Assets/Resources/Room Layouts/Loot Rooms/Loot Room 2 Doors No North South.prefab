@@ -2062,7 +2062,6 @@ Transform:
   - {fileID: 1592382228836553393}
   - {fileID: 6642331969782307645}
   - {fileID: 912951768190731827}
-  - {fileID: 882771396221102197}
   - {fileID: 4384581115809298076}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
@@ -2145,6 +2144,8 @@ MonoBehaviour:
   usableDoors: []
   allDoors: []
   allWalls: []
+  allLights: []
+  attachedConnectors: []
   doorL: {fileID: 3578417935949086798}
   doorR: {fileID: 4515680709052616896}
   doorB: {fileID: 0}
@@ -2153,14 +2154,13 @@ MonoBehaviour:
   wallR: {fileID: 8559165852653127697}
   wallB: {fileID: 2044272028514577878}
   wallT: {fileID: 1330052109925022271}
-  attachedConnectors: []
   connectorSpawnedOff: {fileID: 0}
-  markedForDiscard: 0
+  mapIcons: {fileID: 0}
   roomCam: {fileID: 0}
   canBeDiscarded: 1
-  roomPath: 
-  allLights: []
+  markedForDiscard: 0
   coveredUp: 0
+  roomPath: 
 --- !u!114 &9176868600192144386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3221,7 +3221,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 7169563527229664998}
+    m_TransformParent: {fileID: 4384581115809298076}
     m_Modifications:
     - target: {fileID: 1654093414905972303, guid: 875c40b8e3d214e48b1467bc096072b2,
         type: 3}
@@ -3231,7 +3231,7 @@ PrefabInstance:
     - target: {fileID: 1654093414905972303, guid: 875c40b8e3d214e48b1467bc096072b2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 0.68857133
       objectReference: {fileID: 0}
     - target: {fileID: 1654093414905972303, guid: 875c40b8e3d214e48b1467bc096072b2,
         type: 3}
@@ -3241,22 +3241,22 @@ PrefabInstance:
     - target: {fileID: 1654093414905972303, guid: 875c40b8e3d214e48b1467bc096072b2,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1654093414905972303, guid: 875c40b8e3d214e48b1467bc096072b2,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1654093414905972303, guid: 875c40b8e3d214e48b1467bc096072b2,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 1654093414905972303, guid: 875c40b8e3d214e48b1467bc096072b2,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1654093414905972303, guid: 875c40b8e3d214e48b1467bc096072b2,
         type: 3}
@@ -4113,7 +4113,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7174120593202134648, guid: d289d21674f71814d9895a09fbbed89c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 882771396221102197}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d289d21674f71814d9895a09fbbed89c, type: 3}
 --- !u!4 &4384581115809298076 stripped

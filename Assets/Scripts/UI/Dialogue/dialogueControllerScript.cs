@@ -88,12 +88,11 @@ public class dialogueControllerScript : MonoBehaviour
     {
         var dist = Vector3.Distance(transform.position, _player.transform.position);
         
-        /*
+        
         if (_dialogueCanvas.activeSelf && dontShowInteract)
         {
-            _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
+            _itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ProgressDialogue, "", null, false);
         }
-        */
 
         if (dist <= range && !dontShowInteract)
         {
@@ -107,11 +106,6 @@ public class dialogueControllerScript : MonoBehaviour
                     break;
             }
             
-            /*if (_dialogueCanvas.activeSelf)
-            {
-                _itemPickupHandler.TogglePrompt("Next", true, ControlsManager.ButtonType.ProgressDialogue, "", null);
-            }
-            else */
             if (!isShop && !_dialogueCanvas.activeSelf) 
             {
                 _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null, false);
