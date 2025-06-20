@@ -291,7 +291,12 @@ public class CharacterMovement : MonoBehaviour
         {
             doubleJumpPerformed = false;
             _midAirDashCount = 0;
-            isInUpThrust = false;
+            
+            if (_rb.velocity.y < 5f)
+            {
+                isInUpThrust = false;
+            }
+
             _isHanging = false;
             _rb.useGravity = true;
             _lastGroundedTime = Time.time;
