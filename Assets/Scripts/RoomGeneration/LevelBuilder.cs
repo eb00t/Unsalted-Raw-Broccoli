@@ -244,13 +244,16 @@ public class LevelBuilder : MonoBehaviour
                 break;
         }
 
-        if (specificRoomsMode)
+        if (specificRoomsMode || manuallySetRoomAmount)
         {
-            _floorSpecificRoomPath = "Room Layouts/Other/Specific Rooms Mode";
-            _multiFloorRoomPath =  "Room Layouts/Other/Specific Rooms Mode";
-            _specialRoomPath = "Room Layouts/Other/Specific Rooms Mode";
             loreRoomChance = false;
             lootRoomsToSpawn = 0;
+            if (specificRoomsMode)
+            {
+                _floorSpecificRoomPath = "Room Layouts/Other/Specific Rooms Mode";
+                _multiFloorRoomPath =  "Room Layouts/Other/Specific Rooms Mode";
+                _specialRoomPath = "Room Layouts/Other/Specific Rooms Mode";
+            }
         }
 
         foreach (var room in Resources.LoadAll<GameObject>(_floorSpecificRoomPath))
