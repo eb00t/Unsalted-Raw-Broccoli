@@ -49,4 +49,7 @@ public class DataHolder : ScriptableObject
     public List<int> savedItemCounts = new List<int>();  
     public int[] equippedConsumables = new int[5];
     public int[] permanentPassiveItems = new int[4];
+    
+    [Header("Items")]
+    public List<string> readHorseFacts = new List<string>();
 }

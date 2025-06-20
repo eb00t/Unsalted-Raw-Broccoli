@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class HorseFacts : MonoBehaviour
 {
-     public int horseFactNumber;
-
-     private List<String> _horseFacts = new List<string>()
+     [SerializeField] private DataHolder dataHolder;
+     
+     public List<string> _horseFacts = new()
      {
-          //"This is a test string. So, if you see it, something isn't working properly.",
+          "This is a test string. So, if you see it, something isn't working properly.",
           "When the horse loses his patience...The devil shivers.",
           "When a horse wants something, he must pursue it with all he has.",
-          //"There is one rule, above all others, for being a horse. Whatever happens, face it on your hooves.",
+          "There is one rule, above all others, for being a horse. Whatever happens, face it on your hooves.",
           "A motivated horse is strong, but a disciplined horse is deadly.",
           "Nowadays, the alpha horse is the loser, and the sigma horse is the winner.",
           "Fear the horse of few words and even fewer opinions.",
@@ -29,7 +30,7 @@ public class HorseFacts : MonoBehaviour
           "One good thing about the horse, when it hits you, you feel no pain.",
           "Not all those who wander are horses.",
           "Pain is inevitable. The horse is here. Give up.",
-          //"When you're happy, you enjoy the horse. When you're sad, you understand the horse.",
+          "When you're happy, you enjoy the horse. When you're sad, you understand the horse.",
           "You know, maybe we're all horses on the inside.",
           "Stop looking for horses in the same place you lost them.",
           "60+ best sigma horse quotes and captions for your photos.",
@@ -38,18 +39,28 @@ public class HorseFacts : MonoBehaviour
           "Manifesting an August full of horses.",
           "Horses will not be less valiant because they are unpraised.",
           "A horse's heart is a deep ocean of secrets.",
-          //"Horses, with their built-in sense of order, service and discipline, should really be running the world.",
+          "Horses, with their built-in sense of order, service and discipline, should really be running the world.",
           "You must be the horse you wish to see in the world",
           "Know thy self, know thy horse, a thousand horses, a thousand victories.",
-          //"Horse is just a label you can give to a set of conditions you're experiencing.",
+          "Horse is just a label you can give to a set of conditions you're experiencing.",
           "Don't lose your horse while chasing your horse.",
           "A horse is alive in a way that no robot horse will ever be.",
      };
      
      public string HorseFact()
      {
-          string chosenFact = null;
-          chosenFact = _horseFacts[Random.Range(1, _horseFacts.Count)];
+          if (_horseFacts.Count == 0)
+          {
+               _horseFacts = new List<string>(dataHolder.readHorseFacts);
+               dataHolder.readHorseFacts.Clear();
+          }
+          
+          Debug.Log(_horseFacts.Count);
+          
+          var chosenFact = _horseFacts[Random.Range(0, _horseFacts.Count)];
+
+          dataHolder.readHorseFacts.Add(chosenFact);
+          _horseFacts.Remove(chosenFact);
           return chosenFact;
      }
 }
