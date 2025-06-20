@@ -236,6 +236,8 @@ public class InventoryStore : MonoBehaviour
                 }
             }
         }
+        
+        LayoutRebuilder.ForceRebuildLayoutImmediate(notifHolder.GetComponent<RectTransform>());
     }
 
     public void UpdateItemsHeld(Consumable consumable)

@@ -45,7 +45,7 @@ public class CurrencyManager : MonoBehaviour
     private IEnumerator Counting()
     {
         _isCounting = true;
-        if (!_menuHandler.shopGUI.activeSelf)
+        if (_menuHandler.shopGUI != null && !_menuHandler.shopGUI.activeSelf || _menuHandler.shopGUI == null)
         {
             canvasGroup.DOFade(1, 0.5f);
         }
@@ -65,9 +65,10 @@ public class CurrencyManager : MonoBehaviour
         }
         
         yield return new WaitForSeconds(1f);
-        if (!_menuHandler.shopGUI.activeSelf)
+        
+        if (_menuHandler.shopGUI != null && !_menuHandler.shopGUI.activeSelf || _menuHandler.shopGUI == null)
         {
-            canvasGroup.DOFade(0, 0.5f);
+            canvasGroup.DOFade(0, 0.1f);
         }
 
         _isCounting = false;

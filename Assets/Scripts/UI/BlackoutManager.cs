@@ -44,7 +44,7 @@ public class BlackoutManager : MonoBehaviour
         loadingGroup.gameObject.SetActive(false);
         blackoutComplete = true;
         
-        _fadeTween = canvasGroup.DOFade(0f, 1f).SetUpdate(true).OnComplete(() =>
+        _fadeTween = canvasGroup.DOFade(0f, 2f).SetUpdate(true).OnComplete(() =>
         {
             _hudCanvasGroup.DOFade(1f, 0.1f);
             canvasGroup.gameObject.SetActive(false);
@@ -57,7 +57,7 @@ public class BlackoutManager : MonoBehaviour
         blackoutComplete = false;
         canvasGroup.alpha = 0f;
         canvasGroup.gameObject.SetActive(true);
-        _hudCanvasGroup.DOFade(0f, 0.1f);
+        _hudCanvasGroup.DOFade(0f, 0.2f).SetUpdate(true);
         _fadeTween = canvasGroup.DOFade(1f, 2f).SetUpdate(true);
     }
 
