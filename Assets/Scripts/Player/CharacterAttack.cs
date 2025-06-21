@@ -1,5 +1,6 @@
 using System.Collections;
 using Cinemachine;
+using DG.Tweening;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
@@ -61,7 +62,7 @@ public class CharacterAttack : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject diedScreen;
     [SerializeField] private GameObject atkHitbox;
-    [SerializeField] private Slider healthSlider, energySlider;
+    [SerializeField] private Slider healthSlider, energySlider, healthChangeSlider, energyChangeSlider;
     [SerializeField] private Material defaultMaterial, hitMaterial;
     private SpriteRenderer _spriteRenderer;
     private CinemachineImpulseSource _impulseSource;
@@ -80,6 +81,11 @@ public class CharacterAttack : MonoBehaviour
     private Coroutine _knockbackRoutine;
     [SerializeField] private Animator evilAnimator;
     private Coroutine _vibration;
+    private Image _healthChangeImg;
+    private Image _energyChangeImg;
+    private Image _hitFlashImg;
+    private Tween _healthTween;
+    private Tween _energyTween;
     
     [Header("Animation")]
     private Animator _playerAnimator;
@@ -94,9 +100,13 @@ public class CharacterAttack : MonoBehaviour
     private static readonly int LightAttack1 = Animator.StringToHash("lightAttack1");
     private static readonly int LightAttack2 = Animator.StringToHash("lightAttack2");
     private static readonly int IsPlayerDead = Animator.StringToHash("isPlayerDead");
+    private static readonly int Laugh = Animator.StringToHash("Laugh");
+    private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 
     private void Start()
     {
+        
+        _hitFlashImg = hitFlash.GetComponent<Image>();
         _characterMovement = transform.root.GetComponent<CharacterMovement>();
         _playerAnimator = GameObject.FindGameObjectWithTag("PlayerRenderer").GetComponent<Animator>();
         _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
@@ -107,6 +117,10 @@ public class CharacterAttack : MonoBehaviour
         _rigidbody = GetComponentInParent<Rigidbody>();
         _spriteRenderer = _rigidbody.gameObject.GetComponentInChildren<SpriteRenderer>();
         _passiveItemHandler = _uiManager.GetComponent<PassiveItemHandler>();
+        healthChangeSlider = FindSliderExcludingSelf(healthSlider.gameObject);
+        energyChangeSlider = FindSliderExcludingSelf(energySlider.gameObject);
+        _healthChangeImg = healthChangeSlider.fillRect.GetComponent<Image>();
+        _energyChangeImg = energyChangeSlider.fillRect.GetComponent<Image>();
         
         if (!dataHolder.hardcoreMode)
         {
@@ -121,13 +135,30 @@ public class CharacterAttack : MonoBehaviour
         energySlider.maxValue = maxEnergy;
         energySlider.value = currentEnergy;
         healthSlider.value = dataHolder.playerHealth;
+        healthChangeSlider.maxValue = healthSlider.maxValue;
+        energyChangeSlider.maxValue = energySlider.maxValue;
+        healthChangeSlider.value = healthSlider.value;
+        energyChangeSlider.value = energySlider.value;
         
         charAtk = dataHolder.playerBaseAttack;
         hitFlash = GameObject.FindWithTag("Hit Flash");
         hitFlash.SetActive(false);
         _impulseSource = _characterMovement.GetComponent<CinemachineImpulseSource>();
     }
-    
+
+    private Slider FindSliderExcludingSelf(GameObject self)
+    {
+        foreach (var child in self.GetComponentsInChildren<Slider>())
+        {
+            if (child.gameObject != self)
+            {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
     public void LightAttack(InputAction.CallbackContext ctx)
     {
         if (isDead || _characterMovement.uiOpen) return;
@@ -438,6 +469,9 @@ public class CharacterAttack : MonoBehaviour
     public void TakeDamagePlayer(int damage, int poiseDmg, Vector3 knockback)
     {
         if (isDead || _characterMovement.uiOpen) return;
+
+        var previousHealth = dataHolder.playerHealth;
+        var hitColor = Color.green;
         
         if (isInvincible > 0)
         {
@@ -446,19 +480,39 @@ public class CharacterAttack : MonoBehaviour
             return;
         }
 
-        if (damage > 0)
+        if (dataHolder.playerHealth - damage < dataHolder.playerHealth) // if damage is taken
         {
             dataHolder.playerDefense = Mathf.Clamp(dataHolder.playerDefense, 0, 100);
             var dmgReduction = (100 - dataHolder.playerDefense) / 100f;
             damage = Mathf.RoundToInt(damage * dmgReduction);
+            
             if (isInvulnerable || _hasHitIframes) return;
+            
             StartCoroutine(TimedVibration(0.25f, 0.75f, .5f));
             _impulseSource.GenerateImpulseWithForce(1f);
+            
+            hitColor = Color.red;
+            
+            StartCoroutine(HitFlash());
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PlayerDamage, transform.position);
+            if (dataHolder.hardcoreMode)
+            {
+                evilAnimator.SetTrigger(Laugh);
+            }
+
+            if (dataHolder.playerHealth > 0f && _characterMovement.grounded)
+            {
+                ApplyKnockback(knockback);
+            }
+        }
+        else if (dataHolder.playerHealth - damage > dataHolder.playerHealth) // if health is increased
+        {
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Heal, transform.position);
+            
+            hitColor = Color.green;
         }
 
-        var hitColor = (dataHolder.playerHealth - damage < dataHolder.playerHealth) ? Color.red : Color.green;
-
-        if (dataHolder.playerHealth <= damage)
+        if (dataHolder.playerHealth <= damage) // if damage taken causes health to become 0 or less
         {
             if (!dataHolder.surviveLethalHit)
             {
@@ -474,38 +528,36 @@ public class CharacterAttack : MonoBehaviour
                 _passiveItemHandler.RemovePassive(_passiveItemHandler.FindPassive(3));
             }
         }
-        else if (dataHolder.playerHealth - damage > dataHolder.playerMaxHealth)
+        else if (dataHolder.playerHealth - damage > dataHolder.playerMaxHealth) // if health exceeds max health
         {
             dataHolder.playerHealth = dataHolder.playerMaxHealth;
         }
         else
         {
-            hitFlash.GetComponent<Image>().color = hitColor;
+            _hitFlashImg.color = hitColor;
             hitFlash.SetActive(true);
             dataHolder.playerHealth -= damage;
         }
-
-        if (hitColor == Color.green)
-        {
-            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Heal, transform.position);
-        }
         
-        if (hitColor == Color.red)
-        {
-            StartCoroutine(HitFlash());
-            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PlayerDamage, transform.position);
-            if (dataHolder.hardcoreMode)
-            {
-                evilAnimator.SetTrigger("Laugh");
-            }
-
-            if (dataHolder.playerHealth > 0f && _characterMovement.grounded)
-            {
-                ApplyKnockback(knockback);
-            }
-        }
-        healthSlider.value = dataHolder.playerHealth;
         _poiseBuildup += poiseDmg;
+
+        var isDamaged = dataHolder.playerHealth < previousHealth;
+        var changeColor = isDamaged ? Color.yellow : Color.green;
+        
+        _healthTween?.Kill();
+        _healthChangeImg.color = changeColor;
+
+        if (isDamaged)
+        {
+            healthSlider.value = dataHolder.playerHealth;
+            _healthTween = DOVirtual.Float(healthChangeSlider.value, dataHolder.playerHealth, 1f, v => healthChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.2f);
+        }
+        else
+        {
+            healthChangeSlider.value = dataHolder.playerHealth;
+            
+            _healthTween = DOVirtual.Float(healthSlider.value, dataHolder.playerHealth, 1f, v => healthSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.2f);
+        }
     }
 
     public IEnumerator TimedVibration(float lSpeed, float hSpeed, float duration)
@@ -579,11 +631,11 @@ public class CharacterAttack : MonoBehaviour
                 
                 if (fadeIn)
                 {
-                    hitMaterial.SetColor("_EmissionColor", Color.Lerp(defaultColor, flashColor, t / flashSpeed));
+                    hitMaterial.SetColor(EmissionColor, Color.Lerp(defaultColor, flashColor, t / flashSpeed));
                 }
                 else
                 {
-                    hitMaterial.SetColor("_EmissionColor", Color.Lerp(flashColor, defaultColor, t / flashSpeed));
+                    hitMaterial.SetColor(EmissionColor, Color.Lerp(flashColor, defaultColor, t / flashSpeed));
                 }
                 
                 yield return null;
@@ -593,13 +645,14 @@ public class CharacterAttack : MonoBehaviour
             timer += flashSpeed;
         }
         
-        hitMaterial.SetColor("_EmissionColor", defaultColor);
+        hitMaterial.SetColor(EmissionColor, defaultColor);
         _spriteRenderer.material = defaultMaterial;
         _hasHitIframes = false;
     }
     
     public void UseEnergy(float amount)
     {
+        var previousEnergy = currentEnergy;
         if (currentEnergy <= amount)
         {
             currentEnergy = 0;
@@ -614,7 +667,23 @@ public class CharacterAttack : MonoBehaviour
             currentEnergy -= amount;
         }
         
-        energySlider.value = currentEnergy;
+        var energyLost = currentEnergy < previousEnergy;
+        var changeColor = energyLost ? Color.yellow : Color.green;
+        
+        _energyTween?.Kill();
+        _energyChangeImg.color = changeColor;
+
+        if (energyLost)
+        {
+            energySlider.value = currentEnergy;
+            _energyTween = DOVirtual.Float(energyChangeSlider.value, currentEnergy, 1f, v => energyChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.2f);
+        }
+        else
+        {
+            energyChangeSlider.value = currentEnergy;
+            
+            _energyTween = DOVirtual.Float(energySlider.value, currentEnergy, 1f, v => energySlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.2f);
+        }
     }
 
     private IEnumerator StunTimer(float stunTime)
