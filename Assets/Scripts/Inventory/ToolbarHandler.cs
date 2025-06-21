@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using FMOD.Studio;
 using TMPro;
 using UnityEngine;
@@ -26,6 +27,7 @@ public class ToolbarHandler : MonoBehaviour
 
     [SerializeField] private Image toolbarImg;
     [SerializeField] private TextMeshProUGUI toolbarTxt, toolbarTitle, infoTxt, numHeldTxt, infoTitle;
+    [SerializeField] private Image dpadLeft, dpadRight, dpadUp;
     [SerializeField] private GameObject highlightImg;
     [SerializeField] private GameObject resetFlash;
     [SerializeField] private GameObject dpadIcon;
@@ -167,6 +169,9 @@ public class ToolbarHandler : MonoBehaviour
 
             highlightImg.SetActive(false);
             resetFlash.SetActive(false);
+            dpadUp.DOFade(0f, 0.2f);
+            dpadRight.DOFade(0f, 0.2f);
+            dpadLeft.DOFade(0f, 0.2f);
         }
         
         if (!context.performed) return; // if quick press then cycle
@@ -177,19 +182,33 @@ public class ToolbarHandler : MonoBehaviour
             case (0, 1): // up (0)
                 // use equipped consumable
                 CheckItemEffect();
+                dpadUp.DOFade(1f, 0.2f).OnComplete(() =>
+                {
+                    dpadUp.DOFade(0f, 0.2f);
+                });
                 break;
             case (1, 0): // right (1)
                 // switch to consumable +1
                 CycleToolbar(1);
+                dpadRight.DOFade(1f, 0.2f).OnComplete(() =>
+                {
+                    dpadRight.DOFade(0f, 0.2f);
+                });
                 break;
             case (0, -1): // down (2)
+                /*
                 if (!_characterMovement.uiOpen)
                 {
                     _menuHandler.ToggleEquip();
                 }
+                */
                 break;
             case (-1, 0): // left (3)
                 CycleToolbar(-1);
+                dpadLeft.DOFade(1f, 0.2f).OnComplete(() =>
+                {
+                    dpadLeft.DOFade(0f, 0.2f);
+                });
                 break;
         }
     }
