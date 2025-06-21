@@ -209,13 +209,13 @@ public class ShopHandler : MonoBehaviour
 		if (dataHolder.currencyHeld - indexHolder.price < 0)
 		{
 			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseFailed, transform.position);
-			_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Not enough robot coils held.", false);
+			_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Not enough robot coils held.", false, 2f);
 			return;
 		}
 		if (indexHolder.numHeld <= 0)
 		{
 			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PurchaseFailed, transform.position);
-			_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Item is no longer in stock.", false);
+			_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Item is no longer in stock.", false, 2f);
 			return;
 		}
 
@@ -224,7 +224,7 @@ public class ShopHandler : MonoBehaviour
 			if (n.consumable.title != indexHolder.consumable.title) continue;
 			if (n.numHeld == n.consumable.maximumHold)
 			{
-				_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Maximum number of item held", false);
+				_inventoryStore.TriggerNotification(indexHolder.consumable.uiIcon, "Maximum number of item held", false, 2f);
 				return;
 			}
 		}

@@ -6,7 +6,7 @@ using DG.Tweening;
 public class TimedDestroy : MonoBehaviour
 {
 	[SerializeField] private Transform img, text;
-	[SerializeField] private float notificationDuration;
+	public float notificationDuration;
     
     private void Awake()
     {
@@ -15,8 +15,8 @@ public class TimedDestroy : MonoBehaviour
 	    text.localScale = new Vector3(1, 0, 1);
 	    
 	    var notifSeq = DOTween.Sequence().SetUpdate(true);
-	    notifSeq.Append(transform.DOScale(new Vector3(1, 0.1f, 1), 0.1f).SetEase(Ease.OutBack));
-	    notifSeq.Append(transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.OutBack));
+	    notifSeq.Append(transform.DOScale(new Vector3(1, 0.15f, 1), 0.1f).SetEase(Ease.OutBack));
+	    notifSeq.Append(transform.DOScale(Vector3.one, 0.15f).SetEase(Ease.OutBack));
 
 	    notifSeq.OnComplete(() =>
 	    {
@@ -28,7 +28,7 @@ public class TimedDestroy : MonoBehaviour
 
     private IEnumerator WaitToDisappear()
     {
-	    yield return new WaitForSeconds(notificationDuration);
+	    yield return new WaitForSecondsRealtime(notificationDuration);
 	    
 	    var notifCloseSeq = DOTween.Sequence().SetUpdate(true);
 			

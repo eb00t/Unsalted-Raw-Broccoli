@@ -42,7 +42,6 @@ public class PassiveItemHandler : MonoBehaviour
 
     private void TriggerInfoPopup(PermanentPassiveItem passiveItem)
     {
-        
         infoPopup.SetActive(true);
         infoPopup.transform.localScale = new Vector3(0, 0.1f, 1);
 		
@@ -71,6 +70,7 @@ public class PassiveItemHandler : MonoBehaviour
         
         infoTitle.text = passiveItem.title;
         infoDesc.text = passiveItem.description;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(infoPopup.GetComponent<RectTransform>());
         _itemPickupHandler.TogglePrompt("Close", true, ControlsManager.ButtonType.Back, "", null, false);
     }
 

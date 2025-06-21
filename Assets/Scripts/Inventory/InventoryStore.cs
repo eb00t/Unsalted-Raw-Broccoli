@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -121,7 +122,7 @@ public class InventoryStore : MonoBehaviour
             {
                 b.numHeld++;
                 UpdateStoredCount(consumable.itemID, b.numHeld);
-                TriggerNotification(consumable.uiIcon, consumable.title, true);
+                TriggerNotification(consumable.uiIcon, consumable.title, true, 2f);
                 _toolbarHandler.UpdateToolbar();
                 UpdateUI(b);
                         
@@ -130,7 +131,7 @@ public class InventoryStore : MonoBehaviour
             }
             else
             {
-                TriggerNotification(consumable.uiIcon, "Maximum number of item held", false);
+                TriggerNotification(consumable.uiIcon, "Maximum number of item held", false, 2f);
             }
             return;
         }
@@ -140,7 +141,7 @@ public class InventoryStore : MonoBehaviour
         dataHolder.savedItems.Add(consumable.itemID);
         dataHolder.savedItemCounts.Add(1);
 
-        TriggerNotification(consumable.uiIcon, consumable.title, true);
+        TriggerNotification(consumable.uiIcon, consumable.title, true, 2f);
         consumable.gameObject.SetActive(false);
         consumable.gameObject.GetComponent<ItemPickup>().canPickup = false;
 
@@ -187,7 +188,7 @@ public class InventoryStore : MonoBehaviour
         _toolbarHandler.CheckEquipStatus();
     }
 
-    public void TriggerNotification(Sprite icon, string text, bool isPositive)
+    public void TriggerNotification([CanBeNull] Sprite icon, string text, bool isPositive, float duration)
     {
         GameObject notification = null;
 
@@ -201,22 +202,47 @@ public class InventoryStore : MonoBehaviour
             break;
         }
 
+        // if this notification exists already find it and increment the count on that notification
         if (notification != null)
         {
             foreach (var txt in notification.GetComponentsInChildren<TextMeshProUGUI>())
             {
-                if (txt.name != "NotifCount") continue;
-                var parsed = int.TryParse(txt.text, out var num) ? num : 0;
-                txt.text = (++parsed).ToString();
+                if (txt.name == "NotifCount")
+                {
+                    var textToParse = txt.text.Split("x");
+                    var parsed = false;
+                    var num = 0;
+                    
+                    foreach (var s in textToParse)
+                    {
+                         parsed = int.TryParse(s, out num);
+                    }
+                    if (!parsed) num = 1;
+                    
+                    num++;
+                    txt.text = "x" + num;
+                }
             }
         }
         else
         {
             notification = Instantiate(notifPrefab, notifPrefab.transform.position, notifPrefab.transform.rotation, notifHolder.transform);
-            
+            if (duration > 0f)
+            {
+                notification.GetComponent<TimedDestroy>().notificationDuration = duration;
+            }
+
             foreach (var txt in notification.GetComponentsInChildren<TextMeshProUGUI>())
             {
-                if (txt.name == "Message") txt.text = text;
+                switch (txt.name)
+                {
+                    case "Message":
+                        txt.text = text;
+                        break;
+                    case "NotifCount":
+                        txt.color = isPositive ? notifPositiveColor : notifNegativeColor;
+                        break;
+                }
             }
 
             foreach (var img in notification.GetComponentsInChildren<Image>())
@@ -232,6 +258,9 @@ public class InventoryStore : MonoBehaviour
                     case "IconImg":
                         img.enabled = icon != null;
                         if (icon != null) img.sprite = icon;
+                        break;
+                    case "IconBck":
+                        img.enabled = icon != null;
                         break;
                 }
             }

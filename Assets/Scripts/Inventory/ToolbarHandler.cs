@@ -289,7 +289,7 @@ public class ToolbarHandler : MonoBehaviour
                 StartCoroutine(RouletteHeal(consumable));
                 break;
             case ConsumableEffect.HorseFact: // shows a fact about a horse
-                _inventoryStore.TriggerNotification(consumable.uiIcon, _horseFacts.HorseFact(), true);
+                _inventoryStore.TriggerNotification(consumable.uiIcon, _horseFacts.HorseFact(), true, 6f);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

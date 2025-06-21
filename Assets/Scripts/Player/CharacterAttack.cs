@@ -138,7 +138,7 @@ public class CharacterAttack : MonoBehaviour
             
             if (currentEnergy < lightEnergyCost)
             {
-                _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
+                _inventoryStore.TriggerNotification(null, "Not enough energy.", false, 2f);
                 return;
             }
             
@@ -214,7 +214,7 @@ public class CharacterAttack : MonoBehaviour
         
         if (currentEnergy < mediumEnergyCost)
         {
-            _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
+            _inventoryStore.TriggerNotification(null, "Not enough energy.", false, 2f);
             return;
         }
         
@@ -255,7 +255,7 @@ public class CharacterAttack : MonoBehaviour
         
         if (currentEnergy < heavyEnergyCost)
         {
-            _inventoryStore.TriggerNotification(null, "Not enough energy.", false);
+            _inventoryStore.TriggerNotification(null, "Not enough energy.", false, 2f);
             return;
         }
         
