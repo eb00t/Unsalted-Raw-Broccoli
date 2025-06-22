@@ -583,7 +583,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         else
         {
             _isPoisoned = false;
-            healthFillImage.color = new Color(1f, .48f, .48f, 1);
+            healthFillImage.color = _healthDefault;
             yield break;
         }
         

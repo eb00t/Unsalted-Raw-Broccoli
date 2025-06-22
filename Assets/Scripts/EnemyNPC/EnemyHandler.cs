@@ -632,7 +632,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         healthFillImage.color = Color.cyan;
        //_agent.velocity = Vector3.zero;
         yield return new WaitForSecondsRealtime(freezeDuration);
-        healthFillImage.color = new Color(1f, .48f, .48f, 1);
+        healthFillImage.color = new Color(1f, 0.3607843f, 0.3607843f, 1);
         _isFrozen = false;
     }
 
@@ -656,7 +656,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         else
         {
             _isPoisoned = false;
-            healthFillImage.color = new Color(1f, .48f, .48f, 1);
+            healthFillImage.color = new Color(1f, 0.3607843f, 0.3607843f, 1);
             yield break;
         }
         
