@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using FMOD.Studio;
 using Pathfinding;
 using Unity.VisualScripting;
@@ -77,6 +78,9 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     public CloneBossManager cloneBossManager;
     public GameObject dialogue;
     private DialogueTrigger[] _dialogueTriggers;
+    [SerializeField] private Slider healthChangeSlider;
+    [SerializeField] private Image healthChangeImage;
+    private Tween _healthTween;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -99,7 +103,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     
     private void Start()
     {
-        if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial && LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
+        if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial &&
+            LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
         {
             RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
             //RoomScripting.enemies.Add(gameObject);
@@ -110,6 +115,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
         health = maxHealth;
+        healthChangeSlider.maxValue = maxHealth;
+        healthChangeSlider.value = health;
         _healthSlider.gameObject.SetActive(false);
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -443,7 +450,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
         if (!_hasDialogueTriggered) return;
-        
+
+        var previousHealth = health;
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
@@ -486,7 +494,24 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
             }
         }
         
-        cloneBossManager.UpdateCollectiveHealth();
+        var isDamaged = health < previousHealth;
+        var changeColor = isDamaged ? new Color(1f, 0.9f, 0.4f) : new Color(.5f, 1f, 0.4f);
+        
+        _healthTween?.Kill();
+        healthChangeImage.color = changeColor;
+
+        if (isDamaged)
+        {
+            _healthSlider.value = health;
+            _healthTween = DOVirtual.Float(healthChangeSlider.value, health, 1f, v => healthChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.2f);
+        }
+        else
+        {
+            healthChangeSlider.value = health;
+            _healthTween = DOVirtual.Float(_healthSlider.value, health, 1f, v => _healthSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.2f);
+        }
+        
+        //cloneBossManager.UpdateCollectiveHealth();
     }
     
     public void TriggerStatusEffect(ConsumableEffect effect)

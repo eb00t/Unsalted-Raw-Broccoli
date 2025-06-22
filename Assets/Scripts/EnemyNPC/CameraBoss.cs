@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using FMOD.Studio;
 using Pathfinding;
 using Unity.VisualScripting;
@@ -103,6 +104,9 @@ public class CameraBoss : MonoBehaviour, IDamageable
     private AIPath _aiPath;
     private GameObject dialogueGui;
     private DialogueTrigger[] _dialogueTriggers;
+    [SerializeField] private Slider healthChangeSlider;
+    [SerializeField] private Image healthChangeImage;
+    private Tween _healthTween;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -148,6 +152,8 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _healthSlider.maxValue = maxHealth;
         _healthSlider.value = maxHealth;
         _health = maxHealth;
+        healthChangeSlider.maxValue = maxHealth;
+        healthChangeSlider.value = _health;
         _healthSlider.gameObject.SetActive(false);
         _animator = GetComponent<Animator>();
         _spriteTransform = spriteRenderer.transform;
@@ -478,6 +484,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
+        var previousHealth = _health;
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
@@ -491,7 +498,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         if (_health - damage > 0)
         {
             _health -= damage;
-            _healthSlider.value = _health;
+            //_healthSlider.value = _health;
             if (_health <= maxHealth / 2)
             {
                 AudioManager.Instance.SetMusicParameter("Boss Phase", 1);
@@ -500,14 +507,13 @@ public class CameraBoss : MonoBehaviour, IDamageable
         else
         {
             _health = 0;
-            _healthSlider.value = 0;
+            //_healthSlider.value = 0;
             if (knockback.HasValue)
             {
                 ApplyKnockback(knockback.Value);
             }
             Die();
         }
-        
         
         if (poiseDmg.HasValue)
         {
@@ -517,6 +523,23 @@ public class CameraBoss : MonoBehaviour, IDamageable
             {
                 ApplyKnockback(knockback.Value);
             }
+        }
+        
+        var isDamaged = _health < previousHealth;
+        var changeColor = isDamaged ? new Color(1f, 0.9f, 0.4f) : new Color(.5f, 1f, 0.4f);
+        
+        _healthTween?.Kill();
+        healthChangeImage.color = changeColor;
+
+        if (isDamaged)
+        {
+            _healthSlider.value = _health;
+            _healthTween = DOVirtual.Float(healthChangeSlider.value, _health, 1f, v => healthChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.3f);
+        }
+        else
+        {
+            healthChangeSlider.value = _health;
+            _healthTween = DOVirtual.Float(_healthSlider.value, _health, 1f, v => _healthSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.3f);
         }
     }
     

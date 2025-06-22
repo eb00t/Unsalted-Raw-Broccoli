@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Cinemachine;
+using DG.Tweening;
 using FMOD;
 using FMOD.Studio;
 using TMPro;
@@ -94,6 +95,9 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private GameObject dialogueGui;
     [SerializeField] private Transform clapLeftTarget, clapRightTarget, downTarget;
     [SerializeField] private Transform downVFX, upVFXLeft, upVFXRight;
+    [SerializeField] private Slider healthChangeSlider;
+    [SerializeField] private Image healthChangeImage;
+    private Tween _healthTween;
     
     [Header("Sound")]
     private EventInstance _armMovementL, _armMovementR;
@@ -118,6 +122,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         _settingManager = GameObject.Find("Settings").GetComponent<SettingManager>();
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
+        healthChangeSlider.maxValue = maxHealth;
+        healthChangeSlider.value = _health;
         canvas = healthSlider.GetComponentInParent<Canvas>(true).gameObject;
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
@@ -665,6 +671,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     {
         if (isDead || !hasWokenUp) return;
 
+        var previousHealth = _health;
+
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
@@ -677,7 +685,7 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         if (_health - damage > 0)
         {
             _health -= damage;
-            healthSlider.value = _health;
+            //healthSlider.value = _health;
             if (_health <= maxHealth / 2)
             {
                 AudioManager.Instance.SetMusicParameter("Boss Phase", 2);
@@ -686,8 +694,25 @@ public class Boss2Hands : MonoBehaviour, IDamageable
         else
         {
             _health = 0;
-            healthSlider.value = 0;
+            //healthSlider.value = 0;
             Die();
+        }
+        
+        var isDamaged = _health < previousHealth;
+        var changeColor = isDamaged ? new Color(1f, 0.9f, 0.4f) : new Color(.5f, 1f, 0.4f);
+        
+        _healthTween?.Kill();
+        healthChangeImage.color = changeColor;
+
+        if (isDamaged)
+        {
+            healthSlider.value = _health;
+            _healthTween = DOVirtual.Float(healthChangeSlider.value, _health, 1f, v => healthChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.3f);
+        }
+        else
+        {
+            healthChangeSlider.value = _health;
+            _healthTween = DOVirtual.Float(healthSlider.value, _health, 1f, v => healthSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.3f);
         }
     }
     

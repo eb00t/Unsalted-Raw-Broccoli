@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.Serialization;
@@ -12,7 +13,7 @@ public class CloneBossManager : MonoBehaviour
     [Header("Stats")]
     private int _collectiveHealth;
     private int _maxHealth;
-    [FormerlySerializedAs("maxNumberOfBosses")] [SerializeField] private int maxConcurrentIndividuals;
+    [SerializeField] private int maxConcurrentIndividuals;
     [SerializeField] private int totalSpawn;
     [SerializeField] private int maxAttackingCount;
     [SerializeField] private int individualHealth;
@@ -43,9 +44,18 @@ public class CloneBossManager : MonoBehaviour
     private CharacterAttack _characterAttack;
     public int numKilled;
     [SerializeField] private Animator spawn1Animator, spawn2Animator, spawn3Animator;
+    [SerializeField] private Slider healthChangeSlider;
+    [SerializeField] private Image healthChangeImage;
+    private Tween _healthTween;
+    [SerializeField] private DataHolder dataHolder;
 
     private void Start()
     {
+        if (dataHolder.hardcoreMode)
+        {
+            totalSpawn += totalSpawn / 2;
+        }
+
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomScripting.enemies.Add(gameObject);
         _player = GameObject.FindGameObjectWithTag("Player");
@@ -56,6 +66,8 @@ public class CloneBossManager : MonoBehaviour
         _maxHealth = totalSpawn * individualHealth;
         healthSlider.value = _maxHealth;
         healthSlider.maxValue = _maxHealth;
+        healthChangeSlider.maxValue = _maxHealth;
+        healthChangeSlider.value = _maxHealth;
         UpdateCollectiveHealth();
     }
 
@@ -139,8 +151,8 @@ public class CloneBossManager : MonoBehaviour
 
             cloneBossHandlers.Add(handler);
             _numSpawned++;
-            Debug.Log(_numSpawned);
-            UpdateCollectiveHealth();
+            //Debug.Log(_numSpawned);
+            //UpdateCollectiveHealth();
         }
 
         //spawnCooldown += 0.3f;
@@ -154,8 +166,26 @@ public class CloneBossManager : MonoBehaviour
 
     public void UpdateCollectiveHealth()
     {
+        var previousHealth = _collectiveHealth;
         _collectiveHealth = (totalSpawn - numKilled) * individualHealth;
-        healthSlider.value = _collectiveHealth;
+        //healthSlider.value = _collectiveHealth;
+        
+        var isDamaged = _collectiveHealth < previousHealth;
+        var changeColor = isDamaged ? new Color(1f, 0.9f, 0.4f) : new Color(.5f, 1f, 0.4f);
+        
+        _healthTween?.Kill();
+        healthChangeImage.color = changeColor;
+
+        if (isDamaged)
+        {
+            healthSlider.value = _collectiveHealth;
+            _healthTween = DOVirtual.Float(healthChangeSlider.value, _collectiveHealth, 1f, v => healthChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.3f);
+        }
+        else
+        {
+            healthChangeSlider.value = _collectiveHealth;
+            _healthTween = DOVirtual.Float(healthSlider.value, _collectiveHealth, 1f, v => healthSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.3f);
+        }
 
         if (numKilled >= totalSpawn / 2)
         {

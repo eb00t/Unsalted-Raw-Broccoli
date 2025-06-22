@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Cinemachine;
+using DG.Tweening;
 using Pathfinding;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -95,6 +96,9 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private Coroutine _atkCD;
     private DialogueTrigger[] _dialogueTriggers;
     [SerializeField] private DataHolder dataHolder;
+    [SerializeField] private Slider healthChangeSlider;
+    [SerializeField] private Image healthChangeImage;
+    private Tween _healthTween;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -124,6 +128,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _health = maxHealth;
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
+        healthChangeSlider.maxValue = maxHealth;
+        healthChangeSlider.value = _health;
         healthSlider.gameObject.SetActive(false);
         _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
 
@@ -582,6 +588,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
         if (_isDead) return;
+
+        var previousHealth = _health;
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
         damage = Mathf.RoundToInt(damage * dmgReduction);
@@ -617,6 +625,23 @@ public class CopyBoss : MonoBehaviour, IDamageable
                 _hitCount++;
                 ApplyKnockback(knockback.Value);
             }
+        }
+        
+        var isDamaged = _health < previousHealth;
+        var changeColor = isDamaged ? new Color(1f, 0.9f, 0.4f) : new Color(.5f, 1f, 0.4f);
+        
+        _healthTween?.Kill();
+        healthChangeImage.color = changeColor;
+
+        if (isDamaged)
+        {
+            healthSlider.value = _health;
+            _healthTween = DOVirtual.Float(healthChangeSlider.value, _health, 1f, v => healthChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.3f);
+        }
+        else
+        {
+            healthChangeSlider.value = _health;
+            _healthTween = DOVirtual.Float(healthSlider.value, _health, 1f, v => healthSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.3f);
         }
     }
     
