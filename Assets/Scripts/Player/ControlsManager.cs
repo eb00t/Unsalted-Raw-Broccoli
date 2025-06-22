@@ -141,7 +141,7 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.Dash, R1 },
             { ButtonType.CrouchL, lThumbstickPress },
             { ButtonType.CrouchR, rThumbstickPress },
-            { ButtonType.CrouchC, lThumbstickDown },
+            { ButtonType.CrouchC, lThumbstickPress},
             { ButtonType.Pause, menuImg },
             { ButtonType.Back, circle },
             { ButtonType.CycleToolbarLeft, dPadLeft },

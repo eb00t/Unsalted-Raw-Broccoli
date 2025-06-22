@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -16,6 +17,7 @@ public class RechargeStationHandler : MonoBehaviour
     [NonSerialized] public int cost;
     public bool hasBeenPurchased;
     [SerializeField] private Material disabledMaterial;
+    private bool _inRange;
 
     private void Start()
     {
@@ -34,17 +36,21 @@ public class RechargeStationHandler : MonoBehaviour
         
         var dist = Vector3.Distance(transform.position, _player.transform.position);
         
-        if (dist <= range)
+        if (!_inRange && dist <= range)
         {
             _itemPickupHandler.isPlayerNearRecharge = true;
             _itemPickupHandler.TogglePrompt("Purchase energy refill for  <sprite index=0 color=#FFBD00>" + "<color=#FFBD00>"  + cost + "</color>", true, ControlsManager.ButtonType.Interact, "", null, false);
+            _menuHandler.currencyCanvasGroup.DOFade(1f, 0.5f);
             _menuHandler.rechargeStationHandler = this;
+            _inRange = true;
         }
-        else if (dist > range)
+        else if (_inRange && dist > range)
         {
             if (_itemPickupHandler.itemCount > 0) return;
             if (_menuHandler.rechargeStationHandler != this) return;
             _itemPickupHandler.isPlayerNearRecharge = false;
+            _menuHandler.currencyCanvasGroup.DOFade(0f, 0.5f);
+            _inRange = false;
         }
     }
 

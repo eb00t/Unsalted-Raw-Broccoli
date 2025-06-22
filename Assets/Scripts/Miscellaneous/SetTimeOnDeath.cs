@@ -15,7 +15,7 @@ public class SetTimeOnDeath : MonoBehaviour
 
     public void FadeHudOut()
     {
-        hudCanvasGroup.DOFade(0f, 0.5f);
+        hudCanvasGroup.DOFade(0f, 0.5f).SetUpdate(true);
     }
 
     public void StartLaugh()

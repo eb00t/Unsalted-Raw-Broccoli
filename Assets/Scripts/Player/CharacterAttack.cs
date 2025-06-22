@@ -542,7 +542,7 @@ public class CharacterAttack : MonoBehaviour
         _poiseBuildup += poiseDmg;
 
         var isDamaged = dataHolder.playerHealth < previousHealth;
-        var changeColor = isDamaged ? Color.yellow : Color.green;
+        var changeColor = isDamaged ? new Color(1f, 0.9f, 0.4f) : new Color(.5f, 1f, 0.4f);
         
         _healthTween?.Kill();
         _healthChangeImg.color = changeColor;
@@ -550,13 +550,13 @@ public class CharacterAttack : MonoBehaviour
         if (isDamaged)
         {
             healthSlider.value = dataHolder.playerHealth;
-            _healthTween = DOVirtual.Float(healthChangeSlider.value, dataHolder.playerHealth, 1f, v => healthChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.2f);
+            _healthTween = DOVirtual.Float(healthChangeSlider.value, dataHolder.playerHealth, 1f, v => healthChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.4f);
         }
         else
         {
             healthChangeSlider.value = dataHolder.playerHealth;
             
-            _healthTween = DOVirtual.Float(healthSlider.value, dataHolder.playerHealth, 1f, v => healthSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.2f);
+            _healthTween = DOVirtual.Float(healthSlider.value, dataHolder.playerHealth, 1f, v => healthSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.4f);
         }
     }
 
@@ -668,7 +668,7 @@ public class CharacterAttack : MonoBehaviour
         }
         
         var energyLost = currentEnergy < previousEnergy;
-        var changeColor = energyLost ? Color.yellow : Color.green;
+        var changeColor = energyLost ? new Color(1f, 0.9f, 0.4f) : new Color(.5f, 1f, 0.4f);
         
         _energyTween?.Kill();
         _energyChangeImg.color = changeColor;
@@ -676,13 +676,13 @@ public class CharacterAttack : MonoBehaviour
         if (energyLost)
         {
             energySlider.value = currentEnergy;
-            _energyTween = DOVirtual.Float(energyChangeSlider.value, currentEnergy, 1f, v => energyChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.2f);
+            _energyTween = DOVirtual.Float(energyChangeSlider.value, currentEnergy, 1f, v => energyChangeSlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.4f);
         }
         else
         {
             energyChangeSlider.value = currentEnergy;
             
-            _energyTween = DOVirtual.Float(energySlider.value, currentEnergy, 1f, v => energySlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.2f);
+            _energyTween = DOVirtual.Float(energySlider.value, currentEnergy, 1f, v => energySlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.4f);
         }
     }
 

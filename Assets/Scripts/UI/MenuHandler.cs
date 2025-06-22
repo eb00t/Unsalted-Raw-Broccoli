@@ -61,7 +61,7 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private float idleResetTime;
 	private float _idleTimer;
 	private CanvasGroup _hudCanvasGroup;
-	[SerializeField] private CanvasGroup currencyCanvasGroup;
+	public CanvasGroup currencyCanvasGroup;
 
 	private void Awake()
 	{
