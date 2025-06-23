@@ -24,9 +24,12 @@ public class ItemPickupHandler : MonoBehaviour
     [SerializeField] private DataHolder dataHolder;
 
     private bool isGamepad;
+    private Image[] _images;
+    private Sequence _flashSeq, _flashEndSeq;
 
     private void Start()
     {
+        _images = rectTransform.GetComponentsInChildren<Image>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         characterMovement = player.GetComponent<CharacterMovement>();
 
@@ -94,20 +97,37 @@ public class ItemPickupHandler : MonoBehaviour
         {
             if (rectTransform.anchoredPosition.y < 0 || forceTween) // animate
             {
+                rectTransform.anchoredPosition = new Vector3(0, 100, 0);
+                rectTransform.localScale = new Vector3(0, 1, 1);
+                rectTransform.DOScale(new Vector3(1, 1, 1), .1f).SetUpdate(true);
+
                 if (forceTween)
                 {
-                    rectTransform.DOScale(new Vector3(0, 1, 1), .15f).SetUpdate(true).OnComplete(() =>
+                    _flashSeq?.Kill();
+                    _flashEndSeq?.Kill();
+                    
+                    _flashSeq = DOTween.Sequence().SetUpdate(true);
+                    
+                    foreach (var img in _images)
                     {
-                        rectTransform.anchoredPosition = new Vector3(0, 100, 0);
-                        rectTransform.localScale = new Vector3(0, 1, 1);
-                        rectTransform.DOScale(new Vector3(1, 1, 1), .15f).SetUpdate(true).SetDelay(0.2f);
+                        if (img.CompareTag("Animate"))
+                        {
+                            _flashSeq.Join(img.DOColor(Color.red, 0.2f));
+                        }
+                    }
+                    
+                    _flashSeq.OnComplete(() =>
+                    {
+                        _flashEndSeq = DOTween.Sequence().SetUpdate(true);
+                        
+                        foreach (var img in _images)
+                        {
+                            if (img.CompareTag("Animate"))
+                            {
+                                _flashEndSeq.Join(img.DOColor(new Color(0, 0.6352941f, 1), 2f));
+                            }
+                        }
                     });
-                }
-                else
-                {
-                    rectTransform.anchoredPosition = new Vector3(0, 100, 0);
-                    rectTransform.localScale = new Vector3(0, 1, 1);
-                    rectTransform.DOScale(new Vector3(1, 1, 1), .1f).SetUpdate(true);
                 }
             }
             

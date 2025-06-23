@@ -160,7 +160,7 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.Jump, " -> ", ControlsManager.ButtonType.Jump);
                 break;
             case TutorialStep.Crouch:
-                ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchC, " or ",ControlsManager.ButtonType.CrouchR);
+                ShowMessage("Crouch to fall through some platforms by pressing", ControlsManager.ButtonType.CrouchC, " or ",ControlsManager.ButtonType.CrouchR);
                 break;
             case TutorialStep.FindItems:
                 ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.Interact, "", null);
@@ -175,7 +175,7 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Use an item by pressing", ControlsManager.ButtonType.UseItem, "", null);
                 break;
             case TutorialStep.Map:
-                ShowMessage("Open the map to find unexplored rooms by holding", ControlsManager.ButtonType.OpenMap, "", null);
+                ShowMessage("View the map", ControlsManager.ButtonType.OpenMap, "", null);
                 break;
             case TutorialStep.Explore:
                 ShowMessage("Explore rooms to find the exit", ControlsManager.ButtonType.Move, "", null);
@@ -196,13 +196,13 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.HeavyAttack, "", null);
                 break;
             case TutorialStep.JumpAttack:
-                ShowMessage("Perform a jump attack", ControlsManager.ButtonType.Jump, " -> ",ControlsManager.ButtonType.LightAttack);
+                ShowMessage("Perform a jump attack", ControlsManager.ButtonType.Jump, " -> ", ControlsManager.ButtonType.LightAttack);
                 break;
             case TutorialStep.DefeatEnemy:
                 ShowMessage("Defeat the enemy", ControlsManager.ButtonType.LightAttack, "", null);
                 break;
             case TutorialStep.Complete:
-                ShowMessage("Tutorial complete! You may now continue ahead", ControlsManager.ButtonType.Move,"", null);
+                ShowMessage("Tutorial complete! You may now continue to Floor 1", ControlsManager.ButtonType.Move,"", null);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
