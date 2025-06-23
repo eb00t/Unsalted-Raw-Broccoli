@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using FMOD.Studio;
 using UnityEngine.SceneManagement;
 
 public class CreditsSequence : MonoBehaviour
@@ -32,14 +33,17 @@ public class CreditsSequence : MonoBehaviour
         creditsSeq.OnComplete(() =>
         { 
             Debug.Log("Credits Sequence Complete");
-            StartCoroutine(GotToMainMenuOnMusicEnd());
         });
     }
 
-    private IEnumerator GotToMainMenuOnMusicEnd()
+
+    private void Update()
     {
-        yield return new WaitUntil(() => Mathf.Approximately(AudioManager.Instance.GetGlobalEventParameterValue("Credits Track Finished"), 1f));
-        Debug.Log("Music Ended");
-        SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
+        AudioManager.Instance.MusicEventInstance.getPlaybackState(out var playbackState);
+        if (playbackState is PLAYBACK_STATE.STOPPING or PLAYBACK_STATE.STOPPED)
+        {
+            Debug.Log("Music Ended");
+            SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
+        }
     }
 }

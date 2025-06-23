@@ -135,8 +135,9 @@ public class AudioManager : MonoBehaviour
     }
     
     public float GetGlobalEventParameterValue(string parameterName)
-    { 
-        RuntimeManager.StudioSystem.getParameterByName(parameterName, out float parameterValue);
+    {
+        float parameterValue = 1f;
+        RuntimeManager.StudioSystem.getParameterByName(parameterName, out parameterValue);
         return parameterValue;
     }
     
