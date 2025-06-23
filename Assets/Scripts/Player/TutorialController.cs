@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using FMODUnity;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,7 +12,18 @@ public class TutorialController : MonoBehaviour
     private GameObject _player;
     private ItemPickupHandler _itemPickupHandler;
 
-    [SerializeField] private DoorInfo doorItemDown1, doorItemDown2, doorItemRight1, doorItemRight2, doorUp1, doorUp2, doorUpRight, doorUpRight1, doorToEnd1, doorToEnd2;
+    [SerializeField] private DoorInfo doorItemDown1,
+        doorItemDown2,
+        doorItemRight1,
+        doorItemRight2,
+        doorUp1,
+        doorUp2,
+        doorUpRight,
+        doorUpRight1,
+        doorToEnd1,
+        doorToEnd2,
+        doorPastLaser1,
+        doorPastLaser2;
     [SerializeField] private GameObject arrowItem1, arrowItem1Back, arrowItem2, arrowItem2Back, arrowUp, arrowToEnemy, arrowToEnd1, arrowToEnd2;
     [SerializeField] private GameObject highLight1, arrowRect1, hightLight3, arrowRect2;
 
@@ -19,20 +31,20 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private float rangeToEnemy;
     [SerializeField] private DataHolder dataHolder;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private CanvasGroup toolbarGroup;
 
     public enum TutorialStep
     {
         Move,
         Jump,
         DoubleJump,
-        Dash,
         Crouch,
         FindItems,
         UseUpThrust,
         SwitchItem,
         UseItem,
-        PauseGame,
-        ExitUI,
+        Explore,
+        DashThroughLaser,
         FindEnemy,
         LightAttack,
         MediumAttack,
@@ -81,6 +93,8 @@ public class TutorialController : MonoBehaviour
         {
             if (_characterMovement.doubleJumpPerformed)
             {
+                highLight1.SetActive(true);
+                hightLight3.SetActive(true);
                 AdvanceStep();
             }
         }
@@ -144,9 +158,6 @@ public class TutorialController : MonoBehaviour
             case TutorialStep.DoubleJump:
                 ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.Jump, " -> ", ControlsManager.ButtonType.Jump);
                 break;
-            case TutorialStep.Dash:
-                ShowMessage("To dash and gain brief invincibility press", ControlsManager.ButtonType.Dash, "", null);
-                break;
             case TutorialStep.Crouch:
                 ShowMessage("Crouch to fall through certain platforms by pressing", ControlsManager.ButtonType.CrouchC, " or ",ControlsManager.ButtonType.CrouchR);
                 break;
@@ -162,11 +173,11 @@ public class TutorialController : MonoBehaviour
             case TutorialStep.UseItem:
                 ShowMessage("Use an item by pressing", ControlsManager.ButtonType.UseItem, "", null);
                 break;
-            case TutorialStep.PauseGame:
-                ShowMessage("Pause the game by pressing", ControlsManager.ButtonType.Pause, "", null);
+            case TutorialStep.Explore:
+                ShowMessage("Explore rooms to find the exit", ControlsManager.ButtonType.Move, "", null);
                 break;
-            case TutorialStep.ExitUI:
-                ShowMessage("Exit the pause menu by pressing", ControlsManager.ButtonType.Back, "", null);
+            case TutorialStep.DashThroughLaser:
+                ShowMessage("Dash through attacks and obstacles by pressing", ControlsManager.ButtonType.Dash, "", null);
                 break;
             case TutorialStep.FindEnemy:
                 ShowMessage("Find an enemy by exploring the rooms", ControlsManager.ButtonType.Move, "", null);
@@ -199,16 +210,6 @@ public class TutorialController : MonoBehaviour
         _itemPickupHandler.TogglePrompt(message, true, button, betweenText, button2, true);
     }
 
-    public void DashPerformed(InputAction.CallbackContext context)
-    {
-        if (context.performed && _currentStep == TutorialStep.Dash)
-        {
-            highLight1.SetActive(true);
-            hightLight3.SetActive(true);
-            AdvanceStep();
-        }
-    }
-
     public void OnItemPickedUp()
     {
         _itemsFound++;
@@ -230,6 +231,24 @@ public class TutorialController : MonoBehaviour
             arrowItem2Back.SetActive(false);
             arrowItem1Back.SetActive(true);
             
+            AdvanceStep();
+        }
+    }
+
+    public void OnLaserPassed()
+    {
+        if (_currentStep == TutorialStep.DashThroughLaser)
+        {
+            doorPastLaser1.OpenDoor();
+            doorPastLaser2.OpenDoor();
+            AdvanceStep();
+        }
+    }
+
+    public void OnLaserFound()
+    {
+        if (_currentStep == TutorialStep.Explore)
+        {
             AdvanceStep();
         }
     }
@@ -262,6 +281,7 @@ public class TutorialController : MonoBehaviour
             hightLight3.SetActive(false);
             
             AdvanceStep();
+            toolbarGroup.DOFade(1f, 0.5f);
             if (_itemsFound == 0)
             {
                 doorItemRight1.OpenDoor();
@@ -307,31 +327,11 @@ public class TutorialController : MonoBehaviour
                     return;
             }
             
-            AdvanceStep();
-        }
-    }
-
-    public void OpenPause(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        if (_currentStep == TutorialStep.PauseGame)
-        {
-            AdvanceStep();
-        }
-    }
-    
-    public void GoBack(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        if (_currentStep == TutorialStep.ExitUI && !pauseMenu.activeSelf)
-        {
-            arrowItem2Back.SetActive(true);
-            arrowUp.SetActive(true);
-            arrowToEnemy.SetActive(true);
             doorUp1.OpenDoor();
             doorUp2.OpenDoor();
             doorUpRight.OpenDoor();
             doorUpRight1.OpenDoor();
+            arrowToEnemy.SetActive(true);
             AdvanceStep();
         }
     }

@@ -160,9 +160,9 @@ public class ControlsManager : MonoBehaviour
         KeyboardStrings = new Dictionary<ButtonType, string>
         {
             { ButtonType.Move, "A/D" },
-            { ButtonType.LightAttack, "E / Left Click" },
-            { ButtonType.MediumAttack, "W / Right Click" },
-            { ButtonType.HeavyAttack, "Q / Middle Mouse Button" },
+            { ButtonType.LightAttack, "E or Left Click" },
+            { ButtonType.MediumAttack, "W or Right Click" },
+            { ButtonType.HeavyAttack, "Q or Middle Mouse Button" },
             { ButtonType.Jump, "SPACE" },
             { ButtonType.Dash, "SHIFT" },
             { ButtonType.CrouchL, "CTRL" },
@@ -179,7 +179,7 @@ public class ControlsManager : MonoBehaviour
             { ButtonType.LockOn, "TAB   " },
             { ButtonType.SwitchLockOnTarget, "1/2" },
             { ButtonType.ProgressDialogue, "SPACE" },
-            { ButtonType.UISelect, "Enter / Left Click" },
+            { ButtonType.UISelect, "Enter or Left Click" },
             { ButtonType.OpenMap, "M" },
         };
     }

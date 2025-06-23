@@ -36,7 +36,7 @@ public class ItemPickupHandler : MonoBehaviour
     private void Update()
     {
         var isNearOtherObject = isPlrNearEnd || isPlrNearDialogue || isPlrNearLore || isPlrNearShop || isPlayerNearRecharge;
-        if (SceneManager.GetActiveScene().name == "Tutorial" || characterMovement.uiOpen || isNearOtherObject)
+        if ((SceneManager.GetActiveScene().name == "Tutorial" && !isPlrNearEnd)  || characterMovement.uiOpen || isNearOtherObject)
         {
             itemCount = 0;
             return;
@@ -96,11 +96,11 @@ public class ItemPickupHandler : MonoBehaviour
             {
                 if (forceTween)
                 {
-                    rectTransform.DOScale(new Vector3(0, 1, 1), .1f).SetUpdate(true).OnComplete(() =>
+                    rectTransform.DOScale(new Vector3(0, 1, 1), .15f).SetUpdate(true).OnComplete(() =>
                     {
                         rectTransform.anchoredPosition = new Vector3(0, 100, 0);
                         rectTransform.localScale = new Vector3(0, 1, 1);
-                        rectTransform.DOScale(new Vector3(1, 1, 1), .1f).SetUpdate(true);
+                        rectTransform.DOScale(new Vector3(1, 1, 1), .15f).SetUpdate(true).SetDelay(0.2f);
                     });
                 }
                 else
