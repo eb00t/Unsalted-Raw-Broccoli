@@ -134,6 +134,12 @@ public class AudioManager : MonoBehaviour
         eventInstance.setParameterByName(parameterName, parameterValue);
     }
     
+    public float GetEventParameterValue(EventInstance eventInstance, string parameterName)
+    { 
+        eventInstance.getParameterByName(parameterName, out float parameterValue);
+        return parameterValue;
+    }
+    
     public void SetGlobalEventParameter(string parameterName, float parameterValue)
     {
         RuntimeManager.StudioSystem.setParameterByName(parameterName, parameterValue);
