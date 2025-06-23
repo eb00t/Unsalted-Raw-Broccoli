@@ -43,6 +43,7 @@ public class TutorialController : MonoBehaviour
         UseUpThrust,
         SwitchItem,
         UseItem,
+        Map,
         Explore,
         DashThroughLaser,
         FindEnemy,
@@ -173,6 +174,9 @@ public class TutorialController : MonoBehaviour
             case TutorialStep.UseItem:
                 ShowMessage("Use an item by pressing", ControlsManager.ButtonType.UseItem, "", null);
                 break;
+            case TutorialStep.Map:
+                ShowMessage("Open the map to find unexplored rooms by holding", ControlsManager.ButtonType.OpenMap, "", null);
+                break;
             case TutorialStep.Explore:
                 ShowMessage("Explore rooms to find the exit", ControlsManager.ButtonType.Move, "", null);
                 break;
@@ -253,6 +257,19 @@ public class TutorialController : MonoBehaviour
         }
     }
 
+    public void MapOpened(InputAction.CallbackContext context)
+    {
+        if (context.performed && _currentStep == TutorialStep.Map)
+        {
+            doorUp1.OpenDoor();
+            doorUp2.OpenDoor();
+            doorUpRight.OpenDoor();
+            doorUpRight1.OpenDoor();
+            arrowToEnemy.SetActive(true);
+            AdvanceStep();
+        }
+    }
+
     public void HasPlayerMoved(InputAction.CallbackContext context)
     {
         if (!BlackoutManager.Instance.blackoutComplete) return;
@@ -327,11 +344,6 @@ public class TutorialController : MonoBehaviour
                     return;
             }
             
-            doorUp1.OpenDoor();
-            doorUp2.OpenDoor();
-            doorUpRight.OpenDoor();
-            doorUpRight1.OpenDoor();
-            arrowToEnemy.SetActive(true);
             AdvanceStep();
         }
     }
