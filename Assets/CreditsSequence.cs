@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class CreditsSequence : MonoBehaviour
 {
@@ -26,5 +28,18 @@ public class CreditsSequence : MonoBehaviour
             creditsSeq.Append(cg.DOFade(1f, fadeInDuration));
             creditsSeq.Append(cg.DOFade(0f, fadeOutDuration).SetDelay(betweenDuration));
         }
+
+        creditsSeq.OnComplete(() =>
+        { 
+            Debug.Log("Credits Sequence Complete");
+            StartCoroutine(GotToMainMenuOnMusicEnd());
+        });
+    }
+
+    private IEnumerator GotToMainMenuOnMusicEnd()
+    {
+        yield return new WaitUntil(() => Mathf.Approximately(AudioManager.Instance.GetGlobalEventParameterValue("Credits Track Finished"), 1f));
+        Debug.Log("Music Ended");
+        SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
     }
 }
