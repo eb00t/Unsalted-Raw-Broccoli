@@ -188,6 +188,6 @@ public class AnimationEvents : MonoBehaviour
     public void FadeToBlack()
     {
         deathScreen.SetActive(true);
-        blackoutCircle.enabled = true;
+        //blackoutCircle.enabled = true;
     }
 }

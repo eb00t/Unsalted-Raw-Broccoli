@@ -196,12 +196,10 @@ public class ToolbarHandler : MonoBehaviour
                 });
                 break;
             case (0, -1): // down (2)
-                /*
                 if (!_characterMovement.uiOpen)
                 {
                     _menuHandler.ToggleEquip();
                 }
-                */
                 break;
             case (-1, 0): // left (3)
                 CycleToolbar(-1);
