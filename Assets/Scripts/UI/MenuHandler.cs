@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using DG.Tweening;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -40,6 +43,8 @@ public class MenuHandler : MonoBehaviour
 	public GameObject dialogueGUI, dialogueBck, dialogueTitleText, dialogueBodyText;
 	[SerializeField] private GameObject settingsBtn, controlsBtn, quitBtn;
 	[SerializeField] private GameObject slotsTooltip, inventoryTooltip;
+	[SerializeField] private CanvasGroup mapTxtGroup;
+	private TextMeshProUGUI _mapTxt;
 
 	public GameObject mapCamera;
 	
@@ -86,6 +91,7 @@ public class MenuHandler : MonoBehaviour
 		hardcoreIndicator.SetActive(dataHolder.hardcoreMode);
 		_idleTimer = idleResetTime;
 		_hudCanvasGroup = GetComponentInParent<CanvasGroup>();
+		_mapTxt = mapTxtGroup.GetComponent<TextMeshProUGUI>();
 
 		foreach (var t in dialogueGUI.GetComponentsInChildren<Transform>())
 		{
@@ -597,7 +603,7 @@ public class MenuHandler : MonoBehaviour
 		{
 			if (dataHolder.hardcoreMode)
 			{
-				SaveData.Instance.EraseData();
+				SaveData.Instance.EraseData(true);
 				SaveData.Instance.LoadSave();
 			}
 
@@ -868,13 +874,38 @@ public class MenuHandler : MonoBehaviour
 		{
 			mapCamera.SetActive(true);
 			_hudCanvasGroup.DOFade(0, 0.2f);
+			
+			_mapTxt.text = ReturnCurrentFloorOrSceneAsString();
+			mapTxtGroup.DOFade(1f, 0.2f);
 		}
 		
 		if (context.canceled) // when input ends (i.e. when the button is let go)
 		{
 			mapCamera.SetActive(false);
 			_hudCanvasGroup.DOFade(1, 0.2f);
+			mapTxtGroup.DOFade(0f, 0.2f);
 		}
+	}
+
+	private string ReturnCurrentFloorOrSceneAsString()
+	{
+		var floorTxt = dataHolder.currentLevel.ToString();
+
+		if (SceneManager.GetActiveScene().name == "MainScene" && floorTxt.Contains("Floor"))
+		{
+			// https://discussions.unity.com/t/extract-number-from-string/4361
+			floorTxt = Regex.Replace(floorTxt, @"^(Floor)(.+)$", "$1 $2");
+		}
+		else if (SceneManager.GetActiveScene().name == "Intermission")
+		{
+			floorTxt = "Construct Lobby";
+		}
+		else if (SceneManager.GetActiveScene().name == "Tutorial")
+		{
+			floorTxt = "Tutorial";
+		}
+
+		return floorTxt;
 	}
 
 	public void SceneReload() // reloads scene
@@ -885,6 +916,7 @@ public class MenuHandler : MonoBehaviour
 
 	public void LoadScene(string scene)
 	{
+		SaveData.Instance.UpdateSave();
 		SceneManager.LoadScene(scene);
 	}
 

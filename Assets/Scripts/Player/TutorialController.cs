@@ -69,8 +69,6 @@ public class TutorialController : MonoBehaviour
             enabled = false;
             return;
         }
-        
-        //WipeData();
 
         _player = gameObject;
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
@@ -381,16 +379,5 @@ public class TutorialController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, rangeToEnemy);
-    }
-    
-    private void WipeData()
-    {
-        dataHolder.savedItems.Clear();
-        dataHolder.savedItemCounts.Clear();
-        dataHolder.equippedConsumables = new int[5];
-        dataHolder.currencyHeld = 0;
-        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
-        dataHolder.highestFloorCleared = 0;
-        dataHolder.permanentPassiveItems = new int[4];
     }
 }

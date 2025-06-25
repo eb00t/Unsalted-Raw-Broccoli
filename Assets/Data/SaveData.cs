@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 public class SaveData : MonoBehaviour
 {
@@ -19,6 +20,22 @@ public class SaveData : MonoBehaviour
 
         Instance = this;
     }
+
+    public bool CheckIfSaveFileExists()
+    {
+        var filePath = Application.persistentDataPath + "/saveData.json";
+
+        if (!File.Exists(filePath)) return false;
+
+        var defaultData = new DataHolderSaveData();
+        var json = File.ReadAllText(filePath);
+        var loadedData = JsonUtility.FromJson<DataHolderSaveData>(json);
+
+        return defaultData.currentLevel != loadedData.currentLevel ||
+               defaultData.currencyHeld != loadedData.currencyHeld ||
+               defaultData.highestFloorCleared != loadedData.highestFloorCleared;
+    }
+
 
     // automatically saves every minute
     private void Update()
@@ -47,7 +64,6 @@ public class SaveData : MonoBehaviour
             currencyHeld = dataHolder.currencyHeld,
             currentLevel = (int)dataHolder.currentLevel,
             highestFloorCleared = dataHolder.highestFloorCleared,
-            demoMode = dataHolder.demoMode,
             eraseViewedLore = dataHolder.eraseViewedLore,
 
             playerHealth = dataHolder.playerHealth,
@@ -68,6 +84,7 @@ public class SaveData : MonoBehaviour
             isGamepad = dataHolder.isGamepad,
             fpsIndex = dataHolder.fpsIndex,
             resolutionIndex = dataHolder.resolutionIndex,
+            hasBeatenBaseGame = dataHolder.hasBeatenBaseGame,
 
             masterVolume = dataHolder.masterVolume,
             musicVolume = dataHolder.musicVolume,
@@ -91,8 +108,7 @@ public class SaveData : MonoBehaviour
         
         if (!File.Exists(filePath))
         {
-            SavePlayerData(dataHolder);
-            return;
+            CreateDefaultSaveFile();
         }
 
         var json = File.ReadAllText(filePath);
@@ -101,7 +117,6 @@ public class SaveData : MonoBehaviour
         dataHolder.currencyHeld = loadedData.currencyHeld;
         dataHolder.currentLevel = (LevelBuilder.LevelMode)loadedData.currentLevel;
         dataHolder.highestFloorCleared = loadedData.highestFloorCleared;
-        dataHolder.demoMode = loadedData.demoMode;
         dataHolder.eraseViewedLore = loadedData.eraseViewedLore;
 
         dataHolder.playerHealth = loadedData.playerHealth;
@@ -113,7 +128,13 @@ public class SaveData : MonoBehaviour
         dataHolder.hpChanceOnKill = loadedData.hpChanceOnKill;
         dataHolder.changeToRegen = loadedData.changeToRegen;
         dataHolder.hpChanceHealPercentage = loadedData.hpChanceHealPercentage;
-
+        
+        dataHolder.savedItems = new List<int>(loadedData.savedItems);
+        dataHolder.savedItemCounts = new List<int>(loadedData.savedItemCounts);
+        dataHolder.equippedConsumables = (int[])loadedData.equippedConsumables.Clone();
+        dataHolder.permanentPassiveItems = (int[])loadedData.permanentPassiveItems.Clone();
+        
+        dataHolder.hasBeatenBaseGame = loadedData.hasBeatenBaseGame;
         dataHolder.currentControl = (ControlsManager.ControlScheme)loadedData.currentControl;
         dataHolder.isAutoEquipEnabled = loadedData.isAutoEquipEnabled;
         dataHolder.isAutoSwitchEnabled = loadedData.isAutoSwitchEnabled;
@@ -122,34 +143,110 @@ public class SaveData : MonoBehaviour
         dataHolder.isGamepad = loadedData.isGamepad;
         dataHolder.fpsIndex = loadedData.fpsIndex;
         dataHolder.resolutionIndex = loadedData.resolutionIndex;
-
         dataHolder.masterVolume = loadedData.masterVolume;
         dataHolder.musicVolume = loadedData.musicVolume;
         dataHolder.sfxVolume = loadedData.sfxVolume;
         dataHolder.screenShakeMultiplier = loadedData.screenShakeMultiplier;
-
-        dataHolder.savedItems = new List<int>(loadedData.savedItems);
-        dataHolder.savedItemCounts = new List<int>(loadedData.savedItemCounts);
-        dataHolder.equippedConsumables = (int[])loadedData.equippedConsumables.Clone();
-        dataHolder.permanentPassiveItems = (int[])loadedData.permanentPassiveItems.Clone();
+        //SavePlayerData(dataHolder);
     }
 
-    public void EraseData()
+    public void EraseData(bool keepSettings)
     {
+        DataHolderSaveData preservedSettings = null;
+
+        if (keepSettings)
+        {
+            preservedSettings = new DataHolderSaveData
+            {
+                hasBeatenBaseGame = dataHolder.hasBeatenBaseGame,
+                currentControl = (int)dataHolder.currentControl,
+                isAutoEquipEnabled = dataHolder.isAutoEquipEnabled,
+                isAutoSwitchEnabled = dataHolder.isAutoSwitchEnabled,
+                isAutoLockOnEnabled = dataHolder.isAutoLockOnEnabled,
+                forceControlScheme = dataHolder.forceControlScheme,
+                isGamepad = dataHolder.isGamepad,
+                fpsIndex = dataHolder.fpsIndex,
+                resolutionIndex = dataHolder.resolutionIndex,
+                masterVolume = dataHolder.masterVolume,
+                musicVolume = dataHolder.musicVolume,
+                sfxVolume = dataHolder.sfxVolume,
+                screenShakeMultiplier = dataHolder.screenShakeMultiplier
+            };
+        }
+        
         File.Delete(Application.persistentDataPath + "/saveData.json");
-        dataHolder.currencyHeld = 0;
-        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
-        dataHolder.highestFloorCleared = 0;
-        dataHolder.savedItems.Clear();
-        dataHolder.savedItemCounts.Clear();
-        dataHolder.equippedConsumables = new int[5];
-        dataHolder.currencyHeld = 0;
-        dataHolder.permanentPassiveItems = new int[4];
+        CreateDefaultSaveFile();
+        LoadData(dataHolder);
+        
+        if (keepSettings)
+        {
+            dataHolder.hasBeatenBaseGame = preservedSettings.hasBeatenBaseGame;
+            dataHolder.currentControl = (ControlsManager.ControlScheme)preservedSettings.currentControl;
+            dataHolder.isAutoEquipEnabled = preservedSettings.isAutoEquipEnabled;
+            dataHolder.isAutoSwitchEnabled = preservedSettings.isAutoSwitchEnabled;
+            dataHolder.isAutoLockOnEnabled = preservedSettings.isAutoLockOnEnabled;
+            dataHolder.forceControlScheme = preservedSettings.forceControlScheme;
+            dataHolder.isGamepad = preservedSettings.isGamepad;
+            dataHolder.fpsIndex = preservedSettings.fpsIndex;
+            dataHolder.resolutionIndex = preservedSettings.resolutionIndex;
+            dataHolder.masterVolume = preservedSettings.masterVolume;
+            dataHolder.musicVolume = preservedSettings.musicVolume;
+            dataHolder.sfxVolume = preservedSettings.sfxVolume;
+            dataHolder.screenShakeMultiplier = preservedSettings.screenShakeMultiplier;
+        }
+        
+        SavePlayerData(dataHolder);
     }
+
 
     private void OnApplicationQuit()
     {
         SavePlayerData(dataHolder);
+    }
+    
+    public static void CreateDefaultSaveFile()
+    {
+        var defaultData = new DataHolderSaveData
+        {
+            currencyHeld = 0,
+            currentLevel = 1,
+            highestFloorCleared = 0,
+            eraseViewedLore = true,
+
+            playerHealth = 250,
+            playerMaxHealth = 250,
+            playerBaseAttack = 10,
+            playerDefense = 0,
+            surviveLethalHit = false,
+            passiveEnergyRegen = false,
+            hpChanceOnKill = false,
+            changeToRegen = 10,
+            hpChanceHealPercentage = 5,
+            
+            currentControl = 2,
+            isAutoEquipEnabled = true,
+            isAutoSwitchEnabled = true,
+            isAutoLockOnEnabled = true,
+            forceControlScheme = false,
+            isGamepad = false,
+            fpsIndex = 0,
+            resolutionIndex = 0,
+            hasBeatenBaseGame = false,
+
+            masterVolume = 0.7f,
+            musicVolume = 1f,
+            sfxVolume = 1f,
+            screenShakeMultiplier = 0.7f,
+
+            savedItems = new List<int>(),
+            savedItemCounts = new List<int>(),
+            equippedConsumables = new int[5],
+            permanentPassiveItems = new int[4]
+        };
+
+        var json = JsonUtility.ToJson(defaultData, true);
+        var filePath = Application.persistentDataPath + "/saveData.json";
+        File.WriteAllText(filePath, json);
     }
 }
 
@@ -157,9 +254,8 @@ public class SaveData : MonoBehaviour
 public class DataHolderSaveData
 {
     public int currencyHeld;
-    public int currentLevel;
+    public int currentLevel = 1;
     public int highestFloorCleared;
-    public bool demoMode;
     public bool eraseViewedLore;
 
     public int playerHealth;
@@ -180,6 +276,7 @@ public class DataHolderSaveData
     public bool isGamepad;
     public int fpsIndex;
     public int resolutionIndex;
+    public bool hasBeatenBaseGame;
 
     public float masterVolume;
     public float musicVolume;

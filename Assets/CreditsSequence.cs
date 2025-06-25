@@ -28,6 +28,8 @@ public class CreditsSequence : MonoBehaviour
         }
 
         InitialiseCreditsSequence();
+
+        dataHolder.hasBeatenBaseGame = true;
     }
 
     private void InitialiseCreditsSequence()
@@ -49,6 +51,7 @@ public class CreditsSequence : MonoBehaviour
                 {
                     menuBtn.GetComponent<Button>().interactable = true;
                     quitBtn.GetComponent<Button>().interactable = true;
+                    eventSystem.SetSelectedGameObject(menuBtn);
                 });
 
                 var slideFade = slides[i].GetComponent<RectTransform>().DOAnchorPosY(0f, 1f).SetEase(Ease.OutBounce).SetDelay(1.7f);

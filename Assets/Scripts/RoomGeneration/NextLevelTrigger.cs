@@ -152,11 +152,11 @@ public class NextLevelTrigger : MonoBehaviour
                 break;
             case SceneToLoad.Credits:
                 scene = "creditsScene";
-                SaveData.Instance.EraseData();
+                SaveData.Instance.EraseData(!dataHolder.demoMode);
                 break;
             case SceneToLoad.TheEnd:
                 scene = "The End";
-                SaveData.Instance.EraseData();
+                SaveData.Instance.EraseData(!dataHolder.demoMode);
                 break;
             case SceneToLoad.EndScreen:
                 scene = "EndScreen";
@@ -187,17 +187,5 @@ public class NextLevelTrigger : MonoBehaviour
     {
         ButtonHandler.Instance.PlayBackSound();
         Application.Quit();
-    }
-    
-    public void WipeData()
-    {
-        dataHolder.savedItems.Clear();
-        dataHolder.savedItemCounts.Clear();
-        dataHolder.equippedConsumables = new int[5];
-        dataHolder.currencyHeld = 0;
-        dataHolder.currentLevel = LevelBuilder.LevelMode.Floor1;
-        dataHolder.highestFloorCleared = 0;
-        dataHolder.permanentPassiveItems = new int[4];
-        SaveData.Instance.EraseData();
     }
 }

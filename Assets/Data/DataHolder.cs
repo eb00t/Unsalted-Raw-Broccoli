@@ -11,6 +11,7 @@ public class DataHolder : ScriptableObject
     public int highestFloorCleared;
     public bool demoMode; // Essentially a playtest mode, if this is true, it should erase all data when reset is called
     public bool eraseViewedLore; // Bool to allow all lore to respawn
+    public bool hasPlayedThisSession;
     
     [Header("Player Stats")]
     public int playerHealth;
@@ -31,6 +32,7 @@ public class DataHolder : ScriptableObject
     public bool forceControlScheme;
     public bool isGamepad;
     public bool hardcoreMode;
+    public bool hasBeatenBaseGame;
     public int fpsIndex;
     public int resolutionIndex;
     

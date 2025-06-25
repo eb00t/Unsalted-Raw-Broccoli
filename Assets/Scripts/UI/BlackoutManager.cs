@@ -42,12 +42,12 @@ public class BlackoutManager : MonoBehaviour
         _loading = false;
         canvasGroup.gameObject.SetActive(true);
         loadingGroup.gameObject.SetActive(false);
-        blackoutComplete = true;
         
         _fadeTween = canvasGroup.DOFade(0f, 2f).SetUpdate(true).OnComplete(() =>
         {
             _hudCanvasGroup.DOFade(1f, 0.1f);
             canvasGroup.gameObject.SetActive(false);
+            blackoutComplete = true;
         });
     }
 
