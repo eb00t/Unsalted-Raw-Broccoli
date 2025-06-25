@@ -56,23 +56,6 @@ public class DialogueHandler : MonoBehaviour
       _speakerText = _dialogueCanvas.transform.Find("Text box").transform.Find("SpeakerHolder").transform.Find("SpeakerText").GetComponent<TextMeshProUGUI>();
       _dialogueText = _dialogueCanvas.transform.Find("Text box").transform.Find("Normal Text").GetComponent<TextMeshProUGUI>();
       
-      if (dataHolder.eraseViewedLore)
-      {
-         foreach (var lore in LoreReference.Instance.allLoreItems)
-         {
-            lore.discoveredByPlayer = false;
-         }
-      }
-      
-      foreach (var lore in LoreReference.Instance.allLoreItems.ToList())
-      {
-         if (lore.discoveredByPlayer)
-         {
-            allViewedLoreItems.Add(lore);
-            LoreReference.Instance.allLoreItems.Remove(lore);
-         }
-      }
-      
    }
 
    public void NextSentence(InputAction.CallbackContext context) // when space/A is pressed

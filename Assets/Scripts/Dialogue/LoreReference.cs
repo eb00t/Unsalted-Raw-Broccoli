@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LoreReference : MonoBehaviour
 { 
     public static LoreReference Instance { get; private set; }
     public List<LoreItemHandler> allLoreItems;
+    public List<LoreItemHandler> allViewedLoreItems;
+    public DataHolder dataHolder;
     
     private void Awake()
     {
@@ -17,6 +20,11 @@ public class LoreReference : MonoBehaviour
 
         Instance = this;
         
+        allLoreItems.Add(Welcome);
+        allLoreItems.Add(BasicEnemyTips);
+        allLoreItems.Add(FlyingEnemyTips);
+        allLoreItems.Add(SilentEnemyTips);
+        allLoreItems.Add(BombEnemyTips);
         allLoreItems.Add(AICommunication1);
         allLoreItems.Add(AICommunication2);
         allLoreItems.Add(AICommunication3);
@@ -34,10 +42,57 @@ public class LoreReference : MonoBehaviour
         allLoreItems.Add(Fortunes);
         allLoreItems.Add(OldFriend);
         allLoreItems.Add(MessageToSelf);
-        allLoreItems.Add(BasicEnemyTips);
-        allLoreItems.Add(FlyingEnemyTips);
-        allLoreItems.Add(SilentEnemyTips);
-        allLoreItems.Add(BombEnemyTips);
+        
+        allViewedLoreItems = new List<LoreItemHandler>(allLoreItems);
+        
+        if (dataHolder.eraseViewedLore)
+        {
+            foreach (var lore in allLoreItems)
+            {
+                lore.discoveredByPlayer = false;
+            }
+
+            Welcome.discoveredByPlayer = true;
+        }
+      
+        foreach (var lore in allLoreItems.ToList())
+        {
+            if (lore.loreTitle != "[null]")
+            {
+                if (lore.discoveredByPlayer)
+                {
+                    allLoreItems.Remove(lore);
+                }
+            } else if (allLoreItems.Count == 0)
+            {
+                allLoreItems.Add(FinalLore);
+            }
+        }
+
+        for (int i = 0; i < allViewedLoreItems.Count; i++)
+        {
+            if (!allViewedLoreItems[i].discoveredByPlayer)
+            {
+                allViewedLoreItems[i] = UndiscoveredLore;
+            }
+        }
+
+        if (AICommunication1.discoveredByPlayer == false || AICommunication2.discoveredByPlayer == false)
+        {
+            allLoreItems.Remove(AICommunication3);
+            if (AICommunication1.discoveredByPlayer == false)
+            {
+                allLoreItems.Remove(AICommunication2);
+            }
+        } 
+        if (TravelersLog1.discoveredByPlayer == false || TravelersLog2.discoveredByPlayer == false)
+        {
+            allLoreItems.Remove(TravelersLog3);
+            if (TravelersLog1.discoveredByPlayer == false)
+            {
+                allLoreItems.Remove(TravelersLog2);
+            }
+        } 
     }
     
     [field: Header("AI Communication")]
@@ -72,5 +127,10 @@ public class LoreReference : MonoBehaviour
     [field: SerializeField] public LoreItemHandler Breadcrumbs { get; private set; }
     [field: SerializeField] public LoreItemHandler Fortunes { get; private set; }
     [field: SerializeField] public LoreItemHandler OldFriend { get; private set; }
+    
+    [field: Header("Special Cases")]
+    [field: SerializeField] public LoreItemHandler UndiscoveredLore { get; private set; }
+    [field: SerializeField] public LoreItemHandler FinalLore { get; private set; }
+    [field: SerializeField] public LoreItemHandler Welcome { get; private set; }
 
 }
