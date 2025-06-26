@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 public class NPCHandler : MonoBehaviour
 {
-    private static readonly int WhoAmI = Animator.StringToHash("whoAmI"); //0 = Old Guy, 1 = Hurt Guy, 2 = Kid, 3 = Punk, 4 = Shopkeep
+    private static readonly int WhoAmI = Animator.StringToHash("whoAmI"); //0 = Old Guy, 1 = Hurt Guy, 2 = Kid, 3 = Punk, 4 = Shopkeep, 5 = Blue Old Guy
 
     public enum SpawnPointLogic
     {
@@ -116,6 +116,17 @@ public class NPCHandler : MonoBehaviour
                 dialogue5Repeat = DialogueReference.Instance.TutorialFloor4Repeat;
                 break;
             case WhoToSpawn.DoctorStats:
+                if (noted)
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/BLUEOLDNPC_");
+                    _animator.enabled = false;
+                }
+                else
+                {
+                    _spriteRenderer.sprite = Resources.Load<Sprite>("NPCs/Sprites/BLUEOLDNPC_IDLE");
+                    _animator.SetInteger(WhoAmI, 5);
+                }
+               
                 dialogue1 = DialogueReference.Instance.Stats;
                 dialogue1Repeat = DialogueReference.Instance.StatsRepeat;
                 dialogue2 = DialogueReference.Instance.Stats;
