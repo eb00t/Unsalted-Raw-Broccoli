@@ -45,11 +45,13 @@ public class MenuHandler : MonoBehaviour
 	[SerializeField] private GameObject slotsTooltip, inventoryTooltip;
 	[SerializeField] private CanvasGroup mapTxtGroup;
 	private TextMeshProUGUI _mapTxt;
+	[SerializeField] private GameObject loreCanvas;
+	private LoreGUIManager _loreGUIManager;
 
 	public GameObject mapCamera;
 	
 	[Header("Navigation")]
-	[SerializeField] private EventSystem eventSystem;
+	public EventSystem eventSystem;
 	[SerializeField] private GameObject selectedMenu, selectedEquip, slots;
 	private GameObject _lastSelected;
 
@@ -92,6 +94,7 @@ public class MenuHandler : MonoBehaviour
 		_idleTimer = idleResetTime;
 		_hudCanvasGroup = GetComponentInParent<CanvasGroup>();
 		_mapTxt = mapTxtGroup.GetComponent<TextMeshProUGUI>();
+		if (loreCanvas != null) _loreGUIManager = loreCanvas.GetComponentInParent<LoreGUIManager>(); 
 
 		foreach (var t in dialogueGUI.GetComponentsInChildren<Transform>())
 		{
@@ -136,8 +139,13 @@ public class MenuHandler : MonoBehaviour
 		                    settingGui.activeSelf ||
 		                    controlGui.activeSelf ||
 		                    diedScreen.activeSelf ||
-		                    infoPopup.activeSelf;
-		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) || (dialogueGUI != null && dialogueGUI.activeSelf) ||  (mapCamera != null && mapCamera.activeSelf) || _blackoutManager != null && !_blackoutManager.blackoutComplete;
+		                    infoPopup.activeSelf ||
+		                    (loreCanvas != null && loreCanvas.activeSelf);;
+		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) ||
+		                      (dialogueGUI != null && dialogueGUI.activeSelf) ||
+		                      (mapCamera != null && mapCamera.activeSelf) ||
+		                      _blackoutManager != null && !_blackoutManager.blackoutComplete;
+		                      
 
 		if (!_characterAttack.isDead)
 		{
@@ -585,6 +593,28 @@ public class MenuHandler : MonoBehaviour
 				});
 			});
 		}
+		else if (loreCanvas != null && loreCanvas.activeSelf)
+		{
+			if (_loreGUIManager.loreButtonHolder.GetComponentInChildren<Button>().interactable == false)
+			{
+				// switch to buttons
+				foreach (var button in _loreGUIManager.loreButtonHolder.GetComponentsInChildren<Button>())
+				{
+					button.interactable = true;
+				}
+				
+				foreach (var button in _loreGUIManager.loreLineHolder.GetComponentsInChildren<Button>())
+				{
+					button.interactable = false;
+				}
+				
+				SwitchSelected(_loreGUIManager.loreButtonHolder.GetComponentInChildren<Button>().gameObject);
+			}
+			else
+			{
+				CloseLore();
+			}
+		}
 	}
 
 	public void OnControlsClosed()
@@ -740,6 +770,85 @@ public class MenuHandler : MonoBehaviour
 		}
 	}
 
+	public void OpenLore()
+	{
+		if (loreCanvas != null)
+		{
+			_hudCanvasGroup.DOFade(0f, 0.25f).SetUpdate(true);
+			loreCanvas.SetActive(true);
+			menuGui.SetActive(false);
+			_loreGUIManager.loreBck.transform.localScale = new Vector3(1, 0, 1);
+
+			foreach (var t in loreCanvas.GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					t.localScale = new Vector3(1, 0, 1);
+				}
+			}
+
+			var loreSeq = DOTween.Sequence().SetUpdate(true);
+			foreach (var t in loreCanvas.GetComponentsInChildren<Transform>())
+			{
+				if (t.CompareTag("Animate"))
+				{
+					loreSeq.Join(t.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack));
+				}
+			}
+			
+			loreSeq.OnComplete(() =>
+			{
+				_loreGUIManager.loreBck.transform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack).SetUpdate(true);
+				SwitchSelected(_loreGUIManager.loreButtonHolder.GetComponentInChildren<Button>().gameObject);
+			});
+		}
+	}
+
+	public void CloseLore()
+	{
+		if (loreCanvas != null)
+		{
+			_loreGUIManager.loreBck.transform.DOScale(new Vector3(1, 0, 1), 0.25f).SetEase(Ease.InBack).SetUpdate(true).OnComplete(() =>
+			{
+				var loreSeq2 = DOTween.Sequence().SetUpdate(true);
+		
+				foreach (var t in loreCanvas.GetComponentsInChildren<Transform>())
+				{
+					if (t.CompareTag("Animate"))
+					{
+						loreSeq2.Join(t.DOScale(new Vector3(1, 0, 1), 0.25f).SetEase(Ease.InBack));
+					}
+				}
+
+				loreSeq2.OnComplete(() =>
+				{
+					_hudCanvasGroup.DOFade(1f, 0.25f).SetUpdate(true);
+					loreCanvas.SetActive(false);
+					menuGui.SetActive(true);
+					SwitchSelected(_loreGUIManager.loreBtn);
+				});
+			});
+		}
+	}
+
+	public void LoreButtonPressed() // switch to individual lines of dialogue
+	{
+		if (loreCanvas != null)
+		{
+			foreach (var button in _loreGUIManager.loreButtonHolder.GetComponentsInChildren<Button>())
+			{
+				button.interactable = false;
+			}
+			
+			foreach (var button in _loreGUIManager.loreLineHolder.GetComponentsInChildren<Button>())
+			{
+				button.interactable = true;
+			}
+			
+			SwitchSelected(_loreGUIManager.loreLineHolder.GetComponentInChildren<Button>().gameObject);
+		}
+	}
+
 	// switches controller navigation to a new object
 	public void SwitchSelected(GameObject g)
 	{
@@ -873,7 +982,7 @@ public class MenuHandler : MonoBehaviour
 		if (context.started) // input started (i.e when the button is held)
 		{
 			mapCamera.SetActive(true);
-			_hudCanvasGroup.DOFade(0, 0.2f);
+			_hudCanvasGroup.DOFade(0, 0.2f).SetUpdate(true);
 			
 			_mapTxt.text = ReturnCurrentFloorOrSceneAsString();
 			mapTxtGroup.DOFade(1f, 0.2f);
@@ -882,7 +991,7 @@ public class MenuHandler : MonoBehaviour
 		if (context.canceled) // when input ends (i.e. when the button is let go)
 		{
 			mapCamera.SetActive(false);
-			_hudCanvasGroup.DOFade(1, 0.2f);
+			_hudCanvasGroup.DOFade(1, 0.2f).SetUpdate(true);
 			mapTxtGroup.DOFade(0f, 0.2f);
 		}
 	}

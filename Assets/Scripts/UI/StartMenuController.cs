@@ -338,6 +338,7 @@ public class StartMenuController : MonoBehaviour
 			FadeInLoadingScreen();
 			ToggleHardcoreMode(false);
 			SaveData.Instance.EraseData(!dataHolder.demoMode);
+			dataHolder.eraseViewedLore = true;
 			LoadScene("Intermission");
 		}
 		else

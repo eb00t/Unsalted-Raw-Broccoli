@@ -53,6 +53,7 @@ public class LoreReference : MonoBehaviour
             }
 
             Welcome.discoveredByPlayer = true;
+            dataHolder.eraseViewedLore = false;
         }
       
         foreach (var lore in allLoreItems.ToList())
@@ -132,5 +133,4 @@ public class LoreReference : MonoBehaviour
     [field: SerializeField] public LoreItemHandler UndiscoveredLore { get; private set; }
     [field: SerializeField] public LoreItemHandler FinalLore { get; private set; }
     [field: SerializeField] public LoreItemHandler Welcome { get; private set; }
-
 }
