@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class ReadLore : MonoBehaviour
@@ -20,6 +21,7 @@ public class ReadLore : MonoBehaviour
     public dialogueControllerScript dialogueController;
     public bool loadSpecificLore;
     public bool hasBeenRead; 
+    public bool inRange;
 
     public enum LoreType
     {
@@ -77,23 +79,24 @@ public class ReadLore : MonoBehaviour
         {
             var dist = Vector3.Distance(transform.position, _player.transform.position);
 
-            if (dist <= pickupRange)
+            if (!inRange && dist <= pickupRange)
             {
-                _itemPickupHandler.isPlrNearLore = true;
+                inRange = true;
                 _itemPickupHandler.TogglePrompt("Read " + _loreObject, true, ControlsManager.ButtonType.Interact, "", null, false);
                 _menuHandler.nearestLore = this;
             }
-            else if (dist > pickupRange)
+            else if (inRange && dist > pickupRange)
             {
                 if (_menuHandler.nearestLore != this) return;
-                _itemPickupHandler.isPlrNearLore = false;
+                inRange = false;
+                _itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
             }
         }
     }
 
     private void OnDisable()
     {
-        _itemPickupHandler.isPlrNearLore = false;
-        _menuHandler.nearestLore = null;
+        inRange = false;
+        _itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
     }
 }

@@ -116,7 +116,6 @@ public class DialogueHandler : MonoBehaviour
             if (trigger != null)
             {
                trigger.SetActive(false);
-               _itemPickupHandler.isPlrNearDialogue = false;
             }
 
             if (currentLoreItem != null)

@@ -1725,20 +1725,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   replayable: 0
   dialogueToLoad: {fileID: 0}
-  shopCloseDialogue: {fileID: 0}
+  closeDialogue: {fileID: 0}
   loreToLoad: {fileID: 0}
   shopCanvas: {fileID: 0}
-  isShop: 0
+  hasBeforeAfterDialogue: 0
   isEndText: 0
+  isShop: 0
   range: 0
   dialogueID: 0
   randomLore: 0
   dontShowInteract: 0
+  inRange: 0
   dialogueOrLore: 0
   _index: 0
   dialogueSpeed: 0
-  yesText: {fileID: 0}
-  noText: {fileID: 0}
 --- !u!114 &391000283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4798,7 +4798,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1007035031}
+      objectReference: {fileID: 430852523}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -5197,7 +5197,7 @@ PrefabInstance:
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ItemPickupHandler, Assembly-CSharp
+      value: MenuHandler, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1515093511747554396, guid: 5a9b12290cab1464785c4858bd2bb3a4,
         type: 3}
@@ -7566,18 +7566,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2770befe3bd5de741a53daf7afc04972, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1007035031 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2624940746732787405, guid: 4bd14efd408c3b943816001b9eeae0eb,
-    type: 3}
-  m_PrefabInstance: {fileID: 1007035028}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39e70a1a6270fae41bc0c416d0b43b55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1007035032 stripped

@@ -96,16 +96,6 @@ public class dialogueControllerScript : MonoBehaviour
         if (!inRange && dist <= range && !dontShowInteract)
         {
             inRange = true;
-            
-            switch (dialogueOrLore)
-            {
-                case DialogueOrLore.Dialogue:
-                    _itemPickupHandler.isPlrNearDialogue = true;
-                    break;
-                case DialogueOrLore.Lore:
-                    _itemPickupHandler.isPlrNearLore = true;
-                    break;
-            }
 
             if (!hasBeforeAfterDialogue && !_dialogueCanvas.activeSelf)
             {
@@ -115,7 +105,6 @@ public class dialogueControllerScript : MonoBehaviour
             else if (isShop && hasBeforeAfterDialogue && shopCanvas.activeSelf)
             {
                 _itemPickupHandler.TogglePrompt("Close Shop", true, ControlsManager.ButtonType.Back, "", null, false);
-                _itemPickupHandler.isPlrNearShop = true;
                 _menuHandler.dialogueController = this;
             }
             else if (!_dialogueCanvas.activeSelf)
@@ -133,15 +122,8 @@ public class dialogueControllerScript : MonoBehaviour
         {
             inRange = false;
             if (_menuHandler.dialogueController != this) return;
-            switch (dialogueOrLore)
-            {
-                case DialogueOrLore.Dialogue:
-                    _itemPickupHandler.isPlrNearDialogue = false;
-                    break;
-                case DialogueOrLore.Lore:
-                    _itemPickupHandler.isPlrNearLore = false;
-                    break;
-            }
+            
+            _itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
         }
     }
 

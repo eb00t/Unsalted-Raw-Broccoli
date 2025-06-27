@@ -19,7 +19,7 @@ public class MenuHandler : MonoBehaviour
 	
 	[Header("Code References")]
 	[SerializeField] private CharacterMovement characterMovement;
-	CharacterAttack _characterAttack;
+	private CharacterAttack _characterAttack;
 	private ItemPickupHandler _itemPickupHandler;
 	private InventoryStore _inventoryStore;
 	private ToolbarHandler _toolbarHandler;
@@ -286,7 +286,6 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (shopGUI == null) return;
 		var shopHandler = shopGUI.GetComponentInParent<ShopHandler>();
-		//if (!_player.GetComponent<ItemPickupHandler>().isPlrNearShop) return;
 		
 		ButtonHandler.Instance.PlayConfirmSound();
 
@@ -335,10 +334,9 @@ public class MenuHandler : MonoBehaviour
 
 	public void NextLevelLoad(InputAction.CallbackContext context)
 	{
-		if (!context.performed) return;
-		if (characterMovement.uiOpen) return;
-		if (!_player.gameObject.GetComponent<ItemPickupHandler>().isPlrNearEnd) return;
+		if (!context.performed || characterMovement.uiOpen) return;
 		if (nearestLevelTrigger == null) return;
+		if (!nearestLevelTrigger.inRange) return;
 		
 		nearestLevelTrigger.GetComponent<NextLevelTrigger>().LoadNextLevel();
 	}
@@ -624,6 +622,19 @@ public class MenuHandler : MonoBehaviour
 		menuGui.SetActive(true);
 		SwitchSelected(controlsBtn);
 	}
+	
+	public void PickUpItem(InputAction.CallbackContext context)
+	{
+		if (!context.performed || characterMovement.uiOpen) return;
+         
+		foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
+		{
+			var itemPickup = item.GetComponent<ItemPickup>();
+			if (itemPickup == null || !itemPickup.canPickup) continue;
+			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemPickup, transform.position);
+			itemPickup.AddItemToInventory();
+		}
+	}
 
 	public void DeathReload(InputAction.CallbackContext context)
 	{
@@ -650,15 +661,24 @@ public class MenuHandler : MonoBehaviour
 	public void TriggerDialogue(bool isDistanceBased, dialogueControllerScript controller)
 	{
 		if (characterMovement.uiOpen || (mapCamera != null && mapCamera.activeSelf)) return;
-		if (_itemPickupHandler.isPlrNearDialogue && isDistanceBased)
+		
+		if (dialogueController.inRange && isDistanceBased)
 		{
 			SetDialogueActive(true);
-			controller.LoadDialogue(controller.dialogueToLoad);
+
+			if (dialogueController.dialogueOrLore == dialogueControllerScript.DialogueOrLore.Dialogue)
+			{
+				controller.LoadDialogue(controller.dialogueToLoad);
+			}
 		}
 		else if (!isDistanceBased)
 		{
 			SetDialogueActive(true);
-			controller.LoadDialogue(controller.dialogueToLoad);
+			
+			if (dialogueController.dialogueOrLore == dialogueControllerScript.DialogueOrLore.Dialogue)
+			{
+				controller.LoadDialogue(controller.dialogueToLoad);
+			}
 		}
 	}
 
@@ -666,7 +686,7 @@ public class MenuHandler : MonoBehaviour
 	{
 		if (!context.performed) return;
 		
-		if (_itemPickupHandler.isPlrNearLore && nearestLore.gameObject.activeSelf && !nearestLore.hasBeenRead)
+		if (nearestLore != null && nearestLore.inRange && nearestLore.gameObject.activeSelf && !nearestLore.hasBeenRead)
 		{
 			SetDialogueActive(true);
 			dialogueController.LoadLore(nearestLore.whatLore);
@@ -906,8 +926,8 @@ public class MenuHandler : MonoBehaviour
 	public void EnergyPurchased(InputAction.CallbackContext context)
 	{
 		if (!context.performed || characterMovement.uiOpen) return;
-		if (!_player.gameObject.GetComponent<ItemPickupHandler>().isPlayerNearRecharge) return;
 		if (rechargeStationHandler == null) return;
+		if (!rechargeStationHandler.inRange) return;
 		if (rechargeStationHandler.hasBeenPurchased) return;
 		
 		if (dataHolder.currencyHeld - rechargeStationHandler.cost >= 0)

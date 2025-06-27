@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -15,7 +16,9 @@ public class ItemPickup : MonoBehaviour
     private InventoryStore _inventoryStore;
     private ToolbarHandler _toolbarHandler;
     private PassiveItemHandler _passiveItemHandler;
+    private bool _inRange;
     [SerializeField] private GameObject outLineSprite;
+    private string _promptName;
 
     private void Start()
     {
@@ -25,13 +28,34 @@ public class ItemPickup : MonoBehaviour
         _inventoryStore = _uiManager.GetComponent<InventoryStore>();
         _toolbarHandler = _uiManager.GetComponent<ToolbarHandler>();
         _passiveItemHandler = _uiManager.gameObject.GetComponent<PassiveItemHandler>();
+
+        if (isPermanentPassive)
+        {
+            _promptName = GetComponent<PermanentPassiveItem>().title;
+        }
+        else
+        {
+            _promptName = GetComponent<Consumable>().title;
+        }
     }
     
     private void Update()
     {
         if (_characterMovement.uiOpen || !gameObject.activeSelf) return;
         
-        var dist = Vector3.Distance(_player.position, transform.position);
+        var dist = Vector3.Distance(transform.position, _player.position);
+
+        if (!_inRange && dist <= range)
+        {
+            _inRange = true;
+            ItemPickupHandler.Instance.TogglePrompt("Pick Up <color=#00A2FF>" + _promptName + "</color>", true, ControlsManager.ButtonType.Interact, "", null, false);
+        }
+        else if (_inRange && dist > range)
+        {
+            _inRange = false;
+            ItemPickupHandler.Instance.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
+        }
+        
         canPickup = dist <= range;
         outLineSprite.SetActive(canPickup);
     }
@@ -58,6 +82,12 @@ public class ItemPickup : MonoBehaviour
                 _inventoryStore.AddNewItem(GetComponent<Consumable>());
             }
         }
+    }
+
+    private void OnDisable()
+    {
+        _inRange = false;
+        ItemPickupHandler.Instance.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
     }
 
     private void OnDrawGizmosSelected()

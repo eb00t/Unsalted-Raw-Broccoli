@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class NextLevelTrigger : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class NextLevelTrigger : MonoBehaviour
     [SerializeField] private bool doesDoorOpen;
     [SerializeField] private Sprite defaultSprite, openSprite;
     private SpriteRenderer _spriteRenderer;
-    private bool _inRange;
+    public bool inRange;
 
     public enum SceneToLoad
     {
@@ -61,10 +62,9 @@ public class NextLevelTrigger : MonoBehaviour
             {
                 var dist = Vector3.Distance(transform.position, _player.transform.position);
 
-                if (!_inRange && dist <= range)
+                if (!inRange && dist <= range)
                 {
-                    _itemPickupHandler.isPlrNearEnd = true;
-                    _inRange = true;
+                    inRange = true;
                     _itemPickupHandler.TogglePrompt(promptText, true, ControlsManager.ButtonType.Interact, "", null, false);
                     _menuHandler.nearestLevelTrigger = this;
                     if (doesDoorOpen)
@@ -72,17 +72,15 @@ public class NextLevelTrigger : MonoBehaviour
                         _spriteRenderer.sprite = openSprite;
                     }
                 }
-                else if (_inRange && dist > range)
+                else if (inRange && dist > range)
                 {
-                    if (_itemPickupHandler.itemCount > 0) return;
                     if (_menuHandler.nearestLevelTrigger != this) return;
                     if (doesDoorOpen)
                     {
                         _spriteRenderer.sprite = defaultSprite;
                     }
-                    _itemPickupHandler.isPlrNearEnd = false;
                     _menuHandler.nearestLevelTrigger = null;
-                    _inRange = false;
+                    inRange = false;
                     _itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
                 }
             }

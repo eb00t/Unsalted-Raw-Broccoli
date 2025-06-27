@@ -32,6 +32,7 @@ public class ShopHandler : MonoBehaviour
 	private InventoryStore _inventoryStore;
 	[SerializeField] private TextMeshProUGUI infoTxt, numHeldTxt, infoTitle;
 	[SerializeField] private DataHolder dataHolder;
+	private bool _inRange;
 
 	private void Start()
 	{
@@ -93,19 +94,18 @@ public class ShopHandler : MonoBehaviour
 	{
 		var dist = Vector3.Distance(transform.position, _player.transform.position);
 
-		if (dist <= range)
+		if (!_inRange && dist <= range)
 		{
-			_itemPickupHandler.isPlrNearShop = true;
+			_inRange = true;
 			if (_shopGUI.activeSelf)
 			{
 				_itemPickupHandler.TogglePrompt("Close shop", true, ControlsManager.ButtonType.Back, "", null, false);
 			}
 		}
-		else if (dist > range)
+		else if (_inRange && dist > range)
 		{
-			if (_itemPickupHandler.itemCount > 0) return;
-			_itemPickupHandler.isPlrNearShop = false;
-			//_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.ButtonEast);
+			_inRange = false;
+			ItemPickupHandler.Instance.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
 		}
 		
 		if (EventSystem.current.currentSelectedGameObject == _lastSelected) return;
