@@ -277,12 +277,14 @@ public class CharacterMovement : MonoBehaviour
     public void FixedUpdate()
     {
         var lRayStart = playerGround.position - new Vector3(groundCheckSpacing, 0, 0);
+        var cRayStart = playerGround.position;
         var rRayStart = playerGround.position + new Vector3(groundCheckSpacing, 0, 0);
 
         var leftGrounded = Physics.Raycast(lRayStart, Vector3.down, groundCheckDist, LayerMask.GetMask("Ground"));
+        var centreGrounded = Physics.Raycast(cRayStart, Vector3.down, groundCheckDist, LayerMask.GetMask("Ground"));
         var rightGrounded = Physics.Raycast(rRayStart, Vector3.down, groundCheckDist, LayerMask.GetMask("Ground"));
 
-        grounded = leftGrounded || rightGrounded;
+        grounded = leftGrounded || rightGrounded || centreGrounded;
         _playerAnimator.SetBool(Grounded, grounded);
         
         if (uiOpen) return;
@@ -385,6 +387,7 @@ public class CharacterMovement : MonoBehaviour
         
         Gizmos.color = Color.red;
         Gizmos.DrawLine(lRayStart, lRayStart + Vector3.down * groundCheckDist);
+        Gizmos.DrawLine(basePos, basePos + Vector3.down * groundCheckDist);
         Gizmos.DrawLine(rRayStart, rRayStart + Vector3.down * groundCheckDist);
     }
 }

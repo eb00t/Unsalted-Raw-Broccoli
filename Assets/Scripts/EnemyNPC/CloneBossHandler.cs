@@ -450,6 +450,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
         if (!_hasDialogueTriggered) return;
+        if (!IsPlayerInRoom()) return;
 
         var previousHealth = health;
         defense = Mathf.Clamp(defense, 0, 100);

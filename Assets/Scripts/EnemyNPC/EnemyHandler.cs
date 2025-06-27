@@ -666,6 +666,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
+        if (!IsPlayerInRoom()) return;
+        
         var previousHealth = _health;
         defense = Mathf.Clamp(defense, 0, 100);
         var dmgReduction = (100 - defense) / 100f;
