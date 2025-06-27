@@ -19,6 +19,7 @@ public class ItemPickup : MonoBehaviour
     private bool _inRange;
     [SerializeField] private GameObject outLineSprite;
     private string _promptName;
+    [SerializeField] private bool isTutorial;
 
     private void Start()
     {
@@ -48,12 +49,14 @@ public class ItemPickup : MonoBehaviour
         if (!_inRange && dist <= range)
         {
             _inRange = true;
-            ItemPickupHandler.Instance.TogglePrompt("Pick Up <color=#00A2FF>" + _promptName + "</color>", true, ControlsManager.ButtonType.Interact, "", null, false);
+            if (!isTutorial)
+                ItemPickupHandler.Instance.TogglePrompt("Pick Up <color=#00A2FF>" + _promptName + "</color>", true, ControlsManager.ButtonType.Interact, "", null, false);
         }
         else if (_inRange && dist > range)
         {
             _inRange = false;
-            ItemPickupHandler.Instance.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
+            if (!isTutorial)
+                ItemPickupHandler.Instance.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
         }
         
         canPickup = dist <= range;
@@ -87,7 +90,8 @@ public class ItemPickup : MonoBehaviour
     private void OnDisable()
     {
         _inRange = false;
-        ItemPickupHandler.Instance.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
+        if (!isTutorial)
+            ItemPickupHandler.Instance.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
     }
 
     private void OnDrawGizmosSelected()
