@@ -8,7 +8,7 @@ public class dialogueAppear : MonoBehaviour
     public GameObject dialogueBox, enemyChar;
     private ItemPickupHandler _itemPickupHandler;
     [SerializeField] private float range;
-    private List<dialogueControllerScript> _dialogueControllerScripts;
+    private List<DialogueControllerScript> _dialogueControllerScripts;
 
     private void Start()
     { 

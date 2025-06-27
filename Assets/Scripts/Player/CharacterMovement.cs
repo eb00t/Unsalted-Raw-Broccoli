@@ -213,7 +213,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (uiOpen)
         {
-            if (!_menuHandler.mapCamera.activeSelf)
+            if (_menuHandler.mapCamera != null && !_menuHandler.mapCamera.activeSelf)
             {
                 _input = 0;
                 _playerAnimator.SetFloat(Input1, 0);

@@ -60,7 +60,7 @@ public class MenuHandler : MonoBehaviour
 	public ReadLore nearestLore;
 	public NextLevelTrigger nearestLevelTrigger;
 	public RechargeStationHandler rechargeStationHandler;
-	[NonSerialized] public dialogueControllerScript dialogueController;
+	[NonSerialized] public DialogueControllerScript dialogueController;
 	private bool _distanceBasedDialogue;
 	private CurrencyManager _currencyManager;
 	[SerializeField] private GameObject hardcoreIndicator;
@@ -658,7 +658,7 @@ public class MenuHandler : MonoBehaviour
 		TriggerDialogue(true, dialogueController);
 	}
 
-	public void TriggerDialogue(bool isDistanceBased, dialogueControllerScript controller)
+	public void TriggerDialogue(bool isDistanceBased, DialogueControllerScript controller)
 	{
 		if (characterMovement.uiOpen || (mapCamera != null && mapCamera.activeSelf)) return;
 		
@@ -666,7 +666,7 @@ public class MenuHandler : MonoBehaviour
 		{
 			SetDialogueActive(true);
 
-			if (dialogueController.dialogueOrLore == dialogueControllerScript.DialogueOrLore.Dialogue)
+			if (dialogueController.dialogueOrLore == DialogueControllerScript.DialogueOrLore.Dialogue)
 			{
 				controller.LoadDialogue(controller.dialogueToLoad);
 			}
@@ -675,7 +675,7 @@ public class MenuHandler : MonoBehaviour
 		{
 			SetDialogueActive(true);
 			
-			if (dialogueController.dialogueOrLore == dialogueControllerScript.DialogueOrLore.Dialogue)
+			if (dialogueController.dialogueOrLore == DialogueControllerScript.DialogueOrLore.Dialogue)
 			{
 				controller.LoadDialogue(controller.dialogueToLoad);
 			}

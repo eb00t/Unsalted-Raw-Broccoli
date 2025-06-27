@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 public class DialogueTrigger : MonoBehaviour
 {
-    public dialogueControllerScript dialogueControllerScript;
+    public DialogueControllerScript dialogueControllerScript;
     public MenuHandler menuHandler;
     public bool triggered, reusable;
     private GameObject _player;

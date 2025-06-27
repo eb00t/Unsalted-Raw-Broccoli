@@ -31,7 +31,7 @@ public class DialogueHandler : MonoBehaviour
    public List<string> loadedSpeakerText; // All the speakers that need to be displayed (this should always be the same size as the loadedBodyText string)
 
    private ItemPickupHandler _itemPickupHandler;
-   public dialogueControllerScript _dialogueController;
+   public DialogueControllerScript _dialogueController;
 
    public bool flipped;
 
@@ -139,7 +139,7 @@ public class DialogueHandler : MonoBehaviour
       }
    }
    
-   public void StartSentence(dialogueControllerScript dialogueController)
+   public void StartSentence(DialogueControllerScript dialogueController)
    {
       if (currentNPC != null)
       {

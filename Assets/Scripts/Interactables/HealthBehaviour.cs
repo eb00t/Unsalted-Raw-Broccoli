@@ -70,7 +70,7 @@ public class HealthBehaviour : MonoBehaviour
         
         if (collected == false)
         {
-            if (dataHolder.playerHealth <= 225)
+            if (dataHolder.playerHealth < dataHolder.playerMaxHealth)
             {
                 moveToPlayer = true;
                 _boxCollider.enabled = true;

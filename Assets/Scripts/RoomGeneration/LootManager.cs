@@ -153,8 +153,8 @@ public class LootManager : MonoBehaviour
         GameObject lootToSpawn = Instantiate(chosenLoot, here.position, Quaternion.identity);
         LoreItemHandler loreItemHandler = Resources.Load<LoreItemHandler>(path);
         Debug.Log(loreItemHandler);
-        lootToSpawn.GetComponent<dialogueControllerScript>().randomLore = false;
-        lootToSpawn.GetComponent<dialogueControllerScript>().loreToLoad = loreItemHandler;
+        lootToSpawn.GetComponent<DialogueControllerScript>().randomLore = false;
+        lootToSpawn.GetComponent<DialogueControllerScript>().loreToLoad = loreItemHandler;
         lootToSpawn.GetComponent<ReadLore>().whatLore = loreItemHandler;
         lootToSpawn.SetActive(true);
         lootToSpawn.transform.parent = here.transform;

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class dialogueControllerScript : MonoBehaviour
+public class DialogueControllerScript : MonoBehaviour
 {
     public bool replayable;
     public DialogueObjectHandler dialogueToLoad;

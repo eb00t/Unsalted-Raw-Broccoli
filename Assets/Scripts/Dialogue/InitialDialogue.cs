@@ -9,7 +9,7 @@ public class InitialDialogue : MonoBehaviour
     public LevelBuilder.LevelMode currentFloor;
     public bool endScreen;
     [SerializeField] private DataHolder dataHolder;
-    private dialogueControllerScript _dialogueController;
+    private DialogueControllerScript _dialogueController;
     public enum BossOrIntro
     {
       Intro,
@@ -19,7 +19,7 @@ public class InitialDialogue : MonoBehaviour
 
     private void Awake()
     {
-      _dialogueController = GetComponent<dialogueControllerScript>();
+      _dialogueController = GetComponent<DialogueControllerScript>();
     }
 
     private void Start()

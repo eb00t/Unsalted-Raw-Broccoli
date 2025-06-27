@@ -32,7 +32,7 @@ public class NPCHandler : MonoBehaviour
 
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
-    private dialogueControllerScript _dialogueController;
+    private DialogueControllerScript _dialogueController;
     public bool noted;
 
     public DialogueObjectHandler
@@ -59,7 +59,7 @@ public class NPCHandler : MonoBehaviour
         }
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         _animator = GetComponentInChildren<Animator>();
-        _dialogueController = GetComponent<dialogueControllerScript>();
+        _dialogueController = GetComponent<DialogueControllerScript>();
         SpawnNPC();
     }
 

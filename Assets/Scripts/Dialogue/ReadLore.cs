@@ -18,7 +18,7 @@ public class ReadLore : MonoBehaviour
     [SerializeField] private float pickupRange;
     private GameObject _player;
     public LoreItemHandler whatLore;
-    public dialogueControllerScript dialogueController;
+    public DialogueControllerScript dialogueController;
     public bool loadSpecificLore;
     public bool hasBeenRead; 
     public bool inRange;
@@ -39,7 +39,7 @@ public class ReadLore : MonoBehaviour
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
-        dialogueController = GetComponentInChildren<dialogueControllerScript>();
+        dialogueController = GetComponentInChildren<DialogueControllerScript>();
 
         switch (loreType)
         {
