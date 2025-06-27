@@ -91,9 +91,16 @@ public class DialogueHandler : MonoBehaviour
             _dialogueText.text = "";
             _menuHandler.SetDialogueActive(false);
 
-            if (_dialogueController.isShop && !_dialogueController.isEndText)
+            if (_dialogueController.hasBeforeAfterDialogue && !_dialogueController.isEndText)
             {
-               _menuHandler.ToggleShop();
+               if (_dialogueController.isShop)
+               {
+                  _menuHandler.ToggleShop();
+               }
+               else if (_dialogueController.hasBeforeAfterDialogue)
+               {
+                  _menuHandler.OpenLore();
+               }
             }
             else if (_dialogueController.isEndText)
             {

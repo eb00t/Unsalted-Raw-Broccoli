@@ -139,12 +139,12 @@ public class MenuHandler : MonoBehaviour
 		                    settingGui.activeSelf ||
 		                    controlGui.activeSelf ||
 		                    diedScreen.activeSelf ||
-		                    infoPopup.activeSelf ||
-		                    (loreCanvas != null && loreCanvas.activeSelf);;
+		                    infoPopup.activeSelf;
 		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) ||
 		                      (dialogueGUI != null && dialogueGUI.activeSelf) ||
 		                      (mapCamera != null && mapCamera.activeSelf) ||
-		                      _blackoutManager != null && !_blackoutManager.blackoutComplete;
+		                      _blackoutManager != null && !_blackoutManager.blackoutComplete ||
+			                      (loreCanvas != null && loreCanvas.activeSelf);
 		                      
 
 		if (!_characterAttack.isDead)
@@ -375,7 +375,7 @@ public class MenuHandler : MonoBehaviour
 		_dialogueHandler._speakerText.text = "";
 		_dialogueHandler._dialogueText.text = "";
 
-		if (_dialogueHandler._dialogueController != null && _dialogueHandler._dialogueController.isShop)
+		if (_dialogueHandler._dialogueController != null && _dialogueHandler._dialogueController.hasBeforeAfterDialogue)
 		{
 			_dialogueHandler._dialogueController.isEndText = false;
 			_dialogueHandler._dialogueController.LoadDialogue(_dialogueHandler._dialogueController.dialogueToLoad);
@@ -702,6 +702,10 @@ public class MenuHandler : MonoBehaviour
 			dialogueCloseSeq.OnComplete(() =>
 			{
 				dialogueGUI.SetActive(false);
+				if (dialogueController != null)
+				{
+					dialogueController.inRange = false;
+				}
 			});
 		}
 	}
@@ -824,8 +828,11 @@ public class MenuHandler : MonoBehaviour
 				{
 					_hudCanvasGroup.DOFade(1f, 0.25f).SetUpdate(true);
 					loreCanvas.SetActive(false);
-					menuGui.SetActive(true);
-					SwitchSelected(_loreGUIManager.loreBtn);
+					SwitchSelected(null);
+					
+					SetDialogueActive(true);
+					dialogueController.isEndText = true;
+					dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
 				});
 			});
 		}
