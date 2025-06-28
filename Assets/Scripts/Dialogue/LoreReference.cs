@@ -21,6 +21,7 @@ public class LoreReference : MonoBehaviour
         Instance = this;
         
         allLoreItems.Add(Welcome);
+        allLoreItems.Add(Stats);
         allLoreItems.Add(BasicEnemyTips);
         allLoreItems.Add(FlyingEnemyTips);
         allLoreItems.Add(SilentEnemyTips);
@@ -53,6 +54,7 @@ public class LoreReference : MonoBehaviour
             }
 
             Welcome.discoveredByPlayer = true;
+            Stats.discoveredByPlayer = true;
             dataHolder.eraseViewedLore = false;
         }
       
@@ -132,5 +134,6 @@ public class LoreReference : MonoBehaviour
     [field: Header("Special Cases")]
     [field: SerializeField] public LoreItemHandler UndiscoveredLore { get; private set; }
     [field: SerializeField] public LoreItemHandler FinalLore { get; private set; }
+    [field: SerializeField] public LoreItemHandler Stats { get; private set; }
     [field: SerializeField] public LoreItemHandler Welcome { get; private set; }
 }

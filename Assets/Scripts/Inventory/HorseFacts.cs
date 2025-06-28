@@ -6,9 +6,20 @@ using Random = UnityEngine.Random;
 
 public class HorseFacts : MonoBehaviour
 {
+     public static HorseFacts Instance { get; private set; }
      [SerializeField] private DataHolder dataHolder;
-     
-     public List<string> _horseFacts = new()
+
+     private void Awake()
+     {
+          if (Instance != null)
+          {
+               Debug.LogError("More than one HorseFacts script in the scene.");
+          }
+
+          Instance = this;
+     }
+
+     private readonly List<string> _horseFactsStatic = new() // this stores what horse facts exist and doesnt change
      {
           "When the horse loses his patience...The devil shivers.",
           "When a horse wants something, he must pursue it with all he has.",
@@ -45,21 +56,23 @@ public class HorseFacts : MonoBehaviour
           "Don't lose your horse while chasing your horse.",
           "A horse is alive in a way that no robot horse will ever be.",
      };
+
+     [NonSerialized] public List<string> _horseFacts =  new List<string>();
      
      public string HorseFact()
      {
           if (_horseFacts.Count == 0)
           {
-               _horseFacts = new List<string>(dataHolder.readHorseFacts);
-               dataHolder.readHorseFacts.Clear();
+               _horseFacts = new List<string>(_horseFactsStatic);
           }
           
-          Debug.Log(_horseFacts.Count);
-          
           var chosenFact = _horseFacts[Random.Range(0, _horseFacts.Count)];
-
-          dataHolder.readHorseFacts.Add(chosenFact);
           _horseFacts.Remove(chosenFact);
           return chosenFact;
+     }
+
+     public void ResetReadHorseFacts()
+     {
+          _horseFacts = new List<string>(_horseFactsStatic);
      }
 }

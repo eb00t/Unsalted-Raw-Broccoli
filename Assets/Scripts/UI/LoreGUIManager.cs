@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,12 +12,52 @@ public class LoreGUIManager : MonoBehaviour
     private EventSystem _eventSystem;
     private GameObject _lastSelected;
     private int _siblingIndex;
+    [SerializeField] private DataHolder dataHolder;
+    [SerializeField] private LoreItemHandler statsLore;
 
     private void Start()
     {
         _eventSystem = MenuHandler.Instance.eventSystem;
+        LoadStatsToLore();
         PopulateButtons();
         PopulateLines(LoreReference.Instance.Welcome);
+    }
+
+    private void LoadStatsToLore()
+    {
+        statsLore.loreBodyText[0] = dataHolder.playerEnemiesKilled.ToString();
+        statsLore.loreBodyText[1] = dataHolder.playerDeaths.ToString();
+        statsLore.loreBodyText[2] = dataHolder.totalCoilsCollected.ToString();
+        statsLore.loreBodyText[3] = dataHolder.playerTimeToClear.ToString();
+
+        if (dataHolder.demoMode)
+        {
+            statsLore.whoWroteThis[4] = "GLOBAL ENEMIES KILLED";
+            statsLore.loreBodyText[4] = dataHolder.totalEnemiesKilled.ToString();
+            
+            statsLore.whoWroteThis[5] = "GLOBAL DEATHS";
+            statsLore.loreBodyText[5] = dataHolder.totalDeaths.ToString();
+            
+            statsLore.whoWroteThis[6] = "GLOBAL COINS COLLECTED";
+            statsLore.loreBodyText[6] = dataHolder.totalCoilsCollected.ToString();
+            
+            statsLore.whoWroteThis[7] = "GLOBAL FASTEST CONSTRUCT RUN";
+            statsLore.loreBodyText[7] = dataHolder.fastestClearTime.ToString();
+        }
+        else
+        {
+            statsLore.whoWroteThis[4] = "";
+            statsLore.loreBodyText[4] = "";
+            
+            statsLore.whoWroteThis[5] = "";
+            statsLore.loreBodyText[5] = "";
+            
+            statsLore.whoWroteThis[6] = "";
+            statsLore.loreBodyText[6] = "";
+            
+            statsLore.whoWroteThis[7] = "";
+            statsLore.loreBodyText[7] = "";
+        }
     }
 
     private void Update()

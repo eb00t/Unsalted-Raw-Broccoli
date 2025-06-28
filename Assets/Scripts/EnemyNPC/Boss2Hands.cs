@@ -788,6 +788,8 @@ public class Boss2Hands : MonoBehaviour, IDamageable
     private void Die()
     {
         isDead = true;
+        dataHolder.totalEnemiesKilled++;
+        dataHolder.playerEnemiesKilled++;
         StopAllCoroutines();
         _lineRenderer.enabled = false;
         canvas.SetActive(false);

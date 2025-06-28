@@ -94,7 +94,10 @@ public class SaveData : MonoBehaviour
             savedItems = new List<int>(dataHolder.savedItems),
             savedItemCounts = new List<int>(dataHolder.savedItemCounts),
             equippedConsumables = (int[])dataHolder.equippedConsumables.Clone(),
-            permanentPassiveItems = (int[])dataHolder.permanentPassiveItems.Clone()
+            permanentPassiveItems = (int[])dataHolder.permanentPassiveItems.Clone(),
+            totalEnemiesKilled = dataHolder.totalEnemiesKilled,
+            totalDeaths = dataHolder.totalDeaths,
+            totalCoilsCollected = dataHolder.totalCoilsCollected,
         };
 
         var json = JsonUtility.ToJson(saveData, true);
@@ -147,12 +150,16 @@ public class SaveData : MonoBehaviour
         dataHolder.musicVolume = loadedData.musicVolume;
         dataHolder.sfxVolume = loadedData.sfxVolume;
         dataHolder.screenShakeMultiplier = loadedData.screenShakeMultiplier;
-        //SavePlayerData(dataHolder);
+        
+        dataHolder.totalEnemiesKilled = loadedData.totalEnemiesKilled;
+        dataHolder.totalDeaths = loadedData.totalDeaths;
+        dataHolder.totalCoilsCollected = loadedData.totalCoilsCollected;
     }
 
-    public void EraseData(bool keepSettings)
+    public void EraseData(bool keepSettings, bool keepGlobal)
     {
         DataHolderSaveData preservedSettings = null;
+        DataHolderSaveData preservedGlobal = null;
 
         if (keepSettings)
         {
@@ -170,12 +177,27 @@ public class SaveData : MonoBehaviour
                 masterVolume = dataHolder.masterVolume,
                 musicVolume = dataHolder.musicVolume,
                 sfxVolume = dataHolder.sfxVolume,
-                screenShakeMultiplier = dataHolder.screenShakeMultiplier
+                screenShakeMultiplier = dataHolder.screenShakeMultiplier,
+                playerDeaths = dataHolder.playerDeaths,
+                playerCoilsCollected = dataHolder.playerCoilsCollected,
+                playerEnemiesKilled = dataHolder.playerEnemiesKilled,
             };
         }
-        
+
+        if (keepGlobal)
+        {
+            preservedGlobal = new DataHolderSaveData
+            {
+                fastestClearTime = dataHolder.fastestClearTime,
+                totalEnemiesKilled = dataHolder.totalEnemiesKilled,
+                totalDeaths = dataHolder.totalDeaths,
+                totalCoilsCollected = dataHolder.totalCoilsCollected,
+            };
+        }
+
         File.Delete(Application.persistentDataPath + "/saveData.json");
         CreateDefaultSaveFile();
+        dataHolder.playerTimeToClear = 0f;
         LoadData(dataHolder);
         
         if (keepSettings)
@@ -193,8 +215,19 @@ public class SaveData : MonoBehaviour
             dataHolder.musicVolume = preservedSettings.musicVolume;
             dataHolder.sfxVolume = preservedSettings.sfxVolume;
             dataHolder.screenShakeMultiplier = preservedSettings.screenShakeMultiplier;
+            dataHolder.playerDeaths = preservedSettings.playerDeaths;
+            dataHolder.playerCoilsCollected = preservedSettings.playerCoilsCollected;
+            dataHolder.playerEnemiesKilled = preservedSettings.playerEnemiesKilled;
         }
-        
+
+        if (keepGlobal)
+        {
+            dataHolder.fastestClearTime = preservedGlobal.fastestClearTime;
+            dataHolder.totalEnemiesKilled = preservedGlobal.totalEnemiesKilled;
+            dataHolder.totalDeaths = preservedGlobal.totalDeaths;
+            dataHolder.totalCoilsCollected = preservedGlobal.totalCoilsCollected;
+        }
+
         SavePlayerData(dataHolder);
     }
 
@@ -241,7 +274,11 @@ public class SaveData : MonoBehaviour
             savedItems = new List<int>(),
             savedItemCounts = new List<int>(),
             equippedConsumables = new int[5],
-            permanentPassiveItems = new int[4]
+            permanentPassiveItems = new int[4],
+            
+            totalCoilsCollected = 0,
+            totalEnemiesKilled = 0,
+            totalDeaths = 0,
         };
 
         var json = JsonUtility.ToJson(defaultData, true);
@@ -287,4 +324,13 @@ public class DataHolderSaveData
     public List<int> savedItemCounts;
     public int[] equippedConsumables;
     public int[] permanentPassiveItems;
+
+    public float fastestClearTime;
+    public int totalCoilsCollected;
+    public int totalEnemiesKilled;
+    public int totalDeaths;
+    
+    public int playerCoilsCollected;
+    public int playerEnemiesKilled;
+    public int playerDeaths;
 }

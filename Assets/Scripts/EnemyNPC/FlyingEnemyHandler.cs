@@ -586,6 +586,8 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     {
         _animator.SetBool("isDead", true);
         isDead = true;
+        dataHolder.totalEnemiesKilled++;
+        dataHolder.playerEnemiesKilled++;
         RoomScripting.enemies.Remove(gameObject);
         RoomScripting._enemyCount--;
         EnemySpawner.spawnedEnemies.Remove(gameObject);

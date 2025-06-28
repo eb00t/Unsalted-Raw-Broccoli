@@ -767,6 +767,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Die()
     {
         isDead = true;
+        dataHolder.totalEnemiesKilled++;
+        dataHolder.playerEnemiesKilled++;
         StopAllCoroutines();
         _characterAttack.ChanceHeal();
         

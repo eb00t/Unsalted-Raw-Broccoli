@@ -644,7 +644,7 @@ public class MenuHandler : MonoBehaviour
 		{
 			if (dataHolder.hardcoreMode)
 			{
-				SaveData.Instance.EraseData(true);
+				SaveData.Instance.EraseData(true, dataHolder.demoMode);
 				SaveData.Instance.LoadSave();
 			}
 

@@ -752,6 +752,8 @@ public class CopyBoss : MonoBehaviour, IDamageable
     private void Die()
     {
         isDead = true; 
+        dataHolder.totalEnemiesKilled++;
+        dataHolder.playerEnemiesKilled++;
         _animator.SetBool("isDead", true);
         StopAllCoroutines();
         _spriteRenderer.material = defaultMaterial;

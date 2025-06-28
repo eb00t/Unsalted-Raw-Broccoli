@@ -81,6 +81,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     [SerializeField] private Slider healthChangeSlider;
     [SerializeField] private Image healthChangeImage;
     private Tween _healthTween;
+    [SerializeField] private DataHolder dataHolder;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -538,6 +539,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     public void Die()
     {
         isDead = true;
+        dataHolder.totalEnemiesKilled++;
+        dataHolder.playerEnemiesKilled++;
         StopAllCoroutines();
         _deathEvent.start();
         var newGibs = Instantiate(gibs, transform.position, Quaternion.identity);

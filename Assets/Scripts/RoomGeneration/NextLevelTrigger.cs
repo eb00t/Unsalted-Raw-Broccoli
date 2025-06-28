@@ -150,11 +150,11 @@ public class NextLevelTrigger : MonoBehaviour
                 break;
             case SceneToLoad.Credits:
                 scene = "creditsScene";
-                SaveData.Instance.EraseData(!dataHolder.demoMode);
+                SaveData.Instance.EraseData(!dataHolder.demoMode, dataHolder.demoMode);
                 break;
             case SceneToLoad.TheEnd:
                 scene = "The End";
-                SaveData.Instance.EraseData(!dataHolder.demoMode);
+                SaveData.Instance.EraseData(!dataHolder.demoMode, dataHolder.demoMode);
                 break;
             case SceneToLoad.EndScreen:
                 scene = "EndScreen";

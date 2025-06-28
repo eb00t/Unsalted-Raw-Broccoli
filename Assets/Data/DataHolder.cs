@@ -51,7 +51,15 @@ public class DataHolder : ScriptableObject
     public List<int> savedItemCounts = new List<int>();  
     public int[] equippedConsumables = new int[5];
     public int[] permanentPassiveItems = new int[4];
+
+    [Header("Generic Stats")] 
+    public float fastestClearTime;
+    public int totalCoilsCollected;
+    public int totalEnemiesKilled;
+    public int totalDeaths;
     
-    [Header("Items")]
-    public List<string> readHorseFacts = new List<string>();
+    public float playerTimeToClear;
+    public int playerCoilsCollected;
+    public int playerEnemiesKilled;
+    public int playerDeaths;
 }

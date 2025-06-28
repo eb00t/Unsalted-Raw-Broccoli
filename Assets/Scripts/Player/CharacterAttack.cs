@@ -701,6 +701,8 @@ public class CharacterAttack : MonoBehaviour
     private void Die()
     {
         if (isDead) return;
+        dataHolder.playerDeaths++;
+        dataHolder.totalDeaths++;
         AudioManager.Instance.SetGlobalEventParameter("Music Track", 7);
         AudioManager.Instance.SetGlobalEventParameter("NoMusicUIVolume", 0.1f);
         StartCoroutine(WaitUntilGrounded());

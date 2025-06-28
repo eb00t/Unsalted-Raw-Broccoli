@@ -58,7 +58,7 @@ public class StartMenuController : MonoBehaviour
 		}
 		else
 		{
-			//SaveData.Instance.LoadSave();
+			SaveData.Instance.LoadSave();
 			Debug.Log(SaveData.Instance.CheckIfSaveFileExists());
 			if (dataHolder.hasPlayedThisSession || SaveData.Instance.CheckIfSaveFileExists())
 			{
@@ -192,7 +192,7 @@ public class StartMenuController : MonoBehaviour
 			FadeInLoadingScreen();
 			ToggleHardcoreMode(true);
 			
-			SaveData.Instance.EraseData(!dataHolder.demoMode);
+			SaveData.Instance.EraseData(!dataHolder.demoMode, dataHolder.demoMode);
 
 			LoadScene("Intermission");
 		}
@@ -230,8 +230,7 @@ public class StartMenuController : MonoBehaviour
 		{
 			notifyText.text = "unlocked after completing the base game";
 			_shakeTween?.Kill(true);
-			_shakeTween = lockedImg.transform.DOShakePosition(0.3f, new Vector3(10, 0, 0), 20, 0, false, true,
-				ShakeRandomnessMode.Harmonic);
+			_shakeTween = lockedImg.transform.DOShakePosition(0.3f, new Vector3(10, 0, 0), 20, 0, false, true, ShakeRandomnessMode.Harmonic);
 
 			_notifySequence?.Kill();
 			_notifySequence = DOTween.Sequence().SetUpdate(true);
@@ -334,10 +333,14 @@ public class StartMenuController : MonoBehaviour
 			{
 				PopupClose(newGamePopup);
 			}
+			else
+			{
+				HorseFacts.Instance.ResetReadHorseFacts();
+			}
 
 			FadeInLoadingScreen();
 			ToggleHardcoreMode(false);
-			SaveData.Instance.EraseData(!dataHolder.demoMode);
+			SaveData.Instance.EraseData(!dataHolder.demoMode, dataHolder.demoMode);
 			dataHolder.eraseViewedLore = true;
 			LoadScene("Intermission");
 		}
