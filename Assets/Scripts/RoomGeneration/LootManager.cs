@@ -98,9 +98,11 @@ public class LootManager : MonoBehaviour
             else 
             {
                 lootToSpawn = Instantiate(spawnablePermaLoot[chosenLoot], realSpawnPos, Quaternion.identity);
+                
             }
 
             lootToSpawn.SetActive(true);
+            lootToSpawn.GetComponent<ItemPickup>().showSparkle = true;
         }
         else
         {

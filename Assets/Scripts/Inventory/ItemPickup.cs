@@ -20,6 +20,8 @@ public class ItemPickup : MonoBehaviour
     [SerializeField] private GameObject outLineSprite;
     private string _promptName;
     [SerializeField] private bool isTutorial;
+    [SerializeField] private GameObject sparkleImg;
+    public bool showSparkle;
 
     private void Start()
     {
@@ -38,6 +40,9 @@ public class ItemPickup : MonoBehaviour
         {
             _promptName = GetComponent<Consumable>().title;
         }
+        
+        if (showSparkle)
+            sparkleImg.SetActive(true);
     }
     
     private void Update()

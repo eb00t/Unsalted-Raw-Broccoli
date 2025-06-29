@@ -79,7 +79,7 @@ public class RoomScripting : MonoBehaviour
                     LootManager.Instance.SpawnLootInCurrentRoom(gameObject);
                 }
 
-                StopCoroutine(CheckIfRoomHasEnemies());
+                yield break;
             }
 
             if (lastEnemyCount > _enemyCount)
