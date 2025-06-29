@@ -100,6 +100,7 @@ public class DialogueControllerScript : MonoBehaviour
             if (!hasBeforeAfterDialogue && !_dialogueCanvas.activeSelf)
             {
                 _itemPickupHandler.TogglePrompt("Interact", true, ControlsManager.ButtonType.Interact, "", null, false);
+                
                 _menuHandler.dialogueController = this;
             }
             else if (isShop && hasBeforeAfterDialogue && shopCanvas.activeSelf)

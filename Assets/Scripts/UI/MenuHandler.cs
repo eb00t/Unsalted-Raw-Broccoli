@@ -508,7 +508,7 @@ public class MenuHandler : MonoBehaviour
 				shopCloseSeq.OnComplete(() =>
 				{
 					shopGUI.SetActive(false);
-					_currencyManager.canvasGroup.DOFade(0, 0.5f);
+					//_currencyManager.canvasGroup.DOFade(0, 0.5f);
 					SetDialogueActive(true);
 					dialogueController.isEndText = true;
 					dialogueController.LoadDialogue(dialogueController.dialogueToLoad);

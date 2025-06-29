@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -101,11 +102,16 @@ public class ShopHandler : MonoBehaviour
 			{
 				_itemPickupHandler.TogglePrompt("Close shop", true, ControlsManager.ButtonType.Back, "", null, false);
 			}
+			else
+			{
+				_currencyManager.canvasGroup.DOFade(1f, 0.1f).SetUpdate(true);
+			}
 		}
 		else if (_inRange && dist > range)
 		{
 			_inRange = false;
 			ItemPickupHandler.Instance.TogglePrompt("", false, ControlsManager.ButtonType.Interact, "", null, false);
+			_currencyManager.canvasGroup.DOFade(0f, 0.1f).SetUpdate(true);
 		}
 		
 		if (EventSystem.current.currentSelectedGameObject == _lastSelected) return;
