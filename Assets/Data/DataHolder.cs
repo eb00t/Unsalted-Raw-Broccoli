@@ -59,6 +59,7 @@ public class DataHolder : ScriptableObject
     public int totalDeaths;
     
     public float playerTimeToClear;
+    public float playerPersonalBestTime;
     public int playerCoilsCollected;
     public int playerEnemiesKilled;
     public int playerDeaths;

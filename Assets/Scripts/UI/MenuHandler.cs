@@ -131,7 +131,12 @@ public class MenuHandler : MonoBehaviour
 				SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
 			}
 		}
-		
+
+		if (SceneManager.GetActiveScene().name == "MainScene" && _blackoutManager.blackoutComplete)
+		{
+			dataHolder.playerTimeToClear += Time.deltaTime;
+		}
+
 		// update if ui is open or not in player movement script
 		var pauseGuisOpen = invGui.activeSelf ||
 		                    menuGui.activeSelf ||
@@ -644,7 +649,7 @@ public class MenuHandler : MonoBehaviour
 		{
 			if (dataHolder.hardcoreMode)
 			{
-				SaveData.Instance.EraseData(true, dataHolder.demoMode);
+				SaveData.Instance.EraseData(true, true);
 				SaveData.Instance.LoadSave();
 			}
 

@@ -33,7 +33,8 @@ public class SaveData : MonoBehaviour
 
         return defaultData.currentLevel != loadedData.currentLevel ||
                defaultData.currencyHeld != loadedData.currencyHeld ||
-               defaultData.highestFloorCleared != loadedData.highestFloorCleared;
+               defaultData.highestFloorCleared != loadedData.highestFloorCleared ||
+               !Mathf.Approximately(defaultData.playerTimeToClear, loadedData.playerTimeToClear);
     }
 
 
@@ -95,9 +96,16 @@ public class SaveData : MonoBehaviour
             savedItemCounts = new List<int>(dataHolder.savedItemCounts),
             equippedConsumables = (int[])dataHolder.equippedConsumables.Clone(),
             permanentPassiveItems = (int[])dataHolder.permanentPassiveItems.Clone(),
+            
             totalEnemiesKilled = dataHolder.totalEnemiesKilled,
             totalDeaths = dataHolder.totalDeaths,
             totalCoilsCollected = dataHolder.totalCoilsCollected,
+            fastestClearTime = dataHolder.fastestClearTime,
+            
+            playerDeaths = dataHolder.playerDeaths,
+            playerCoilsCollected = dataHolder.playerCoilsCollected,
+            playerEnemiesKilled = dataHolder.playerEnemiesKilled,
+            playerPersonalBestTime = dataHolder.playerPersonalBestTime,
         };
 
         var json = JsonUtility.ToJson(saveData, true);
@@ -154,6 +162,12 @@ public class SaveData : MonoBehaviour
         dataHolder.totalEnemiesKilled = loadedData.totalEnemiesKilled;
         dataHolder.totalDeaths = loadedData.totalDeaths;
         dataHolder.totalCoilsCollected = loadedData.totalCoilsCollected;
+        dataHolder.fastestClearTime = loadedData.fastestClearTime;
+        
+        dataHolder.playerEnemiesKilled = loadedData.playerEnemiesKilled;
+        dataHolder.playerDeaths = loadedData.playerDeaths;
+        dataHolder.playerCoilsCollected = loadedData.playerCoilsCollected;
+        dataHolder.playerPersonalBestTime = loadedData.playerPersonalBestTime;
     }
 
     public void EraseData(bool keepSettings, bool keepGlobal)
@@ -181,6 +195,7 @@ public class SaveData : MonoBehaviour
                 playerDeaths = dataHolder.playerDeaths,
                 playerCoilsCollected = dataHolder.playerCoilsCollected,
                 playerEnemiesKilled = dataHolder.playerEnemiesKilled,
+                playerPersonalBestTime = dataHolder.playerPersonalBestTime,
             };
         }
 
@@ -218,6 +233,7 @@ public class SaveData : MonoBehaviour
             dataHolder.playerDeaths = preservedSettings.playerDeaths;
             dataHolder.playerCoilsCollected = preservedSettings.playerCoilsCollected;
             dataHolder.playerEnemiesKilled = preservedSettings.playerEnemiesKilled;
+            dataHolder.playerPersonalBestTime = preservedSettings.playerPersonalBestTime;
         }
 
         if (keepGlobal)
@@ -279,6 +295,12 @@ public class SaveData : MonoBehaviour
             totalCoilsCollected = 0,
             totalEnemiesKilled = 0,
             totalDeaths = 0,
+            fastestClearTime = 0f,
+            
+            playerTimeToClear = 0f,
+            playerDeaths = 0,
+            playerCoilsCollected = 0,
+            playerEnemiesKilled = 0,
         };
 
         var json = JsonUtility.ToJson(defaultData, true);
@@ -333,4 +355,6 @@ public class DataHolderSaveData
     public int playerCoilsCollected;
     public int playerEnemiesKilled;
     public int playerDeaths;
+    public float playerTimeToClear;
+    public float playerPersonalBestTime;
 }

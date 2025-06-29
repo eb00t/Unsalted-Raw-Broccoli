@@ -192,7 +192,7 @@ public class StartMenuController : MonoBehaviour
 			FadeInLoadingScreen();
 			ToggleHardcoreMode(true);
 			
-			SaveData.Instance.EraseData(!dataHolder.demoMode, dataHolder.demoMode);
+			SaveData.Instance.EraseData(!dataHolder.demoMode, true);
 
 			LoadScene("Intermission");
 		}
@@ -340,7 +340,7 @@ public class StartMenuController : MonoBehaviour
 
 			FadeInLoadingScreen();
 			ToggleHardcoreMode(false);
-			SaveData.Instance.EraseData(!dataHolder.demoMode, dataHolder.demoMode);
+			SaveData.Instance.EraseData(!dataHolder.demoMode, true);
 			dataHolder.eraseViewedLore = true;
 			LoadScene("Intermission");
 		}

@@ -58,6 +58,12 @@ public class CurrencyManager : MonoBehaviour
             var newValue = dataHolder.currencyHeld;
             var changeAmount = newValue - oldValue;
 
+            if (changeAmount > 0)
+            {
+                dataHolder.playerCoilsCollected += changeAmount;
+                dataHolder.totalCoilsCollected += changeAmount;
+            }
+
             _newCurrencyTxt.text = (changeAmount > 0 ? "+ " : "- ") + Mathf.Abs(changeAmount);
             _animator.SetTrigger("currencyChanged");
 

@@ -1,9 +1,11 @@
+using System;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using FMOD.Studio;
+using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
@@ -25,11 +27,34 @@ public class CreditsSequence : MonoBehaviour
         if (dataHolder.demoMode)
         {
             quitBtn.SetActive(false);
+            
+            if (dataHolder.fastestClearTime == 0 || (dataHolder.playerTimeToClear < dataHolder.fastestClearTime))
+            {
+                dataHolder.fastestClearTime = dataHolder.playerTimeToClear;
+            }
+            
+            slides[0].GetComponent<TextMeshProUGUI>().text = 
+                "RUN TIME:\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.playerTimeToClear).ToString(@"hh\:mm\:ss") + "</color>"
+                             + "\n\nFASTEST RUN TIME:\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.fastestClearTime).ToString(@"hh\:mm\:ss") + "</color>";
         }
+        else
+        {
+            if (dataHolder.playerPersonalBestTime == 0 || (dataHolder.playerTimeToClear < dataHolder.playerPersonalBestTime))
+            {
+                dataHolder.playerPersonalBestTime = dataHolder.playerTimeToClear;
+            }
+            
+            slides[0].GetComponent<TextMeshProUGUI>().text =
+                "RUN TIME:\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.playerTimeToClear).ToString(@"hh\:mm\:ss") + "</color>"
+                             + "\n\nPERSONAL FASTEST RUN TIME:\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.playerPersonalBestTime).ToString(@"hh\:mm\:ss") + "</color>";
+        }
+
+        dataHolder.playerTimeToClear = 0f;
 
         InitialiseCreditsSequence();
 
         dataHolder.hasBeatenBaseGame = true;
+        SaveData.Instance.UpdateSave();
     }
 
     private void InitialiseCreditsSequence()
@@ -141,7 +166,12 @@ public class CreditsSequence : MonoBehaviour
         AudioManager.Instance.MusicEventInstance.getPlaybackState(out var playbackState);
         return playbackState;
     }
-    
+
+    public void ClearSave()
+    {
+        SaveData.Instance.EraseData(!dataHolder.demoMode, true);
+    }
+
     public void QuitGame()
     {
         Application.Quit();

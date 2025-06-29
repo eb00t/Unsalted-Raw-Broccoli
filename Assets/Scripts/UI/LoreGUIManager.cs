@@ -1,5 +1,5 @@
 using TMPro;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -20,6 +20,7 @@ public class LoreGUIManager : MonoBehaviour
         _eventSystem = MenuHandler.Instance.eventSystem;
         LoadStatsToLore();
         PopulateButtons();
+        
         PopulateLines(LoreReference.Instance.Welcome);
     }
 
@@ -28,35 +29,53 @@ public class LoreGUIManager : MonoBehaviour
         statsLore.loreBodyText[0] = dataHolder.playerEnemiesKilled.ToString();
         statsLore.loreBodyText[1] = dataHolder.playerDeaths.ToString();
         statsLore.loreBodyText[2] = dataHolder.totalCoilsCollected.ToString();
-        statsLore.loreBodyText[3] = dataHolder.playerTimeToClear.ToString();
+        var timeToClear = TimeSpan.FromSeconds(dataHolder.playerTimeToClear);
+        statsLore.loreBodyText[3] = timeToClear.ToString(@"hh\:mm\:ss");
 
-        if (dataHolder.demoMode)
+        if (dataHolder.playerPersonalBestTime > 0)
         {
-            statsLore.whoWroteThis[4] = "GLOBAL ENEMIES KILLED";
-            statsLore.loreBodyText[4] = dataHolder.totalEnemiesKilled.ToString();
-            
-            statsLore.whoWroteThis[5] = "GLOBAL DEATHS";
-            statsLore.loreBodyText[5] = dataHolder.totalDeaths.ToString();
-            
-            statsLore.whoWroteThis[6] = "GLOBAL COINS COLLECTED";
-            statsLore.loreBodyText[6] = dataHolder.totalCoilsCollected.ToString();
-            
-            statsLore.whoWroteThis[7] = "GLOBAL FASTEST CONSTRUCT RUN";
-            statsLore.loreBodyText[7] = dataHolder.fastestClearTime.ToString();
+            statsLore.loreBodyText[4] = dataHolder.playerPersonalBestTime.ToString();
         }
         else
         {
-            statsLore.whoWroteThis[4] = "";
-            statsLore.loreBodyText[4] = "";
+            statsLore.loreBodyText[4] = "NO DATA FOUND";
+        }
+
+        if (dataHolder.demoMode)
+        {
+            statsLore.whoWroteThis[6] = "TOTAL ENEMIES KILLED";
+            statsLore.loreBodyText[6] = dataHolder.totalEnemiesKilled.ToString();
             
-            statsLore.whoWroteThis[5] = "";
-            statsLore.loreBodyText[5] = "";
+            statsLore.whoWroteThis[7] = "TOTAL DEATHS";
+            statsLore.loreBodyText[7] = dataHolder.totalDeaths.ToString();
             
+            statsLore.whoWroteThis[8] = "TOTAL COINS COLLECTED";
+            statsLore.loreBodyText[8] = dataHolder.totalCoilsCollected.ToString();
+            
+            statsLore.whoWroteThis[9] = "GLOBAL FASTEST RUN TIME";
+            if (dataHolder.fastestClearTime > 0)
+            {
+                var globalTimeToClear = TimeSpan.FromSeconds(dataHolder.fastestClearTime);
+                statsLore.loreBodyText[9] = globalTimeToClear.ToString(@"hh\:mm\:ss");
+            }
+            else
+            {
+                statsLore.loreBodyText[9] = "NO DATA FOUND";
+            }
+        }
+        else
+        {
             statsLore.whoWroteThis[6] = "";
             statsLore.loreBodyText[6] = "";
             
             statsLore.whoWroteThis[7] = "";
             statsLore.loreBodyText[7] = "";
+            
+            statsLore.whoWroteThis[8] = "";
+            statsLore.loreBodyText[8] = "";
+            
+            statsLore.whoWroteThis[9] = "";
+            statsLore.loreBodyText[9] = "";
         }
     }
 
