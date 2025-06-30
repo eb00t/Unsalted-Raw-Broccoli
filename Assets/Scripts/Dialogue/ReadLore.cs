@@ -15,6 +15,8 @@ public class ReadLore : MonoBehaviour
     private ItemPickupHandler _itemPickupHandler;
     private MenuHandler _menuHandler;
     private GameObject _uiManager;
+    private GameObject _mapIcon;
+    private RoomScripting _roomScripting;
     [SerializeField] private float pickupRange;
     private GameObject _player;
     public LoreItemHandler whatLore;
@@ -40,6 +42,8 @@ public class ReadLore : MonoBehaviour
         _characterMovement = _player.GetComponent<CharacterMovement>();
         _itemPickupHandler = _player.GetComponent<ItemPickupHandler>();
         dialogueController = GetComponentInChildren<DialogueControllerScript>();
+        _mapIcon = transform.Find("mapicon_item").gameObject;
+        _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
 
         switch (loreType)
         {
@@ -75,6 +79,18 @@ public class ReadLore : MonoBehaviour
 
     private void Update()
     {
+        if (_roomScripting != null)
+        {
+            if (_roomScripting.playerHasEnteredRoom)
+            {
+                _mapIcon.SetActive(true);
+            }
+            else
+            {
+                _mapIcon.SetActive(false);
+            }
+        }
+
         if (!_characterMovement.uiOpen)
         {
             var dist = Vector3.Distance(transform.position, _player.transform.position);

@@ -33,16 +33,17 @@ public class LoreReference : MonoBehaviour
         allLoreItems.Add(TravelersLog2);
         allLoreItems.Add(TravelersLog3);
         allLoreItems.Add(SpyGettingHitByACar);
-        allLoreItems.Add(YummyBot);
         allLoreItems.Add(AllAboutRocks);
+        allLoreItems.Add(Doors);
+        allLoreItems.Add(YummyBot);
         allLoreItems.Add(EmailTest);
         allLoreItems.Add(RichardSecret);
-        allLoreItems.Add(WhyTheConstruct);
         allLoreItems.Add(DistressCall);
         allLoreItems.Add(Breadcrumbs);
         allLoreItems.Add(Fortunes);
         allLoreItems.Add(OldFriend);
         allLoreItems.Add(MessageToSelf);
+        allLoreItems.Add(WhyTheConstruct);
         
         allViewedLoreItems = new List<LoreItemHandler>(allLoreItems);
         
@@ -130,6 +131,7 @@ public class LoreReference : MonoBehaviour
     [field: SerializeField] public LoreItemHandler Breadcrumbs { get; private set; }
     [field: SerializeField] public LoreItemHandler Fortunes { get; private set; }
     [field: SerializeField] public LoreItemHandler OldFriend { get; private set; }
+    [field: SerializeField] public LoreItemHandler Doors { get; private set; }
     
     [field: Header("Special Cases")]
     [field: SerializeField] public LoreItemHandler UndiscoveredLore { get; private set; }

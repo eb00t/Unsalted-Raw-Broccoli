@@ -22,6 +22,8 @@ public class ItemPickup : MonoBehaviour
     [SerializeField] private bool isTutorial;
     [SerializeField] private GameObject sparkleImg;
     public bool showSparkle;
+    private RoomScripting _roomScripting;
+    private GameObject _mapIcon;
 
     private void Start()
     {
@@ -31,6 +33,8 @@ public class ItemPickup : MonoBehaviour
         _inventoryStore = _uiManager.GetComponent<InventoryStore>();
         _toolbarHandler = _uiManager.GetComponent<ToolbarHandler>();
         _passiveItemHandler = _uiManager.gameObject.GetComponent<PassiveItemHandler>();
+        _mapIcon = transform.Find("mapicon_item").gameObject;
+        _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
 
         if (isPermanentPassive)
         {
@@ -47,6 +51,18 @@ public class ItemPickup : MonoBehaviour
     
     private void Update()
     {
+        if (_roomScripting != null)
+        {
+            if (_roomScripting.playerHasEnteredRoom)
+            {
+                _mapIcon.SetActive(true);
+            }
+            else
+            {
+                _mapIcon.SetActive(false);
+            }
+        }
+        
         if (_characterMovement.uiOpen || !gameObject.activeSelf) return;
         
         var dist = Vector3.Distance(transform.position, _player.position);
@@ -103,4 +119,5 @@ public class ItemPickup : MonoBehaviour
     {
         Gizmos.DrawWireSphere(transform.position, range);
     }
+    
 }

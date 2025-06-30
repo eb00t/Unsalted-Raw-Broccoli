@@ -218,13 +218,16 @@ public class DialogueHandler : MonoBehaviour
       if (currentLoreItem.doesThisHaveATitle)
       {
          loadedBodyText.Insert(0, loadedTitleText);
-         loadedSpeakerText.Insert(0, loadedSpeakerText[0]);
+         loadedSpeakerText.Insert(0, "NEW DATA ENTRY");
          loadedBodyText = new List<string>(loadedBodyText);
          loadedSpeakerText = new List<string>(loadedSpeakerText);
       }
       if (currentLoreItem.didAnyoneWriteThis == false)
       {
-         _menuHandler.SetDialogueActive(false);
+         for (int i = 0; i < loadedBodyText.Count; i++)
+         {
+            loadedSpeakerText.Add("????");
+         }
       }
    }
 }
