@@ -96,6 +96,7 @@ public class PassiveItemHandler : MonoBehaviour
         
         ClearPassiveGUI();
         LoadPassives();
+        TriggerInfoPopup(passiveItem);
         
         if (_itemSwapIndex == dataHolder.permanentPassiveItems.Length - 1)
         {

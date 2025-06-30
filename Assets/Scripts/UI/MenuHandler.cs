@@ -47,6 +47,8 @@ public class MenuHandler : MonoBehaviour
 	private TextMeshProUGUI _mapTxt;
 	[SerializeField] private GameObject loreCanvas;
 	private LoreGUIManager _loreGUIManager;
+	[SerializeField] private GameObject resetPopup;
+	[SerializeField] private TextMeshProUGUI resetText;
 
 	public GameObject mapCamera;
 	
@@ -69,6 +71,9 @@ public class MenuHandler : MonoBehaviour
 	private float _idleTimer;
 	private CanvasGroup _hudCanvasGroup;
 	public CanvasGroup currencyCanvasGroup;
+	private CanvasGroup _dialogueGroup;
+	private int _seconds;
+	private Tween _shakeTween;
 
 	private void Awake()
 	{
@@ -95,6 +100,7 @@ public class MenuHandler : MonoBehaviour
 		_hudCanvasGroup = GetComponentInParent<CanvasGroup>();
 		_mapTxt = mapTxtGroup.GetComponent<TextMeshProUGUI>();
 		if (loreCanvas != null) _loreGUIManager = loreCanvas.GetComponentInParent<LoreGUIManager>(); 
+		_dialogueGroup = GameObject.FindGameObjectWithTag("Dialogue").GetComponent<CanvasGroup>();
 
 		foreach (var t in dialogueGUI.GetComponentsInChildren<Transform>())
 		{
@@ -120,11 +126,38 @@ public class MenuHandler : MonoBehaviour
 		{
 			_idleTimer -= Time.unscaledDeltaTime;
 			
-			if (_idleTimer <= 0)
+			if (_idleTimer <= 20)
 			{
-				SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
+				//SceneManager.LoadScene("StartScreen", LoadSceneMode.Single); // for instant reset
+				if (!resetPopup.activeSelf)
+				{
+					resetPopup.SetActive(true);
+					_hudCanvasGroup.DOFade(0f, 0.5f).SetUpdate(true);
+
+					if (_dialogueGroup != null)
+					{
+						_dialogueGroup.DOFade(0f, 0.5f).SetUpdate(true);
+					}
+				}
+
+				if (_idleTimer <= 0)
+				{
+					SceneManager.LoadScene("StartScreen", LoadSceneMode.Single);
+				}
+				else
+				{
+					var newSeconds = Mathf.CeilToInt(_idleTimer);
+
+					if (newSeconds != _seconds)
+					{
+						_shakeTween?.Kill(true);
+						_shakeTween = resetPopup.transform.DOShakePosition(0.3f, new Vector3(10, 0, 0), 20, 0, false, true, ShakeRandomnessMode.Harmonic);
+						resetText.text = $"<color=#FF0000>WARNING:</color>\nGame will reset in <color=#FF0000>{newSeconds}</color> seconds\npress any button to keep playing.";
+						_seconds = newSeconds;
+					}
+				}
 			}
-			
+
 			// quick reset keybind for events
 			if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.L) && Input.GetKeyDown(KeyCode.Alpha1))
 			{
@@ -359,6 +392,17 @@ public class MenuHandler : MonoBehaviour
 	public void ResetIdleTime()
 	{
 		_idleTimer = idleResetTime;
+		
+		if (resetPopup.activeSelf)
+		{
+			resetPopup.SetActive(false);
+			_hudCanvasGroup.DOFade(1f, 0.25f).SetUpdate(true);
+			
+			if (_dialogueGroup != null)
+			{
+				_dialogueGroup.DOFade(1f, 0.25f).SetUpdate(true);
+			}
+		}
 	}
 	
 	private void OnDisable()
