@@ -83,6 +83,17 @@ public class CharacterMovement : MonoBehaviour
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
+        if (BlackoutManager.Instance != null)
+        {
+            StartCoroutine(WaitToMove());
+        }
+    }
+
+    private IEnumerator WaitToMove()
+    {
+        canMove = false;
+        yield return new WaitUntil(() => BlackoutManager.Instance.blackoutComplete);
+        canMove = true;
     }
 
     public void Crouch(InputAction.CallbackContext ctx)
@@ -237,7 +248,7 @@ public class CharacterMovement : MonoBehaviour
         if (uiOpen) return;
         
         // if the player is moving or crouching while not locked on this updates the players local scale based on vel/input
-        if (!LockedOn && (Mathf.Abs(velocity.x) >= 0.1f) || (isCrouching && Mathf.Abs(_input) > 0))
+        if (canMove && !LockedOn && (Mathf.Abs(velocity.x) >= 0.1f) || (isCrouching && Mathf.Abs(_input) > 0))
         {
             var localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             var dir = Mathf.Abs(velocity.x) >= 0.1f ? Mathf.Sign(velocity.x) : Mathf.Sign(_input);
@@ -260,6 +271,7 @@ public class CharacterMovement : MonoBehaviour
             _playerAnimator.SetBool(IsWalkingBackwards, false);
         }
 
+        /* // moved to coroutine so canmove can be set elsewhere
         if (BlackoutManager.Instance != null)
         {
             // Stop player moving while game is loading
@@ -272,6 +284,7 @@ public class CharacterMovement : MonoBehaviour
                 canMove = true;
             }
         }
+        */
     }
 
     public void FixedUpdate()

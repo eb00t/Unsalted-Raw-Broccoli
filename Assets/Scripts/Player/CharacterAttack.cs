@@ -102,6 +102,7 @@ public class CharacterAttack : MonoBehaviour
     private static readonly int IsPlayerDead = Animator.StringToHash("isPlayerDead");
     private static readonly int Laugh = Animator.StringToHash("Laugh");
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
+    private static readonly int StanceBroken = Animator.StringToHash("stanceBroken");
 
     private void Start()
     {
@@ -161,7 +162,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void LightAttack(InputAction.CallbackContext ctx)
     {
-        if (isDead || _characterMovement.uiOpen) return;
+        if (isDead || _characterMovement.uiOpen || !_characterMovement.canMove) return;
             
         if (ctx.performed && _characterMovement.grounded)
         {
@@ -238,7 +239,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void MediumAttack(InputAction.CallbackContext ctx)
     {
-        if (isDead || _characterMovement.uiOpen) return;
+        if (isDead || _characterMovement.uiOpen || !_characterMovement.canMove) return;
         if (!ctx.performed || _characterMovement.isJumpAttacking || !_characterMovement.grounded) return;
         
         gameObject.layer = 15;
@@ -279,7 +280,7 @@ public class CharacterAttack : MonoBehaviour
 
     public void HeavyAttack(InputAction.CallbackContext ctx)
     {
-        if (isDead || _characterMovement.uiOpen) return;
+        if (isDead || _characterMovement.uiOpen || !_characterMovement.canMove) return;
         if (!ctx.performed || _characterMovement.isJumpAttacking || !_characterMovement.grounded) return;
         
         gameObject.layer = 14;
@@ -456,16 +457,9 @@ public class CharacterAttack : MonoBehaviour
         }
 
         var dir = Mathf.Sign(transform.root.localScale.x);
-        _rigidbody.velocity = new Vector3(dir * force, _rigidbody.velocity.y, 0f);
-        StartCoroutine(StopAttackForce());
+        _rigidbody.AddForce(new Vector3(dir * force, 0f, 0f), ForceMode.VelocityChange);
     }
     
-    private IEnumerator StopAttackForce()
-    {
-        yield return new WaitForSeconds(0.1f);
-        _rigidbody.velocity = new Vector3(0f, _rigidbody.velocity.y, 0f);
-    }
-
     public void TakeDamagePlayer(int damage, int poiseDmg, Vector3 knockback)
     {
         if (isDead || _characterMovement.uiOpen) return;
@@ -581,12 +575,44 @@ public class CharacterAttack : MonoBehaviour
             StopCoroutine(_knockbackRoutine);
         }
         
-        _knockbackRoutine = StartCoroutine(TriggerKnockback(knockbackForce, 0.35f));
-        StartCoroutine(StunTimer(.05f));
+        //_knockbackRoutine = StartCoroutine(TriggerKnockback(knockbackForce, 0.35f));
 
-        if (_poiseBuildup < poise) return;
-        StartCoroutine(StunTimer(stunDuration));
-        _poiseBuildup = 0;
+        if (_poiseBuildup >= poise)
+        {
+            StartCoroutine(StunTimer(1.12f, true, knockbackForce));
+            _poiseBuildup = 0;
+        }
+        else if (_characterMovement.canMove)
+        {
+            StartCoroutine(StunTimer(stunDuration, false, knockbackForce));
+        }
+    }
+    
+    private IEnumerator StunTimer(float stunTime, bool isPoiseBreak, Vector3 knockbackForce)
+    {
+        if (isPoiseBreak)
+        {
+            yield return new WaitUntil(() => _characterMovement.grounded);
+            _rigidbody.velocity = Vector3.zero;
+            _playerAnimator.SetBool(StanceBroken, true);
+            ResetCombo();
+        }
+        else
+        {
+            _rigidbody.velocity = Vector3.zero;
+            _rigidbody.AddForce(knockbackForce, ForceMode.Impulse);
+            ResetCombo();
+            _playerAnimator.SetBool(IsStaggered, true);
+        }
+        
+        _characterMovement.canMove = false;
+        
+        yield return new WaitForSecondsRealtime(stunTime);
+
+        _playerAnimator.SetBool(isPoiseBreak ? StanceBroken : IsStaggered, false);
+
+        _rigidbody.velocity = Vector3.zero;
+        _characterMovement.canMove = true;
     }
     
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
@@ -684,18 +710,6 @@ public class CharacterAttack : MonoBehaviour
             
             _energyTween = DOVirtual.Float(energySlider.value, currentEnergy, 1f, v => energySlider.value = v).SetEase(Ease.OutExpo).SetDelay(0.4f);
         }
-    }
-
-    private IEnumerator StunTimer(float stunTime)
-    {
-        ResetCombo();
-        _playerAnimator.SetBool(IsStaggered, true);
-        _characterMovement.canMove = false;
-        
-        yield return new WaitForSecondsRealtime(stunTime);
-        
-        _playerAnimator.SetBool(IsStaggered, false);
-        _characterMovement.canMove = true;
     }
     
     private void Die()

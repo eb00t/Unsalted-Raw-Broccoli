@@ -376,7 +376,7 @@ MonoBehaviour:
   mediumAtkMultiplier: 2
   heavyAtkMultiplier: 4
   charAtk: 0
-  poise: 30
+  poise: 25
   poiseDamageLight: 10
   poiseDamageMedium: 20
   poiseDamageHeavy: 50
@@ -385,15 +385,15 @@ MonoBehaviour:
   isIce: 0
   isInvulnerable: 0
   isDead: 0
-  stunDuration: 0.5
+  stunDuration: 0.25
   jumpAttackDrag: 15
   jumpAttackCount: 0
   hitIframeDur: 0.5
   doCombosLoop: 0
   animationCancelCooldown: 0.5
-  lightAttackForce: 3
-  mediumAttackForce: 6
-  heavyAttackForce: 9
+  lightAttackForce: 9
+  mediumAttackForce: 12
+  heavyAttackForce: 15
   _canCancel: 1
   maxEnergy: 40
   currentEnergy: 40
@@ -408,6 +408,8 @@ MonoBehaviour:
   atkHitbox: {fileID: 705655260868815896}
   healthSlider: {fileID: 0}
   energySlider: {fileID: 0}
+  healthChangeSlider: {fileID: 0}
+  energyChangeSlider: {fileID: 0}
   defaultMaterial: {fileID: 2100000, guid: ba02e6b88d5290f45aba435b9f509e28, type: 2}
   hitMaterial: {fileID: 2100000, guid: c55687bd41c7b8a4eb699c2d3ace5386, type: 2}
   hitFlash: {fileID: 0}
@@ -916,12 +918,6 @@ MonoBehaviour:
   betweenTxtObj: {fileID: 0}
   updateButton1: {fileID: 0}
   updateButton2: {fileID: 0}
-  itemCount: 0
-  isPlrNearShop: 0
-  isPlrNearEnd: 0
-  isPlrNearDialogue: 0
-  isPlrNearLore: 0
-  isPlayerNearRecharge: 0
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
 --- !u!114 &4592323685554638241
 MonoBehaviour:
@@ -969,6 +965,8 @@ MonoBehaviour:
   doorUpRight1: {fileID: 0}
   doorToEnd1: {fileID: 0}
   doorToEnd2: {fileID: 0}
+  doorPastLaser1: {fileID: 0}
+  doorPastLaser2: {fileID: 0}
   arrowItem1: {fileID: 0}
   arrowItem1Back: {fileID: 0}
   arrowItem2: {fileID: 0}
@@ -985,6 +983,7 @@ MonoBehaviour:
   rangeToEnemy: 12
   dataHolder: {fileID: 11400000, guid: e7ca0f499da20ea468d6824bd7106424, type: 2}
   pauseMenu: {fileID: 0}
+  toolbarGroup: {fileID: 0}
   _currentStep: 0
 --- !u!65 &1721903968783958199
 BoxCollider:
