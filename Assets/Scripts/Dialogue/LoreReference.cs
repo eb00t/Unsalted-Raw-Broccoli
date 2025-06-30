@@ -47,7 +47,7 @@ public class LoreReference : MonoBehaviour
         
         allViewedLoreItems = new List<LoreItemHandler>(allLoreItems);
         
-        if (dataHolder.eraseViewedLore || dataHolder.demoMode)
+        if (dataHolder.eraseViewedLore)
         {
             foreach (var lore in allLoreItems)
             {
