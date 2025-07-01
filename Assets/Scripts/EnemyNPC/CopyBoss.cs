@@ -99,6 +99,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
     [SerializeField] private Slider healthChangeSlider;
     [SerializeField] private Image healthChangeImage;
     private Tween _healthTween;
+    private Coroutine _stunRoutine;
 
     int IDamageable.Attack { get => attack; set => attack = value; }
     int IDamageable.Poise { get => poise; set => poise = value; }
@@ -674,18 +675,23 @@ public class CopyBoss : MonoBehaviour, IDamageable
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 4 : 2; 
         var knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
-        if (!_isAttacking)
+        if (!_isAttacking && !_isStunned)
         {
-            StartCoroutine(TriggerKnockback(knockbackForce, 0.1f));
-            StartCoroutine(StunTimer(0.1f));
-            StartCoroutine(WallHitCheck(3f));
             _hitCount = 0;
-        }
-
-        if (_poiseBuildup >= poise && !_isAttacking)
-        {
-            StartCoroutine(StunTimer(.5f));
-            _poiseBuildup = 0;
+            
+            if (_poiseBuildup >= poise)
+            {
+                if (_stunRoutine != null) StopCoroutine(_stunRoutine);
+                _stunRoutine = StartCoroutine(StunTimer(1.2f));
+                _poiseBuildup = 0;
+            }
+            else
+            {
+                if (_stunRoutine == null) _stunRoutine = StartCoroutine(StunTimer(0.1f));
+            }
+            
+            StartCoroutine(TriggerKnockback(knockbackForce, 0.1f));
+            StartCoroutine(WallHitCheck(3f));
         }
     }
     
@@ -747,6 +753,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         _isStunned = false;
         //_isAttacking = false;
         _animator.SetBool("isStaggered", false);
+        _stunRoutine = null;
     }
 
     private void Die()

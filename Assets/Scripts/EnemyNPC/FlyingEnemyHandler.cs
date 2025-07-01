@@ -92,6 +92,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private SphereCollider _collider;
     private Rigidbody _rigidbody;
     private AIPath _aiPath;
+    private Coroutine _stunRoutine;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -651,12 +652,16 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         _knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
         StartCoroutine(TriggerKnockback(_knockbackForce, 0.2f));
-        StartCoroutine(StunTimer(0.1f));
 
         if (_poiseBuildup >= poise)
         {
-            StartCoroutine(StunTimer(1.5f));
+            if (_stunRoutine != null) StopCoroutine(_stunRoutine);
+            _stunRoutine = StartCoroutine(StunTimer(1.5f));
             _poiseBuildup = 0;
+        }
+        else
+        {
+            if (_stunRoutine == null) _stunRoutine = StartCoroutine(StunTimer(0.1f));
         }
     }
     
@@ -678,6 +683,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         yield return new WaitForSecondsRealtime(stunTime);
         _isStunned = false;
         _animator.SetBool("isStaggered", false);
+        _stunRoutine = null;
     }
     
     private IEnumerator HitFlash()

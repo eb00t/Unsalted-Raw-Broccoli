@@ -82,6 +82,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
     [SerializeField] private Image healthChangeImage;
     private Tween _healthTween;
     [SerializeField] private DataHolder dataHolder;
+    private Coroutine _stunRoutine;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -591,11 +592,17 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
 
         StartCoroutine(TriggerKnockback(_knockbackForce, 0.2f));
-        StartCoroutine(StunTimer(.05f));
 
-        if (_poiseBuildup < poise) return;
-        StartCoroutine(StunTimer(1f));
-        _poiseBuildup = 0;
+        if (_poiseBuildup >= poise)
+        {
+            if (_stunRoutine != null) StopCoroutine(_stunRoutine);
+            _stunRoutine = StartCoroutine(StunTimer(1f));
+            _poiseBuildup = 0;
+        }
+        else
+        {
+            if (_stunRoutine == null) _stunRoutine = StartCoroutine(StunTimer(0.05f));
+        }
     }
     
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
@@ -615,6 +622,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
        yield return new WaitForSecondsRealtime(stunTime);
        _rigidbody.velocity = Vector3.zero;
        _animator.SetBool(IsStaggered, false);
+       _stunRoutine = null;
     }
     
     private IEnumerator HitFlash()

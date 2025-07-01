@@ -107,6 +107,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
     [SerializeField] private Slider healthChangeSlider;
     [SerializeField] private Image healthChangeImage;
     private Tween _healthTween;
+    private Coroutine _stunRoutine;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -682,8 +683,8 @@ public class CameraBoss : MonoBehaviour, IDamageable
 
         if (_poiseBuildup >= poise)
         {
-            StartCoroutine(StunTimer(1.5f));
-            _poiseBuildup = 0;
+            if (_stunRoutine == null)
+                StartCoroutine(StunTimer(1f)); _poiseBuildup = 0;
         }
     }
     
@@ -706,6 +707,7 @@ public class CameraBoss : MonoBehaviour, IDamageable
         _isStunned = false;
         _canAttack = true;
         _animator.SetBool("isStaggered", false);
+        _stunRoutine = null;
     }
     
     private IEnumerator HitFlash()

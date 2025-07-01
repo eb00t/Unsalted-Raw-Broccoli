@@ -97,6 +97,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private AIPath _aiPath;
     private Rigidbody _rigidbody;
     private Tween _healthTween;
+    private Coroutine _stunRoutine;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -855,8 +856,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 15f : 10f; 
         _knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
-
-        StartCoroutine(TriggerKnockback(_knockbackForce, 0.35f));
         
         var facingRight = _spriteRenderer.transform.localScale.x > 0;
         var playerInFront = (facingRight && _playerDir.x > 0) || (!facingRight && _playerDir.x < 0);
@@ -870,30 +869,35 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                     defense = 0;
                 }
 
-                StartCoroutine(StunTimer(.05f));
+                if (_poiseBuildup < poise) _stunRoutine ??= StartCoroutine(StunTimer(.05f));
             }
         }
-        else
+        else if (_poiseBuildup < poise)
         {
-            StartCoroutine(StunTimer(.05f));
+            if (_stunRoutine == null)
+            {
+                _stunRoutine = StartCoroutine(StunTimer(.05f));
+            }
         }
 
-        StartCoroutine(WallHitCheck(3f));
+        if (_poiseBuildup >= poise)
+        {
+            if (isStalker)
+            {
+                _isBlocking = false;
+                _animator.SetBool(IsBlocking, false);
+            }
+            if (!isBomb)
+            {
+                if (_stunRoutine != null) StopCoroutine(_stunRoutine);
+                _stunRoutine = StartCoroutine(StunTimer(1f));
+            }
 
-        if (_poiseBuildup < poise) return;
+            _poiseBuildup = 0;
+        }
         
-        if (isStalker)
-        {
-            _isBlocking = false;
-            _animator.SetBool(IsBlocking, false);
-        }
-            
-        if (!isBomb)
-        {
-            StartCoroutine(StunTimer(1f));
-        }
-
-        _poiseBuildup = 0;
+        StartCoroutine(TriggerKnockback(_knockbackForce, 0.35f));
+        StartCoroutine(WallHitCheck(3f));
     }
     
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
@@ -951,6 +955,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
        _rigidbody.velocity = Vector3.zero;
        _animator.SetBool(IsStaggered, false);
        _aiPath.canMove = true;
+       _stunRoutine = null;
     }
 
     private IEnumerator HitFlash()

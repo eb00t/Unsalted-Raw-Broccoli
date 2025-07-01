@@ -575,7 +575,8 @@ public class CharacterAttack : MonoBehaviour
 
         if (_poiseBuildup >= poise)
         {
-            StartCoroutine(StunTimer(1.12f, true, knockbackForce));
+            if (_stunRoutine != null) StopCoroutine(_stunRoutine);
+            _stunRoutine = StartCoroutine(StunTimer(1.12f, true, knockbackForce));
             _poiseBuildup = 0;
         }
         else if (_characterMovement.canMove)
