@@ -3,7 +3,7 @@ using System.Collections;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Random = UnityEngine.Random;
+using Vector3 = UnityEngine.Vector3;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -17,6 +17,8 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private PhysicMaterial characterPhysicMaterial;
     private MenuHandler _menuHandler;
     private GameObject _uiManager;
+    private BoxCollider _boxCollider;
+    private CapsuleCollider _capsuleCollider;
 
     [Header("Player Properties")] 
     public bool doesAttackStopFlip;
@@ -37,6 +39,12 @@ public class CharacterMovement : MonoBehaviour
     [NonSerialized] public bool LockedOn = false;
     private float _hangTimer;
     private bool _canDash = true;
+    private Vector3 _originalColliderSize, _originalColliderCenter;
+    private readonly Vector3 _crouchBoxSize = new Vector3(6.3f, 1, 5.98f);
+    private readonly Vector3 _crouchBoxCenter = new Vector3(0, 1.1f, -1.9f);
+    private float _originalCapsuleRadius, _originalCapsuleHeight;
+    private readonly float _crouchCapsuleHeight = 6.35f;
+    private readonly Vector3 _crouchCapsuleCenter =  new Vector3(0, 1, -1.95048f);
     
     [Header("Jumping")]
     [SerializeField] private bool doubleJumpResetJumpAttack;
@@ -88,6 +96,14 @@ public class CharacterMovement : MonoBehaviour
 
     private void Start()
     {
+        _capsuleCollider = GetComponent<CapsuleCollider>();
+        _boxCollider = GetComponent<BoxCollider>();
+        
+        _originalColliderSize = _boxCollider.size;
+        _originalColliderCenter = _boxCollider.center;
+        _originalCapsuleHeight = _capsuleCollider.height;
+        _originalCapsuleRadius = _capsuleCollider.radius;
+        
         if (BlackoutManager.Instance != null)
         {
             StartCoroutine(WaitToMove());
@@ -113,11 +129,31 @@ public class CharacterMovement : MonoBehaviour
         {
             _playerAnimator.SetBool(IsCrouching, true);
             isCrouching = true;
+            SetColliders();
         }
         else
         {
             _playerAnimator.SetBool(IsCrouching, false);
             isCrouching = false;
+            SetColliders();
+        }
+    }
+
+    private void SetColliders()
+    {
+        if (isCrouching)
+        {
+            _capsuleCollider.height = _crouchCapsuleHeight;
+            _capsuleCollider.center = _crouchCapsuleCenter;
+            _boxCollider.size = _crouchBoxSize;
+            _boxCollider.center = _crouchBoxCenter;
+        }
+        else
+        {
+            _capsuleCollider.height = _originalCapsuleHeight;
+            _capsuleCollider.center = _originalColliderCenter;
+            _boxCollider.size = _originalColliderSize;
+            _boxCollider.center = _originalColliderCenter;
         }
     }
 
@@ -253,8 +289,13 @@ public class CharacterMovement : MonoBehaviour
         if (!canMove || uiOpen)
         {
             _rb.useGravity = true;
-            isCrouching = false;
-            _playerAnimator.SetBool(IsCrouching, false);
+            
+            if (isCrouching)
+            {
+                isCrouching = false;
+                _playerAnimator.SetBool(IsCrouching, false);
+                SetColliders();
+            }
         }
         
         if (uiOpen) return;
