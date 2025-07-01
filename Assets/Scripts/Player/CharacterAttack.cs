@@ -610,7 +610,8 @@ public class CharacterAttack : MonoBehaviour
         
         yield return new WaitForSecondsRealtime(stunTime);
 
-        _playerAnimator.SetBool(isPoiseBreak ? StanceBroken : IsStaggered, false);
+        _playerAnimator.SetBool(IsStaggered, false);
+        _playerAnimator.SetBool(StanceBroken, false);
 
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.drag = 0f;

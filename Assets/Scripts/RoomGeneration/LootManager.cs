@@ -102,7 +102,11 @@ public class LootManager : MonoBehaviour
             }
 
             lootToSpawn.SetActive(true);
-            lootToSpawn.GetComponent<ItemPickup>().showSparkle = true;
+            
+            if (lootToSpawn.TryGetComponent<ItemPickup>(out var itemPickup))
+            {
+                itemPickup.showSparkle = true;
+            }
         }
         else
         {
