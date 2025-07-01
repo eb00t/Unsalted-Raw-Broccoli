@@ -180,7 +180,7 @@ public class MenuHandler : MonoBehaviour
 		                    infoPopup.activeSelf;
 		var noPauseGuisOpen = (shopGUI != null && shopGUI.activeSelf) ||
 		                      (dialogueGUI != null && dialogueGUI.activeSelf) ||
-		                      (mapCamera != null && mapCamera.activeSelf) ||
+		                      /*(mapCamera != null && mapCamera.activeSelf) */
 		                      _blackoutManager != null && !_blackoutManager.blackoutComplete ||
 			                      (loreCanvas != null && loreCanvas.activeSelf);
 		                      
@@ -681,6 +681,7 @@ public class MenuHandler : MonoBehaviour
 			var itemPickup = item.GetComponent<ItemPickup>();
 			if (itemPickup == null || !itemPickup.canPickup) continue;
 			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemPickup, transform.position);
+			characterMovement.TriggerPickupAnim();
 			itemPickup.AddItemToInventory();
 		}
 	}

@@ -73,6 +73,7 @@ public class CharacterMovement : MonoBehaviour
     private static readonly int IsCrouching = Animator.StringToHash("isCrouching");
     private static readonly int Jump1 = Animator.StringToHash("Jump");
     private static readonly int DoubleJump = Animator.StringToHash("DoubleJump");
+    private static readonly int PickUp = Animator.StringToHash("PickUp");
 
     public void Awake()
     {
@@ -83,9 +84,17 @@ public class CharacterMovement : MonoBehaviour
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         _uiManager = GameObject.FindGameObjectWithTag("UIManager");
         _menuHandler = _uiManager.GetComponent<MenuHandler>();
+    }
+
+    private void Start()
+    {
         if (BlackoutManager.Instance != null)
         {
             StartCoroutine(WaitToMove());
+        }
+        else
+        {
+            canMove = true;
         }
     }
 
@@ -115,6 +124,7 @@ public class CharacterMovement : MonoBehaviour
     public void XAxis(InputAction.CallbackContext ctx)
     {
         if (uiOpen && !_menuHandler.mapCamera.activeSelf) return;
+        
         _input = ctx.ReadValue<float>();
         _playerAnimator.SetFloat(Input1, Mathf.Abs(_input));
         if (Mathf.Abs(_input) > 0)
@@ -219,17 +229,19 @@ public class CharacterMovement : MonoBehaviour
         yield return new WaitForSeconds(.4f);
         _canDash = true;
     }
-    
+
+    public void TriggerPickupAnim()
+    {
+        _playerAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        _playerAnimator.SetTrigger(PickUp);
+    }
+
     public void Update()
     {
         if (uiOpen)
         {
-            if (_menuHandler.mapCamera != null && !_menuHandler.mapCamera.activeSelf)
-            {
-                _input = 0;
-                _playerAnimator.SetFloat(Input1, 0);
-            }
-
+            _input = 0;
+            _playerAnimator.SetFloat(Input1, 0);
             _rb.velocity = new Vector3(0, _rb.velocity.y, 0);
         }
         
@@ -324,8 +336,9 @@ public class CharacterMovement : MonoBehaviour
         else if (canMove & !_isDashing && !isJumpAttacking && !isCrouching)
         {
             var acc = acceleration;
-            if (isAttacking) acc = acceleration / 3;
-            if ((_rb.velocity.x <= maxSpeed && Mathf.Sign(_rb.velocity.x) == 1) || (_rb.velocity.x >= -maxSpeed && Mathf.Sign(_rb.velocity.x) == -1) || (Mathf.Sign(_rb.velocity.x) != _input))
+            if (isAttacking || _menuHandler.mapCamera.activeSelf) acc = acceleration / 3;
+
+            if (Mathf.Abs(_rb.velocity.x) < maxSpeed || !Mathf.Approximately(Mathf.Sign(_rb.velocity.x), _input) || _menuHandler.mapCamera.activeSelf)
             {
                 _rb.velocity = new Vector3(_input * acc, _rb.velocity.y, _rb.velocity.z);
             }

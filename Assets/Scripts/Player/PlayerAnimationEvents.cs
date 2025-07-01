@@ -44,4 +44,9 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         playerAtkHitbox.SetActive(false);
     }
+
+    private void SetTimeScaleOnAnimator()
+    {
+        GetComponent<Animator>().updateMode = AnimatorUpdateMode.Normal;
+    }
 }

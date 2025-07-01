@@ -86,6 +86,7 @@ public class CharacterAttack : MonoBehaviour
     private Image _hitFlashImg;
     private Tween _healthTween;
     private Tween _energyTween;
+    private Coroutine _stunRoutine;
     
     [Header("Animation")]
     private Animator _playerAnimator;
@@ -569,11 +570,6 @@ public class CharacterAttack : MonoBehaviour
         var knockbackDir = -_characterMovement.transform.localScale.x;
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 15f : 10f; 
         var knockbackForce = new Vector3(knockbackPower.x * knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
-
-        if (_knockbackRoutine != null)
-        {
-            StopCoroutine(_knockbackRoutine);
-        }
         
         //_knockbackRoutine = StartCoroutine(TriggerKnockback(knockbackForce, 0.35f));
 
@@ -584,18 +580,24 @@ public class CharacterAttack : MonoBehaviour
         }
         else if (_characterMovement.canMove)
         {
-            StartCoroutine(StunTimer(stunDuration, false, knockbackForce));
+            if (_stunRoutine == null)
+            {
+                _stunRoutine = StartCoroutine(StunTimer(stunDuration, false, knockbackForce));
+            }
         }
     }
     
     private IEnumerator StunTimer(float stunTime, bool isPoiseBreak, Vector3 knockbackForce)
     {
+        _characterMovement.canMove = false;
+        
         if (isPoiseBreak)
         {
             yield return new WaitUntil(() => _characterMovement.grounded);
             _rigidbody.velocity = Vector3.zero;
-            _playerAnimator.SetBool(StanceBroken, true);
+            _rigidbody.drag = 8f;
             ResetCombo();
+            _playerAnimator.SetBool(StanceBroken, true);
         }
         else
         {
@@ -605,14 +607,14 @@ public class CharacterAttack : MonoBehaviour
             _playerAnimator.SetBool(IsStaggered, true);
         }
         
-        _characterMovement.canMove = false;
-        
         yield return new WaitForSecondsRealtime(stunTime);
 
         _playerAnimator.SetBool(isPoiseBreak ? StanceBroken : IsStaggered, false);
 
         _rigidbody.velocity = Vector3.zero;
+        _rigidbody.drag = 0f;
         _characterMovement.canMove = true;
+        _stunRoutine = null;
     }
     
     private IEnumerator TriggerKnockback(Vector3 force, float duration)
