@@ -93,7 +93,7 @@ public class RoomInfo : MonoBehaviour
 
         foreach (var child in GetComponentsInChildren<Transform>()) // Assigning map icons
         {
-           if (child.CompareTag("Map Icon Parent"))
+           if (child.CompareTag("Map Icon Parent") && !child.name.Contains("item"))
            {
                mapIcons = child.gameObject;
            }
