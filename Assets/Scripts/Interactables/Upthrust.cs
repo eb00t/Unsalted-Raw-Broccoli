@@ -22,11 +22,12 @@ public class Upthrust : MonoBehaviour
       if (other.CompareTag("Player"))
       {
          var dir = other.transform.position - transform.position;
-         if (dir.y < 0 && !_characterMovement.isInUpThrust)
+         
+         if (dir.y < 0 && (!_characterMovement.isInUpThrust || _characterMovement._mostRecentUpthrust == this))
          {
-            _playerRb.velocity = new Vector3(0f, 1f * forceMultiplier, 0f);
-            _characterMovement.doubleJumpPerformed = true;
             _characterMovement.isInUpThrust = true;
+            _characterMovement.doubleJumpPerformed = true;
+            _playerRb.velocity = new Vector3(0f, 1f * forceMultiplier, 0f);
             AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Upthrust, transform.position);
          }
       }
@@ -36,6 +37,7 @@ public class Upthrust : MonoBehaviour
    {
       if (other.CompareTag("Player"))
       {
+         _characterMovement._mostRecentUpthrust = this;
       }
    }
 

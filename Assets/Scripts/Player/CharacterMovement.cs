@@ -19,6 +19,7 @@ public class CharacterMovement : MonoBehaviour
     private GameObject _uiManager;
     private BoxCollider _boxCollider;
     private CapsuleCollider _capsuleCollider;
+    public Upthrust _mostRecentUpthrust;
 
     [Header("Player Properties")] 
     public bool doesAttackStopFlip;
@@ -42,7 +43,7 @@ public class CharacterMovement : MonoBehaviour
     private Vector3 _originalColliderSize, _originalColliderCenter;
     private readonly Vector3 _crouchBoxSize = new Vector3(6.3f, 1, 5.98f);
     private readonly Vector3 _crouchBoxCenter = new Vector3(0, 1.1f, -1.9f);
-    private float _originalCapsuleRadius, _originalCapsuleHeight;
+    private float _originalCapsuleHeight;
     private readonly float _crouchCapsuleHeight = 6.35f;
     private readonly Vector3 _crouchCapsuleCenter =  new Vector3(0, 1, -1.95048f);
     
@@ -102,7 +103,6 @@ public class CharacterMovement : MonoBehaviour
         _originalColliderSize = _boxCollider.size;
         _originalColliderCenter = _boxCollider.center;
         _originalCapsuleHeight = _capsuleCollider.height;
-        _originalCapsuleRadius = _capsuleCollider.radius;
         
         if (BlackoutManager.Instance != null)
         {
@@ -299,7 +299,7 @@ public class CharacterMovement : MonoBehaviour
         }
         
         if (uiOpen) return;
-        
+
         // if the player is moving or crouching while not locked on this updates the players local scale based on vel/input
         if (canMove && !LockedOn && (Mathf.Abs(velocity.x) >= 0.1f) || (isCrouching && Mathf.Abs(_input) > 0))
         {
@@ -360,7 +360,7 @@ public class CharacterMovement : MonoBehaviour
             doubleJumpPerformed = false;
             _midAirDashCount = 0;
             
-            if (_rb.velocity.y < 5f)
+            if (_rb.velocity.y < 1f)
             {
                 isInUpThrust = false;
             }

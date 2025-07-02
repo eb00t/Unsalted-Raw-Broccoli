@@ -29,9 +29,12 @@ public class CharacterAttack : MonoBehaviour
     [SerializeField] private float stunDuration;
     [SerializeField] private float jumpAttackDrag;
     public int jumpAttackCount;
-    private int _poiseBuildup;
+    [SerializeField] private int _poiseBuildup;
     [SerializeField] private float hitIframeDur;
     private bool _hasHitIframes;
+    [SerializeField] private int poiseRecoveryAmount;
+    [SerializeField] private float poiseRecoveryDelay;
+    private float _poiseRecoverTimer;
     
     [Header("Combo Variables")]
     [SerializeField] private bool doCombosLoop;
@@ -107,7 +110,6 @@ public class CharacterAttack : MonoBehaviour
 
     private void Start()
     {
-        
         _hitFlashImg = hitFlash.GetComponent<Image>();
         _characterMovement = transform.root.GetComponent<CharacterMovement>();
         _playerAnimator = GameObject.FindGameObjectWithTag("PlayerRenderer").GetComponent<Animator>();
@@ -123,6 +125,7 @@ public class CharacterAttack : MonoBehaviour
         energyChangeSlider = FindSliderExcludingSelf(energySlider.gameObject);
         _healthChangeImg = healthChangeSlider.fillRect.GetComponent<Image>();
         _energyChangeImg = energyChangeSlider.fillRect.GetComponent<Image>();
+        _poiseRecoverTimer = poiseRecoveryDelay;
         
         if (!dataHolder.hardcoreMode)
         {
@@ -817,6 +820,21 @@ public class CharacterAttack : MonoBehaviour
     private void Update()
     {
         if (isDead || _characterMovement.uiOpen) return;
+
+        if (_poiseBuildup > 0)
+        {
+            _poiseRecoverTimer -= Time.deltaTime;
+
+            if (_poiseRecoverTimer <= 0)
+            {
+                if (_poiseBuildup - poiseRecoveryAmount <= 0)
+                    _poiseBuildup = 0;
+                else
+                    _poiseBuildup -= poiseRecoveryAmount;
+
+                _poiseRecoverTimer = poiseRecoveryDelay;
+            }
+        }
 
         if (!_characterMovement.grounded || !_rigidbody.useGravity)
         {

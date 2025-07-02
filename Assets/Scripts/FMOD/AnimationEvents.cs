@@ -190,4 +190,9 @@ public class AnimationEvents : MonoBehaviour
         deathScreen.SetActive(true);
         //blackoutCircle.enabled = true;
     }
+
+    private void PickUpItem()
+    {
+        MenuHandler.Instance.CompletePickup();
+    }
 }

@@ -675,13 +675,21 @@ public class MenuHandler : MonoBehaviour
 	public void PickUpItem(InputAction.CallbackContext context)
 	{
 		if (!context.performed || characterMovement.uiOpen) return;
-         
+		foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
+		{
+			var itemPickup = item.GetComponent<ItemPickup>();
+			if (itemPickup == null || !itemPickup.canPickup) continue;
+			characterMovement.TriggerPickupAnim();
+		}
+	}
+
+	public void CompletePickup()
+	{
 		foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
 		{
 			var itemPickup = item.GetComponent<ItemPickup>();
 			if (itemPickup == null || !itemPickup.canPickup) continue;
 			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemPickup, transform.position);
-			characterMovement.TriggerPickupAnim();
 			itemPickup.AddItemToInventory();
 		}
 	}

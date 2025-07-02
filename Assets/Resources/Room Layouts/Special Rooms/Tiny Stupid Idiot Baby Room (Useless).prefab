@@ -1584,6 +1584,8 @@ MonoBehaviour:
   usableDoors: []
   allDoors: []
   allWalls: []
+  allLights: []
+  attachedConnectors: []
   doorL: {fileID: 3520449579546434810}
   doorR: {fileID: 4123235897672294296}
   doorB: {fileID: 0}
@@ -1592,14 +1594,13 @@ MonoBehaviour:
   wallR: {fileID: 8559165852653127697}
   wallB: {fileID: 2044272028514577878}
   wallT: {fileID: 1330052109925022271}
-  attachedConnectors: []
   connectorSpawnedOff: {fileID: 0}
-  markedForDiscard: 0
+  mapIcons: {fileID: 0}
   roomCam: {fileID: 0}
   canBeDiscarded: 1
-  roomPath: 
-  allLights: []
+  markedForDiscard: 0
   coveredUp: 0
+  roomPath: 
 --- !u!114 &9176868600192144386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2524,6 +2525,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WaterDripGreen_2
       objectReference: {fileID: 0}
+    - target: {fileID: 5087172964332455478, guid: afd2145a4583b6d4a8e13567c3fd2a06,
+        type: 3}
+      propertyPath: spawnDelay
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3262,6 +3268,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WaterDripGreen_3
       objectReference: {fileID: 0}
+    - target: {fileID: 5087172964332455478, guid: afd2145a4583b6d4a8e13567c3fd2a06,
+        type: 3}
+      propertyPath: spawnDelay
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3479,6 +3490,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WaterDripGreen_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5087172964332455478, guid: afd2145a4583b6d4a8e13567c3fd2a06,
+        type: 3}
+      propertyPath: spawnDelay
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

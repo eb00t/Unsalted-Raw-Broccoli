@@ -388,7 +388,10 @@ MonoBehaviour:
   stunDuration: 0.4
   jumpAttackDrag: 15
   jumpAttackCount: 0
+  _poiseBuildup: 0
   hitIframeDur: 0.5
+  poiseRecoveryAmount: 3
+  poiseRecoveryDelay: 7
   doCombosLoop: 0
   animationCancelCooldown: 0.5
   lightAttackForce: 9
@@ -854,6 +857,7 @@ MonoBehaviour:
   playerGround: {fileID: 3626529087780789351}
   characterPhysicMaterial: {fileID: 13400000, guid: 3b6b107ad0d0c394dbeb0816ac11393b,
     type: 2}
+  _mostRecentUpthrust: {fileID: 0}
   doesAttackStopFlip: 1
   grounded: 0
   canMove: 0
