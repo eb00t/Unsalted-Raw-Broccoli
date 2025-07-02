@@ -74,6 +74,7 @@ public class MenuHandler : MonoBehaviour
 	private CanvasGroup _dialogueGroup;
 	private int _seconds;
 	private Tween _shakeTween;
+	private bool _isTransition;
 
 	private void Awake()
 	{
@@ -439,10 +440,11 @@ public class MenuHandler : MonoBehaviour
 	public void Back(InputAction.CallbackContext context)
 	{
 		if (!context.performed) return;
-		if (!characterMovement.uiOpen) return;
+		if (!characterMovement.uiOpen || _isTransition) return;
 
 		if (invGui.activeSelf && !_toolbarHandler.isInfoOpen)
 		{
+			_isTransition = true;
 			
 			var invContentSeq = DOTween.Sequence().SetUpdate(true);
 			
@@ -479,11 +481,14 @@ public class MenuHandler : MonoBehaviour
 					invGui.SetActive(false);
 					menuGui.SetActive(true);
 					SwitchSelected(selectedMenu);
+					_isTransition = false;
 				});
 			});
 		}
 		else if (invGui.activeSelf && _toolbarHandler.isInfoOpen)
 		{
+			_isTransition = true;
+			
 			infoGui.transform.DOScale(new Vector3(1, 0, 1), 0.1f).SetUpdate(true).OnComplete(() =>
 			{
 				ButtonHandler.Instance.PlayBackSound();
@@ -502,10 +507,12 @@ public class MenuHandler : MonoBehaviour
 				SwitchSelected(_toolbarHandler.slots[_toolbarHandler.slotNo]);
 				infoGui.SetActive(false);
 				_toolbarHandler.isInfoOpen = false;
+				_isTransition = false;
 			});
 		}
 		else if (menuGui.activeSelf)
 		{
+			_isTransition = true;
 			SwitchSelected(null);
 
 			pauseTitle.transform.DOScale(new Vector3(1, 0, 1), 0.1f).SetUpdate(true).OnComplete(() =>
@@ -526,11 +533,13 @@ public class MenuHandler : MonoBehaviour
 					menuGui.SetActive(false);
 					statsGui.SetActive(true);
 					toolbarGui.SetActive(true);
+					_isTransition = false;
 				});
 			});
 		}
 		else if (shopGUI != null  && shopGUI.activeSelf)
 		{
+			_isTransition = true;
 			var shopContentSeq = DOTween.Sequence().SetUpdate(true);
 			SwitchSelected(null);
 			
@@ -556,11 +565,13 @@ public class MenuHandler : MonoBehaviour
 					SetDialogueActive(true);
 					dialogueController.isEndText = true;
 					dialogueController.LoadDialogue(dialogueController.dialogueToLoad);
+					_isTransition = false;
 				});
 			});
 		}
 		else if (settingGui.activeSelf)
 		{
+			_isTransition = true;
 			var settingsSequence = DOTween.Sequence().SetUpdate(true);
 
 			foreach (var t in settingBck.GetComponentInChildren<GridLayoutGroup>().GetComponentsInChildren<Transform>())
@@ -583,11 +594,13 @@ public class MenuHandler : MonoBehaviour
 					settingGui.SetActive(false);
 					menuGui.SetActive(true);
 					SwitchSelected(settingsBtn);
+					_isTransition = false;
 				});
 			});
 		}
 		else if (quitPopupGui.activeSelf)
 		{
+			_isTransition = true;
 			var quitCloseSeq = DOTween.Sequence().SetUpdate(true);
 			
 			foreach (var t in quitBck.GetComponentsInChildren<Transform>())
@@ -609,6 +622,7 @@ public class MenuHandler : MonoBehaviour
 					quitPopupGui.SetActive(false);
 					menuGui.SetActive(true);
 					SwitchSelected(quitBtn);
+					_isTransition = false;
 				});
 			});
 		}
@@ -618,6 +632,7 @@ public class MenuHandler : MonoBehaviour
 		}
 		else if (infoPopup.activeSelf)
 		{
+			_isTransition = true;
 			var infoSeq = DOTween.Sequence().SetUpdate(true);
 			
 			foreach (var t in infoPopup.GetComponentsInChildren<Transform>())
@@ -637,6 +652,7 @@ public class MenuHandler : MonoBehaviour
 				{
 					infoPopup.SetActive(false);
 					_itemPickupHandler.TogglePrompt("", false, ControlsManager.ButtonType.Back, "", null, false);
+					_isTransition = false;
 				});
 			});
 		}
