@@ -15,7 +15,6 @@ public class LaserObjectHandler : MonoBehaviour
     [SerializeField] private float delay;
     [SerializeField] private float laserTickCooldown;
     [SerializeField] private float attackCooldown;
-    private float _timer;
     private bool _canAttack = true;
     private EventInstance _laserEvent;
     private LineRenderer _lineRenderer;
@@ -24,14 +23,15 @@ public class LaserObjectHandler : MonoBehaviour
     private Collider _roomBounds;
     private GameObject dialogueGui;
     private DialogueTrigger[] _dialogueTriggers;
-
+    private Coroutine _coroutine;
+    [SerializeField] private float _atkTimer;
+    [SerializeField] private GameObject groundPos;
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player").transform;
         _roomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         _roomBounds = _roomScripting.GetComponent<Collider>();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
-        _timer = attackCooldown / 2;
         _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
         dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
     }
@@ -52,11 +52,15 @@ public class LaserObjectHandler : MonoBehaviour
         
         if (IsPlayerInRoom() && !LevelBuilder.Instance.bossDead)
         {
-            _timer -= Time.deltaTime;
-
-            if (_timer <= 0f && _canAttack)
+            if (_canAttack && _coroutine == null)
             {
-                StartCoroutine(LaserAttack());
+                _atkTimer -= Time.deltaTime;
+
+                if (_atkTimer <= 0f)
+                {
+                    _coroutine = StartCoroutine(LaserAttack());
+                    _atkTimer = attackCooldown;
+                }
             }
         }
         else if (LevelBuilder.Instance.bossDead)
@@ -79,7 +83,7 @@ public class LaserObjectHandler : MonoBehaviour
         _lineRenderer.enabled = true;
         _lineRenderer.SetPosition(0, bossEyePosition.position);
         
-        var targetPos = _player.position;
+        var targetPos = new Vector3(_player.position.x, groundPos.transform.position.y, _player.position.z);
         var elapsed = 0f;
 
         AudioManager.Instance.AttachInstanceToGameObject(_laserEvent, gameObject);
@@ -107,7 +111,7 @@ public class LaserObjectHandler : MonoBehaviour
         {
             var dist = Vector3.Distance(targetPos, bossEyePosition.position);
             var direction = (targetPos - bossEyePosition.position).normalized;
-            var laserEndPos = bossEyePosition.position + direction * (dist + 5f);
+            var laserEndPos = bossEyePosition.position + direction * dist;
 
             _lineRenderer.SetPosition(0, bossEyePosition.position);
             _lineRenderer.SetPosition(1, laserEndPos);
@@ -137,5 +141,6 @@ public class LaserObjectHandler : MonoBehaviour
 
         _lineRenderer.enabled = false;
         _canAttack = true;
+        _coroutine = null;
     }
 }

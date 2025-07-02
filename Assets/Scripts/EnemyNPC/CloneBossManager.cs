@@ -48,6 +48,7 @@ public class CloneBossManager : MonoBehaviour
     [SerializeField] private Image healthChangeImage;
     private Tween _healthTween;
     [SerializeField] private DataHolder dataHolder;
+    private int _spawnIndex;
 
     private void Start()
     {
@@ -62,7 +63,7 @@ public class CloneBossManager : MonoBehaviour
         _characterAttack = _player.GetComponentInChildren<CharacterAttack>();
         _dialogueGui = GameObject.FindGameObjectWithTag("UIManager").GetComponent<MenuHandler>().dialogueGUI;
         _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
-        InstantiateBoss(6);
+        InstantiateBoss(3);
         _maxHealth = totalSpawn * individualHealth;
         healthSlider.value = _maxHealth;
         healthSlider.maxValue = _maxHealth;
@@ -118,10 +119,10 @@ public class CloneBossManager : MonoBehaviour
 
         for (var i = 0; i < numberToSpawn; i++)
         {
-            var ran = Random.Range(0, 3);
+            if (_spawnIndex > 2) _spawnIndex = 0;
             var spawn = Vector3.zero;
         
-            switch (ran)
+            switch (_spawnIndex)
             {
                 case 0:
                     spawn = spawnPoint1.position;
@@ -153,6 +154,7 @@ public class CloneBossManager : MonoBehaviour
             _numSpawned++;
             //Debug.Log(_numSpawned);
             //UpdateCollectiveHealth();
+            _spawnIndex++;
         }
 
         //spawnCooldown += 0.3f;

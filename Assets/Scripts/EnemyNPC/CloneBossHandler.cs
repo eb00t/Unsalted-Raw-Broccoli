@@ -3,10 +3,8 @@ using System.Collections;
 using DG.Tweening;
 using FMOD.Studio;
 using Pathfinding;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -132,6 +130,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         _deathEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyDeath);
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
         AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject);
+        AudioManager.Instance.AttachInstanceToGameObject(_deathEvent, gameObject);
         _dialogueTriggers = gameObject.transform.root.GetComponentsInChildren<DialogueTrigger>();
     }
 
@@ -203,7 +202,8 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         {
             case States.Idle:
                 _aiPath.canMove = false;
-                _healthSlider.gameObject.SetActive(false);
+                if (_healthSlider.gameObject.activeSelf)
+                    _healthSlider.gameObject.SetActive(false);
                 break;
             case States.Chase:
                 Chase();
@@ -339,7 +339,7 @@ public class CloneBossHandler : MonoBehaviour, IDamageable
         {
             if (col.gameObject == gameObject) continue;
             var dir = (transform.position - col.transform.position).normalized;
-            _rigidbody.AddForce(dir * .2f, ForceMode.VelocityChange);
+            _rigidbody.AddForce(dir * .5f, ForceMode.VelocityChange);
         }
     }
     
