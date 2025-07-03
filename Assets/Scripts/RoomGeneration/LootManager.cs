@@ -89,7 +89,7 @@ public class LootManager : MonoBehaviour
             Vector3 realSpawnPos = new Vector3(offsetSpawnPos, room.transform.position.y, room.transform.position.z);
             if (majorLootChance != 0 && permaLootChance != 0)
             {
-                lootToSpawn = Instantiate(minorLoot[chosenLoot], realSpawnPos, Quaternion.identity);
+                lootToSpawn = Instantiate(minorLoot[chosenLoot], room.transform.position, Quaternion.identity);
             }
             else if (majorLootChance == 0 && permaLootChance != 0)
             {

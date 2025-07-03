@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 public class CreditsSequence : MonoBehaviour
 {
     [SerializeField] private List<CanvasGroup> slides;
-    [SerializeField] private CanvasGroup buttonsGroup;
+    [SerializeField] private CanvasGroup buttonsGroup, thanksGroup;
     [SerializeField] private TitleType titleType;
     [SerializeField] private float totalCreditDuration;
     [SerializeField] private float fadeInDuration;
@@ -34,8 +34,8 @@ public class CreditsSequence : MonoBehaviour
             }
             
             slides[0].GetComponent<TextMeshProUGUI>().text = 
-                "RUN TIME:\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.playerTimeToClear).ToString(@"hh\:mm\:ss") + "</color>"
-                             + "\n\nFASTEST RUN TIME:\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.fastestClearTime).ToString(@"hh\:mm\:ss") + "</color>";
+                "RUN TIME\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.playerTimeToClear).ToString(@"hh\:mm\:ss") + "</color>"
+                             + "\n\nFASTEST RUN TIME\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.fastestClearTime).ToString(@"hh\:mm\:ss") + "</color>";
         }
         else
         {
@@ -45,8 +45,8 @@ public class CreditsSequence : MonoBehaviour
             }
             
             slides[0].GetComponent<TextMeshProUGUI>().text =
-                "RUN TIME:\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.playerTimeToClear).ToString(@"hh\:mm\:ss") + "</color>"
-                             + "\n\nPERSONAL FASTEST RUN TIME:\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.playerPersonalBestTime).ToString(@"hh\:mm\:ss") + "</color>";
+                "RUN TIME\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.playerTimeToClear).ToString(@"hh\:mm\:ss") + "</color>"
+                             + "\n\nPERSONAL FASTEST RUN TIME\n<color=#00A2FF>" + TimeSpan.FromSeconds(dataHolder.playerPersonalBestTime).ToString(@"hh\:mm\:ss") + "</color>";
         }
 
         dataHolder.playerTimeToClear = 0f;
@@ -79,10 +79,11 @@ public class CreditsSequence : MonoBehaviour
                     eventSystem.SetSelectedGameObject(menuBtn);
                 });
 
-                var slideFade = slides[i].GetComponent<RectTransform>().DOAnchorPosY(0f, 1f).SetEase(Ease.OutBounce).SetDelay(1.7f);
+                var slideFade = slides[i].GetComponent<RectTransform>().DOAnchorPosY(50f, 1f).SetEase(Ease.OutBounce).SetDelay(1.7f);
                 
                 creditsSeq.Append(showTitle);
                 creditsSeq.Append(slideFade);
+                creditsSeq.Append(thanksGroup.DOFade(1f, .5f));
                 creditsSeq.Append(buttonFade);
             }
             else

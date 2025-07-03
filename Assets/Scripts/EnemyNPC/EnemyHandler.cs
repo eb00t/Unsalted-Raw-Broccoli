@@ -201,7 +201,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             }
         }
 
-        if (alwaysShowHealth && !_healthSlider.gameObject.activeSelf)
+        if (alwaysShowHealth && !_healthSlider.gameObject.activeSelf && distance <= 12f)
         {
             _healthSlider.gameObject.SetActive(true);
         }
@@ -267,14 +267,14 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         else if (isInvisible && _state is States.Attack)
         {
             _spriteRenderer.material = defaultMaterial;
-            _healthSlider.gameObject.SetActive(true);
+            if (!alwaysShowHealth) _healthSlider.gameObject.SetActive(true);
         }
 
         switch (_state)
         {
             case States.Idle:
                 _aiPath.canMove = false;
-                _healthSlider.gameObject.SetActive(false);
+                if (!alwaysShowHealth) _healthSlider.gameObject.SetActive(false);
                 break;
             case States.Patrol:
                 Patrol();
@@ -532,7 +532,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 _aiPath.destination = new Vector3(_target.position.x, transform.position.y, transform.position.z);
             }
 
-            if (!isInvisible)
+            if (!isInvisible && !alwaysShowHealth)
             {
                 _healthSlider.gameObject.SetActive(true);
             }
@@ -550,7 +550,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private void Attack()
     {
         _aiPath.canMove = false;
-        _healthSlider.gameObject.SetActive(true);
+        if (!alwaysShowHealth) _healthSlider.gameObject.SetActive(true);
         _targetTime -= Time.deltaTime;
 
         if (!(_targetTime <= 0.0f)) return;

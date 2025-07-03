@@ -9,6 +9,7 @@ using DG.Tweening;
 public class HealthBehaviour : MonoBehaviour
 {
     public Vector3 launchPower;
+    [SerializeField] private GameObject sparkle;
     private Rigidbody _rigidbody;
     private GameObject _player;
     public bool moveToPlayer;
@@ -24,8 +25,9 @@ public class HealthBehaviour : MonoBehaviour
     public enum HealthSize { Small, Medium, Large, VeryLarge }
     public HealthSize healthSize;
     [SerializeField] private DataHolder dataHolder;
-    private Sequence _flashSeq;
+    private Sequence _flashSeq, _hoverSeq;
     private Color _defaultColor;
+    private Vector3 _originalPosition;
     private void Awake()
     {
         launchPower = new Vector3(Random.Range(-10f, 10f), Random.Range(0, 20f), 0);
@@ -73,8 +75,9 @@ public class HealthBehaviour : MonoBehaviour
         
         if (collected == false)
         {
-            if (dataHolder.playerHealth < dataHolder.playerMaxHealth)
+            if (dataHolder.playerHealth <= dataHolder.playerMaxHealth - healthAmount)
             {
+                sparkle.SetActive(false);
                 _rigidbody.AddForce(launchPower, ForceMode.Impulse);
                 _rigidbody.velocity = Vector3.zero;
                 _rigidbody.isKinematic = true;
@@ -103,22 +106,27 @@ public class HealthBehaviour : MonoBehaviour
 
     private IEnumerator WaitToDestroy()
     {
-        yield return new WaitForSeconds(3f);
+        _rigidbody.isKinematic = true;
+        _originalPosition = transform.position;
+        GetComponent<TrailRenderer>().enabled = false;
         
-        _flashSeq = DOTween.Sequence();
-
-        _flashSeq.Append(
-            _light.DOColor(Color.white, .3f).SetEase(Ease.InOutSine)
-        );
-        _flashSeq.Append(
-            _light.DOColor(_defaultColor, .3f).SetEase(Ease.InOutSine)
-        );
-
-        _flashSeq.SetLoops(-1, LoopType.Restart);
-        _flashSeq.Play();
+        _hoverSeq = DOTween.Sequence();
+        _hoverSeq.Append(transform.DOMoveY(_originalPosition.y + 0.5f, .75f).SetEase(Ease.InOutSine));
+        _hoverSeq.Append(transform.DOMoveY(_originalPosition.y, .75f).SetEase(Ease.InOutSine));
+        _hoverSeq.SetLoops(-1, LoopType.Yoyo);
+        _hoverSeq.Play();
         
         yield return new WaitForSeconds(5f);
         
+        _flashSeq = DOTween.Sequence();
+        _flashSeq.Append(_light.DOColor(Color.white, .3f).SetEase(Ease.InOutSine));
+        _flashSeq.Append(_light.DOColor(_defaultColor, .3f).SetEase(Ease.InOutSine));
+        _flashSeq.SetLoops(-1, LoopType.Restart);
+        _flashSeq.Play();
+        
+        yield return new WaitForSeconds(10f);
+        
+        _hoverSeq.Kill();
         _flashSeq.Kill();
         Destroy(gameObject);
     }
@@ -143,6 +151,8 @@ public class HealthBehaviour : MonoBehaviour
             _boxCollider.enabled = false;
             _light.enabled = false;
             moveToPlayer = false;
+            _flashSeq?.Kill();
+            _hoverSeq?.Kill();
             Destroy(gameObject);
         }
     }

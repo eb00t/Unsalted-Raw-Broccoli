@@ -118,7 +118,7 @@ public class InventoryStore : MonoBehaviour
 
             if (b == null) continue;
                 
-            if (b.numHeld < consumable.maximumHold)
+            if (b.numHeld < consumable.maximumHold || LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.Tutorial)
             {
                 b.numHeld++;
                 UpdateStoredCount(consumable.itemID, b.numHeld);

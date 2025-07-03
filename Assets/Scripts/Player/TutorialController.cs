@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 // this script manages the tutorial for the player by making sure the player does important actions to play the game
 public class TutorialController : MonoBehaviour
 {
+    public static TutorialController Instance { get; private set; }
     private GameObject _player;
     private ItemPickupHandler _itemPickupHandler;
 
@@ -55,11 +56,21 @@ public class TutorialController : MonoBehaviour
         Complete
     }
 
-    [SerializeField] private TutorialStep _currentStep = TutorialStep.Move;
+    public TutorialStep _currentStep = TutorialStep.Move;
     private int _itemsFound;
     private CharacterMovement _characterMovement;
     private CharacterAttack _characterAttack;
     private EnemyHandler _enemyHandler;
+    
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogError("More than one TutorialController script in the scene.");
+        }
+
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -102,9 +113,6 @@ public class TutorialController : MonoBehaviour
         {
             if (_characterAttack.jumpAttackCount > 0)
             {
-                _enemyHandler.defense = 0;
-                _enemyHandler.alwaysShowHealth = true;
-                
                 AdvanceStep();
             }
         }
@@ -127,6 +135,12 @@ public class TutorialController : MonoBehaviour
         if (_currentStep == TutorialStep.Complete)
         {
             return;
+        }
+        
+        if (_currentStep == TutorialStep.JumpAttack)
+        {
+            _enemyHandler.defense = 0;
+            _enemyHandler.alwaysShowHealth = true;
         }
         
         _currentStep++;
@@ -152,16 +166,16 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Move left and right with", ControlsManager.ButtonType.Move, "", null);
                 break;
             case TutorialStep.Jump:
-                ShowMessage("Jump by holding or pressing", ControlsManager.ButtonType.Jump, "", null);
+                ShowMessage("<color=#00A2FF>Jump</color> by holding or pressing", ControlsManager.ButtonType.Jump, "", null);
                 break;
             case TutorialStep.DoubleJump:
-                ShowMessage("Double jump by jumping again in the air", ControlsManager.ButtonType.Jump, " -> ", ControlsManager.ButtonType.Jump);
+                ShowMessage("<color=#00A2FF>Double jump</color> by jumping while in the air", ControlsManager.ButtonType.Jump, " -> ", ControlsManager.ButtonType.Jump);
                 break;
             case TutorialStep.Crouch:
-                ShowMessage("Crouch to fall through some platforms by pressing", ControlsManager.ButtonType.CrouchC, " or ",ControlsManager.ButtonType.CrouchR);
+                ShowMessage("<color=#00A2FF>Crouch</color> to fall through some platforms by pressing", ControlsManager.ButtonType.CrouchC, " or ",ControlsManager.ButtonType.CrouchR);
                 break;
             case TutorialStep.FindItems:
-                ShowMessage("Find and pick up two items by pressing", ControlsManager.ButtonType.Interact, "", null);
+                ShowMessage("Find and pick up <color=#00A2FF>two</color> items by pressing", ControlsManager.ButtonType.Interact, "", null);
                 break;
             case TutorialStep.UseUpThrust:
                 ShowMessage("Jump into vertical hallways to go to rooms above you", ControlsManager.ButtonType.Jump, "", null);
@@ -173,34 +187,34 @@ public class TutorialController : MonoBehaviour
                 ShowMessage("Use an item by pressing", ControlsManager.ButtonType.UseItem, "", null);
                 break;
             case TutorialStep.Map:
-                ShowMessage("View the map", ControlsManager.ButtonType.OpenMap, "", null);
+                ShowMessage("View the <color=#00A2FF>map</color> by holding", ControlsManager.ButtonType.OpenMap, "", null);
                 break;
             case TutorialStep.Explore:
                 ShowMessage("Explore rooms to find the exit", ControlsManager.ButtonType.Move, "", null);
                 break;
             case TutorialStep.DashThroughLaser:
-                ShowMessage("Dash through attacks and obstacles by pressing", ControlsManager.ButtonType.Dash, "", null);
+                ShowMessage("<color=#00A2FF>Dash</color> through attacks and obstacles by pressing", ControlsManager.ButtonType.Dash, "", null);
                 break;
             case TutorialStep.FindEnemy:
                 ShowMessage("Find an enemy by exploring the rooms", ControlsManager.ButtonType.Move, "", null);
                 break;
             case TutorialStep.LightAttack:
-                ShowMessage("Perform a light attack", ControlsManager.ButtonType.LightAttack, "", null);
+                ShowMessage("Perform a <color=#00A2FF>light</color> attack", ControlsManager.ButtonType.LightAttack, "", null);
                 break;
             case TutorialStep.MediumAttack:
-                ShowMessage("Perform a medium attack", ControlsManager.ButtonType.MediumAttack, "", null);
+                ShowMessage("Perform a <color=#00A2FF>medium</color> attack", ControlsManager.ButtonType.MediumAttack, "", null);
                 break;
             case TutorialStep.HeavyAttack:
-                ShowMessage("Perform a heavy attack", ControlsManager.ButtonType.HeavyAttack, "", null);
+                ShowMessage("Perform a <color=#00A2FF>heavy</color> attack", ControlsManager.ButtonType.HeavyAttack, "", null);
                 break;
             case TutorialStep.JumpAttack:
-                ShowMessage("Perform a jump attack", ControlsManager.ButtonType.Jump, " -> ", ControlsManager.ButtonType.LightAttack);
+                ShowMessage("Perform a <color=#00A2FF>jump attack</color>", ControlsManager.ButtonType.Jump, " -> ", ControlsManager.ButtonType.LightAttack);
                 break;
             case TutorialStep.DefeatEnemy:
                 ShowMessage("Defeat the enemy", ControlsManager.ButtonType.LightAttack, "", null);
                 break;
             case TutorialStep.Complete:
-                ShowMessage("Tutorial complete! You may now continue to Floor 1", ControlsManager.ButtonType.Move,"", null);
+                ShowMessage("Tutorial complete! You may now continue ahead.", ControlsManager.ButtonType.Move,"", null);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

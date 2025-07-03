@@ -359,10 +359,6 @@ public class CopyBoss : MonoBehaviour, IDamageable
         {
             StartCoroutine(JumpAttack());
         }
-        else
-        {
-            _currentState = States.Chase;
-        }
     }
 
     private IEnumerator JumpAttack()
@@ -373,7 +369,7 @@ public class CopyBoss : MonoBehaviour, IDamageable
         yield return new WaitUntil(() => IsGrounded() || isDead);
 
         _isAttacking = false;
-        _currentState = States.Chase;
+        //_currentState = States.Chase;
     }
 
     private void TriggerJump(Vector3 target)

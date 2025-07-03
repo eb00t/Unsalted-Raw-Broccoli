@@ -181,11 +181,22 @@ public class ToolbarHandler : MonoBehaviour
         {
             case (0, 1): // up (0)
                 // use equipped consumable
-                CheckItemEffect();
+                if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial)
+                {
+                    CheckItemEffect();
+                }
+                else
+                {
+                    if (TutorialController.Instance._currentStep == TutorialController.TutorialStep.UseItem)
+                    {
+                        CheckItemEffect();
+                    }
+                }
+                
                 dpadUp.DOFade(1f, 0.2f).OnComplete(() =>
                 {
                     dpadUp.DOFade(0f, 0.2f);
-                });
+                }); 
                 break;
             case (1, 0): // right (1)
                 // switch to consumable +1
