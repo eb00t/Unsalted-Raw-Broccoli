@@ -75,6 +75,7 @@ public class MenuHandler : MonoBehaviour
 	private int _seconds;
 	private Tween _shakeTween;
 	private bool _isTransition;
+	private List<ItemPickup> _itemsToPickup = new List<ItemPickup>();
 
 	private void Awake()
 	{
@@ -691,23 +692,25 @@ public class MenuHandler : MonoBehaviour
 	public void PickUpItem(InputAction.CallbackContext context)
 	{
 		if (!context.performed || characterMovement.uiOpen) return;
+		_itemsToPickup.Clear();
 		foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
 		{
 			var itemPickup = item.GetComponent<ItemPickup>();
 			if (itemPickup == null || !itemPickup.canPickup) continue;
+			_itemsToPickup.Add(itemPickup);
 			characterMovement.TriggerPickupAnim();
 		}
 	}
 
 	public void CompletePickup()
 	{
-		foreach (var item in GameObject.FindGameObjectsWithTag("Item"))
+		foreach (var item in _itemsToPickup)
 		{
-			var itemPickup = item.GetComponent<ItemPickup>();
-			if (itemPickup == null || !itemPickup.canPickup) continue;
 			AudioManager.Instance.PlayOneShot(FMODEvents.Instance.ItemPickup, transform.position);
-			itemPickup.AddItemToInventory();
+			item.AddItemToInventory();
 		}
+		
+		_itemsToPickup.Clear();
 	}
 
 	public void DeathReload(InputAction.CallbackContext context)

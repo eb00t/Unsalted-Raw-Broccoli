@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
+using DG.Tweening;
 
 public class HealthBehaviour : MonoBehaviour
 {
@@ -23,11 +24,14 @@ public class HealthBehaviour : MonoBehaviour
     public enum HealthSize { Small, Medium, Large, VeryLarge }
     public HealthSize healthSize;
     [SerializeField] private DataHolder dataHolder;
+    private Sequence _flashSeq;
+    private Color _defaultColor;
     private void Awake()
     {
         launchPower = new Vector3(Random.Range(-10f, 10f), Random.Range(0, 20f), 0);
         randomEnergySize = Random.Range(0, 100);
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>(); 
+        _defaultColor = _spriteRenderer.color;
         _light = gameObject.GetComponentInChildren<Light>();
         _trailRenderer = GetComponent<TrailRenderer>();
         
@@ -66,17 +70,22 @@ public class HealthBehaviour : MonoBehaviour
         _boxCollider = GetComponent<BoxCollider>();
         _rigidbody = GetComponent<Rigidbody>();
         _boxCollider.enabled = true;
-        _rigidbody.AddForce(launchPower, ForceMode.Impulse);
         
         if (collected == false)
         {
             if (dataHolder.playerHealth < dataHolder.playerMaxHealth)
             {
-                moveToPlayer = true;
-                _boxCollider.enabled = true;
+                _rigidbody.AddForce(launchPower, ForceMode.Impulse);
                 _rigidbody.velocity = Vector3.zero;
+                _rigidbody.isKinematic = true;
+                _boxCollider.enabled = true;
                 _rigidbody.useGravity = false;
+                moveToPlayer = true;
                 StartCoroutine(TeleportToPlayer());
+            }
+            else
+            {
+                StartCoroutine(WaitToDestroy());
             }
         }
     }
@@ -91,7 +100,29 @@ public class HealthBehaviour : MonoBehaviour
             transform.position = _player.transform.position;
         }
     }
-    
+
+    private IEnumerator WaitToDestroy()
+    {
+        yield return new WaitForSeconds(3f);
+        
+        _flashSeq = DOTween.Sequence();
+
+        _flashSeq.Append(
+            _light.DOColor(Color.white, .3f).SetEase(Ease.InOutSine)
+        );
+        _flashSeq.Append(
+            _light.DOColor(_defaultColor, .3f).SetEase(Ease.InOutSine)
+        );
+
+        _flashSeq.SetLoops(-1, LoopType.Restart);
+        _flashSeq.Play();
+        
+        yield return new WaitForSeconds(5f);
+        
+        _flashSeq.Kill();
+        Destroy(gameObject);
+    }
+
     private void Update()
     {
         if (moveToPlayer)
@@ -107,7 +138,6 @@ public class HealthBehaviour : MonoBehaviour
             //AudioManager.Instance.PlayOneShot(FMODEvents.Instance.CurrencyPickup, _player.transform.position);
             _characterAttack.TakeDamagePlayer((int)-healthAmount, 0, Vector3.zero);
             //_rigidbody.velocity = Vector3.zero;
-            _rigidbody.isKinematic = true;
             collected = true;
             _spriteRenderer.enabled = false;
             _boxCollider.enabled = false;

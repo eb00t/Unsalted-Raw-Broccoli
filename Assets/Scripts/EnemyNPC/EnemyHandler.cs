@@ -98,6 +98,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Rigidbody _rigidbody;
     private Tween _healthTween;
     private Coroutine _stunRoutine;
+    private Transform _player;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -149,7 +150,8 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         _aiPath = GetComponent<AIPath>();
         _rigidbody = GetComponent<Rigidbody>();
         _enemyCollider = GetComponent<CapsuleCollider>();
-        _target = GameObject.FindGameObjectWithTag("Player").transform;
+        _player = GameObject.FindGameObjectWithTag("Player").transform;
+        _target = _player;
         _characterAttack = _target.GetComponentInChildren<CharacterAttack>();
         PickPatrolPoints();
         _patrolTarget = _patrolPoint1;
@@ -170,11 +172,6 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             newCooldown = Mathf.Clamp(newCooldown, 0.1f, attackCooldown + bombTimeVariability);
             _targetTime = newCooldown;
         }
-
-        if (isPassive)
-        {
-            defense = 100;
-        }
         
         _alarmEvent = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.EnemyLowHealthAlarm);
         AudioManager.Instance.AttachInstanceToGameObject(_alarmEvent, gameObject);
@@ -185,7 +182,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
         var velocity = _aiPath.velocity;
         _target = isPassive ? passiveTarget : _target;
-        _playerDir = _target.position - transform.position;
+        _playerDir = _player.position - transform.position;
         var distance = Vector3.Distance(transform.position, _target.position);
         var heightDiffAbove = _target.position.y - transform.position.y;
 
@@ -198,13 +195,13 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
                 defense = playerInFront ? blockingDefense : 0;
             }
-            else if (_state != States.Attack && !isPassive)
+            else if (_state != States.Attack)
             {
                 defense = 0;
             }
         }
 
-        if (alwaysShowHealth)
+        if (alwaysShowHealth && !_healthSlider.gameObject.activeSelf)
         {
             _healthSlider.gameObject.SetActive(true);
         }
@@ -219,7 +216,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         {
             _state = States.Passive;
         }
-        else if (IsPlayerInRoom())
+        else if (IsPlayerInRoom() || (LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.Tutorial && distance <= 12f))
         {
             _jumpTimer -= Time.deltaTime;
             if (distance < attackRange)
@@ -573,7 +570,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 case 0:
                     _wasLastAttackBlock = false;
                     UpdateSpriteDirection(_playerDir.x < 0);
-                    defense = 0;
+                    if (isStalker) defense = 0;
                     _animator.SetTrigger(Attack1);
                     break;
                 case 1:
@@ -667,7 +664,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damage, int? poiseDmg, Vector3? knockback)
     {
-        if (!IsPlayerInRoom()) return;
+        if (!IsPlayerInRoom() && (LevelBuilder.Instance.currentFloor is not LevelBuilder.LevelMode.Tutorial and not LevelBuilder.LevelMode.Intermission)) return;
         
         var previousHealth = _health;
         defense = Mathf.Clamp(defense, 0, 100);
@@ -675,8 +672,9 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         damage = Mathf.RoundToInt(damage * dmgReduction);
         
         StartCoroutine(HitFlash());
-        
-        if (Random.value <= 0.15f) // 15 percent chance on hit for enemy to drop energy
+
+        var chance = isPassive ? 0.5f : 0.15f;
+        if (Random.value <= chance) // 15 percent chance on hit for enemy to drop energy (unless passive then 50%)
         {
             Instantiate(Resources.Load<GameObject>("ItemPrefabs/Other/Energy Prefab"), transform.position, Quaternion.identity);
         }
@@ -700,7 +698,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
                 {
                     ApplyKnockback(knockback.Value);
                 }
-                Die();
+                if (!isPassive) 
+                    Die();
+                else
+                    _health = maxHealth;
             }
         }
 
@@ -853,7 +854,15 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     {
         if (_isFrozen || isDead) return;
 
-        _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
+        if (isPassive)
+        {
+            _knockbackDir = transform.position.x > _player.position.x ? 1 : -1;
+        }
+        else
+        {
+            _knockbackDir = transform.position.x > _target.position.x ? 1 : -1;
+        }
+
         var knockbackMultiplier = (_poiseBuildup >= poise) ? 15f : 10f; 
         _knockbackForce = new Vector3(knockbackPower.x * _knockbackDir * knockbackMultiplier, knockbackPower.y * knockbackMultiplier, 0);
         
@@ -864,11 +873,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
         {
             if (!_isBlocking || !playerInFront)
             {
-                if (!isPassive)
-                {
-                    defense = 0;
-                }
-
+                defense = 0;
                 if (_poiseBuildup < poise) _stunRoutine ??= StartCoroutine(StunTimer(.05f));
             }
         }

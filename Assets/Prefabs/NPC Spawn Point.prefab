@@ -85,6 +85,7 @@ MonoBehaviour:
   dialogueID: 0
   randomLore: 0
   dontShowInteract: 0
+  inRange: 0
   dialogueOrLore: 0
   _index: 0
   dialogueSpeed: 0
@@ -115,8 +116,8 @@ Transform:
   m_GameObject: {fileID: 2594333289585630605}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -0.25, z: -1.2}
-  m_LocalScale: {x: 0.25839794, y: 0.25839788, z: 0.25839788}
+  m_LocalPosition: {x: 0.312, y: -0.27, z: -1.353}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5377369703417297139}
@@ -133,8 +134,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 3
-  m_Range: 10
+  m_Intensity: 4
+  m_Range: 40
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -170,12 +171,12 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2097152
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 8.31e-43, y: 5.2815e-41, z: 8.4e-42, w: 0}
@@ -218,7 +219,7 @@ GameObject:
   - component: {fileID: 7629218153183295817}
   - component: {fileID: 6731220684723133357}
   - component: {fileID: 2948538866575673402}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: NPC Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -233,10 +234,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3813825425713145093}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0.3, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: -0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7203145242929359325}
   m_Father: {fileID: 4488074388534331324}

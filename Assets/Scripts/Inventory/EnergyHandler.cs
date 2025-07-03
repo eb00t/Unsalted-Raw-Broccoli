@@ -72,12 +72,14 @@ public class EnergyHandler : MonoBehaviour
     private IEnumerator GoToPlayer()
     {
         yield return new WaitForSeconds(1.5f);
+        
         if (collected == false)
         {
-            moveToPlayer = true;
             _boxCollider.enabled = true;
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.useGravity = false;
+            _rigidbody.isKinematic = true;
+            moveToPlayer = true;
             StartCoroutine(TeleportToPlayer());
         }
     }

@@ -85,10 +85,11 @@ public class CurrencyBehaviour : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         if (_collected == false)
         {
-            _moveToPlayer = true;
             _boxCollider.enabled = true;
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.useGravity = false;
+            _rigidbody.isKinematic = true;
+            _moveToPlayer = true;
             StartCoroutine(TeleportToPlayer());
         }
     }
