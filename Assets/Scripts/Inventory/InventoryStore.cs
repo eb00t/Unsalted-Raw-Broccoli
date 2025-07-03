@@ -178,11 +178,13 @@ public class InventoryStore : MonoBehaviour
     {
         foreach (var s in indexHolder.GetComponentsInChildren<Image>())
         {
-            if (s.name == "Image")
+            if (s.name == "Holder")
             {
-                s.sprite = indexHolder.consumable.uiIcon;
                 s.GetComponentInChildren<TextMeshProUGUI>().text = indexHolder.numHeld + "/" + indexHolder.consumable.maximumHold;
             }
+            
+            if (s.name == "Image") s.sprite = indexHolder.consumable.uiIcon;
+                
         }
         
         _toolbarHandler.CheckEquipStatus();
