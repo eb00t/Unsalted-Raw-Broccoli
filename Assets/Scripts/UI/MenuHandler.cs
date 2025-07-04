@@ -66,6 +66,7 @@ public class MenuHandler : MonoBehaviour
 	private bool _distanceBasedDialogue;
 	private CurrencyManager _currencyManager;
 	[SerializeField] private GameObject hardcoreIndicator;
+	[SerializeField] private GameObject exitDoor, exitSign;
 
 	[SerializeField] private float idleResetTime;
 	private float _idleTimer;
@@ -103,6 +104,12 @@ public class MenuHandler : MonoBehaviour
 		_mapTxt = mapTxtGroup.GetComponent<TextMeshProUGUI>();
 		if (loreCanvas != null) _loreGUIManager = loreCanvas.GetComponentInParent<LoreGUIManager>(); 
 		_dialogueGroup = GameObject.FindGameObjectWithTag("Dialogue").GetComponent<CanvasGroup>();
+
+		if (dataHolder.demoMode && LevelBuilder.Instance.currentFloor == LevelBuilder.LevelMode.Intermission)
+		{
+			exitSign.SetActive(false);
+			exitDoor.SetActive(true);
+		}
 
 		foreach (var t in dialogueGUI.GetComponentsInChildren<Transform>())
 		{
