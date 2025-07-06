@@ -19,7 +19,7 @@ public class IntersectionRaycast : MonoBehaviour
     private float _innerRayCastDistance;
     private float _halfRoomLength, _halfRoomHeight, _quarterRoomLength, _quarterRoomHeight;
     public LayerMask layerMask;
-    private BoxCollider _collider;
+    private Collider _collider;
     private bool _checkedTwice;
     public List<GameObject> objectsToIgnore;
     private Vector3 _halfExtents;
@@ -51,7 +51,7 @@ public class IntersectionRaycast : MonoBehaviour
         }
 
         objectsToIgnore.Add(GameObject.FindWithTag("Player"));
-        _collider = GetComponent<BoxCollider>();
+        _collider = GetComponent<Collider>();
         _roomInfo = GetComponent<RoomInfo>();
         _halfRoomLength = _roomInfo.roomLength / 2;
         _halfRoomHeight = _roomInfo.roomHeight / 2;

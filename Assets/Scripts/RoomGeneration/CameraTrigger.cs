@@ -12,6 +12,7 @@ public class CameraTrigger : MonoBehaviour
     private CinemachineVirtualCamera _camera;
     public List<RoomScripting> allRooms;
     private ResizeBoxCollider _resizeBoxCollider;
+    private NonBoxColliderHandler _nonBoxColliderHandler;
 
     public enum RoomOrConnector
     {
@@ -24,6 +25,7 @@ public class CameraTrigger : MonoBehaviour
     void Start()
     {
         _resizeBoxCollider = transform.root.GetComponent<ResizeBoxCollider>();
+        _nonBoxColliderHandler = transform.root.gameObject.GetComponent<NonBoxColliderHandler>();
         foreach (GameObject room in LevelBuilder.Instance.spawnedRooms)
         {
             allRooms.Add(room.GetComponent<RoomScripting>());
@@ -74,7 +76,14 @@ public class CameraTrigger : MonoBehaviour
                     _camera.Priority = 10;
                     if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial && LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
                     {
-                        _resizeBoxCollider.doorsCanClose = false;
+                        if (_resizeBoxCollider != null)
+                        {
+                            _resizeBoxCollider.doorsCanClose = false;
+                        }
+                        else
+                        {
+                            _nonBoxColliderHandler.doorsCanClose = false;
+                        }
                     }
                     break;
                 case RoomOrConnector.Connector:
@@ -120,7 +129,14 @@ public class CameraTrigger : MonoBehaviour
                 _camera.Priority = 10;
                 if (LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Tutorial && LevelBuilder.Instance.currentFloor != LevelBuilder.LevelMode.Intermission)
                 {
-                    _resizeBoxCollider.doorsCanClose = true;
+                    if (_resizeBoxCollider != null)
+                    {
+                        _resizeBoxCollider.doorsCanClose = true;
+                    }
+                    else
+                    {
+                        _nonBoxColliderHandler.doorsCanClose = true;
+                    }
                 }
             }
         }
