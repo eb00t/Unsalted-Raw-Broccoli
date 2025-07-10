@@ -99,6 +99,7 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     private Tween _healthTween;
     private Coroutine _stunRoutine;
     private Transform _player;
+    private NonBoxColliderHandler _nonBoxColliderHandler;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -130,6 +131,10 @@ public class EnemyHandler : MonoBehaviour, IDamageable
             RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
             RoomScripting.enemies.Add(gameObject);
             _roomBounds = RoomScripting.GetComponent<Collider>();
+            if (RoomScripting.GetComponent<NonBoxColliderHandler>() != null)
+            {
+                _nonBoxColliderHandler = RoomScripting.GetComponent<NonBoxColliderHandler>();
+            }
         }
         
         ScaleStats();
@@ -445,6 +450,14 @@ public class EnemyHandler : MonoBehaviour, IDamageable
     
     private bool IsPlayerInRoom()
     {
+        if (_nonBoxColliderHandler != null)
+        {
+            return _roomBounds != null && 
+                   (_roomBounds.bounds.Contains(_target.position) ||
+                    _nonBoxColliderHandler.collider1.bounds.Contains(_target.position) ||
+                    _nonBoxColliderHandler.collider2.bounds.Contains(transform.position));
+        }
+
         return _roomBounds != null && _roomBounds.bounds.Contains(_target.position);
     }
 

@@ -11,6 +11,8 @@ using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 {
+    private static readonly int IsDead = Animator.StringToHash("isDead");
+
     [Header("Defensive Stats")]
     [SerializeField] private int maxHealth;
     private int _health;
@@ -93,6 +95,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     private Rigidbody _rigidbody;
     private AIPath _aiPath;
     private Coroutine _stunRoutine;
+    private NonBoxColliderHandler _nonBoxColliderHandler;
     
     [Header("Sound")]
     private EventInstance _alarmEvent;
@@ -124,6 +127,11 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
         RoomScripting = gameObject.transform.root.GetComponent<RoomScripting>();
         RoomScripting.enemies.Add(gameObject);
         _roomBounds = RoomScripting.GetComponent<Collider>();
+        if (RoomScripting.GetComponent<NonBoxColliderHandler>() != null)
+        {
+            _nonBoxColliderHandler = RoomScripting.GetComponent<NonBoxColliderHandler>();
+        }
+        
         ScaleStats();
         gameObject.transform.parent = gameObject.transform.root;
         _healthSlider = GetComponentInChildren<Slider>();
@@ -156,7 +164,7 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        if (_animator.GetBool("isDead")) return;
+        if (_animator.GetBool(IsDead)) return;
         
         var distance = Vector3.Distance(transform.position, _target.position);
         _playerDir = _target.position - transform.position;
@@ -226,6 +234,14 @@ public class FlyingEnemyHandler : MonoBehaviour, IDamageable
     
     private bool IsPlayerInRoom()
     {
+        if (_nonBoxColliderHandler != null)
+        {
+            return _roomBounds != null && 
+                   (_roomBounds.bounds.Contains(_target.position) ||
+                   _nonBoxColliderHandler.collider1.bounds.Contains(_target.position) ||
+                   _nonBoxColliderHandler.collider2.bounds.Contains(transform.position));
+        }
+        
         return _roomBounds != null && _roomBounds.bounds.Contains(_target.position);
     }
 

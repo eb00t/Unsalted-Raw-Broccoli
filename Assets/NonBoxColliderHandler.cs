@@ -11,6 +11,7 @@ public class NonBoxColliderHandler : MonoBehaviour
     public bool doorsCanClose;
     private bool _plrEnteredRoom;
     private GameObject _player;
+    public Collider collider1, collider2;
 
     private void Awake()
     {
@@ -18,7 +19,8 @@ public class NonBoxColliderHandler : MonoBehaviour
         _collider.enabled = true;
         _roomInfo = transform.root.gameObject.GetComponent<RoomInfo>();
     }   
-    void Start()
+    
+    private void Start()
     { 
         _roomScripting = GetComponent<RoomScripting>();
         _player = GameObject.FindWithTag("Player");
@@ -26,26 +28,30 @@ public class NonBoxColliderHandler : MonoBehaviour
 
     private void Update()
     {
-            if (_collider.bounds.Contains(_player.transform.position) && !_plrEnteredRoom)
-            {
-                _roomScripting.EnterSpecialRoom();
-                _plrEnteredRoom = true;
-            }
+        var isPlayerInCollider = _collider.bounds.Contains(_player.transform.position) ||
+                                 collider1.bounds.Contains(_player.transform.position) ||
+                                 collider2.bounds.Contains(_player.transform.position);
+            
+        if (isPlayerInCollider && !_plrEnteredRoom)
+        {
+            _roomScripting.EnterSpecialRoom();
+            _plrEnteredRoom = true;
+        }
 
-            if (doorsCanClose && _collider.bounds.Contains(_player.transform.position))
-            {
-                _roomScripting.playerIsInRoom = true;
-            }
-            else if (doorsCanClose && !_collider.bounds.Contains(_player.transform.position))
-            {
-                _roomScripting.playerIsInRoom = false;
-            }
+        if (doorsCanClose && isPlayerInCollider)
+        {
+            _roomScripting.playerIsInRoom = true;
+        }
+        else if (doorsCanClose && !isPlayerInCollider)
+        {
+            _roomScripting.playerIsInRoom = false;
+        }
 
-            if (!_collider.bounds.Contains(_player.transform.position) && _plrEnteredRoom)
-            {
-                _roomScripting.ExitSpecialRoom();
-                _plrEnteredRoom = false;
-            }
+        if (!isPlayerInCollider && _plrEnteredRoom)
+        {
+            _roomScripting.ExitSpecialRoom();
+            _plrEnteredRoom = false;
+        }
     }
-    }
+}
 
